@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: /bug-fixes-patterns/
 ---
 
 # Bug/fixes patterns
