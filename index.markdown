@@ -99,7 +99,7 @@ Fixed version:
  Fixed: If(arg1 < arg2) {}
 {% endhighlight %}
 
-[All code examples from real projects and the entire list of patterns associated with this category.](misuse-of-order-operators-patterns/misuse-of-order-operators-patterns/misuse-of-order-operators-patterns.md)
+[All code examples from real projects and the entire list of patterns associated with this category.](misuse-of-order-operators-patterns/misuse-of-order-operators-patterns.md)
 
 ### Bugs related to -+1
 
