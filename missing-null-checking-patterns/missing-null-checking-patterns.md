@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: /missing-null-checking-patterns/
 ---
 
 # Missing null checking patterns: 
