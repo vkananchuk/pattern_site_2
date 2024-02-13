@@ -6,7 +6,7 @@
 
 ## Description
 
-[List of bug/fixes patterns](/bug-fixes-patterns/)
+[List of bug/fixes patterns](bug-fixes-patterns/bug-fixes-patterns.md)
 
 ## Categories of LHBs
 
