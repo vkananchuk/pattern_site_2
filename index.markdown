@@ -47,7 +47,7 @@ Fixed version:
   Fixed: if(obj != null) { func(obj.someMember) }
 {% endhighlight %}
 
-[All code examples from real projects and the entire list of patterns associated with this category.](/missing-null-checking-patterns/)
+[All code examples from real projects and the entire list of patterns associated with this category.](missing-null-checking-patterns)
 
 ### False/True
 
