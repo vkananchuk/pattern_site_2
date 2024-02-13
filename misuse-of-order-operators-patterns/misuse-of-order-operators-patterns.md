@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: /misuse-of-order-operators-patterns/
 ---
 
 # Misuse of order operators patterns: 
