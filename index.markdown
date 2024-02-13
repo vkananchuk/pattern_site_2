@@ -74,7 +74,7 @@ Fixed version:
 
 {% endhighlight %}
 
-[All code examples from real projects and the entire list of patterns associated with this category.](/false-true-patterns/)
+[All code examples from real projects and the entire list of patterns associated with this category.](false-true-patterns/false-true-patterns.md)
 
 ### Misuse of order operators
 Bugs related to improper use of comparison operators in if conditions, leading to incorrect code logic.
@@ -99,7 +99,7 @@ Fixed version:
  Fixed: If(arg1 < arg2) {}
 {% endhighlight %}
 
-[All code examples from real projects and the entire list of patterns associated with this category.](/misuse-of-order-operators-patterns/)
+[All code examples from real projects and the entire list of patterns associated with this category.](misuse-of-order-operators/misuse-of-order-operators-patterns.md)
 
 ### Bugs related to -+1
 
