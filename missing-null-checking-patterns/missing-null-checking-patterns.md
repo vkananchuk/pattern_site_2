@@ -1,10 +1,11 @@
 ---
 layout: default
+permalink: /missing-null-checking-patterns/
 ---
 
 # Missing null checking patterns: 
 
-### 1. "Pattern_name"
+### 1.1. "Pattern_name"
  {% highlight java %}
  Buggy: func(obj.someMember)
  Fixed: if(obj != null) { func(obj.someMember) }
@@ -37,7 +38,7 @@ Csv_5
  
 Bug: [5](https://github.com/apache/commons-csv/compare/bf8f23c3104a137cb42e13bd69b10321cdf92135...73cc5246cf789db8f459e2f539831b6e91bedd26), Project: [Csv](https://github.com/apache/commons-csv)
 
-### 2. "Pattern_name"
+### 1.2. "Pattern_name"
 {% highlight java %}
  Buggy: res := obj.someMember
  Fixed: if(obj != null) { res := obj.someMember }

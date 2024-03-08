@@ -8,14 +8,27 @@
 
 [List of bug/fixes patterns](bug-fixes-patterns/bug-fixes-patterns.md)
 
+| Indetifier  | Project name         | Number of bugs / LHBs | Language |
+|-------------|----------------------|-----------------------|----------|
+| Chart       | jfreechart           | 26/                   | Java     |
+| Cli         | commons-cli          | 39/                   | Java     |
+| Closure     | closure-compiler     | 174/                  | Java     |
+| Codec       | commons-codec        | 18/                   | Java     |
+| Collections | commons-collections5 | 4/                    | Java     |
+| Compress    | commons-compress     | 47/                   | Java     |
+| Csv         | commons-csv          | 16/                   | Java     |
+| Gson        | gson                 | 18/                   | Java     |
+| Lang        | commons-lang         | 64/                   | Java     |
+
+The projects listed in the table above are all sourced from [defects4j](https://github.com/rjust/defects4j)
 ## Categories of LHBs
 
 1. [Missing null checking](#missing-null-checking)
-2. [False/True](#falsetrue)
-3. [Misuse of order operators (<, ≤, ≥, > etc.)](#misuse-of-order-operators)
-4. [Bugs related to -+1](#bugs-related-to--1)
-5. [Break/Continue](#breakcontinue)
-6. [Incorrect variables](#incorrect-variables)
+2. [Incorrect variables](#incorrect-variables)
+3. [Bugs related to -+1](#bugs-related-to--1)
+4. [Misuse of order operators (<, ≤, ≥, > etc.)](#misuse-of-order-operators)
+5. [False/True](#falsetrue)
+6. [Break/Continue](#breakcontinue)
 
 ## Detailed Descriptions
 
@@ -49,9 +62,9 @@ Fixed version:
 
 [All code examples from real projects and the entire list of patterns associated with this category.](missing-null-checking-patterns/missing-null-checking-patterns.md)
 
-### False/True
+### Incorrect variables
 
-Logical bugs involving the use of true instead of false and vice versa.
+Text
 
 ##### Code example: 
 
@@ -69,37 +82,9 @@ Fixed version:
 ##### Pattern example:
 
 {% highlight java %}
- Buggy: func(listArg1, True, listArg2)
- Fixed: func(listArg1, False, listArg2)
-
 {% endhighlight %}
 
-[All code examples from real projects and the entire list of patterns associated with this category.](false-true-patterns/false-true-patterns.md)
-
-### Misuse of order operators
-Bugs related to improper use of comparison operators in if conditions, leading to incorrect code logic.
-
-##### Code example: 
-
-Buggy version: 
-{% highlight java %}
- 
-{% endhighlight %}
-
-Fixed version: 
-
-{% highlight java %}
-
-{% endhighlight %}
-
-##### Pattern example:
-
-{% highlight java %}
- Buggy: If (arg1 <= arg2) {}
- Fixed: If(arg1 < arg2) {}
-{% endhighlight %}
-
-[All code examples from real projects and the entire list of patterns associated with this category.](misuse-of-order-operators-patterns/misuse-of-order-operators-patterns.md)
+[All code examples from real projects and the entire list of patterns associated with this category.](/missing-null-checking-patterns/)
 
 ### Bugs related to -+1
 
@@ -127,6 +112,59 @@ Fixed version:
 
 [All code examples from real projects and the entire list of patterns associated with this category.](/minus-plus-one-patterns/)
 
+### Misuse of order operators
+Bugs related to improper use of comparison operators in if conditions, leading to incorrect code logic.
+
+##### Code example: 
+
+Buggy version: 
+{% highlight java %}
+ 
+{% endhighlight %}
+
+Fixed version: 
+
+{% highlight java %}
+
+{% endhighlight %}
+
+##### Pattern example:
+
+{% highlight java %}
+ Buggy: If (arg1 <= arg2) {}
+ Fixed: If(arg1 < arg2) {}
+{% endhighlight %}
+
+[All code examples from real projects and the entire list of patterns associated with this category.](misuse-of-order-operators-patterns/misuse-of-order-operators-patterns.md)
+
+
+### False/True
+
+Logical bugs involving the use of true instead of false and vice versa.
+
+##### Code example: 
+
+Buggy version: 
+{% highlight java %}
+
+{% endhighlight %}
+
+Fixed version: 
+
+{% highlight java %}
+
+{% endhighlight %}
+
+##### Pattern example:
+
+{% highlight java %}
+ Buggy: func(listArg1, True, listArg2)
+ Fixed: func(listArg1, False, listArg2)
+
+{% endhighlight %}
+
+[All code examples from real projects and the entire list of patterns associated with this category.](false-true-patterns/false-true-patterns.md)
+
 ### Break/Continue
 
 Text 
@@ -148,30 +186,6 @@ Fixed version:
 
 {% highlight java %}
 
-{% endhighlight %}
-
-[All code examples from real projects and the entire list of patterns associated with this category.](/missing-null-checking-patterns/)
-
-### Incorrect variables
-
-Text
-
-##### Code example: 
-
-Buggy version: 
-{% highlight java %}
-
-{% endhighlight %}
-
-Fixed version: 
-
-{% highlight java %}
-
-{% endhighlight %}
-
-##### Pattern example:
-
-{% highlight java %}
 {% endhighlight %}
 
 [All code examples from real projects and the entire list of patterns associated with this category.](/missing-null-checking-patterns/)
