@@ -5,7 +5,7 @@ permalink: /false-true-patterns/
 
 # False/True Patterns: 
 
-### 5.1. "Pattern_name"
+### 5.1. BOOLFLIP/FARG: function argument is True, should be False
  {% highlight java %}
  Buggy: func(listArg1, True, listArg2)
  Fixed: func(listArg1, False, listArg2)
@@ -55,7 +55,7 @@ pattern TEMP for
 
 Bug: [7](https://github.com/apache/commons-codec/compare/f7966c1b374ebdd3fccb28370d9cb80a2115d807...954d995c5603b616c3c4a9ffb1823f36dd7ebcb0), Project: [Codec](https://github.com/apache/commons-codec)
 
-### 5.2. "Pattern_name"
+### 5.2. BOOLFLIP/FARG: function result is False, should be True
 {% highlight java %}
  Buggy: func(listArg1, False, listArg2)
  Fixed: func(listArg1, True, listArg2)
@@ -119,7 +119,7 @@ pattern FRES for
 
 Bug: [86](https://github.com/google/closure-compiler/compare/5cd9c1efe90dc7c1be33cd7f8c1dcbaa9225909e...0907b6618a60b2de23c8f7ec2217a37dc5e9a091), Project: [Closure](https://github.com/google/closure-compiler)
 
-### 5.4. "Pattern_name"
+### 5.4. BOOLFLIP/FRES: function result is True, should be False
 {% highlight java %}
  Buggy: return false
  Fixed: return true

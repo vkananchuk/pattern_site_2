@@ -3,6 +3,7 @@ layout: default
 ---
 
 # Bug/fixes patterns
+(This is a temporary list; later it will be synchronized with all patterns and numbering in the database)
 
 ### 1. "Pattern_name"
  {% highlight java %}

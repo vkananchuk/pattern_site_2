@@ -15,26 +15,27 @@ permalink: /missing-null-checking-patterns/
 
 Csv_5
  {% highlight java %}
-- out.append(format.getRecordSeparator());
-+ final String recordSeparator = format.getRecordSeparator();
-+ if (recordSeparator != null) {
-+    out.append(recordSeparator);
-  + }
-  {% endhighlight %} 
-  {% highlight java %}
-  pattern TEMP for
-          c: call
-      with
-          obj : object
-      where
-          obj.someMember ∈ c.args
-      fix
-          IF [
-             condition: NOT_EQ [obj, null],
-             then: c [obj.someMember]
-          ]
-      End
-  {% endhighlight %}
+ - out.append(format.getRecordSeparator());
+
+ + final String recordSeparator = format.getRecordSeparator();
+ + if (recordSeparator != null) {
+ +    out.append(recordSeparator);
+ + }
+{% endhighlight %} 
+{% highlight java %}
+pattern TEMP for
+        c: call
+    with
+        obj : object
+    where
+        obj.someMember ∈ c.args
+    fix
+        IF [
+           condition: NOT_EQ [obj, null],
+           then: c [obj.someMember]
+        ]
+    End
+{% endhighlight %}
  
 Bug: [5](https://github.com/apache/commons-csv/compare/bf8f23c3104a137cb42e13bd69b10321cdf92135...73cc5246cf789db8f459e2f539831b6e91bedd26), Project: [Csv](https://github.com/apache/commons-csv)
 
@@ -48,8 +49,9 @@ Bug: [5](https://github.com/apache/commons-csv/compare/bf8f23c3104a137cb42e13bd6
 
 Csv-11
  {% highlight java %}
-- final boolean emptyHeader = header.trim().isEmpty();
-+ final boolean emptyHeader = header == null || header.trim().isEmpty();
+ - final boolean emptyHeader = header.trim().isEmpty();
+
+ + final boolean emptyHeader = header == null || header.trim().isEmpty();
 {% endhighlight %}
 {% highlight java %}
 pattern TEMP for
