@@ -1,0 +1,32 @@
+---
+layout: default
+---
+<h1>{{ page.data_key }}</h1>
+
+<h2>Parameters:</h2>
+<ul>
+  {% for p in page.data_value.parameters %}
+    <li>{{ p.first }}: {{ p.last }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Then:</h2>
+{% highlight text %}
+{{ page.data_value.then }}
+{% endhighlight %}
+
+<h3>Fixes of this bug:</h3>
+{% assign fixes = site.pages
+| where: 'type', 'fix'
+| where: 'data_value.bug', page.data_key %}
+<ul>
+{% for f in fixes %}
+  <li><a href="{{ f.url | absolute_url }}">{{ f.title }}</a></li>
+{% endfor %}
+</ul>
+
+{% assign json = site.pages
+| where: 'type', 'bug_json'
+| where: 'title', page.title
+| first %}
+<a href="{{ json.url | absolute_url }}">Raw json</a>
