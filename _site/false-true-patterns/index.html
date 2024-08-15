@@ -5,16 +5,16 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,maximum-scale=2">
-    <link rel="stylesheet" type="text/css" media="screen" href="/Patterns_Site/assets/css/style.css?v=3334ba15400bcceb64e08a40c81893eede131700">
+    <link rel="stylesheet" type="text/css" media="screen" href="/Patterns_Site/assets/css/style.css?v=82a7ae715eea54629f75db7c5b87ef8461c24d74">
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>False/True Patterns: | Low hanging bug/fixes patterns</title>
+<title>False/True Patterns: | Patterns_Site</title>
 <meta name="generator" content="Jekyll v3.9.3" />
 <meta property="og:title" content="False/True Patterns:" />
 <meta property="og:locale" content="en_US" />
 <link rel="canonical" href="http://0.0.0.0:4000/Patterns_Site/false-true-patterns/" />
 <meta property="og:url" content="http://0.0.0.0:4000/Patterns_Site/false-true-patterns/" />
-<meta property="og:site_name" content="Low hanging bug/fixes patterns" />
+<meta property="og:site_name" content="Patterns_Site" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="False/True Patterns:" />
@@ -44,7 +44,7 @@
             <a id="forkme_banner" href="https://github.com/Viktoryiaa/Patterns_Site">View on GitHub</a>
           
 
-          <h1 id="project_title">Low hanging bug/fixes patterns</h1>
+          <h1 id="project_title">Patterns_Site</h1>
           <h2 id="project_tagline"></h2>
 
           
@@ -54,20 +54,126 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1 id="falsetrue-patterns">False/True Patterns:</h1>
+        
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+<h3 id="51-boolflipfarg-function-argument-is-true-should-be-false">5.1. BOOLFLIP/FARG: function argument is True, should be False</h3>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nl">Buggy:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">True</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span>
+ <span class="nl">Fixed:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">False</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pattern</span> <span class="no">TEMP</span> <span class="k">for</span>
+        <span class="nl">c:</span> <span class="n">call</span>
+    <span class="n">with</span>
+        <span class="nl">b:</span> <span class="no">BOOLEAN</span>
+    <span class="n">where</span>
+        <span class="n">b</span> <span class="err">∈</span> <span class="n">c</span><span class="o">.</span><span class="na">args</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nc">True</span>
+    <span class="n">fix</span>
+        <span class="n">c</span> <span class="o">[</span><span class="n">b</span> <span class="err">←</span> <span class="nc">False</span><span class="o">]</span>
+    <span class="nc">End</span>
+</code></pre></div></div>
+
+<h6 id="examples">Examples:</h6>
+
+
+    
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            <p>Closure-70</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="n">jsDocParameter</span><span class="o">.</span><span class="na">getJSType</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span>
+
+ <span class="o">+</span> <span class="n">jsDocParameter</span><span class="o">.</span><span class="na">getJSType</span><span class="o">(),</span> <span class="kc">false</span><span class="o">);</span></code></pre></figure>
+
+<p>Bug: <a href="https://github.com/google/closure-compiler/compare/7433d30ac4cb2334d22e66299846118686efe939...ec4a34c2bd87ba54fa8770affdeeea4f3c42089b">70</a>, Project: <a href="https://github.com/google/closure-compiler">Closure</a></p>
+
+        
+    
+        
+            <p>Codec-7</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="k">return</span> <span class="nc">StringUtils</span><span class="o">.</span><span class="na">newStringUtf8</span><span class="o">(</span><span class="n">encodeBase64</span><span class="o">(</span><span class="n">binaryData</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+
+ <span class="o">+</span> <span class="k">return</span> <span class="nc">StringUtils</span><span class="o">.</span><span class="na">newStringUtf8</span><span class="o">(</span><span class="n">encodeBase64</span><span class="o">(</span><span class="n">binaryData</span><span class="o">,</span> <span class="kc">false</span><span class="o">));</span></code></pre></figure>
+
+<p>Bug: <a href="https://github.com/apache/commons-codec/compare/f7966c1b374ebdd3fccb28370d9cb80a2115d807...954d995c5603b616c3c4a9ffb1823f36dd7ebcb0">7</a>, Project: <a href="https://github.com/apache/commons-codec">Codec</a></p>
+
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+  
+
+  
+
+  
+
+  
+
+
+
+dihfvcdhfbvhfdbhj
+<h1 id="falsetrue-patterns">False/True Patterns:</h1>
 
 <h3 id="51-boolflipfarg-function-argument-is-true-should-be-false">5.1. BOOLFLIP/FARG: function argument is True, should be False</h3>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="nl">Buggy:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">True</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span>
  <span class="nl">Fixed:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">False</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span></code></pre></figure>
-
-<h6 id="examples">Examples:</h6>
-
-<p>Closure-70</p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="n">jsDocParameter</span><span class="o">.</span><span class="na">getJSType</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span>
-
- <span class="o">+</span> <span class="n">jsDocParameter</span><span class="o">.</span><span class="na">getJSType</span><span class="o">(),</span> <span class="kc">false</span><span class="o">);</span></code></pre></figure>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">pattern</span> <span class="no">TEMP</span> <span class="k">for</span>
         <span class="nl">c:</span> <span class="n">call</span>
@@ -80,6 +186,14 @@
         <span class="n">c</span> <span class="o">[</span><span class="n">b</span> <span class="err">←</span> <span class="nc">False</span><span class="o">]</span>
     <span class="nc">End</span></code></pre></figure>
 
+<h6 id="examples">Examples:</h6>
+
+<p>Closure-70</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="n">jsDocParameter</span><span class="o">.</span><span class="na">getJSType</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span>
+
+ <span class="o">+</span> <span class="n">jsDocParameter</span><span class="o">.</span><span class="na">getJSType</span><span class="o">(),</span> <span class="kc">false</span><span class="o">);</span></code></pre></figure>
+
 <p>Bug: <a href="https://github.com/google/closure-compiler/compare/7433d30ac4cb2334d22e66299846118686efe939...ec4a34c2bd87ba54fa8770affdeeea4f3c42089b">70</a>, Project: <a href="https://github.com/google/closure-compiler">Closure</a></p>
 
 <p>Codec-7</p>
@@ -88,34 +202,31 @@
 
  <span class="o">+</span> <span class="k">return</span> <span class="nc">StringUtils</span><span class="o">.</span><span class="na">newStringUtf8</span><span class="o">(</span><span class="n">encodeBase64</span><span class="o">(</span><span class="n">binaryData</span><span class="o">,</span> <span class="kc">false</span><span class="o">));</span></code></pre></figure>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">pattern</span> <span class="no">TEMP</span> <span class="k">for</span>
+<p>Bug: <a href="https://github.com/apache/commons-codec/compare/f7966c1b374ebdd3fccb28370d9cb80a2115d807...954d995c5603b616c3c4a9ffb1823f36dd7ebcb0">7</a>, Project: <a href="https://github.com/apache/commons-codec">Codec</a></p>
+
+<h3 id="51-boolflipfarg-function-argument-is-true-should-be-false-1">5.1. BOOLFLIP/FARG: function argument is True, should be False</h3>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nl">Buggy:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">True</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span>
+ <span class="nl">Fixed:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">False</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pattern</span> <span class="no">TEMP</span> <span class="k">for</span>
         <span class="nl">c:</span> <span class="n">call</span>
     <span class="n">with</span>
         <span class="nl">b:</span> <span class="no">BOOLEAN</span>
     <span class="n">where</span>
         <span class="n">b</span> <span class="err">∈</span> <span class="n">c</span><span class="o">.</span><span class="na">args</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="nc">True</span> 
+        <span class="n">b</span> <span class="o">=</span> <span class="nc">True</span>
     <span class="n">fix</span>
         <span class="n">c</span> <span class="o">[</span><span class="n">b</span> <span class="err">←</span> <span class="nc">False</span><span class="o">]</span>
-    <span class="nc">End</span></code></pre></figure>
+    <span class="nc">End</span>
+</code></pre></div></div>
 
-<p>Bug: <a href="https://github.com/apache/commons-codec/compare/f7966c1b374ebdd3fccb28370d9cb80a2115d807...954d995c5603b616c3c4a9ffb1823f36dd7ebcb0">7</a>, Project: <a href="https://github.com/apache/commons-codec">Codec</a></p>
+<h6 id="examples-1">Examples:</h6>
 
 <h3 id="52-boolflipfarg-function-result-is-false-should-be-true">5.2. BOOLFLIP/FARG: function result is False, should be True</h3>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="nl">Buggy:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">False</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span>
  <span class="nl">Fixed:</span> <span class="n">func</span><span class="o">(</span><span class="n">listArg1</span><span class="o">,</span> <span class="nc">True</span><span class="o">,</span> <span class="n">listArg2</span><span class="o">)</span></code></pre></figure>
-
-<h6 id="examples-1">Examples:</h6>
-
-<p>Closure-40</p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="nc">JsName</span> <span class="n">name</span> <span class="o">=</span> <span class="n">getName</span><span class="o">(</span><span class="n">ns</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
- <span class="o">-</span> <span class="k">if</span> <span class="o">(</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-
- <span class="o">+</span> <span class="nc">JsName</span> <span class="n">name</span> <span class="o">=</span> <span class="n">getName</span><span class="o">(</span><span class="n">ns</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span> 
-
- <span class="o">-</span> <span class="o">}</span></code></pre></figure>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">pattern</span> <span class="no">TEMP</span> <span class="k">for</span>
         <span class="nl">c:</span> <span class="n">call</span>
@@ -128,20 +239,23 @@
         <span class="n">c</span> <span class="o">[</span><span class="n">b</span> <span class="err">←</span> <span class="nc">True</span><span class="o">]</span>
     <span class="nc">End</span></code></pre></figure>
 
+<h6 id="examples-2">Examples:</h6>
+
+<p>Closure-40</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="nc">JsName</span> <span class="n">name</span> <span class="o">=</span> <span class="n">getName</span><span class="o">(</span><span class="n">ns</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+ <span class="o">-</span> <span class="k">if</span> <span class="o">(</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+
+ <span class="o">+</span> <span class="nc">JsName</span> <span class="n">name</span> <span class="o">=</span> <span class="n">getName</span><span class="o">(</span><span class="n">ns</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span> 
+
+ <span class="o">-</span> <span class="o">}</span></code></pre></figure>
+
 <p>Bug: <a href="https://github.com/google/closure-compiler/compare/a90f4b4fba37c52376d5f074729233d59ce08408...6ebc0c3d7d4da7d2cf95f53d4ea790e89d3abc7a">40</a>, Project: <a href="https://github.com/google/closure-compiler/">Closure</a></p>
 
 <h3 id="53-boolflipfres-function-result-is-false-should-be-true">5.3. BOOLFLIP/FRES: function result is False, should be True</h3>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="nl">Buggy:</span> <span class="k">return</span> <span class="kc">true</span>
  <span class="nl">Fixed:</span> <span class="k">return</span> <span class="kc">false</span></code></pre></figure>
-
-<h6 id="examples-2">Examples:</h6>
-
-<p>Closure-86</p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-
- <span class="o">+</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span></code></pre></figure>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">pattern</span> <span class="no">FRES</span> <span class="k">for</span>
         <span class="nl">r:</span> <span class="no">RETURN_STATEMENT</span>
@@ -153,6 +267,14 @@
     <span class="n">fix</span>
         <span class="n">r</span> <span class="o">[</span><span class="n">b</span> <span class="err">←</span> <span class="kc">false</span><span class="o">]</span>
     <span class="nc">End</span></code></pre></figure>
+
+<h6 id="examples-3">Examples:</h6>
+
+<p>Closure-86</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="o">-</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+
+ <span class="o">+</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span></code></pre></figure>
 
 <p>Bug: <a href="https://github.com/google/closure-compiler/compare/5cd9c1efe90dc7c1be33cd7f8c1dcbaa9225909e...0907b6618a60b2de23c8f7ec2217a37dc5e9a091">86</a>, Project: <a href="https://github.com/google/closure-compiler">Closure</a></p>
 
@@ -169,7 +291,7 @@
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         
-        <p class="copyright">Low hanging bug/fixes patterns maintained by <a href="https://github.com/Viktoryiaa">Viktoryiaa</a></p>
+        <p class="copyright">Patterns_Site maintained by <a href="https://github.com/Viktoryiaa">Viktoryiaa</a></p>
         
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
