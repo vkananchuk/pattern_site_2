@@ -12,7 +12,7 @@ module Jekyll
       collection:
     )
       # super(site, site.source, dir, key + output_ext)
-      super(key + output_ext, site:, collection:)
+      super("#{key}#{output_ext}", site:, collection:)
 
       @output_ext = output_ext
       @collection = collection
@@ -43,6 +43,23 @@ module Jekyll
     def write?
       true
     end
+  end
+
+  class KindsDataGenerator < Generator
+    def generate(site)
+      site.data['kinds'] = site.data['constructs']
+        .flat_map { |k, v| v['kinds'] }
+        .to_h { |kind| [kind, {}] }
+    end
+
+    def <=>(other)
+      if other.is_a?(DataBasePageGenerator)
+        1
+      else
+        super
+      end
+    end
+
   end
 
   class DataBasedPageGenerator < Generator
@@ -81,6 +98,14 @@ module Jekyll
             k
           )
         end
+      end
+    end
+
+    def <=>(other)
+      if other.is_a?(KindsDataGenerator)
+        -1
+      else
+        super
       end
     end
   end

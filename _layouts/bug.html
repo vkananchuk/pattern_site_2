@@ -6,7 +6,14 @@ layout: default
 <h2>Parameters:</h2>
 <ul>
   {% for p in page.data_value.parameters %}
-    <li>{{ p.first }}: {{ p.last }}</li>
+    <li>{{ p.first }}:
+      {% assign type = p.last | find_in_collection: 'constructs' %}
+      {% if type %}
+        <a href="{{ type.url | absolute_url }}">{{ p.last }}</a>
+      {% else %}
+        {{ p.last }} (not found)
+      {% endif %}
+    </li>
   {% endfor %}
 </ul>
 
