@@ -49,6 +49,7 @@ module Jekyll
     def generate(site)
       site.data['kinds'] = site.data['constructs']
         .flat_map { |k, v| v['kinds'] }
+        .compact
         .to_h { |kind| [kind, {}] }
     end
 
@@ -116,7 +117,15 @@ module Jekyll
     end
 
     def page_url(input)
-      input.url
+      input&.url
+    end
+
+    def dig(input, path)
+      res = input
+      path.split('.').each do |k|
+        res = res[k] if res
+      end
+      res
     end
   end
 end

@@ -1,0 +1,19 @@
+{% assign features = page | dig: include.features_page_key %}
+<ul>
+  {% for f in features %}
+    <li>{{ f.first }}:
+      {% assign type = f.last.type | find_in_collection: 'constructs' %}
+      {% unless type %}
+        {% assign type = f.last.type | find_in_collection: 'kinds' %}
+      {% endunless %}
+      {% if type %}
+        <a href="{{ type.url | absolute_url }}">{{ type.data_key }}</a>
+      {% else %}
+        {{ f.last.type }} (not found)
+      {% endif %}
+      {% unless f.last.count == 1 %}
+        {{ f.last.count }}
+      {% endunless %}
+    </li>
+  {% endfor %}
+</ul>
