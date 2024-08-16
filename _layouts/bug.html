@@ -6,7 +6,14 @@ layout: default
 <h2>Parameters:</h2>
 <ul>
   {% for p in page.data_value.parameters %}
-    <li>{{ p.first }}: {{ p.last }}</li>
+    <li>{{ p.first }}:
+      {% assign type = p.last | find_in_collection: 'constructs' %}
+      {% if type %}
+        <a href="{{ type.url | absolute_url }}">{{ p.last }}</a>
+      {% else %}
+        {{ p.last }} (not found)
+      {% endif %}
+    </li>
   {% endfor %}
 </ul>
 
@@ -16,8 +23,7 @@ layout: default
 {% endhighlight %}
 
 <h3>Fixes of this bug:</h3>
-{% assign fixes = site.pages
-| where: 'type', 'fix'
+{% assign fixes = site.fixes
 | where: 'data_value.bug', page.data_key %}
 <ul>
 {% for f in fixes %}
@@ -25,8 +31,6 @@ layout: default
 {% endfor %}
 </ul>
 
-{% assign json = site.pages
-| where: 'type', 'bug_json'
-| where: 'title', page.title
-| first %}
-<a href="{{ json.url | absolute_url }}">Raw json</a>
+<a href="{{ page.data_key | find_in_collection: 'json_bugs' | page_url | absolute_url }}">
+  Raw json
+</a>

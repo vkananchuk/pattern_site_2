@@ -4,8 +4,7 @@ layout: default
 <h1>{{ page.data_key }}</h1>
 
 <h2>Fix for bug:</h2>
-{% assign bug = site.pages
-| where: 'type', 'bug'
+{% assign bug = site.bugs
 | where: 'title', page.data_value.bug
 | first %}
 <a href="{{ bug.url | absolute_url }}">{{ bug.title }}</a>
@@ -23,8 +22,7 @@ layout: default
 {% endhighlight %}
 
 <h3>Examples of this fix:</h3>
-{% assign examples = site.pages
-| where: 'type', 'example'
+{% assign examples = site.examples
 | where: 'data_value.fix', page.data_key
 %}
 <ul>
@@ -33,8 +31,6 @@ layout: default
 {% endfor %}
 </ul>
 
-{% assign json = site.pages
-| where: 'type', 'fix_json'
-| where: 'title', page.title
-| first %}
-<a href="{{ json.url | absolute_url }}">Raw json</a>
+<a href="{{ page.data_key | find_in_collection: 'json_fixes' | page_url | absolute_url }}">
+  Raw json
+</a>

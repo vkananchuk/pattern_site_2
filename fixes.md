@@ -2,7 +2,6 @@
 layout: default
 ---
 List of fixes:
-{% assign fixes = site.pages | where: 'type', 'fix' %}
-{% for f in fixes %}
+{% for f in site.fixes %}
 * [{{ f.title }}]({{ f.url | relative_url }})
 {% endfor %}

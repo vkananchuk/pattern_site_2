@@ -1,0 +1,32 @@
+---
+layout: default
+---
+<h1>{{ page.data_key }}</h1>
+
+<h2>Kinds:</h2>
+<ul>
+  {% for k in page.data_value.kinds %}
+    <li>
+      {% assign kind = k | find_in_collection: 'kinds' %}
+      <a href="{{ kind.url | absolute_url }}">{{ k }}</a>
+    </li>
+  {% endfor %}
+</ul>
+
+<h2>Features:</h2>
+<ul>
+  {% for f in page.data_value.features %}
+    <li>{{ f.first }}:
+      {% assign type = f.last.type | find_in_collection: 'constructs' %}
+      {% if type %}
+        <a href="{{ type.url | absolute_url }}">{{ f.last }}</a>
+      {% else %}
+        {{ f.last.type }} (not found)
+      {% endif %}
+      {% unless f.last.count == 1 %}
+        {{ f.last.count }}
+      {% endunless %}
+
+    </li>
+  {% endfor %}
+</ul>
