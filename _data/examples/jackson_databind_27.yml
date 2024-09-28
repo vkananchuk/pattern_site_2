@@ -1,0 +1,18 @@
+link_diff: https://github.com/FasterXML/jackson-databind/compare/d485ea7da49ed949c81f23513d01d67e170d2a1b..f2f611e701c63c8e98e59f315641bd2bf2921aea
+language: java
+hunk: |
+  diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+  index d0b6d7e95f..23d989e83d 100644
+  --- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+  +++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+  @@ -789,7 +789,9 @@ protected Object deserializeUsingPropertyBasedWithExternalTypeId(JsonParser p, D
+               SettableBeanProperty creatorProp = creator.findCreatorProperty(propName);
+               if (creatorProp != null) {
+                   // first: let's check to see if this might be part of value with external type id:
+  -                if (ext.handlePropertyValue(p, ctxt, propName, buffer)) {
+  +                // 11-Sep-2015, tatu: Important; do NOT pass buffer as last arg, but null,
+  +                //   since it is not the bean
+  +                if (ext.handlePropertyValue(p, ctxt, propName, null)) {
+                       ;
+                   } else {
+                       // Last creator property to set?

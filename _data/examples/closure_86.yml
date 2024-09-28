@@ -1,0 +1,19 @@
+link_diff: https://github.com/google/closure-compiler/compare/5cd9c1efe90dc7c1be33cd7f8c1dcbaa9225909e..0907b6618a60b2de23c8f7ec2217a37dc5e9a091
+language: java
+hunk: |
+  diff --git a/src/com/google/javascript/jscomp/NodeUtil.java b/src/com/google/javascript/jscomp/NodeUtil.java
+  index 5262f2d6a03..9049aae77c3 100644
+  --- a/src/com/google/javascript/jscomp/NodeUtil.java
+  +++ b/src/com/google/javascript/jscomp/NodeUtil.java
+  @@ -2459,7 +2459,10 @@ static boolean evaluatesToLocalValue(Node value, Predicate<Node> locals) {
+               || isToStringMethodCall(value)
+               || locals.apply(value);
+         case Token.NEW:
+  -        return true;
+  +        // TODO(nicksantos): This needs to be changed so that it
+  +        // returns true iff we're sure the value was never aliased from inside
+  +        // the constructor (similar to callHasLocalResult)
+  +        return false;
+         case Token.FUNCTION:
+         case Token.REGEXP:
+         case Token.ARRAYLIT:
