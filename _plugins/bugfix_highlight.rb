@@ -13,6 +13,10 @@ module Jekyll
       HTML
     end
 
+    def bugfix_parse(text)
+      Bugfix.parse(text)
+    end
+
     def bugfix_highlight_inner(ast, indent)
       result = ''
       return result unless ast

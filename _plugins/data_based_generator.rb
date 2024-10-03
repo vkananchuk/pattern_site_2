@@ -4,14 +4,12 @@ module Jekyll
   class DataBasedPage < Document
     def initialize(
       site,
-      dir,
       key,
       value,
       front_matter:,
       output_ext:,
       collection:
     )
-      # super(site, site.source, dir, key + output_ext)
       super("#{key}#{output_ext}", site:, collection:)
 
       @output_ext = output_ext
@@ -27,6 +25,11 @@ module Jekyll
   end
 
   class DataBasedCollection < Collection
+    def initialize(site, label, metadata)
+      super(site, label)
+      @metadata = metadata
+    end
+
     def add_page(p, key)
       mapping[key] = p
       docs << p
@@ -72,11 +75,10 @@ module Jekyll
       return unless cols
 
       cols.each do |col_key, col|
-        collection = DataBasedCollection.new(site, col_key)
+        collection = DataBasedCollection.new(site, col_key, col)
         site.collections[col_key] = collection
 
         path = col.fetch('path', col_key)
-        dir = col.fetch('dir', col_key)
         front_matter = col['front-matter']
         output_ext = col.fetch('output-ext', '.html')
 
@@ -89,7 +91,6 @@ module Jekyll
           collection.add_page(
             DataBasedPage.new(
               site,
-              dir,
               k,
               v,
               front_matter:,
