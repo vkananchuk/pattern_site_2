@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-List of language elements:
+List of languages:
 {% for l in site.languages %}
 * [{{ l.title }}]({{ l.url | relative_url }})
 {% endfor %}

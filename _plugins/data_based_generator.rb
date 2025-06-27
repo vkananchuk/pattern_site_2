@@ -82,7 +82,7 @@ module Jekyll
         front_matter = col['front-matter']
         output_ext = col.fetch('output-ext', '.html')
 
-        data = site.data.dig(path)
+        data = site.data.dig(*Array(path))
 
         # Make hash from array with 1-based indices as keys
         data = Hash[(1...data.size).zip(data)] if data.is_a?(Array)
