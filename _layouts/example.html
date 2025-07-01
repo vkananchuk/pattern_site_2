@@ -3,13 +3,16 @@ layout: default
 ---
 <h1>Example: {{ page.data_key }}</h1>
 
-<h2>Link to fix commit:</h2>
-<a href="{{ page.data_value.link_diff }}">{{ page.data_value.link_diff }}</a>
-
 <h2>Language:</h2>
-{{ page.data_value.language }}
+{% assign lang = page.data_value.language | find_in_collection: 'languages' %}
+<a href="{{ lang.url | relative_url }}">{{ lang.title }}</a>
 
-<h2>Hunk:</h2>
+<h2>Text diff</h2>
 {% highlight diff %}
-{{ page.data_value.hunk }}
+{{ page.data_value.text_diff }}
 {% endhighlight %}
+
+<h2>Tree diff</h2>
+<pre>
+{{ page.data_value.tree_diff }}
+</pre>
