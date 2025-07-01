@@ -1,6 +1,10 @@
 require "minitest/test_task"
 require 'yaml'
 require 'rake/clean'
+require 'tempfile'
+require 'open3'
+
+require_relative './lib/translator.rb'
 
 Minitest::TestTask.create
 
@@ -19,13 +23,29 @@ namespace :examples do
   def print_example_yml(name, language, before, after)
     text_diff = `diff -u -Lbefore -Lafter #{before} #{after}`
 
-    language = language.to_s
+    tree_diff = nil
+    Tempfile.create do |xml_before|
+      Tempfile.create do |xml_after|
+        out, err, status = Open3.capture3("bundle exec rake translate:#{language}[#{before}] > #{xml_before.path}")
+        unless status.success?
+          puts "ERROR translating #{before}"
+          next
+        end
 
-    tree_generator = language == 'java' ? 'java-treesitter-ng' : 'python-treesitter-ng'
-    tree_diff = `gumtree cluster -g #{tree_generator} #{before} #{after}`
+        out, err, status = Open3.capture3("bundle exec rake translate:#{language}[#{after}] > #{xml_after.path}")
+        unless status.success?
+          puts "ERROR translating #{after}"
+          next
+        end
+
+        tree_diff = `gumtree cluster -g xml #{xml_before.path} #{xml_after.path}`
+      end
+    end
+
+    return unless tree_diff
 
     yaml = {
-      language: language,
+      language: language.to_s,
       text_diff:,
       tree_diff:
     }
@@ -67,7 +87,6 @@ namespace :examples do
       QB_JAVA_PROGRAMS.pathmap('_data/examples/quixbugs_java_%n.yml') \
       + QB_PYTHON_PROGRAMS.pathmap('_data/examples/quixbugs_python_%n.yml')
 
-
     task generate: ['_data/examples', *QB_EXAMPLE_DATA]
 
     rule(/_data\/examples\/quixbugs_.*.yml/) do |t|
@@ -88,10 +107,19 @@ namespace :examples do
   end
 end
 
-namespace :generate do
+namespace :translate do
+  desc 'Compile the translation grammar'
+  task :compile do
+    `cd tree-sitter-bugfix/bugfix-translation && tree-sitter generate && make all`
+  end
 
+  desc 'Print the Gumtree XML for the given Java file'
+  task :java, [:name] do |t, args|
+    puts Translator.new.translate(:java, args[:name]).to_xml
+  end
 
-  task :examples do
-
+  desc 'Print the Gumtree XML for given Python file'
+  task :python, [:name] do |t, args|
+    puts Translator.new.translate(:python, args[:name]).to_xml
   end
 end
