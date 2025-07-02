@@ -75,12 +75,6 @@ namespace :examples do
   end
 
   namespace :quixbugs do
-    CLOBBER.include('inputs/quixbugs')
-    task download: 'inputs' do
-      `git clone git@github.com:jkoppel/QuixBugs.git inputs/quixbugs`
-    end
-
-
     QB_JAVA_PROGRAMS = FileList['inputs/quixbugs/java_programs/*.java']
     QB_PYTHON_PROGRAMS = FileList['inputs/quixbugs/python_programs/*.py'].exclude('**/*_test.py')
     QB_EXAMPLE_DATA = \
