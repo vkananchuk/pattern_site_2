@@ -1,0 +1,165 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -175,7 +175,6 @@\n      * This is the name of
+  the property that can point to other\n      * properties file for including other
+  properties files.\n      */\n-    private String includePropertyName = null;\n \n
+  \    /**\n      * This is the default name of the property that can point to other\n@@
+  -511,13 +510,7 @@\n      * @return the property name which includes another property\n
+  \     */\n     public String getInclude() {\n-        if (includePropertyName ==
+  null) {\n             return include;  // backwards compatability\n-        }\n-
+  \       if (\"\".equals(includePropertyName)) {\n-            return null;  // hack
+  to allow backwards compatability\n-        }\n-        return includePropertyName;\n
+  \    }\n \n     /**\n@@ -532,10 +525,7 @@\n      * @param inc  the property name
+  which includes another property, empty converted to null\n      */\n     public
+  void setInclude(String inc) {\n-        if (inc == null) {\n-            inc = \"\";
+  \ // hack to allow backwards compatability\n-        }\n-        includePropertyName
+  = inc;\n+        include = inc;\n     }\n \n     /**\n@@ -579,7 +569,6 @@\n         }\n
+  \n         try {\n-            String includeProperty = getInclude();\n             while
+  (true) {\n                 String line = reader.readProperty();\n                 if
+  (line == null) {\n@@ -596,7 +585,7 @@\n                         continue;\n                     }\n
+  \n-                    if (includeProperty != null && key.equalsIgnoreCase(includeProperty))
+  {\n+                    if (getInclude() != null && key.equalsIgnoreCase(getInclude()))
+  {\n                         // Recursively load properties files.\n                         File
+  file = null;\n \n"
+tree_diff: "New cluster:\n===\ninsert-node\n---\nmethod_declaration [17083,17173]\nto\nclass_body
+  [5053,58391]\nat 22\n------------\n===\ninsert-node\n---\nmethod_parameters [17083,17173]\nto\nmethod_declaration
+  [17083,17173]\nat 1\n===\ninsert-node\n---\nidentifier: getInclude [17097,17107]\nto\nmethod_declaration
+  [17083,17173]\nat 0\n===\ninsert-node\n---\nmethod_declaration [17083,17173]\nto\nclass_body
+  [5053,58391]\nat 22\n\nNew cluster:\n===\ninsert-node\n---\nmethod_declaration [17668,17733]\nto\nclass_body
+  [5053,58391]\nat 23\n------------\n===\ninsert-node\n---\nidentifier: setInclude
+  [17680,17690]\nto\nmethod_declaration [17668,17733]\nat 0\n===\ninsert-node\n---\nmethod_declaration
+  [17668,17733]\nto\nclass_body [5053,58391]\nat 23\n\nNew cluster:\nMOVE from method_declaration
+  [17083,17173]\n------------\n===\nmove-tree\n---\nblock [17200,17267]\n    return_statement:
+  return include; [17214,17229]\nto\nmethod_declaration [17083,17173]\nat 2\n\nNew
+  cluster:\nMOVE from method_declaration [17668,17733]\n------------\n===\nmove-tree\n---\nmethod_parameters
+  [17927,18105]\n    formal_parameter: String inc [17950,17960]\nto\nmethod_declaration
+  [17668,17733]\nat 1\n\nNew cluster:\nUnknown cluster type\n------------\n===\ninsert-tree\n---\nblock
+  [17703,17733]\n    expression_statement: include = inc; [17713,17727]\nto\nmethod_declaration
+  [17668,17733]\nat 2\n\nNew cluster:\nUPDATE from while (true) {\n                String
+  line = reader.readProperty();\n                if (line == null) {\n                    return;
+  \ // EOF\n                }\n                int equalSign = line.indexOf('=');\n\n
+  \               if (equalSign > 0) {\n                    String key = line.substring(0,
+  equalSign).trim();\n                    String value = line.substring(equalSign
+  + 1).trim();\n\n                    // Configure produces lines like this ... just
+  ignore them\n                    if (\"\".equals(value)) {\n                        continue;\n
+  \                   }\n\n                    if (includeProperty != null && key.equalsIgnoreCase(includeProperty))
+  {\n                        // Recursively load properties files.\n                        File
+  file = null;\n\n                        if (value.startsWith(fileSeparator)) {\n
+  \                           // We have an absolute path so we'll use this\n                            file
+  = new File(value);\n                            \n                        } else
+  {\n                            // We have a relative path, and we have two \n                            //
+  possible forms here. If we have the \"./\" form\n                            //
+  then just strip that off first before continuing.\n                            if
+  (value.startsWith(\".\" + fileSeparator)) {\n                                value
+  = value.substring(2);\n                            }\n\n                            file
+  = new File(basePath + value);\n                        }\n\n                        if
+  (file != null && file.exists() && file.canRead()) {\n                            load(new
+  FileInputStream(file));\n                        }\n                    } else {\n
+  \                       addProperty(key, value);\n                    }\n                }\n
+  \           } to while (true) {\n                String line = reader.readProperty();\n
+  \               if (line == null) {\n                    return;  // EOF\n                }\n
+  \               int equalSign = line.indexOf('=');\n\n                if (equalSign
+  > 0) {\n                    String key = line.substring(0, equalSign).trim();\n
+  \                   String value = line.substring(equalSign + 1).trim();\n\n                    //
+  Configure produces lines like this ... just ignore them\n                    if
+  (\"\".equals(value)) {\n                        continue;\n                    }\n\n
+  \                   if (getInclude() != null && key.equalsIgnoreCase(getInclude()))
+  {\n                        // Recursively load properties files.\n                        File
+  file = null;\n\n                        if (value.startsWith(fileSeparator)) {\n
+  \                           // We have an absolute path so we'll use this\n                            file
+  = new File(value);\n                            \n                        } else
+  {\n                            // We have a relative path, and we have two \n                            //
+  possible forms here. If we have the \"./\" form\n                            //
+  then just strip that off first before continuing.\n                            if
+  (value.startsWith(\".\" + fileSeparator)) {\n                                value
+  = value.substring(2);\n                            }\n\n                            file
+  = new File(basePath + value);\n                        }\n\n                        if
+  (file != null && file.exists() && file.canRead()) {\n                            load(new
+  FileInputStream(file));\n                        }\n                    } else {\n
+  \                       addProperty(key, value);\n                    }\n                }\n
+  \           }\n------------\n===\nupdate-node\n---\nwhile_statement: while (true)
+  {\n                String line = reader.readProperty();\n                if (line
+  == null) {\n                    return;  // EOF\n                }\n                int
+  equalSign = line.indexOf('=');\n\n                if (equalSign > 0) {\n                    String
+  key = line.substring(0, equalSign).trim();\n                    String value = line.substring(equalSign
+  + 1).trim();\n\n                    // Configure produces lines like this ... just
+  ignore them\n                    if (\"\".equals(value)) {\n                        continue;\n
+  \                   }\n\n                    if (includeProperty != null && key.equalsIgnoreCase(includeProperty))
+  {\n                        // Recursively load properties files.\n                        File
+  file = null;\n\n                        if (value.startsWith(fileSeparator)) {\n
+  \                           // We have an absolute path so we'll use this\n                            file
+  = new File(value);\n                            \n                        } else
+  {\n                            // We have a relative path, and we have two \n                            //
+  possible forms here. If we have the \"./\" form\n                            //
+  then just strip that off first before continuing.\n                            if
+  (value.startsWith(\".\" + fileSeparator)) {\n                                value
+  = value.substring(2);\n                            }\n\n                            file
+  = new File(basePath + value);\n                        }\n\n                        if
+  (file != null && file.exists() && file.canRead()) {\n                            load(new
+  FileInputStream(file));\n                        }\n                    } else {\n
+  \                       addProperty(key, value);\n                    }\n                }\n
+  \           } [19577,21378]\nreplace while (true) {\n                String line
+  = reader.readProperty();\n                if (line == null) {\n                    return;
+  \ // EOF\n                }\n                int equalSign = line.indexOf('=');\n\n
+  \               if (equalSign > 0) {\n                    String key = line.substring(0,
+  equalSign).trim();\n                    String value = line.substring(equalSign
+  + 1).trim();\n\n                    // Configure produces lines like this ... just
+  ignore them\n                    if (\"\".equals(value)) {\n                        continue;\n
+  \                   }\n\n                    if (includeProperty != null && key.equalsIgnoreCase(includeProperty))
+  {\n                        // Recursively load properties files.\n                        File
+  file = null;\n\n                        if (value.startsWith(fileSeparator)) {\n
+  \                           // We have an absolute path so we'll use this\n                            file
+  = new File(value);\n                            \n                        } else
+  {\n                            // We have a relative path, and we have two \n                            //
+  possible forms here. If we have the \"./\" form\n                            //
+  then just strip that off first before continuing.\n                            if
+  (value.startsWith(\".\" + fileSeparator)) {\n                                value
+  = value.substring(2);\n                            }\n\n                            file
+  = new File(basePath + value);\n                        }\n\n                        if
+  (file != null && file.exists() && file.canRead()) {\n                            load(new
+  FileInputStream(file));\n                        }\n                    } else {\n
+  \                       addProperty(key, value);\n                    }\n                }\n
+  \           } by while (true) {\n                String line = reader.readProperty();\n
+  \               if (line == null) {\n                    return;  // EOF\n                }\n
+  \               int equalSign = line.indexOf('=');\n\n                if (equalSign
+  > 0) {\n                    String key = line.substring(0, equalSign).trim();\n
+  \                   String value = line.substring(equalSign + 1).trim();\n\n                    //
+  Configure produces lines like this ... just ignore them\n                    if
+  (\"\".equals(value)) {\n                        continue;\n                    }\n\n
+  \                   if (getInclude() != null && key.equalsIgnoreCase(getInclude()))
+  {\n                        // Recursively load properties files.\n                        File
+  file = null;\n\n                        if (value.startsWith(fileSeparator)) {\n
+  \                           // We have an absolute path so we'll use this\n                            file
+  = new File(value);\n                            \n                        } else
+  {\n                            // We have a relative path, and we have two \n                            //
+  possible forms here. If we have the \"./\" form\n                            //
+  then just strip that off first before continuing.\n                            if
+  (value.startsWith(\".\" + fileSeparator)) {\n                                value
+  = value.substring(2);\n                            }\n\n                            file
+  = new File(basePath + value);\n                        }\n\n                        if
+  (file != null && file.exists() && file.canRead()) {\n                            load(new
+  FileInputStream(file));\n                        }\n                    } else {\n
+  \                       addProperty(key, value);\n                    }\n                }\n
+  \           }\n\nNew cluster:\n===\ndelete-node\n---\nfield_declaration: private
+  String includePropertyName = null; [5871,5913]\n===\n------------\n===\ndelete-node\n---\nfield_declaration:
+  private String includePropertyName = null; [5871,5913]\n===\n\nNew cluster:\n===\ndelete-node\n---\nmethod_declaration
+  [17130,17432]\n===\n------------\n===\ndelete-node\n---\nidentifier: getInclude
+  [17144,17154]\n===\n===\ndelete-node\n---\nmethod_parameters [17130,17432]\n===\n===\ndelete-node\n---\nif_statement
+  [17167,17267]\n===\n===\ndelete-node\n---\nmethod_declaration [17130,17432]\n===\n===\ndelete-node\n---\nblock
+  [17157,17432]\n===\n===\ndelete-node\n---\nreturn_statement: return includePropertyName;
+  [17399,17426]\n===\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nparenthesized_expression
+  [17170,17199]\n    equals [17171,17198]\n        identifier: includePropertyName
+  [17171,17190]\n        null_literal [17194,17198]\n\nNew cluster:\nUnknown cluster
+  type\n------------\n===\ndelete-tree\n---\nif_statement [17276,17390]\n    parenthesized_expression
+  [17279,17311]\n        method_invocation: \"\".equals(includePropertyName) [17280,17310]\n
+  \   block [17312,17390]\n        return_statement: return null; [17326,17338]\n\nNew
+  cluster:\n===\ndelete-node\n---\nmethod_declaration [17927,18105]\n===\n------------\n===\ndelete-node\n---\nidentifier:
+  setInclude [17939,17949]\n===\n===\ndelete-node\n---\nmethod_declaration [17927,18105]\n===\n\nNew
+  cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nblock [17962,18105]\n
+  \   if_statement [17972,18064]\n        parenthesized_expression [17975,17988]\n
+  \           equals [17976,17987]\n                identifier: inc [17976,17979]\n
+  \               null_literal [17983,17987]\n        block [17989,18064]\n            expression_statement:
+  inc = \"\"; [18003,18012]\n    expression_statement: includePropertyName = inc;
+  [18073,18099]\n\nNew cluster:\n===\ndelete-node\n---\nlocal_variable_declaration:
+  String includeProperty = getInclude(); [19526,19564]\n===\n------------\n===\ndelete-node\n---\nlocal_variable_declaration:
+  String includeProperty = getInclude(); [19526,19564]\n===\n\n"

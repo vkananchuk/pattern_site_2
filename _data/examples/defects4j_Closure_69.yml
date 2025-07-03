@@ -1,0 +1,30 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1577,13 +1577,6 @@\n \n       // Functions
+  with explcit 'this' types must be called in a GETPROP\n       // or GETELEM.\n-
+  \     if (functionType.isOrdinaryFunction() &&\n-          !functionType.getTypeOfThis().isUnknownType()
+  &&\n-          !functionType.getTypeOfThis().isNativeObjectType() &&\n-          !(child.getType()
+  == Token.GETELEM ||\n-            child.getType() == Token.GETPROP)) {\n-        report(t,
+  n, EXPECTED_THIS_TYPE, functionType.toString());\n-      }\n \n       visitParameterList(t,
+  n, functionType);\n       ensureTyped(t, n, functionType.getReturnType());\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [55140,55475]
+      parenthesized_expression [55143,55398]
+          and [55144,55397]
+              and [55144,55300]
+                  and [55144,55236]
+                      method_invocation: functionType.isOrdinaryFunction() [55144,55177]
+                      unary_expression: !functionType.getTypeOfThis().isUnknownType() [55191,55236]
+                  unary_expression: !functionType.getTypeOfThis().isNativeObjectType() [55250,55300]
+              unary_expression: !(child.getType() == Token.GETELEM ||
+              child.getType() == Token.GETPROP) [55314,55397]
+      block [55399,55475]
+          expression_statement: report(t, n, EXPECTED_THIS_TYPE, functionType.toString()); [55409,55467]
+
+...

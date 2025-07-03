@@ -1,0 +1,43 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -821,6 +821,7 @@\n \n         while (true)\n
+  \        {\n+            int lastPos = pos;\n             text = padding + text.substring(pos).trim();\n
+  \            pos = findWrapPos(text, width, 0);\n \n@@ -829,12 +830,10 @@\n                 sb.append(text);\n
+  \n                 return sb;\n-            }\n-            \n-            if (
+  (text.length() > width) && (pos == nextLineTabStop - 1) ) {\n-                sb.append(text);\n-\n-
+  \               return sb;\n+            } else\n+            if (pos == lastPos)\n+
+  \           {\n+                throw new RuntimeException(\"Text too long for line
+  - throwing exception to avoid infinite loop [CLI-162]: \" + text);\n             }\n
+  \n             sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);\n"
+tree_diff: "New cluster:\nUPDATE from while (true)\n        {\n            text =
+  padding + text.substring(pos).trim();\n            pos = findWrapPos(text, width,
+  0);\n\n            if (pos == -1)\n            {\n                sb.append(text);\n\n
+  \               return sb;\n            }\n            \n            if ( (text.length()
+  > width) && (pos == nextLineTabStop - 1) ) {\n                sb.append(text);\n\n
+  \               return sb;\n            }\n\n            sb.append(rtrim(text.substring(0,
+  pos))).append(defaultNewLine);\n        } to while (true)\n        {\n            int
+  lastPos = pos;\n            text = padding + text.substring(pos).trim();\n            pos
+  = findWrapPos(text, width, 0);\n\n            if (pos == -1)\n            {\n                sb.append(text);\n\n
+  \               return sb;\n            } else\n            if (pos == lastPos)\n
+  \           {\n                throw new RuntimeException(\"Text too long for line
+  - throwing exception to avoid infinite loop [CLI-162]: \" + text);\n            }\n\n
+  \           sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);\n        }\n------------\n===\nupdate-node\n---\nwhile_statement:
+  while (true)\n        {\n            text = padding + text.substring(pos).trim();\n
+  \           pos = findWrapPos(text, width, 0);\n\n            if (pos == -1)\n            {\n
+  \               sb.append(text);\n\n                return sb;\n            }\n
+  \           \n            if ( (text.length() > width) && (pos == nextLineTabStop
+  - 1) ) {\n                sb.append(text);\n\n                return sb;\n            }\n\n
+  \           sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);\n        }
+  [25259,25755]\nreplace while (true)\n        {\n            text = padding + text.substring(pos).trim();\n
+  \           pos = findWrapPos(text, width, 0);\n\n            if (pos == -1)\n            {\n
+  \               sb.append(text);\n\n                return sb;\n            }\n
+  \           \n            if ( (text.length() > width) && (pos == nextLineTabStop
+  - 1) ) {\n                sb.append(text);\n\n                return sb;\n            }\n\n
+  \           sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);\n        }
+  by while (true)\n        {\n            int lastPos = pos;\n            text = padding
+  + text.substring(pos).trim();\n            pos = findWrapPos(text, width, 0);\n\n
+  \           if (pos == -1)\n            {\n                sb.append(text);\n\n
+  \               return sb;\n            } else\n            if (pos == lastPos)\n
+  \           {\n                throw new RuntimeException(\"Text too long for line
+  - throwing exception to avoid infinite loop [CLI-162]: \" + text);\n            }\n\n
+  \           sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);\n        }\n\n"

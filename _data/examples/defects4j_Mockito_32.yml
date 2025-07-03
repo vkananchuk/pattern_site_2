@@ -1,0 +1,111 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -16,7 +16,6 @@\n import org.mockito.exceptions.base.MockitoException;\r\n
+  import org.mockito.internal.util.MockUtil;\r\n \r\n-import static org.mockito.Mockito.withSettings;\r\n
+  \r\n @SuppressWarnings({\"unchecked\"})\r\n public class SpyAnnotationEngine implements
+  AnnotationEngine {\r\n@@ -47,10 +46,7 @@\n                         // instance has
+  been spied earlier\r\n                         Mockito.reset(instance);\r\n                     }
+  else {\r\n-                        field.set(testClass, Mockito.mock(instance.getClass(),
+  withSettings()\r\n-                                .spiedInstance(instance)\r\n-
+  \                               .defaultAnswer(Mockito.CALLS_REAL_METHODS)\r\n-
+  \                               .name(field.getName())));\r\n+                        field.set(testClass,
+  Mockito.spy(instance));\r\n                     }\r\n                 } catch (IllegalAccessException
+  e) {\r\n                     throw new MockitoException(\"Problems initiating spied
+  field \" + field.getName(), e);\r\n"
+tree_diff: "New cluster:\nUPDATE from for (Field field : fields) {\r\n            if
+  (field.isAnnotationPresent(Spy.class)) {\r\n                assertNoAnnotations(Spy.class,
+  field, Mock.class, org.mockito.MockitoAnnotations.Mock.class, Captor.class);\r\n
+  \               boolean wasAccessible = field.isAccessible();\r\n                field.setAccessible(true);\r\n
+  \               try {\r\n                    Object instance = field.get(testClass);\r\n
+  \                   if (instance == null) {\r\n                        throw new
+  MockitoException(\"Cannot create a @Spy for '\" + field.getName() + \"' field because
+  the *instance* is missing\\n\" +\r\n                        \t\t  \"The instance
+  must be created *before* initMocks();\\n\" +\r\n                                  \"Example
+  of correct usage of @Spy:\\n\" +\r\n                            \t  \"   @Spy List
+  mock = new LinkedList();\\n\" +\r\n                            \t  \"   //also,
+  don't forget about MockitoAnnotations.initMocks();\");\r\n\r\n                    }\r\n
+  \                   if (new MockUtil().isMock(instance)) { \r\n                        //
+  instance has been spied earlier\r\n                        Mockito.reset(instance);\r\n
+  \                   } else {\r\n                        field.set(testClass, Mockito.mock(instance.getClass(),
+  withSettings()\r\n                                .spiedInstance(instance)\r\n                                .defaultAnswer(Mockito.CALLS_REAL_METHODS)\r\n
+  \                               .name(field.getName())));\r\n                    }\r\n
+  \               } catch (IllegalAccessException e) {\r\n                    throw
+  new MockitoException(\"Problems initiating spied field \" + field.getName(), e);\r\n
+  \               } finally {\r\n                    field.setAccessible(wasAccessible);\r\n
+  \               }\r\n            }\r\n        } to for (Field field : fields) {\r\n
+  \           if (field.isAnnotationPresent(Spy.class)) {\r\n                assertNoAnnotations(Spy.class,
+  field, Mock.class, org.mockito.MockitoAnnotations.Mock.class, Captor.class);\r\n
+  \               boolean wasAccessible = field.isAccessible();\r\n                field.setAccessible(true);\r\n
+  \               try {\r\n                    Object instance = field.get(testClass);\r\n
+  \                   if (instance == null) {\r\n                        throw new
+  MockitoException(\"Cannot create a @Spy for '\" + field.getName() + \"' field because
+  the *instance* is missing\\n\" +\r\n                        \t\t  \"The instance
+  must be created *before* initMocks();\\n\" +\r\n                                  \"Example
+  of correct usage of @Spy:\\n\" +\r\n                            \t  \"   @Spy List
+  mock = new LinkedList();\\n\" +\r\n                            \t  \"   //also,
+  don't forget about MockitoAnnotations.initMocks();\");\r\n\r\n                    }\r\n
+  \                   if (new MockUtil().isMock(instance)) { \r\n                        //
+  instance has been spied earlier\r\n                        Mockito.reset(instance);\r\n
+  \                   } else {\r\n                        field.set(testClass, Mockito.spy(instance));\r\n
+  \                   }\r\n                } catch (IllegalAccessException e) {\r\n
+  \                   throw new MockitoException(\"Problems initiating spied field
+  \" + field.getName(), e);\r\n                } finally {\r\n                    field.setAccessible(wasAccessible);\r\n
+  \               }\r\n            }\r\n        }\n------------\n===\nupdate-node\n---\nenhanced_for_statement:
+  for (Field field : fields) {\r\n            if (field.isAnnotationPresent(Spy.class))
+  {\r\n                assertNoAnnotations(Spy.class, field, Mock.class, org.mockito.MockitoAnnotations.Mock.class,
+  Captor.class);\r\n                boolean wasAccessible = field.isAccessible();\r\n
+  \               field.setAccessible(true);\r\n                try {\r\n                    Object
+  instance = field.get(testClass);\r\n                    if (instance == null) {\r\n
+  \                       throw new MockitoException(\"Cannot create a @Spy for '\"
+  + field.getName() + \"' field because the *instance* is missing\\n\" +\r\n                        \t\t
+  \ \"The instance must be created *before* initMocks();\\n\" +\r\n                                  \"Example
+  of correct usage of @Spy:\\n\" +\r\n                            \t  \"   @Spy List
+  mock = new LinkedList();\\n\" +\r\n                            \t  \"   //also,
+  don't forget about MockitoAnnotations.initMocks();\");\r\n\r\n                    }\r\n
+  \                   if (new MockUtil().isMock(instance)) { \r\n                        //
+  instance has been spied earlier\r\n                        Mockito.reset(instance);\r\n
+  \                   } else {\r\n                        field.set(testClass, Mockito.mock(instance.getClass(),
+  withSettings()\r\n                                .spiedInstance(instance)\r\n                                .defaultAnswer(Mockito.CALLS_REAL_METHODS)\r\n
+  \                               .name(field.getName())));\r\n                    }\r\n
+  \               } catch (IllegalAccessException e) {\r\n                    throw
+  new MockitoException(\"Problems initiating spied field \" + field.getName(), e);\r\n
+  \               } finally {\r\n                    field.setAccessible(wasAccessible);\r\n
+  \               }\r\n            }\r\n        } [969,2727]\nreplace for (Field field
+  : fields) {\r\n            if (field.isAnnotationPresent(Spy.class)) {\r\n                assertNoAnnotations(Spy.class,
+  field, Mock.class, org.mockito.MockitoAnnotations.Mock.class, Captor.class);\r\n
+  \               boolean wasAccessible = field.isAccessible();\r\n                field.setAccessible(true);\r\n
+  \               try {\r\n                    Object instance = field.get(testClass);\r\n
+  \                   if (instance == null) {\r\n                        throw new
+  MockitoException(\"Cannot create a @Spy for '\" + field.getName() + \"' field because
+  the *instance* is missing\\n\" +\r\n                        \t\t  \"The instance
+  must be created *before* initMocks();\\n\" +\r\n                                  \"Example
+  of correct usage of @Spy:\\n\" +\r\n                            \t  \"   @Spy List
+  mock = new LinkedList();\\n\" +\r\n                            \t  \"   //also,
+  don't forget about MockitoAnnotations.initMocks();\");\r\n\r\n                    }\r\n
+  \                   if (new MockUtil().isMock(instance)) { \r\n                        //
+  instance has been spied earlier\r\n                        Mockito.reset(instance);\r\n
+  \                   } else {\r\n                        field.set(testClass, Mockito.mock(instance.getClass(),
+  withSettings()\r\n                                .spiedInstance(instance)\r\n                                .defaultAnswer(Mockito.CALLS_REAL_METHODS)\r\n
+  \                               .name(field.getName())));\r\n                    }\r\n
+  \               } catch (IllegalAccessException e) {\r\n                    throw
+  new MockitoException(\"Problems initiating spied field \" + field.getName(), e);\r\n
+  \               } finally {\r\n                    field.setAccessible(wasAccessible);\r\n
+  \               }\r\n            }\r\n        } by for (Field field : fields) {\r\n
+  \           if (field.isAnnotationPresent(Spy.class)) {\r\n                assertNoAnnotations(Spy.class,
+  field, Mock.class, org.mockito.MockitoAnnotations.Mock.class, Captor.class);\r\n
+  \               boolean wasAccessible = field.isAccessible();\r\n                field.setAccessible(true);\r\n
+  \               try {\r\n                    Object instance = field.get(testClass);\r\n
+  \                   if (instance == null) {\r\n                        throw new
+  MockitoException(\"Cannot create a @Spy for '\" + field.getName() + \"' field because
+  the *instance* is missing\\n\" +\r\n                        \t\t  \"The instance
+  must be created *before* initMocks();\\n\" +\r\n                                  \"Example
+  of correct usage of @Spy:\\n\" +\r\n                            \t  \"   @Spy List
+  mock = new LinkedList();\\n\" +\r\n                            \t  \"   //also,
+  don't forget about MockitoAnnotations.initMocks();\");\r\n\r\n                    }\r\n
+  \                   if (new MockUtil().isMock(instance)) { \r\n                        //
+  instance has been spied earlier\r\n                        Mockito.reset(instance);\r\n
+  \                   } else {\r\n                        field.set(testClass, Mockito.spy(instance));\r\n
+  \                   }\r\n                } catch (IllegalAccessException e) {\r\n
+  \                   throw new MockitoException(\"Problems initiating spied field
+  \" + field.getName(), e);\r\n                } finally {\r\n                    field.setAccessible(wasAccessible);\r\n
+  \               }\r\n            }\r\n        }\n\n"

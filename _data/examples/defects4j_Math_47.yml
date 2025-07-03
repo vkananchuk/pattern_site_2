@@ -1,0 +1,122 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -79,7 +79,6 @@\n     /** Record whether this
+  complex number is infinite. */\n     private final transient boolean isInfinite;\n
+  \    /** Record whether this complex number is zero. */\n-    private final transient
+  boolean isZero;\n \n     /**\n      * Create a complex number given only the real
+  part.\n@@ -103,7 +102,6 @@\n         isNaN = Double.isNaN(real) || Double.isNaN(imaginary);\n
+  \        isInfinite = !isNaN &&\n             (Double.isInfinite(real) || Double.isInfinite(imaginary));\n-
+  \       isZero = real == 0 && imaginary == 0;\n     }\n \n     /**\n@@ -255,8 +253,8
+  @@\n             return NaN;\n         }\n \n-        if (divisor.isZero) {\n-            return
+  isZero ? NaN : INF;\n+        if (divisor.getReal() == 0.0 && divisor.getImaginary()
+  == 0.0) {\n+            return NaN;\n         }\n \n         if (divisor.isInfinite()
+  && !isInfinite()) {\n@@ -292,7 +290,7 @@\n             return NaN;\n         }\n
+  \        if (divisor == 0d) {\n-            return isZero ? NaN : INF;\n+            return
+  NaN;\n         }\n         if (Double.isInfinite(divisor)) {\n             return
+  !isInfinite() ? ZERO : NaN;\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from public Complex(double real, double imaginary) {
+          this.real = real;
+          this.imaginary = imaginary;
+
+          isNaN = Double.isNaN(real) || Double.isNaN(imaginary);
+          isInfinite = !isNaN &&
+              (Double.isInfinite(real) || Double.isInfinite(imaginary));
+          isZero = real == 0 && imaginary == 0;
+      } to public Complex(double real, double imaginary) {
+          this.real = real;
+          this.imaginary = imaginary;
+
+          isNaN = Double.isNaN(real) || Double.isNaN(imaginary);
+          isInfinite = !isNaN &&
+              (Double.isInfinite(real) || Double.isInfinite(imaginary));
+      }
+  ------------
+  ===
+  update-node
+  ---
+  constructor_declaration: public Complex(double real, double imaginary) {
+          this.real = real;
+          this.imaginary = imaginary;
+
+          isNaN = Double.isNaN(real) || Double.isNaN(imaginary);
+          isInfinite = !isNaN &&
+              (Double.isInfinite(real) || Double.isInfinite(imaginary));
+          isZero = real == 0 && imaginary == 0;
+      } [3940,4267]
+  replace public Complex(double real, double imaginary) {
+          this.real = real;
+          this.imaginary = imaginary;
+
+          isNaN = Double.isNaN(real) || Double.isNaN(imaginary);
+          isInfinite = !isNaN &&
+              (Double.isInfinite(real) || Double.isInfinite(imaginary));
+          isZero = real == 0 && imaginary == 0;
+      } by public Complex(double real, double imaginary) {
+          this.real = real;
+          this.imaginary = imaginary;
+
+          isNaN = Double.isNaN(real) || Double.isNaN(imaginary);
+          isInfinite = !isNaN &&
+              (Double.isInfinite(real) || Double.isInfinite(imaginary));
+      }
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  and [9460,9517]
+      equals [9460,9484]
+          method_invocation: divisor.getReal() [9460,9477]
+          decimal_floating_point_literal: 0.0 [9481,9484]
+      equals [9488,9517]
+          method_invocation: divisor.getImaginary() [9488,9510]
+          decimal_floating_point_literal: 0.0 [9514,9517]
+  to
+  parenthesized_expression [9549,9565]
+  at 0
+
+  New cluster:
+  UPDATE from return isZero ? NaN : INF; to return NaN;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return isZero ? NaN : INF; [10749,10775]
+  replace return isZero ? NaN : INF; by return NaN;
+  ===
+  update-node
+  ---
+  return_statement: return isZero ? NaN : INF; [9580,9606]
+  replace return isZero ? NaN : INF; by return NaN;
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  field_declaration: private final transient boolean isZero; [3559,3598]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  field_declaration: private final transient boolean isZero; [3559,3598]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  field_access: divisor.isZero [9550,9564]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  field_access: divisor.isZero [9550,9564]
+  ===
+
+...

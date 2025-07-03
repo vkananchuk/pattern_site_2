@@ -1,0 +1,97 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -4,7 +4,6 @@\n  */\r\n package org.mockito.internal.stubbing.defaultanswers;\r\n
+  \r\n-import org.mockito.MockSettings;\r\n import org.mockito.internal.InternalMockHandler;\r\n
+  import org.mockito.internal.creation.settings.CreationSettings;\r\n import org.mockito.internal.stubbing.InvocationContainerImpl;\r\n@@
+  -17,8 +16,6 @@\n \r\n import java.io.Serializable;\r\n \r\n-import static org.mockito.Mockito.mock;\r\n-import
+  static org.mockito.Mockito.withSettings;\r\n \r\n /**\r\n  * Returning deep stub
+  implementation.\r\n@@ -53,10 +50,10 @@\n             return delegate.returnValueFor(rawType);\r\n
+  \        }\r\n \r\n-        return getMock(invocation, returnTypeGenericMetadata);\r\n+
+  \       return getMock(invocation);\r\n     }\r\n \r\n-    private Object getMock(InvocationOnMock
+  invocation, GenericMetadataSupport returnTypeGenericMetadata) throws Throwable {\r\n+
+  \   private Object getMock(InvocationOnMock invocation) throws Throwable {\r\n     \tInternalMockHandler<Object>
+  handler = new MockUtil().getMockHandler(invocation.getMock());\r\n     \tInvocationContainerImpl
+  container = (InvocationContainerImpl) handler.getInvocationContainer();\r\n \r\n@@
+  -68,7 +65,7 @@\n \t\t}\r\n \r\n         // deep stub\r\n-        return recordDeepStubMock(createNewDeepStubMock(returnTypeGenericMetadata),
+  container);\r\n+        return recordDeepStubMock(invocation, container);\r\n     }\r\n
+  \r\n     /**\r\n@@ -77,33 +74,13 @@\n      * @param returnTypeGenericMetadata The
+  metadata to use to create the new mock.\r\n      * @return The mock\r\n      */\r\n-
+  \   private Object createNewDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata)
+  {\r\n-        return mock(\r\n-                returnTypeGenericMetadata.rawType(),\r\n-
+  \               withSettingsUsing(returnTypeGenericMetadata)\r\n-        );\r\n-
+  \   }\r\n \r\n-    private MockSettings withSettingsUsing(GenericMetadataSupport
+  returnTypeGenericMetadata) {\r\n-        MockSettings mockSettings =\r\n-                returnTypeGenericMetadata.rawExtraInterfaces().length
+  > 0 ?\r\n-                withSettings().extraInterfaces(returnTypeGenericMetadata.rawExtraInterfaces())\r\n-
+  \               : withSettings();\r\n \r\n-        return mockSettings\r\n-                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\r\n-
+  \   }\r\n \r\n-    private ReturnsDeepStubs returnsDeepStubsAnswerUsing(final GenericMetadataSupport
+  returnTypeGenericMetadata) {\r\n-        return new ReturnsDeepStubs() {\r\n-            @Override\r\n-
+  \           protected GenericMetadataSupport actualParameterizedType(Object mock)
+  {\r\n-                return returnTypeGenericMetadata;\r\n-            }\r\n-        };\r\n-
+  \   }\r\n \r\n-    private Object recordDeepStubMock(final Object mock, InvocationContainerImpl
+  container) throws Throwable {\r\n+    private Object recordDeepStubMock(InvocationOnMock
+  invocation, InvocationContainerImpl container) {\r\n+        Class<?> clz = invocation.getMethod().getReturnType();\r\n+
+  \       final Object mock = org.mockito.Mockito.mock(clz, this);\r\n \r\n         container.addAnswer(new
+  Answer<Object>() {\r\n             public Object answer(InvocationOnMock invocation)
+  throws Throwable {\r\n"
+tree_diff: "New cluster:\n===\ninsert-node\n---\nmethod_declaration [2139,2825]\nto\nclass_body
+  [1538,4957]\nat 3\n------------\n===\ninsert-node\n---\nidentifier: getMock [2154,2161]\nto\nmethod_declaration
+  [2139,2825]\nat 0\n===\ninsert-node\n---\nmethod_declaration [2139,2825]\nto\nclass_body
+  [1538,4957]\nat 3\n\nNew cluster:\nUnknown cluster type\n------------\n===\ninsert-tree\n---\nmethod_declaration
+  [3029,3490]\n    identifier: recordDeepStubMock [3044,3062]\n    method_parameters
+  [3029,3490]\n        formal_parameter: InvocationOnMock invocation [3063,3090]\n
+  \   block [3127,3490]\n        local_variable_declaration: Class<?> clz = invocation.getMethod().getReturnType();
+  [3138,3192]\n        local_variable_declaration: final Object mock = org.mockito.Mockito.mock(clz,
+  this); [3202,3258]\n        expression_statement: container.addAnswer(new Answer<Object>()
+  {\r\n            public Object answer(InvocationOnMock invocation) throws Throwable
+  {\r\n                return mock;\r\n            }\r\n        }, false); [3270,3459]\n
+  \       return_statement: return mock; [3471,3483]\nto\nclass_body [1538,4957]\nat
+  4\n\nNew cluster:\nMOVE from method_declaration [2139,2825]\n------------\n===\nmove-tree\n---\nmethod_parameters
+  [2290,3064]\n    formal_parameter: InvocationOnMock invocation [2313,2340]\nto\nmethod_declaration
+  [2139,2825]\nat 1\n\nNew cluster:\nUnknown cluster type\n------------\n===\ninsert-tree\n---\nblock
+  [2208,2825]\n    local_variable_declaration: InternalMockHandler<Object> handler
+  = new MockUtil().getMockHandler(invocation.getMock()); [2216,2306]\n    local_variable_declaration:
+  InvocationContainerImpl container = (InvocationContainerImpl) handler.getInvocationContainer();
+  [2313,2408]\n    enhanced_for_statement: for (StubbedInvocationMatcher stubbedInvocationMatcher
+  : container.getStubbedInvocations()) {\r\n    \t\tif(container.getInvocationForStubbing().matches(stubbedInvocationMatcher.getInvocation()))
+  {\r\n    \t\t\treturn stubbedInvocationMatcher.answer(invocation);\r\n    \t\t}\r\n\t\t}
+  [2468,2735]\n    return_statement: return recordDeepStubMock(invocation, container);
+  [2769,2818]\nto\nmethod_declaration [2139,2825]\nat 2\n\nNew cluster:\nUPDATE from
+  return getMock(invocation, returnTypeGenericMetadata); to return getMock(invocation);\n------------\n===\nupdate-node\n---\nreturn_statement:
+  return getMock(invocation, returnTypeGenericMetadata); [2221,2275]\nreplace return
+  getMock(invocation, returnTypeGenericMetadata); by return getMock(invocation);\n\nNew
+  cluster:\n===\ndelete-node\n---\nmethod_declaration [2290,3064]\n===\n------------\n===\ndelete-node\n---\nmethod_declaration
+  [2290,3064]\n===\n===\ndelete-node\n---\nidentifier: getMock [2305,2312]\n===\n\nNew
+  cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nblock [2409,3064]\n
+  \   local_variable_declaration: InternalMockHandler<Object> handler = new MockUtil().getMockHandler(invocation.getMock());
+  [2417,2507]\n    local_variable_declaration: InvocationContainerImpl container =
+  (InvocationContainerImpl) handler.getInvocationContainer(); [2514,2609]\n    enhanced_for_statement:
+  for (StubbedInvocationMatcher stubbedInvocationMatcher : container.getStubbedInvocations())
+  {\r\n    \t\tif(container.getInvocationForStubbing().matches(stubbedInvocationMatcher.getInvocation()))
+  {\r\n    \t\t\treturn stubbedInvocationMatcher.answer(invocation);\r\n    \t\t}\r\n\t\t}
+  [2669,2936]\n    return_statement: return recordDeepStubMock(createNewDeepStubMock(returnTypeGenericMetadata),
+  container); [2970,3057]\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nmethod_declaration
+  [3260,3505]\n    identifier: createNewDeepStubMock [3275,3296]\n    method_parameters
+  [3260,3505]\n        formal_parameter: GenericMetadataSupport returnTypeGenericMetadata
+  [3297,3345]\n    block [3347,3505]\n        return_statement: return mock(\r\n                returnTypeGenericMetadata.rawType(),\r\n
+  \               withSettingsUsing(returnTypeGenericMetadata)\r\n        ); [3358,3498]\n\nNew
+  cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nmethod_declaration
+  [3513,3975]\n    identifier: withSettingsUsing [3534,3551]\n    method_parameters
+  [3513,3975]\n        formal_parameter: GenericMetadataSupport returnTypeGenericMetadata
+  [3552,3600]\n    block [3602,3975]\n        local_variable_declaration: MockSettings
+  mockSettings =\r\n                returnTypeGenericMetadata.rawExtraInterfaces().length
+  > 0 ?\r\n                withSettings().extraInterfaces(returnTypeGenericMetadata.rawExtraInterfaces())\r\n
+  \               : withSettings(); [3613,3848]\n        return_statement: return
+  mockSettings\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+  [3860,3968]\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nmethod_declaration
+  [3983,4327]\n    identifier: returnsDeepStubsAnswerUsing [4008,4035]\n    method_parameters
+  [3983,4327]\n        formal_parameter: final GenericMetadataSupport returnTypeGenericMetadata
+  [4036,4090]\n    block [4092,4327]\n        return_statement: return new ReturnsDeepStubs()
+  {\r\n            @Override\r\n            protected GenericMetadataSupport actualParameterizedType(Object
+  mock) {\r\n                return returnTypeGenericMetadata;\r\n            }\r\n
+  \       }; [4103,4320]\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nmethod_declaration
+  [4335,4673]\n    identifier: recordDeepStubMock [4350,4368]\n    method_parameters
+  [4335,4673]\n        formal_parameter: final Object mock [4369,4386]\n    block
+  [4440,4673]\n        expression_statement: container.addAnswer(new Answer<Object>()
+  {\r\n            public Object answer(InvocationOnMock invocation) throws Throwable
+  {\r\n                return mock;\r\n            }\r\n        }, false); [4453,4642]\n
+  \       return_statement: return mock; [4654,4666]\n\n"

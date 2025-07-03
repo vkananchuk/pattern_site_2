@@ -1,0 +1,266 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -417,7 +417,6 @@\n      * For more information,
+  see\n      * http://code.google.com/p/closure-compiler/issues/detail?id=314\n      */\n-
+  \   private List<Node> lentObjectLiterals = null;\n \n     /**\n      * Type-less
+  stubs.\n@@ -545,13 +544,6 @@\n       }\n \n       // Analyze any @lends object literals
+  in this statement.\n-      if (n.getParent() != null && NodeUtil.isStatement(n)
+  &&\n-          lentObjectLiterals != null) {\n-        for (Node objLit : lentObjectLiterals)
+  {\n-          defineObjectLiteral(objLit);\n-        }\n-        lentObjectLiterals.clear();\n-
+  \     }\n     }\n \n     private void attachLiteralTypes(NodeTraversal t, Node n)
+  {\n@@ -585,16 +577,7 @@\n           break;\n \n         case Token.OBJECTLIT:\n-
+  \         JSDocInfo info = n.getJSDocInfo();\n-          if (info != null &&\n-
+  \             info.getLendsName() != null) {\n-            if (lentObjectLiterals
+  == null) {\n-              lentObjectLiterals = Lists.newArrayList();\n-            }\n-
+  \           lentObjectLiterals.add(n);\n-          } else {\n             defineObjectLiteral(n);\n-
+  \         }\n           break;\n \n           // NOTE(nicksantos): If we ever support
+  Array tuples,\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from {
+          case Token.NULL:
+            n.setJSType(getNativeType(NULL_TYPE));
+            break;
+
+          case Token.VOID:
+            n.setJSType(getNativeType(VOID_TYPE));
+            break;
+
+          case Token.STRING:
+            // Defer keys to the Token.OBJECTLIT case
+            if (!NodeUtil.isObjectLitKey(n, n.getParent())) {
+              n.setJSType(getNativeType(STRING_TYPE));
+            }
+            break;
+
+          case Token.NUMBER:
+            n.setJSType(getNativeType(NUMBER_TYPE));
+            break;
+
+          case Token.TRUE:
+          case Token.FALSE:
+            n.setJSType(getNativeType(BOOLEAN_TYPE));
+            break;
+
+          case Token.REGEXP:
+            n.setJSType(getNativeType(REGEXP_TYPE));
+            break;
+
+          case Token.OBJECTLIT:
+            JSDocInfo info = n.getJSDocInfo();
+            if (info != null &&
+                info.getLendsName() != null) {
+              if (lentObjectLiterals == null) {
+                lentObjectLiterals = Lists.newArrayList();
+              }
+              lentObjectLiterals.add(n);
+            } else {
+              defineObjectLiteral(n);
+            }
+            break;
+
+            // NOTE(nicksantos): If we ever support Array tuples,
+            // we will need to put ARRAYLIT here as well.
+        } to {
+          case Token.NULL:
+            n.setJSType(getNativeType(NULL_TYPE));
+            break;
+
+          case Token.VOID:
+            n.setJSType(getNativeType(VOID_TYPE));
+            break;
+
+          case Token.STRING:
+            // Defer keys to the Token.OBJECTLIT case
+            if (!NodeUtil.isObjectLitKey(n, n.getParent())) {
+              n.setJSType(getNativeType(STRING_TYPE));
+            }
+            break;
+
+          case Token.NUMBER:
+            n.setJSType(getNativeType(NUMBER_TYPE));
+            break;
+
+          case Token.TRUE:
+          case Token.FALSE:
+            n.setJSType(getNativeType(BOOLEAN_TYPE));
+            break;
+
+          case Token.REGEXP:
+            n.setJSType(getNativeType(REGEXP_TYPE));
+            break;
+
+          case Token.OBJECTLIT:
+              defineObjectLiteral(n);
+            break;
+
+            // NOTE(nicksantos): If we ever support Array tuples,
+            // we will need to put ARRAYLIT here as well.
+        }
+  ------------
+  ===
+  update-node
+  ---
+  switch_block: {
+          case Token.NULL:
+            n.setJSType(getNativeType(NULL_TYPE));
+            break;
+
+          case Token.VOID:
+            n.setJSType(getNativeType(VOID_TYPE));
+            break;
+
+          case Token.STRING:
+            // Defer keys to the Token.OBJECTLIT case
+            if (!NodeUtil.isObjectLitKey(n, n.getParent())) {
+              n.setJSType(getNativeType(STRING_TYPE));
+            }
+            break;
+
+          case Token.NUMBER:
+            n.setJSType(getNativeType(NUMBER_TYPE));
+            break;
+
+          case Token.TRUE:
+          case Token.FALSE:
+            n.setJSType(getNativeType(BOOLEAN_TYPE));
+            break;
+
+          case Token.REGEXP:
+            n.setJSType(getNativeType(REGEXP_TYPE));
+            break;
+
+          case Token.OBJECTLIT:
+            JSDocInfo info = n.getJSDocInfo();
+            if (info != null &&
+                info.getLendsName() != null) {
+              if (lentObjectLiterals == null) {
+                lentObjectLiterals = Lists.newArrayList();
+              }
+              lentObjectLiterals.add(n);
+            } else {
+              defineObjectLiteral(n);
+            }
+            break;
+
+            // NOTE(nicksantos): If we ever support Array tuples,
+            // we will need to put ARRAYLIT here as well.
+        } [21024,22263]
+  replace {
+          case Token.NULL:
+            n.setJSType(getNativeType(NULL_TYPE));
+            break;
+
+          case Token.VOID:
+            n.setJSType(getNativeType(VOID_TYPE));
+            break;
+
+          case Token.STRING:
+            // Defer keys to the Token.OBJECTLIT case
+            if (!NodeUtil.isObjectLitKey(n, n.getParent())) {
+              n.setJSType(getNativeType(STRING_TYPE));
+            }
+            break;
+
+          case Token.NUMBER:
+            n.setJSType(getNativeType(NUMBER_TYPE));
+            break;
+
+          case Token.TRUE:
+          case Token.FALSE:
+            n.setJSType(getNativeType(BOOLEAN_TYPE));
+            break;
+
+          case Token.REGEXP:
+            n.setJSType(getNativeType(REGEXP_TYPE));
+            break;
+
+          case Token.OBJECTLIT:
+            JSDocInfo info = n.getJSDocInfo();
+            if (info != null &&
+                info.getLendsName() != null) {
+              if (lentObjectLiterals == null) {
+                lentObjectLiterals = Lists.newArrayList();
+              }
+              lentObjectLiterals.add(n);
+            } else {
+              defineObjectLiteral(n);
+            }
+            break;
+
+            // NOTE(nicksantos): If we ever support Array tuples,
+            // we will need to put ARRAYLIT here as well.
+        } by {
+          case Token.NULL:
+            n.setJSType(getNativeType(NULL_TYPE));
+            break;
+
+          case Token.VOID:
+            n.setJSType(getNativeType(VOID_TYPE));
+            break;
+
+          case Token.STRING:
+            // Defer keys to the Token.OBJECTLIT case
+            if (!NodeUtil.isObjectLitKey(n, n.getParent())) {
+              n.setJSType(getNativeType(STRING_TYPE));
+            }
+            break;
+
+          case Token.NUMBER:
+            n.setJSType(getNativeType(NUMBER_TYPE));
+            break;
+
+          case Token.TRUE:
+          case Token.FALSE:
+            n.setJSType(getNativeType(BOOLEAN_TYPE));
+            break;
+
+          case Token.REGEXP:
+            n.setJSType(getNativeType(REGEXP_TYPE));
+            break;
+
+          case Token.OBJECTLIT:
+              defineObjectLiteral(n);
+            break;
+
+            // NOTE(nicksantos): If we ever support Array tuples,
+            // we will need to put ARRAYLIT here as well.
+        }
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  field_declaration: private List<Node> lentObjectLiterals = null; [16914,16959]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  field_declaration: private List<Node> lentObjectLiterals = null; [16914,16959]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [20689,20926]
+      parenthesized_expression [20692,20782]
+          and [20693,20781]
+              and [20693,20741]
+                  not_equals [20693,20714]
+                      method_invocation: n.getParent() [20693,20706]
+                      null_literal [20710,20714]
+                  method_invocation: NodeUtil.isStatement(n) [20718,20741]
+              not_equals [20755,20781]
+                  identifier: lentObjectLiterals [20755,20773]
+                  null_literal [20777,20781]
+      block [20783,20926]
+          enhanced_for_statement: for (Node objLit : lentObjectLiterals) {
+            defineObjectLiteral(objLit);
+          } [20793,20882]
+          expression_statement: lentObjectLiterals.clear(); [20891,20918]
+
+...

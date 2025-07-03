@@ -1,0 +1,140 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -14,23 +14,18 @@\n         if (outerClassInstance
+  == null) {\n             return noArgConstructor(cls);\n         }\n-        return
+  withParams(cls, outerClassInstance);\n+        return withOuterClass(cls);\n     }\n
+  \n-    private static <T> T withParams(Class<T> cls, Object... params) {\n+    private
+  <T> T withOuterClass(Class<T> cls) {\n         try {\n             //this is kind
+  of overengineered because we don't need to support more params\n             //however,
+  I know we will be needing it :)\n-            for (Constructor<?> constructor :
+  cls.getDeclaredConstructors()) {\n-                Class<?>[] types = constructor.getParameterTypes();\n-
+  \               if (paramsMatch(types, params)) {\n-                    return (T)
+  constructor.newInstance(params);\n-                }\n-            }\n+            Constructor<T>
+  c = cls.getDeclaredConstructor(outerClassInstance.getClass());\n+            return
+  c.newInstance(outerClassInstance);\n         } catch (Exception e) {\n             throw
+  paramsException(cls, e);\n         }\n-        throw paramsException(cls, null);\n
+  \    }\n \n     private static <T> InstantationException paramsException(Class<T>
+  cls, Exception e) {\n@@ -38,17 +33,6 @@\n                 + cls.getSimpleName()
+  + \"'.\\nPlease ensure that the outer instance has correct type and that the target
+  class has parameter-less constructor.\", e);\n     }\n \n-    private static boolean
+  paramsMatch(Class<?>[] types, Object[] params) {\n-        if (params.length !=
+  types.length) {\n-            return false;\n-        }\n-        for (int i = 0;
+  i < params.length; i++) {\n-            if (!types[i].isInstance(params[i])) {\n-
+  \               return false;\n-            }\n-        }\n-        return true;\n-
+  \   }\n \n     private static <T> T noArgConstructor(Class<T> cls) {\n         try
+  {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from withParams to withOuterClass
+  ------------
+  ===
+  update-node
+  ---
+  identifier: withParams [546,556]
+  replace withParams by withOuterClass
+
+  New cluster:
+  UPDATE from return withParams(cls, outerClassInstance); to return withOuterClass(cls);
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return withParams(cls, outerClassInstance); [470,513]
+  replace return withParams(cls, outerClassInstance); by return withOuterClass(cls);
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: Constructor<T> c = cls.getDeclaredConstructor(outerClassInstance.getClass()); [725,802]
+  to
+  block [603,1052]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: Constructor<T> c = cls.getDeclaredConstructor(outerClassInstance.getClass()); [725,802]
+  to
+  block [603,1052]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return c.newInstance(outerClassInstance); [815,856]
+  to
+  block [603,1052]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return c.newInstance(outerClassInstance); [815,856]
+  to
+  block [603,1052]
+  at 1
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  enhanced_for_statement: for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
+                  Class<?>[] types = constructor.getParameterTypes();
+                  if (paramsMatch(types, params)) {
+                      return (T) constructor.newInstance(params);
+                  }
+              } [762,1042]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  enhanced_for_statement: for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
+                  Class<?>[] types = constructor.getParameterTypes();
+                  if (paramsMatch(types, params)) {
+                      return (T) constructor.newInstance(params);
+                  }
+              } [762,1042]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  throw_statement: throw paramsException(cls, null); [1136,1169]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  throw_statement: throw paramsException(cls, null); [1136,1169]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [1521,1855]
+      identifier: paramsMatch [1544,1555]
+      method_parameters [1521,1855]
+          formal_parameter: Class<?>[] types [1556,1572]
+      block [1591,1855]
+          if_statement [1601,1673]
+              parenthesized_expression [1604,1635]
+                  not_equals [1605,1634]
+                      field_access: params.length [1605,1618]
+                      field_access: types.length [1622,1634]
+              block [1636,1673]
+                  return_statement: return false; [1650,1663]
+          for_statement: for (int i = 0; i < params.length; i++) {
+              if (!types[i].isInstance(params[i])) {
+                  return false;
+              }
+          } [1682,1828]
+          return_statement: return true; [1837,1849]
+
+...

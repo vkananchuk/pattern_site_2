@@ -1,0 +1,49 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -96,13 +96,6 @@\n       // var a = function()
+  { }; // or\n       // function a() {} // or\n       // a.x = function() {};\n-      int
+  pType = parent.getType();\n-      if (!(pType == Token.BLOCK ||\n-            pType
+  == Token.SCRIPT ||\n-            pType == Token.NAME ||\n-            pType == Token.ASSIGN))
+  {\n-        return false;\n-      }\n     }\n \n     if (parent != null && parent.getType()
+  == Token.ASSIGN) {\n@@ -150,7 +143,7 @@\n     }\n \n     // Also report a THIS with
+  a property access.\n-    return parent != null && NodeUtil.isGet(parent);\n+    return
+  false;\n   }\n \n   /**\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return parent != null && NodeUtil.isGet(parent); to return false;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return parent != null && NodeUtil.isGet(parent); [4868,4916]
+  replace return parent != null && NodeUtil.isGet(parent); by return false;
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int pType = parent.getType(); [3228,3257]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int pType = parent.getType(); [3228,3257]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [3264,3433]
+      parenthesized_expression [3267,3401]
+          unary_expression: !(pType == Token.BLOCK ||
+              pType == Token.SCRIPT ||
+              pType == Token.NAME ||
+              pType == Token.ASSIGN) [3268,3400]
+      block [3402,3433]
+          return_statement: return false; [3412,3425]
+
+...

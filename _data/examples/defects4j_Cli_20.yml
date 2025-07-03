@@ -1,0 +1,289 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -111,19 +111,14 @@\n             // handle long
+  option --foo or --foo=bar\n             if (token.startsWith(\"--\"))\n             {\n-
+  \               int pos = token.indexOf('=');\n-                String opt = pos
+  == -1 ? token : token.substring(0, pos); // --foo\n-\n-                if (!options.hasOption(opt)
+  && stopAtNonOption)\n+                if (token.indexOf('=') != -1)\n                 {\n-
+  \                   process(token);\n+                    tokens.add(token.substring(0,
+  token.indexOf('=')));\n+                    tokens.add(token.substring(token.indexOf('=')
+  + 1, token.length()));\n                 }\n                 else\n                 {\n-
+  \                   tokens.add(opt);\n-                    if (pos != -1) {\n-                        tokens.add(token.substring(pos
+  + 1));\n-                    }\n+                    tokens.add(token);\n                 }\n
+  \            }\n \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from while (iter.hasNext())
+          {
+              // get the next command line token
+              String token = (String) iter.next();
+
+              // handle long option --foo or --foo=bar
+              if (token.startsWith("--"))
+              {
+                  int pos = token.indexOf('=');
+                  String opt = pos == -1 ? token : token.substring(0, pos); // --foo
+
+                  if (!options.hasOption(opt) && stopAtNonOption)
+                  {
+                      process(token);
+                  }
+                  else
+                  {
+                      tokens.add(opt);
+                      if (pos != -1) {
+                          tokens.add(token.substring(pos + 1));
+                      }
+                  }
+              }
+
+              // single hyphen
+              else if ("-".equals(token))
+              {
+                  tokens.add(token);
+              }
+              else if (token.startsWith("-"))
+              {
+                  if (token.length() == 2)
+                  {
+                      processOptionToken(token, stopAtNonOption);
+                  }
+                  else if (options.hasOption(token))
+                  {
+                      tokens.add(token);
+                  }
+                  // requires bursting
+                  else
+                  {
+                      burstToken(token, stopAtNonOption);
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token);
+              }
+              else
+              {
+                  tokens.add(token);
+              }
+
+              gobble(iter);
+          } to while (iter.hasNext())
+          {
+              // get the next command line token
+              String token = (String) iter.next();
+
+              // handle long option --foo or --foo=bar
+              if (token.startsWith("--"))
+              {
+                  if (token.indexOf('=') != -1)
+                  {
+                      tokens.add(token.substring(0, token.indexOf('=')));
+                      tokens.add(token.substring(token.indexOf('=') + 1, token.length()));
+                  }
+                  else
+                  {
+                      tokens.add(token);
+                  }
+              }
+
+              // single hyphen
+              else if ("-".equals(token))
+              {
+                  tokens.add(token);
+              }
+              else if (token.startsWith("-"))
+              {
+                  if (token.length() == 2)
+                  {
+                      processOptionToken(token, stopAtNonOption);
+                  }
+                  else if (options.hasOption(token))
+                  {
+                      tokens.add(token);
+                  }
+                  // requires bursting
+                  else
+                  {
+                      burstToken(token, stopAtNonOption);
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token);
+              }
+              else
+              {
+                  tokens.add(token);
+              }
+
+              gobble(iter);
+          }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while (iter.hasNext())
+          {
+              // get the next command line token
+              String token = (String) iter.next();
+
+              // handle long option --foo or --foo=bar
+              if (token.startsWith("--"))
+              {
+                  int pos = token.indexOf('=');
+                  String opt = pos == -1 ? token : token.substring(0, pos); // --foo
+
+                  if (!options.hasOption(opt) && stopAtNonOption)
+                  {
+                      process(token);
+                  }
+                  else
+                  {
+                      tokens.add(opt);
+                      if (pos != -1) {
+                          tokens.add(token.substring(pos + 1));
+                      }
+                  }
+              }
+
+              // single hyphen
+              else if ("-".equals(token))
+              {
+                  tokens.add(token);
+              }
+              else if (token.startsWith("-"))
+              {
+                  if (token.length() == 2)
+                  {
+                      processOptionToken(token, stopAtNonOption);
+                  }
+                  else if (options.hasOption(token))
+                  {
+                      tokens.add(token);
+                  }
+                  // requires bursting
+                  else
+                  {
+                      burstToken(token, stopAtNonOption);
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token);
+              }
+              else
+              {
+                  tokens.add(token);
+              }
+
+              gobble(iter);
+          } [4286,5854]
+  replace while (iter.hasNext())
+          {
+              // get the next command line token
+              String token = (String) iter.next();
+
+              // handle long option --foo or --foo=bar
+              if (token.startsWith("--"))
+              {
+                  int pos = token.indexOf('=');
+                  String opt = pos == -1 ? token : token.substring(0, pos); // --foo
+
+                  if (!options.hasOption(opt) && stopAtNonOption)
+                  {
+                      process(token);
+                  }
+                  else
+                  {
+                      tokens.add(opt);
+                      if (pos != -1) {
+                          tokens.add(token.substring(pos + 1));
+                      }
+                  }
+              }
+
+              // single hyphen
+              else if ("-".equals(token))
+              {
+                  tokens.add(token);
+              }
+              else if (token.startsWith("-"))
+              {
+                  if (token.length() == 2)
+                  {
+                      processOptionToken(token, stopAtNonOption);
+                  }
+                  else if (options.hasOption(token))
+                  {
+                      tokens.add(token);
+                  }
+                  // requires bursting
+                  else
+                  {
+                      burstToken(token, stopAtNonOption);
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token);
+              }
+              else
+              {
+                  tokens.add(token);
+              }
+
+              gobble(iter);
+          } by while (iter.hasNext())
+          {
+              // get the next command line token
+              String token = (String) iter.next();
+
+              // handle long option --foo or --foo=bar
+              if (token.startsWith("--"))
+              {
+                  if (token.indexOf('=') != -1)
+                  {
+                      tokens.add(token.substring(0, token.indexOf('=')));
+                      tokens.add(token.substring(token.indexOf('=') + 1, token.length()));
+                  }
+                  else
+                  {
+                      tokens.add(token);
+                  }
+              }
+
+              // single hyphen
+              else if ("-".equals(token))
+              {
+                  tokens.add(token);
+              }
+              else if (token.startsWith("-"))
+              {
+                  if (token.length() == 2)
+                  {
+                      processOptionToken(token, stopAtNonOption);
+                  }
+                  else if (options.hasOption(token))
+                  {
+                      tokens.add(token);
+                  }
+                  // requires bursting
+                  else
+                  {
+                      burstToken(token, stopAtNonOption);
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token);
+              }
+              else
+              {
+                  tokens.add(token);
+              }
+
+              gobble(iter);
+          }
+
+...

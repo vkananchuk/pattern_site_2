@@ -1,0 +1,183 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -363,6 +363,9 @@
+         JSType leftType, Node owner, String propName) {
+       // The NoType check is a hack to make typedefs work OK.
+       if (!leftType.isNoType() && !rightType.canAssignTo(leftType)) {
+  +      if ((leftType.isConstructor() || leftType.isEnumType()) && (rightType.isConstructor() || rightType.isEnumType())) {
+  +        registerMismatch(rightType, leftType, null);
+  +      } else {
+         // Do not type-check interface methods, because we expect that
+         // they will have dummy implementations that do not match the type
+         // annotations.
+  @@ -379,6 +382,7 @@
+             "assignment to property " + propName + " of " +
+             getReadableJSTypeName(owner, true),
+             rightType, leftType);
+  +      }
+         return false;
+       }
+       return true;
+  @@ -398,7 +402,11 @@
+     boolean expectCanAssignTo(NodeTraversal t, Node n, JSType rightType,
+         JSType leftType, String msg) {
+       if (!rightType.canAssignTo(leftType)) {
+  +      if ((leftType.isConstructor() || leftType.isEnumType()) && (rightType.isConstructor() || rightType.isEnumType())) {
+  +        registerMismatch(rightType, leftType, null);
+  +      } else {
+         mismatch(t, n, msg, rightType, leftType);
+  +      }
+         return false;
+       }
+       return true;
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [15307,15546]
+      parenthesized_expression [15310,15420]
+          and [15311,15419]
+              parenthesized_expression [15311,15362]
+                  or [15312,15361]
+                      method_invocation: leftType.isConstructor() [15312,15336]
+                      method_invocation: leftType.isEnumType() [15340,15361]
+              parenthesized_expression [15366,15419]
+                  or [15367,15418]
+                      method_invocation: rightType.isConstructor() [15367,15392]
+                      method_invocation: rightType.isEnumType() [15396,15418]
+      block [15421,15483]
+          expression_statement: registerMismatch(rightType, leftType, null); [15431,15475]
+  to
+  block [15101,15176]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  and [13836,13944]
+      parenthesized_expression [13836,13887]
+          or [13837,13886]
+              method_invocation: leftType.isConstructor() [13837,13861]
+              method_invocation: leftType.isEnumType() [13865,13886]
+      parenthesized_expression [13891,13944]
+          or [13892,13943]
+              method_invocation: rightType.isConstructor() [13892,13917]
+              method_invocation: rightType.isEnumType() [13921,13943]
+  to
+  parenthesized_expression [14042,14079]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: registerMismatch(rightType, leftType, null); [13956,14000]
+  to
+  block [14080,14306]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: registerMismatch(rightType, leftType, null); [13956,14000]
+  to
+  block [14080,14306]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: JSType ownerType = getJSType(owner); [13996,14032]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: JSType ownerType = getJSType(owner); [13996,14032]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_invocation: ownerType.isFunctionPrototypeType() [14043,14078]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_invocation: ownerType.isFunctionPrototypeType() [14043,14078]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: FunctionType ownerFn = ownerType.toObjectType().getOwnerFunction(); [14090,14157]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: FunctionType ownerFn = ownerType.toObjectType().getOwnerFunction(); [14090,14157]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [14166,14298]
+      parenthesized_expression [14169,14263]
+          and [14170,14262]
+              and [14170,14233]
+                  method_invocation: ownerFn.isInterface() [14170,14191]
+                  method_invocation: rightType.isFunctionType() [14207,14233]
+              method_invocation: leftType.isFunctionType() [14237,14262]
+      block [14264,14298]
+          return_statement: return true; [14276,14288]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: mismatch(t, n,
+            "assignment to property " + propName + " of " +
+            getReadableJSTypeName(owner, true),
+            rightType, leftType); [14314,14464]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: mismatch(t, n,
+            "assignment to property " + propName + " of " +
+            getReadableJSTypeName(owner, true),
+            rightType, leftType); [14314,14464]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: mismatch(t, n, msg, rightType, leftType); [15109,15150]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: mismatch(t, n, msg, rightType, leftType); [15109,15150]
+  ===
+
+...

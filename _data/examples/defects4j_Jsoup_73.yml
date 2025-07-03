@@ -1,0 +1,159 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -19,7 +19,6 @@\n import javax.xml.transform.stream.StreamResult;\n
+  import java.io.StringWriter;\n import java.util.HashMap;\n-import java.util.Stack;\n
+  \n /**\n  * Helper class to transform a {@link org.jsoup.nodes.Document} to a {@link
+  org.w3c.dom.Document org.w3c.dom.Document},\n@@ -71,21 +70,19 @@\n         private
+  static final String xmlnsPrefix = \"xmlns:\";\n \n         private final Document
+  doc;\n-        private final Stack<HashMap<String, String>> namespacesStack = new
+  Stack<>(); // stack of namespaces, prefix => urn\n+        private final HashMap<String,
+  String> namespaces = new HashMap<>();\n         private Element dest;\n \n         public
+  W3CBuilder(Document doc) {\n             this.doc = doc;\n-            this.namespacesStack.push(new
+  HashMap<String, String>());\n         }\n \n         public void head(org.jsoup.nodes.Node
+  source, int depth) {\n-            namespacesStack.push(new HashMap<>(namespacesStack.peek()));
+  // inherit from above on the stack\n             if (source instanceof org.jsoup.nodes.Element)
+  {\n                 org.jsoup.nodes.Element sourceEl = (org.jsoup.nodes.Element)
+  source;\n \n                 String prefix = updateNamespaces(sourceEl);\n-                String
+  namespace = namespacesStack.peek().get(prefix);\n+                String namespace
+  = namespaces.get(prefix);\n \n                 Element el = doc.createElementNS(namespace,
+  sourceEl.tagName());\n                 copyAttributes(sourceEl, el);\n@@ -116,7
+  +113,6 @@\n             if (source instanceof org.jsoup.nodes.Element && dest.getParentNode()
+  instanceof Element) {\n                 dest = (Element) dest.getParentNode(); //
+  undescend. cromulent.\n             }\n-            namespacesStack.pop();\n         }\n
+  \n         private void copyAttributes(org.jsoup.nodes.Node source, Element el)
+  {\n@@ -145,7 +141,7 @@\n                 } else {\n                     continue;\n
+  \                }\n-                namespacesStack.peek().put(prefix, attr.getValue());\n+
+  \               namespaces.put(prefix, attr.getValue());\n             }\n \n             //
+  get the element prefix if any\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from private final Stack<HashMap<String, String>> namespacesStack = new Stack<>(); to private final HashMap<String, String> namespaces = new HashMap<>();
+  ------------
+  ===
+  update-node
+  ---
+  field_declaration: private final Stack<HashMap<String, String>> namespacesStack = new Stack<>(); [2537,2614]
+  replace private final Stack<HashMap<String, String>> namespacesStack = new Stack<>(); by private final HashMap<String, String> namespaces = new HashMap<>();
+
+  New cluster:
+  UPDATE from public W3CBuilder(Document doc) {
+              this.doc = doc;
+              this.namespacesStack.push(new HashMap<String, String>());
+          } to public W3CBuilder(Document doc) {
+              this.doc = doc;
+          }
+  ------------
+  ===
+  update-node
+  ---
+  constructor_declaration: public W3CBuilder(Document doc) {
+              this.doc = doc;
+              this.namespacesStack.push(new HashMap<String, String>());
+          } [2692,2833]
+  replace public W3CBuilder(Document doc) {
+              this.doc = doc;
+              this.namespacesStack.push(new HashMap<String, String>());
+          } by public W3CBuilder(Document doc) {
+              this.doc = doc;
+          }
+
+  New cluster:
+  UPDATE from for (Attribute attr : attributes) {
+                  String key = attr.getKey();
+                  String prefix;
+                  if (key.equals(xmlnsKey)) {
+                      prefix = "";
+                  } else if (key.startsWith(xmlnsPrefix)) {
+                      prefix = key.substring(xmlnsPrefix.length());
+                  } else {
+                      continue;
+                  }
+                  namespacesStack.peek().put(prefix, attr.getValue());
+              } to for (Attribute attr : attributes) {
+                  String key = attr.getKey();
+                  String prefix;
+                  if (key.equals(xmlnsKey)) {
+                      prefix = "";
+                  } else if (key.startsWith(xmlnsPrefix)) {
+                      prefix = key.substring(xmlnsPrefix.length());
+                  } else {
+                      continue;
+                  }
+                  namespaces.put(prefix, attr.getValue());
+              }
+  ------------
+  ===
+  update-node
+  ---
+  enhanced_for_statement: for (Attribute attr : attributes) {
+                  String key = attr.getKey();
+                  String prefix;
+                  if (key.equals(xmlnsKey)) {
+                      prefix = "";
+                  } else if (key.startsWith(xmlnsPrefix)) {
+                      prefix = key.substring(xmlnsPrefix.length());
+                  } else {
+                      continue;
+                  }
+                  namespacesStack.peek().put(prefix, attr.getValue());
+              } [5657,6124]
+  replace for (Attribute attr : attributes) {
+                  String key = attr.getKey();
+                  String prefix;
+                  if (key.equals(xmlnsKey)) {
+                      prefix = "";
+                  } else if (key.startsWith(xmlnsPrefix)) {
+                      prefix = key.substring(xmlnsPrefix.length());
+                  } else {
+                      continue;
+                  }
+                  namespacesStack.peek().put(prefix, attr.getValue());
+              } by for (Attribute attr : attributes) {
+                  String key = attr.getKey();
+                  String prefix;
+                  if (key.equals(xmlnsKey)) {
+                      prefix = "";
+                  } else if (key.startsWith(xmlnsPrefix)) {
+                      prefix = key.substring(xmlnsPrefix.length());
+                  } else {
+                      continue;
+                  }
+                  namespaces.put(prefix, attr.getValue());
+              }
+
+  New cluster:
+  UPDATE from String namespace = namespacesStack.peek().get(prefix); to String namespace = namespaces.get(prefix);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: String namespace = namespacesStack.peek().get(prefix); [3233,3287]
+  replace String namespace = namespacesStack.peek().get(prefix); by String namespace = namespaces.get(prefix);
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: namespacesStack.push(new HashMap<>(namespacesStack.peek())); [2914,2974]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: namespacesStack.push(new HashMap<>(namespacesStack.peek())); [2914,2974]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: namespacesStack.pop(); [4813,4835]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: namespacesStack.pop(); [4813,4835]
+  ===
+
+...

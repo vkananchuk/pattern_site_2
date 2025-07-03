@@ -1,0 +1,34 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -64,6 +64,9 @@
+       {
+           // Note! Should not skip if `property` null since that'd skip check
+           // for config overrides, in case of root value
+  +        if (property == null) {
+  +            return this;
+  +        }
+           JsonFormat.Value format = findFormatOverrides(serializers, property, handledType());
+           if (format == null) {
+               return this;
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [2418,2476]
+      parenthesized_expression [2421,2439]
+          equals [2422,2438]
+              identifier: property [2422,2430]
+              null_literal [2434,2438]
+      block [2440,2476]
+          return_statement: return this; [2454,2466]
+  to
+  block [2277,5272]
+  at 0
+
+...

@@ -1,0 +1,106 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -360,10 +360,16 @@
+           if (n != null) {
+               // [databind#2096]: although `binaryValue()` works for real binary node
+               // and embedded "POJO" node, coercion from TextNode may require variant, so:
+  -            if (n instanceof TextNode) {
+  -                return ((TextNode) n).getBinaryValue(b64variant);
+  +            byte[] data = n.binaryValue();
+  +            if (data != null) {
+  +                return data;
+  +            }
+  +            if (n.isPojo()) {
+  +                Object ob = ((POJONode) n).getPojo();
+  +                if (ob instanceof byte[]) {
+  +                    return (byte[]) ob;
+  +                }
+               }
+  -            return n.binaryValue();
+           }
+           // otherwise return null to mark we have no binary content
+           return null;
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: byte[] data = n.binaryValue(); [10520,10550]
+  to
+  block [10333,10674]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: byte[] data = n.binaryValue(); [10520,10550]
+  to
+  block [10333,10674]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [10563,10625]
+      parenthesized_expression [10566,10580]
+          not_equals [10567,10579]
+              identifier: data [10567,10571]
+              null_literal [10575,10579]
+      block [10581,10625]
+          return_statement: return data; [10599,10611]
+  to
+  block [10333,10674]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [10638,10825]
+      parenthesized_expression [10641,10653]
+          method_invocation: n.isPojo() [10642,10652]
+      block [10654,10825]
+          local_variable_declaration: Object ob = ((POJONode) n).getPojo(); [10672,10709]
+          if_statement [10726,10811]
+              parenthesized_expression [10729,10751]
+                  instanceof_expression: ob instanceof byte[] [10730,10750]
+              block [10752,10811]
+                  return_statement: return (byte[]) ob; [10774,10793]
+  to
+  block [10333,10674]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [10520,10628]
+      parenthesized_expression [10523,10546]
+          instanceof_expression: n instanceof TextNode [10524,10545]
+      block [10547,10628]
+          return_statement: return ((TextNode) n).getBinaryValue(b64variant); [10565,10614]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  return_statement: return n.binaryValue(); [10641,10664]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  return_statement: return n.binaryValue(); [10641,10664]
+  ===
+
+...

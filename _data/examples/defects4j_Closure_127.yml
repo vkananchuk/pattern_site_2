@@ -1,0 +1,159 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -167,22 +167,13 @@\n                 outEdges.get(0).getValue()
+  == Branch.UNCOND);\n             Node fallThrough = computeFollowing(n);\n             Node
+  nextCfgNode = outEdges.get(0).getDestination().getValue();\n-            if (nextCfgNode
+  == fallThrough && !inFinally(n.getParent(), n)) {\n+            if (nextCfgNode
+  == fallThrough) {\n               removeNode(n);\n             }\n           }\n
+  \      }\n     }\n \n-    private boolean inFinally(Node parent, Node child) {\n-
+  \     if (parent == null || parent.isFunction()) {\n-        return false;\n-      }
+  else if (NodeUtil.isTryFinallyNode(parent, child)) {\n-        return true;\n-      }
+  else {\n-        return inFinally(parent.getParent(), parent);\n-      }\n-    }\n
+  \n     private Node computeFollowing(Node n) {\n       Node next = ControlFlowAnalysis.computeFollowNode(n);\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from {
+          case Token.RETURN:
+            if (n.hasChildren()) {
+              break;
+            }
+          case Token.BREAK:
+          case Token.CONTINUE:
+            // We are looking for a control flow changing statement that always
+            // branches to the same node. If after removing it control still
+            // branches to the same node, it is safe to remove.
+            List<DiGraphEdge<Node, Branch>> outEdges = gNode.getOutEdges();
+            if (outEdges.size() == 1 &&
+                // If there is a next node, this jump is not useless.
+                (n.getNext() == null || n.getNext().isFunction())) {
+
+              Preconditions.checkState(
+                  outEdges.get(0).getValue() == Branch.UNCOND);
+              Node fallThrough = computeFollowing(n);
+              Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+              if (nextCfgNode == fallThrough && !inFinally(n.getParent(), n)) {
+                removeNode(n);
+              }
+            }
+        } to {
+          case Token.RETURN:
+            if (n.hasChildren()) {
+              break;
+            }
+          case Token.BREAK:
+          case Token.CONTINUE:
+            // We are looking for a control flow changing statement that always
+            // branches to the same node. If after removing it control still
+            // branches to the same node, it is safe to remove.
+            List<DiGraphEdge<Node, Branch>> outEdges = gNode.getOutEdges();
+            if (outEdges.size() == 1 &&
+                // If there is a next node, this jump is not useless.
+                (n.getNext() == null || n.getNext().isFunction())) {
+
+              Preconditions.checkState(
+                  outEdges.get(0).getValue() == Branch.UNCOND);
+              Node fallThrough = computeFollowing(n);
+              Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+              if (nextCfgNode == fallThrough) {
+                removeNode(n);
+              }
+            }
+        }
+  ------------
+  ===
+  update-node
+  ---
+  switch_block: {
+          case Token.RETURN:
+            if (n.hasChildren()) {
+              break;
+            }
+          case Token.BREAK:
+          case Token.CONTINUE:
+            // We are looking for a control flow changing statement that always
+            // branches to the same node. If after removing it control still
+            // branches to the same node, it is safe to remove.
+            List<DiGraphEdge<Node, Branch>> outEdges = gNode.getOutEdges();
+            if (outEdges.size() == 1 &&
+                // If there is a next node, this jump is not useless.
+                (n.getNext() == null || n.getNext().isFunction())) {
+
+              Preconditions.checkState(
+                  outEdges.get(0).getValue() == Branch.UNCOND);
+              Node fallThrough = computeFollowing(n);
+              Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+              if (nextCfgNode == fallThrough && !inFinally(n.getParent(), n)) {
+                removeNode(n);
+              }
+            }
+        } [5960,6939]
+  replace {
+          case Token.RETURN:
+            if (n.hasChildren()) {
+              break;
+            }
+          case Token.BREAK:
+          case Token.CONTINUE:
+            // We are looking for a control flow changing statement that always
+            // branches to the same node. If after removing it control still
+            // branches to the same node, it is safe to remove.
+            List<DiGraphEdge<Node, Branch>> outEdges = gNode.getOutEdges();
+            if (outEdges.size() == 1 &&
+                // If there is a next node, this jump is not useless.
+                (n.getNext() == null || n.getNext().isFunction())) {
+
+              Preconditions.checkState(
+                  outEdges.get(0).getValue() == Branch.UNCOND);
+              Node fallThrough = computeFollowing(n);
+              Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+              if (nextCfgNode == fallThrough && !inFinally(n.getParent(), n)) {
+                removeNode(n);
+              }
+            }
+        } by {
+          case Token.RETURN:
+            if (n.hasChildren()) {
+              break;
+            }
+          case Token.BREAK:
+          case Token.CONTINUE:
+            // We are looking for a control flow changing statement that always
+            // branches to the same node. If after removing it control still
+            // branches to the same node, it is safe to remove.
+            List<DiGraphEdge<Node, Branch>> outEdges = gNode.getOutEdges();
+            if (outEdges.size() == 1 &&
+                // If there is a next node, this jump is not useless.
+                (n.getNext() == null || n.getNext().isFunction())) {
+
+              Preconditions.checkState(
+                  outEdges.get(0).getValue() == Branch.UNCOND);
+              Node fallThrough = computeFollowing(n);
+              Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+              if (nextCfgNode == fallThrough) {
+                removeNode(n);
+              }
+            }
+        }
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [6951,7241]
+      identifier: inFinally [6967,6976]
+      method_parameters [6951,7241]
+          formal_parameter: Node parent [6977,6988]
+      block [7002,7241]
+          if_statement [7010,7235]
+              parenthesized_expression [7013,7052]
+                  or [7014,7051]
+                      equals [7014,7028]
+                          identifier: parent [7014,7020]
+                          null_literal [7024,7028]
+                      method_invocation: parent.isFunction() [7032,7051]
+              block [7053,7084]
+                  return_statement: return false; [7063,7076]
+
+...

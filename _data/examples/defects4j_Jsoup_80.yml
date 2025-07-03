@@ -1,0 +1,86 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -88,11 +88,9 @@
+               String data = comment.getData();
+               if (data.length() > 1 && (data.startsWith("!") || data.startsWith("?"))) {
+                   Document doc = Jsoup.parse("<" + data.substring(1, data.length() -1) + ">", baseUri, Parser.xmlParser());
+  -                if (doc.childNodeSize() > 0) {
+                       Element el = doc.child(0);
+                       insert = new XmlDeclaration(settings.normalizeTag(el.tagName()), data.startsWith("!"));
+                       insert.attributes().addAll(el.attributes());
+  -                } // else, we couldn't parse it as a decl, so leave as a comment
+               }
+           }
+           insertNode(insert);
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: Element el = doc.child(0); [3463,3489]
+  to
+  block [3319,3804]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: Element el = doc.child(0); [3463,3489]
+  to
+  block [3319,3804]
+  at 1
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: insert = new XmlDeclaration(settings.normalizeTag(el.tagName()), data.startsWith("!")); [3510,3597]
+  to
+  block [3319,3804]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: insert = new XmlDeclaration(settings.normalizeTag(el.tagName()), data.startsWith("!")); [3510,3597]
+  to
+  block [3319,3804]
+  at 2
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: insert.attributes().addAll(el.attributes()); [3618,3662]
+  to
+  block [3319,3804]
+  at 3
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: insert.attributes().addAll(el.attributes()); [3618,3662]
+  to
+  block [3319,3804]
+  at 3
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [3459,3727]
+      parenthesized_expression [3462,3487]
+          greater_than [3463,3486]
+              method_invocation: doc.childNodeSize() [3463,3482]
+              decimal_integer_literal: 0 [3485,3486]
+      block [3488,3727]
+          local_variable_declaration: Element el = doc.child(0); [3510,3536]
+          expression_statement: insert = new XmlDeclaration(settings.normalizeTag(el.tagName()), data.startsWith("!")); [3557,3644]
+          expression_statement: insert.attributes().addAll(el.attributes()); [3665,3709]
+
+...

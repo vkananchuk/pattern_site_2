@@ -1,0 +1,189 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -3,8 +3,6 @@\n import org.jsoup.helper.Validate;\n
+  import org.jsoup.nodes.*;\n import org.jsoup.parser.Tag;\n-import org.jsoup.select.NodeTraversor;\n-import
+  org.jsoup.select.NodeVisitor;\n \n import java.util.List;\n \n@@ -69,17 +67,11 @@\n
+  \    /**\n      Iterates the input and copies trusted nodes (tags, attributes, text)
+  into the destination.\n      */\n-    private final class CleaningVisitor implements
+  NodeVisitor {\n-        private int numDiscarded = 0;\n-        private final Element
+  root;\n-        private Element destination; // current element to append nodes
+  to\n-\n-        private CleaningVisitor(Element root, Element destination) {\n-
+  \           this.root = root;\n-            this.destination = destination;\n-        }\n+
+  \   private int copySafeNodes(Element root, Element destination) {\n+        List<Node>
+  sourceChildren = root.childNodes();\n+        int numDiscarded = 0;\n \n-        public
+  void head(Node source, int depth) {\n+        for (Node source : sourceChildren)
+  {\n             if (source instanceof Element) {\n                 Element sourceEl
+  = (Element) source;\n \n@@ -89,31 +81,20 @@\n                     destination.appendChild(destChild);\n
+  \n                     numDiscarded += meta.numAttribsDiscarded;\n-                    destination
+  = destChild;\n-                } else if (source != root) { // not a safe tag, so
+  don't add. don't count root against discarded.\n+                    numDiscarded
+  += copySafeNodes(sourceEl, destChild);\n+                } else {\n                     numDiscarded++;\n+
+  \                   numDiscarded += copySafeNodes(sourceEl, destination);\n                 }\n
+  \            } else if (source instanceof TextNode) {\n                 TextNode
+  sourceText = (TextNode) source;\n                 TextNode destText = new TextNode(sourceText.getWholeText(),
+  source.baseUri());\n                 destination.appendChild(destText);\n-            }
+  else { // else, we don't care about comments, xml proc instructions, etc\n-                numDiscarded++;\n
+  \            }\n         }\n+        return numDiscarded;\n \n-        public void
+  tail(Node source, int depth) {\n-            if (source instanceof Element && whitelist.isSafeTag(source.nodeName()))
+  {\n-                destination = destination.parent(); // would have descended,
+  so pop destination stack\n-            }\n-        }\n-    }\n \n-    private int
+  copySafeNodes(Element source, Element dest) {\n-        CleaningVisitor cleaningVisitor
+  = new CleaningVisitor(source, dest);\n-        NodeTraversor traversor = new NodeTraversor(cleaningVisitor);\n-
+  \       traversor.traverse(source);\n-        return cleaningVisitor.numDiscarded;\n
+  \    }\n \n     private ElementMeta createSafeElement(Element sourceEl) {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from Element source to Element root
+  ------------
+  ===
+  update-node
+  ---
+  formal_parameter: Element source [4743,4757]
+  replace Element source by Element root
+
+  New cluster:
+  UPDATE from CleaningVisitor cleaningVisitor = new CleaningVisitor(source, dest); to List<Node> sourceChildren = root.childNodes();
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: CleaningVisitor cleaningVisitor = new CleaningVisitor(source, dest); [4783,4851]
+  replace CleaningVisitor cleaningVisitor = new CleaningVisitor(source, dest); by List<Node> sourceChildren = root.childNodes();
+
+  New cluster:
+  UPDATE from NodeTraversor traversor = new NodeTraversor(cleaningVisitor); to int numDiscarded = 0;
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: NodeTraversor traversor = new NodeTraversor(cleaningVisitor); [4860,4921]
+  replace NodeTraversor traversor = new NodeTraversor(cleaningVisitor); by int numDiscarded = 0;
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  enhanced_for_statement: for (Node source : sourceChildren) {
+              if (source instanceof Element) {
+                  Element sourceEl = (Element) source;
+
+                  if (whitelist.isSafeTag(sourceEl.tagName())) { // safe, clone and copy safe attrs
+                      ElementMeta meta = createSafeElement(sourceEl);
+                      Element destChild = meta.el;
+                      destination.appendChild(destChild);
+
+                      numDiscarded += meta.numAttribsDiscarded;
+                      numDiscarded += copySafeNodes(sourceEl, destChild);
+                  } else {
+                      numDiscarded++;
+                      numDiscarded += copySafeNodes(sourceEl, destination);
+                  }
+              } else if (source instanceof TextNode) {
+                  TextNode sourceText = (TextNode) source;
+                  TextNode destText = new TextNode(sourceText.getWholeText(), source.baseUri());
+                  destination.appendChild(destText);
+              }
+          } [3061,4035]
+  to
+  block [4773,5008]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  enhanced_for_statement: for (Node source : sourceChildren) {
+              if (source instanceof Element) {
+                  Element sourceEl = (Element) source;
+
+                  if (whitelist.isSafeTag(sourceEl.tagName())) { // safe, clone and copy safe attrs
+                      ElementMeta meta = createSafeElement(sourceEl);
+                      Element destChild = meta.el;
+                      destination.appendChild(destChild);
+
+                      numDiscarded += meta.numAttribsDiscarded;
+                      numDiscarded += copySafeNodes(sourceEl, destChild);
+                  } else {
+                      numDiscarded++;
+                      numDiscarded += copySafeNodes(sourceEl, destination);
+                  }
+              } else if (source instanceof TextNode) {
+                  TextNode sourceText = (TextNode) source;
+                  TextNode destText = new TextNode(sourceText.getWholeText(), source.baseUri());
+                  destination.appendChild(destText);
+              }
+          } [3061,4035]
+  to
+  block [4773,5008]
+  at 2
+
+  New cluster:
+  UPDATE from return cleaningVisitor.numDiscarded; to return numDiscarded;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return cleaningVisitor.numDiscarded; [4966,5002]
+  replace return cleaningVisitor.numDiscarded; by return numDiscarded;
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  class_declaration [2980,4711]
+      identifier: CleaningVisitor [3000,3015]
+      class_body [2980,4711]
+          field_declaration: private int numDiscarded = 0; [3049,3078]
+          field_declaration: private final Element root; [3087,3114]
+          field_declaration: private Element destination; [3123,3151]
+          constructor_declaration: private CleaningVisitor(Element root, Element destination) {
+              this.root = root;
+              this.destination = destination;
+          } [3199,3343]
+          method_declaration [3353,4440]
+              identifier: head [3365,3369]
+              method_parameters [3353,4440]
+                  formal_parameter: Node source [3370,3381]
+              block [3394,4440]
+                  if_statement [3408,4430]
+                      parenthesized_expression [3411,3438]
+                          instanceof_expression: source instanceof Element [3412,3437]
+                      block [3439,4055]
+                          local_variable_declaration: Element sourceEl = (Element) source; [3457,3493]
+                          if_statement [3511,4041]
+                              parenthesized_expression [3514,3555]
+                                  method_invocation: whitelist.isSafeTag(sourceEl.tagName()) [3515,3554]
+                              block [3556,3891]
+                                  local_variable_declaration: ElementMeta meta = createSafeElement(sourceEl); [3613,3660]
+                                  local_variable_declaration: Element destChild = meta.el; [3681,3709]
+                                  expression_statement: destination.appendChild(destChild); [3730,3765]
+                                  expression_statement: numDiscarded += meta.numAttribsDiscarded; [3787,3828]
+                                  expression_statement: destination = destChild; [3849,3873]
+          method_declaration [4450,4705]
+              identifier: tail [4462,4466]
+              method_parameters [4450,4705]
+                  formal_parameter: Node source [4467,4478]
+              block [4491,4705]
+                  if_statement [4505,4695]
+                      parenthesized_expression [4508,4577]
+                          and [4509,4576]
+                              instanceof_expression: source instanceof Element [4509,4534]
+                              method_invocation: whitelist.isSafeTag(source.nodeName()) [4538,4576]
+                      block [4578,4695]
+                          expression_statement: destination = destination.parent(); [4596,4631]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: traversor.traverse(source); [4930,4957]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: traversor.traverse(source); [4930,4957]
+  ===
+
+...

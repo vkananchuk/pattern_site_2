@@ -1,0 +1,63 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -541,15 +541,11 @@\n         if (x == null)
+  {\r\n             throw new IllegalArgumentException(\"Null 'x' argument.\");\r\n
+  \        }\r\n-        if (this.allowDuplicateXValues) {\r\n-            add(x,
+  y);\r\n-            return null;\r\n-        }\r\n \r\n         // if we get to
+  here, we know that duplicate X values are not permitted\r\n         XYDataItem overwritten
+  = null;\r\n         int index = indexOf(x);\r\n-        if (index >= 0) {\r\n+        if
+  (index >= 0 && !this.allowDuplicateXValues) {\r\n             XYDataItem existing
+  = (XYDataItem) this.data.get(index);\r\n             try {\r\n                 overwritten
+  = (XYDataItem) existing.clone();\r\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  and [19577,19618]
+  to
+  parenthesized_expression [19680,19692]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  unary_expression: !this.allowDuplicateXValues [19591,19618]
+  to
+  and [19577,19618]
+  at 1
+  ===
+  insert-node
+  ---
+  and [19577,19618]
+  to
+  parenthesized_expression [19680,19692]
+  at 0
+
+  New cluster:
+  MOVE from and [19577,19618]
+  ------------
+  ===
+  move-tree
+  ---
+  greater_or_equals [19681,19691]
+      identifier: index [19681,19686]
+      decimal_integer_literal: 0 [19690,19691]
+  to
+  and [19577,19618]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [19417,19511]
+      parenthesized_expression [19420,19448]
+          field_access: this.allowDuplicateXValues [19421,19447]
+      block [19449,19511]
+          expression_statement: add(x, y); [19464,19474]
+          return_statement: return null; [19488,19500]
+
+...

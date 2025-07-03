@@ -1,0 +1,156 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -1625,19 +1625,13 @@
+           int years = getYears();
+           int months = getMonths();
+           if (years != 0 || months != 0) {
+  -            long totalMonths = years * 12L + months;
+  -            if (type.isSupported(DurationFieldType.YEARS_TYPE)) {
+  -                int normalizedYears = FieldUtils.safeToInt(totalMonths / 12);
+  -                result = result.withYears(normalizedYears);
+  -                totalMonths = totalMonths - (normalizedYears * 12);
+  +            years = FieldUtils.safeAdd(years, months / 12);
+  +            months = months % 12;
+  +            if (years != 0) {
+  +                result = result.withYears(years);
+               }
+  -            if (type.isSupported(DurationFieldType.MONTHS_TYPE)) {
+  -                int normalizedMonths = FieldUtils.safeToInt(totalMonths);
+  -                result = result.withMonths(normalizedMonths);
+  -                totalMonths = totalMonths - normalizedMonths;
+  -            }
+  -            if (totalMonths != 0) {
+  -                throw new UnsupportedOperationException("Unable to normalize as PeriodType is missing either years or months but period has a month/year amount: " + toString());
+  +            if (months != 0) {
+  +                result = result.withMonths(months);
+               }
+           }
+           return result;
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: years = FieldUtils.safeAdd(years, months / 12); [70804,70851]
+  to
+  block [70790,71647]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: years = FieldUtils.safeAdd(years, months / 12); [70804,70851]
+  to
+  block [70790,71647]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: months = months % 12; [70864,70885]
+  to
+  block [70790,71647]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: months = months % 12; [70864,70885]
+  to
+  block [70790,71647]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [70898,70979]
+      parenthesized_expression [70901,70913]
+          not_equals [70902,70912]
+              identifier: years [70902,70907]
+              decimal_integer_literal: 0 [70911,70912]
+      block [70914,70979]
+          expression_statement: result = result.withYears(years); [70932,70965]
+  to
+  block [70790,71647]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [70992,71076]
+      parenthesized_expression [70995,71008]
+          not_equals [70996,71007]
+              identifier: months [70996,71002]
+              decimal_integer_literal: 0 [71006,71007]
+      block [71009,71076]
+          expression_statement: result = result.withMonths(months); [71027,71062]
+  to
+  block [70790,71647]
+  at 3
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: long totalMonths = years * 12L + months; [70804,70844]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: long totalMonths = years * 12L + months; [70804,70844]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [70857,71130]
+      parenthesized_expression [70860,70908]
+          method_invocation: type.isSupported(DurationFieldType.YEARS_TYPE) [70861,70907]
+      block [70909,71130]
+          local_variable_declaration: int normalizedYears = FieldUtils.safeToInt(totalMonths / 12); [70927,70988]
+          expression_statement: result = result.withYears(normalizedYears); [71005,71048]
+          expression_statement: totalMonths = totalMonths - (normalizedYears * 12); [71065,71116]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [71143,71409]
+      parenthesized_expression [71146,71195]
+          method_invocation: type.isSupported(DurationFieldType.MONTHS_TYPE) [71147,71194]
+      block [71196,71409]
+          local_variable_declaration: int normalizedMonths = FieldUtils.safeToInt(totalMonths); [71214,71271]
+          expression_statement: result = result.withMonths(normalizedMonths); [71288,71333]
+          expression_statement: totalMonths = totalMonths - normalizedMonths; [71350,71395]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [71422,71637]
+      parenthesized_expression [71425,71443]
+          not_equals [71426,71442]
+              identifier: totalMonths [71426,71437]
+              decimal_integer_literal: 0 [71441,71442]
+      block [71444,71637]
+          throw_statement: throw new UnsupportedOperationException("Unable to normalize as PeriodType is missing either years or months but period has a month/year amount: " + toString()); [71462,71623]
+
+...

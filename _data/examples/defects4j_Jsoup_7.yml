@@ -1,0 +1,83 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -2,7 +2,6 @@\n \n import org.jsoup.helper.Validate;\n
+  import org.jsoup.parser.Tag;\n-import org.jsoup.select.Elements;\n \n import java.nio.charset.Charset;\n
+  import java.nio.charset.CharsetEncoder;\n@@ -111,8 +110,6 @@\n         normaliseTextNodes(htmlEl);\n
+  \        normaliseTextNodes(this);\n \n-        normaliseStructure(\"head\", htmlEl);\n-
+  \       normaliseStructure(\"body\", htmlEl);\n         \n         return this;\n
+  \    }\n@@ -137,26 +134,7 @@\n     }\n \n     // merge multiple <head> or <body>
+  contents into one, delete the remainder, and ensure they are owned by <html>\n-
+  \   private void normaliseStructure(String tag, Element htmlEl) {\n-        Elements
+  elements = this.getElementsByTag(tag);\n-        Element master = elements.first();
+  // will always be available as created above if not existent\n-        if (elements.size()
+  > 1) { // dupes, move contents to master\n-            List<Node> toMove = new ArrayList<Node>();\n-
+  \           for (int i = 1; i < elements.size(); i++) {\n-                Node dupe
+  = elements.get(i);\n-                for (Node node : dupe.childNodes)\n-                    toMove.add(node);\n-
+  \               dupe.remove();\n-            }\n-\n-            for (Node dupe :
+  toMove)\n-                master.appendChild(dupe);\n-        }\n         // ensure
+  parented by <html>\n-        if (!master.parent().equals(htmlEl)) {\n-            htmlEl.appendChild(master);
+  // includes remove()            \n-        }\n-    }\n \n     // fast method to
+  get first by tag name, used for html, head, body finders\n     private Element findFirstElementByTagName(String
+  tag, Node node) {\n"
+tree_diff: |+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: normaliseStructure("head", htmlEl); [3502,3537]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: normaliseStructure("head", htmlEl); [3502,3537]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: normaliseStructure("body", htmlEl); [3546,3581]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: normaliseStructure("body", htmlEl); [3546,3581]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [4346,5188]
+      identifier: normaliseStructure [4359,4377]
+      method_parameters [4346,5188]
+          formal_parameter: String tag [4378,4388]
+      block [4406,5188]
+          local_variable_declaration: Elements elements = this.getElementsByTag(tag); [4416,4463]
+          local_variable_declaration: Element master = elements.first(); [4472,4506]
+          if_statement [4576,5015]
+              parenthesized_expression [4579,4600]
+                  greater_than [4580,4599]
+                      method_invocation: elements.size() [4580,4595]
+                      decimal_integer_literal: 1 [4598,4599]
+              block [4601,5015]
+                  local_variable_declaration: List<Node> toMove = new ArrayList<Node>(); [4649,4691]
+                  for_statement: for (int i = 1; i < elements.size(); i++) {
+                  Node dupe = elements.get(i);
+                  for (Node node : dupe.childNodes)
+                      toMove.add(node);
+                  dupe.remove();
+              } [4704,4925]
+                  enhanced_for_statement: for (Node dupe : toMove)
+                  master.appendChild(dupe); [4939,5005]
+          if_statement [5061,5182]
+              parenthesized_expression [5064,5097]
+                  unary_expression: !master.parent().equals(htmlEl) [5065,5096]
+              block [5098,5182]
+                  expression_statement: htmlEl.appendChild(master); [5112,5139]
+
+...

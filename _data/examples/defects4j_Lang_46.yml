@@ -1,0 +1,423 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -83,7 +83,7 @@\n      * @return String with
+  escaped values, <code>null</code> if null string input\n      */\n     public static
+  String escapeJava(String str) {\n-        return escapeJavaStyleString(str, false,
+  false);\n+        return escapeJavaStyleString(str, false);\n     }\n \n     /**\n@@
+  -99,7 +99,7 @@\n      * @throws IOException if error occurs on underlying Writer\n
+  \     */\n     public static void escapeJava(Writer out, String str) throws IOException
+  {\n-        escapeJavaStyleString(out, str, false, false);\n+        escapeJavaStyleString(out,
+  str, false);\n     }\n \n     /**\n@@ -124,7 +124,7 @@\n      * @return String with
+  escaped values, <code>null</code> if null string input\n      */\n     public static
+  String escapeJavaScript(String str) {\n-        return escapeJavaStyleString(str,
+  true, true);\n+        return escapeJavaStyleString(str, true);\n     }\n \n     /**\n@@
+  -140,7 +140,7 @@\n      * @throws IOException if error occurs on underlying Writer\n
+  \     **/\n     public static void escapeJavaScript(Writer out, String str) throws
+  IOException {\n-        escapeJavaStyleString(out, str, true, true);\n+        escapeJavaStyleString(out,
+  str, true);\n     }\n \n     /**\n@@ -151,13 +151,13 @@\n      * @param escapeForwardSlash
+  TODO\n      * @return the escaped string\n      */\n-    private static String escapeJavaStyleString(String
+  str, boolean escapeSingleQuotes, boolean escapeForwardSlash) {\n+    private static
+  String escapeJavaStyleString(String str, boolean escapeSingleQuotes) {\n         if
+  (str == null) {\n             return null;\n         }\n         try {\n             StringWriter
+  writer = new StringWriter(str.length() * 2);\n-            escapeJavaStyleString(writer,
+  str, escapeSingleQuotes, escapeForwardSlash);\n+            escapeJavaStyleString(writer,
+  str, escapeSingleQuotes);\n             return writer.toString();\n         } catch
+  (IOException ioe) {\n             // this should never ever happen while writing
+  to a StringWriter\n@@ -175,8 +175,7 @@\n      * @param escapeForwardSlash TODO\n
+  \     * @throws IOException if an IOException occurs\n      */\n-    private static
+  void escapeJavaStyleString(Writer out, String str, boolean escapeSingleQuote,\n-
+  \           boolean escapeForwardSlash) throws IOException {\n+    private static
+  void escapeJavaStyleString(Writer out, String str, boolean escapeSingleQuote) throws
+  IOException {\n         if (out == null) {\n             throw new IllegalArgumentException(\"The
+  Writer must not be null\");\n         }\n@@ -242,9 +241,7 @@\n                         out.write('\\\\');\n
+  \                        break;\n                     case '/' :\n-                        if
+  (escapeForwardSlash) {\n                             out.write('\\\\');\n-                        }\n
+  \                        out.write('/');\n                         break;\n                     default
+  :\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return escapeJavaStyleString(str, false, false); to return escapeJavaStyleString(str, false);
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return escapeJavaStyleString(str, false, false); [3141,3189]
+  replace return escapeJavaStyleString(str, false, false); by return escapeJavaStyleString(str, false);
+
+  New cluster:
+  UPDATE from escapeJavaStyleString(out, str, false, false); to escapeJavaStyleString(out, str, false);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: escapeJavaStyleString(out, str, false, false); [3792,3838]
+  replace escapeJavaStyleString(out, str, false, false); by escapeJavaStyleString(out, str, false);
+
+  New cluster:
+  UPDATE from return escapeJavaStyleString(str, true, true); to return escapeJavaStyleString(str, true);
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return escapeJavaStyleString(str, true, true); [4733,4779]
+  replace return escapeJavaStyleString(str, true, true); by return escapeJavaStyleString(str, true);
+
+  New cluster:
+  UPDATE from escapeJavaStyleString(out, str, true, true); to escapeJavaStyleString(out, str, true);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: escapeJavaStyleString(out, str, true, true); [5401,5445]
+  replace escapeJavaStyleString(out, str, true, true); by escapeJavaStyleString(out, str, true);
+
+  New cluster:
+  UPDATE from for (int i = 0; i < sz; i++) {
+              char ch = str.charAt(i);
+
+              // handle unicode
+              if (ch > 0xfff) {
+                  out.write("\\u" + hex(ch));
+              } else if (ch > 0xff) {
+                  out.write("\\u0" + hex(ch));
+              } else if (ch > 0x7f) {
+                  out.write("\\u00" + hex(ch));
+              } else if (ch < 32) {
+                  switch (ch) {
+                      case '\b' :
+                          out.write('\\');
+                          out.write('b');
+                          break;
+                      case '\n' :
+                          out.write('\\');
+                          out.write('n');
+                          break;
+                      case '\t' :
+                          out.write('\\');
+                          out.write('t');
+                          break;
+                      case '\f' :
+                          out.write('\\');
+                          out.write('f');
+                          break;
+                      case '\r' :
+                          out.write('\\');
+                          out.write('r');
+                          break;
+                      default :
+                          if (ch > 0xf) {
+                              out.write("\\u00" + hex(ch));
+                          } else {
+                              out.write("\\u000" + hex(ch));
+                          }
+                          break;
+                  }
+              } else {
+                  switch (ch) {
+                      case '\'' :
+                          if (escapeSingleQuote) {
+                              out.write('\\');
+                          }
+                          out.write('\'');
+                          break;
+                      case '"' :
+                          out.write('\\');
+                          out.write('"');
+                          break;
+                      case '\\' :
+                          out.write('\\');
+                          out.write('\\');
+                          break;
+                      case '/' :
+                          if (escapeForwardSlash) {
+                              out.write('\\');
+                          }
+                          out.write('/');
+                          break;
+                      default :
+                          out.write(ch);
+                          break;
+                  }
+              }
+          } to for (int i = 0; i < sz; i++) {
+              char ch = str.charAt(i);
+
+              // handle unicode
+              if (ch > 0xfff) {
+                  out.write("\\u" + hex(ch));
+              } else if (ch > 0xff) {
+                  out.write("\\u0" + hex(ch));
+              } else if (ch > 0x7f) {
+                  out.write("\\u00" + hex(ch));
+              } else if (ch < 32) {
+                  switch (ch) {
+                      case '\b' :
+                          out.write('\\');
+                          out.write('b');
+                          break;
+                      case '\n' :
+                          out.write('\\');
+                          out.write('n');
+                          break;
+                      case '\t' :
+                          out.write('\\');
+                          out.write('t');
+                          break;
+                      case '\f' :
+                          out.write('\\');
+                          out.write('f');
+                          break;
+                      case '\r' :
+                          out.write('\\');
+                          out.write('r');
+                          break;
+                      default :
+                          if (ch > 0xf) {
+                              out.write("\\u00" + hex(ch));
+                          } else {
+                              out.write("\\u000" + hex(ch));
+                          }
+                          break;
+                  }
+              } else {
+                  switch (ch) {
+                      case '\'' :
+                          if (escapeSingleQuote) {
+                              out.write('\\');
+                          }
+                          out.write('\'');
+                          break;
+                      case '"' :
+                          out.write('\\');
+                          out.write('"');
+                          break;
+                      case '\\' :
+                          out.write('\\');
+                          out.write('\\');
+                          break;
+                      case '/' :
+                              out.write('\\');
+                          out.write('/');
+                          break;
+                      default :
+                          out.write(ch);
+                          break;
+                  }
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 0; i < sz; i++) {
+              char ch = str.charAt(i);
+
+              // handle unicode
+              if (ch > 0xfff) {
+                  out.write("\\u" + hex(ch));
+              } else if (ch > 0xff) {
+                  out.write("\\u0" + hex(ch));
+              } else if (ch > 0x7f) {
+                  out.write("\\u00" + hex(ch));
+              } else if (ch < 32) {
+                  switch (ch) {
+                      case '\b' :
+                          out.write('\\');
+                          out.write('b');
+                          break;
+                      case '\n' :
+                          out.write('\\');
+                          out.write('n');
+                          break;
+                      case '\t' :
+                          out.write('\\');
+                          out.write('t');
+                          break;
+                      case '\f' :
+                          out.write('\\');
+                          out.write('f');
+                          break;
+                      case '\r' :
+                          out.write('\\');
+                          out.write('r');
+                          break;
+                      default :
+                          if (ch > 0xf) {
+                              out.write("\\u00" + hex(ch));
+                          } else {
+                              out.write("\\u000" + hex(ch));
+                          }
+                          break;
+                  }
+              } else {
+                  switch (ch) {
+                      case '\'' :
+                          if (escapeSingleQuote) {
+                              out.write('\\');
+                          }
+                          out.write('\'');
+                          break;
+                      case '"' :
+                          out.write('\\');
+                          out.write('"');
+                          break;
+                      case '\\' :
+                          out.write('\\');
+                          out.write('\\');
+                          break;
+                      case '/' :
+                          if (escapeForwardSlash) {
+                              out.write('\\');
+                          }
+                          out.write('/');
+                          break;
+                      default :
+                          out.write(ch);
+                          break;
+                  }
+              }
+          } [7103,9445]
+  replace for (int i = 0; i < sz; i++) {
+              char ch = str.charAt(i);
+
+              // handle unicode
+              if (ch > 0xfff) {
+                  out.write("\\u" + hex(ch));
+              } else if (ch > 0xff) {
+                  out.write("\\u0" + hex(ch));
+              } else if (ch > 0x7f) {
+                  out.write("\\u00" + hex(ch));
+              } else if (ch < 32) {
+                  switch (ch) {
+                      case '\b' :
+                          out.write('\\');
+                          out.write('b');
+                          break;
+                      case '\n' :
+                          out.write('\\');
+                          out.write('n');
+                          break;
+                      case '\t' :
+                          out.write('\\');
+                          out.write('t');
+                          break;
+                      case '\f' :
+                          out.write('\\');
+                          out.write('f');
+                          break;
+                      case '\r' :
+                          out.write('\\');
+                          out.write('r');
+                          break;
+                      default :
+                          if (ch > 0xf) {
+                              out.write("\\u00" + hex(ch));
+                          } else {
+                              out.write("\\u000" + hex(ch));
+                          }
+                          break;
+                  }
+              } else {
+                  switch (ch) {
+                      case '\'' :
+                          if (escapeSingleQuote) {
+                              out.write('\\');
+                          }
+                          out.write('\'');
+                          break;
+                      case '"' :
+                          out.write('\\');
+                          out.write('"');
+                          break;
+                      case '\\' :
+                          out.write('\\');
+                          out.write('\\');
+                          break;
+                      case '/' :
+                          if (escapeForwardSlash) {
+                              out.write('\\');
+                          }
+                          out.write('/');
+                          break;
+                      default :
+                          out.write(ch);
+                          break;
+                  }
+              }
+          } by for (int i = 0; i < sz; i++) {
+              char ch = str.charAt(i);
+
+              // handle unicode
+              if (ch > 0xfff) {
+                  out.write("\\u" + hex(ch));
+              } else if (ch > 0xff) {
+                  out.write("\\u0" + hex(ch));
+              } else if (ch > 0x7f) {
+                  out.write("\\u00" + hex(ch));
+              } else if (ch < 32) {
+                  switch (ch) {
+                      case '\b' :
+                          out.write('\\');
+                          out.write('b');
+                          break;
+                      case '\n' :
+                          out.write('\\');
+                          out.write('n');
+                          break;
+                      case '\t' :
+                          out.write('\\');
+                          out.write('t');
+                          break;
+                      case '\f' :
+                          out.write('\\');
+                          out.write('f');
+                          break;
+                      case '\r' :
+                          out.write('\\');
+                          out.write('r');
+                          break;
+                      default :
+                          if (ch > 0xf) {
+                              out.write("\\u00" + hex(ch));
+                          } else {
+                              out.write("\\u000" + hex(ch));
+                          }
+                          break;
+                  }
+              } else {
+                  switch (ch) {
+                      case '\'' :
+                          if (escapeSingleQuote) {
+                              out.write('\\');
+                          }
+                          out.write('\'');
+                          break;
+                      case '"' :
+                          out.write('\\');
+                          out.write('"');
+                          break;
+                      case '\\' :
+                          out.write('\\');
+                          out.write('\\');
+                          break;
+                      case '/' :
+                              out.write('\\');
+                          out.write('/');
+                          break;
+                      default :
+                          out.write(ch);
+                          break;
+                  }
+              }
+          }
+
+  New cluster:
+  UPDATE from escapeJavaStyleString(writer, str, escapeSingleQuotes, escapeForwardSlash); to escapeJavaStyleString(writer, str, escapeSingleQuotes);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: escapeJavaStyleString(writer, str, escapeSingleQuotes, escapeForwardSlash); [6037,6112]
+  replace escapeJavaStyleString(writer, str, escapeSingleQuotes, escapeForwardSlash); by escapeJavaStyleString(writer, str, escapeSingleQuotes);
+
+...

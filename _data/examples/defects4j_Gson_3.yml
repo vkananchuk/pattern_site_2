@@ -1,0 +1,57 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -33,10 +33,6 @@\n import java.util.SortedSet;\n
+  import java.util.TreeMap;\n import java.util.TreeSet;\n-import java.util.concurrent.ConcurrentHashMap;\n-import
+  java.util.concurrent.ConcurrentMap;\n-import java.util.concurrent.ConcurrentNavigableMap;\n-import
+  java.util.concurrent.ConcurrentSkipListMap;\n \n import com.google.gson.InstanceCreator;\n
+  import com.google.gson.JsonIOException;\n@@ -176,19 +172,7 @@\n     }\n \n     if
+  (Map.class.isAssignableFrom(rawType)) {\n-      if (ConcurrentNavigableMap.class.isAssignableFrom(rawType))
+  {\n-        return new ObjectConstructor<T>() {\n-          @Override public T construct()
+  {\n-            return (T) new ConcurrentSkipListMap<Object, Object>();\n-          }\n-
+  \       };\n-      } else if (ConcurrentMap.class.isAssignableFrom(rawType)) {\n-
+  \       return new ObjectConstructor<T>() {\n-          @Override public T construct()
+  {\n-            return (T) new ConcurrentHashMap<Object, Object>();\n-          }\n-
+  \       };\n-      } else if (SortedMap.class.isAssignableFrom(rawType)) {\n+      if
+  (SortedMap.class.isAssignableFrom(rawType)) {\n         return new ObjectConstructor<T>()
+  {\n           @Override public T construct() {\n             return (T) new TreeMap<Object,
+  Object>();\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from ConcurrentNavigableMap.class.isAssignableFrom(rawType) to SortedMap.class.isAssignableFrom(rawType)
+  ------------
+  ===
+  update-node
+  ---
+  method_invocation: ConcurrentNavigableMap.class.isAssignableFrom(rawType) [6323,6377]
+  replace ConcurrentNavigableMap.class.isAssignableFrom(rawType) by SortedMap.class.isAssignableFrom(rawType)
+
+  New cluster:
+  UPDATE from return new ObjectConstructor<T>() {
+            @Override public T construct() {
+              return (T) new ConcurrentSkipListMap<Object, Object>();
+            }
+          }; to return new ObjectConstructor<T>() {
+            @Override public T construct() {
+              return (T) new TreeMap<Object, Object>();
+            }
+          };
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return new ObjectConstructor<T>() {
+            @Override public T construct() {
+              return (T) new ConcurrentSkipListMap<Object, Object>();
+            }
+          }; [6389,6558]
+  replace return new ObjectConstructor<T>() {
+            @Override public T construct() {
+              return (T) new ConcurrentSkipListMap<Object, Object>();
+            }
+          }; by return new ObjectConstructor<T>() {
+            @Override public T construct() {
+              return (T) new TreeMap<Object, Object>();
+            }
+          };
+
+...

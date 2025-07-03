@@ -1,0 +1,45 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -317,10 +317,9 @@\n             while (iter.hasNext())\n
+  \            {\n                 buff.append(iter.next());\n-                buff.append(\",
+  \");\n             }\n \n-            throw new MissingOptionException(buff.substring(0,
+  buff.length() - 2));\n+            throw new MissingOptionException(buff.toString());\n
+  \        }\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from while (iter.hasNext())
+              {
+                  buff.append(iter.next());
+                  buff.append(", ");
+              } to while (iter.hasNext())
+              {
+                  buff.append(iter.next());
+              }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while (iter.hasNext())
+              {
+                  buff.append(iter.next());
+                  buff.append(", ");
+              } [9944,10071]
+  replace while (iter.hasNext())
+              {
+                  buff.append(iter.next());
+                  buff.append(", ");
+              } by while (iter.hasNext())
+              {
+                  buff.append(iter.next());
+              }
+
+  New cluster:
+  UPDATE from throw new MissingOptionException(buff.substring(0, buff.length() - 2)); to throw new MissingOptionException(buff.toString());
+  ------------
+  ===
+  update-node
+  ---
+  throw_statement: throw new MissingOptionException(buff.substring(0, buff.length() - 2)); [10085,10156]
+  replace throw new MissingOptionException(buff.substring(0, buff.length() - 2)); by throw new MissingOptionException(buff.toString());
+
+...

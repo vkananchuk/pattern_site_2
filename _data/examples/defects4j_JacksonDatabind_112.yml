@@ -1,0 +1,38 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -104,11 +104,8 @@
+           JsonDeserializer<Object> delegate = null;
+           if (_valueInstantiator != null) {
+               // [databind#2324]: check both array-delegating and delegating
+  -            AnnotatedWithParams delegateCreator = _valueInstantiator.getArrayDelegateCreator();
+  +            AnnotatedWithParams delegateCreator = _valueInstantiator.getDelegateCreator();
+               if (delegateCreator != null) {
+  -                JavaType delegateType = _valueInstantiator.getArrayDelegateType(ctxt.getConfig());
+  -                delegate = findDeserializer(ctxt, delegateType, property);
+  -            } else if ((delegateCreator = _valueInstantiator.getDelegateCreator()) != null) {
+                   JavaType delegateType = _valueInstantiator.getDelegateType(ctxt.getConfig());
+                   delegate = findDeserializer(ctxt, delegateType, property);
+               }
+tree_diff: |+
+  New cluster:
+  UPDATE from AnnotatedWithParams delegateCreator = _valueInstantiator.getArrayDelegateCreator(); to AnnotatedWithParams delegateCreator = _valueInstantiator.getDelegateCreator();
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: AnnotatedWithParams delegateCreator = _valueInstantiator.getArrayDelegateCreator(); [4109,4192]
+  replace AnnotatedWithParams delegateCreator = _valueInstantiator.getArrayDelegateCreator(); by AnnotatedWithParams delegateCreator = _valueInstantiator.getDelegateCreator();
+
+  New cluster:
+  UPDATE from JavaType delegateType = _valueInstantiator.getArrayDelegateType(ctxt.getConfig()); to JavaType delegateType = _valueInstantiator.getDelegateType(ctxt.getConfig());
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: JavaType delegateType = _valueInstantiator.getArrayDelegateType(ctxt.getConfig()); [4252,4334]
+  replace JavaType delegateType = _valueInstantiator.getArrayDelegateType(ctxt.getConfig()); by JavaType delegateType = _valueInstantiator.getDelegateType(ctxt.getConfig());
+
+...

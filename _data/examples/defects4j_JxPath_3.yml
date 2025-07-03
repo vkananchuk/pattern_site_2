@@ -1,0 +1,39 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -16,8 +16,6 @@\n  */\n package org.apache.commons.jxpath.ri.model.beans;\n
+  \n-import org.apache.commons.jxpath.AbstractFactory;\n-import org.apache.commons.jxpath.JXPathAbstractFactoryException;\n
+  import org.apache.commons.jxpath.JXPathContext;\n import org.apache.commons.jxpath.JXPathInvalidAccessException;\n
+  import org.apache.commons.jxpath.ri.QName;\n@@ -108,9 +106,6 @@\n             return
+  newParent.createAttribute(context, getName());\n         }\n         else {\n-            if
+  (parent instanceof NullPointer && parent.equals(newParent)) {\n-                throw
+  createBadFactoryException(context.getFactory());\n-            }\n             //
+  Consider these two use cases:\n             // 1. The parent pointer of NullPropertyPointer
+  is \n             //    a PropertyOwnerPointer other than NullPointer. When we call
+  \n@@ -140,9 +135,6 @@\n             return pointer;\n         }\n         else {\n-
+  \           if (parent instanceof NullPointer && parent.equals(newParent)) {\n-
+  \               throw createBadFactoryException(context.getFactory());\n-            }\n
+  \            if (newParent instanceof PropertyOwnerPointer) {\n                 PropertyOwnerPointer
+  pop = (PropertyOwnerPointer) newParent;\n                 newParent = pop.getPropertyPointer();\n@@
+  -229,10 +221,4 @@\n         }\n         return string;\n     }\n-\n-    private
+  JXPathAbstractFactoryException createBadFactoryException(AbstractFactory factory)
+  {\n-        return new JXPathAbstractFactoryException(\"Factory \" + factory\n-
+  \               + \" reported success creating object for path: \" + asPath()\n-
+  \               + \" but object was null.  Terminating to avoid stack recursion.\");\n-
+  \   }\n-}\n\\ No newline at end of file\n+}\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [7734,8061]
+      identifier: createBadFactoryException [7773,7798]
+      method_parameters [7734,8061]
+          formal_parameter: AbstractFactory factory [7799,7822]
+      block [7824,8061]
+          return_statement: return new JXPathAbstractFactoryException("Factory " + factory
+                  + " reported success creating object for path: " + asPath()
+                  + " but object was null.  Terminating to avoid stack recursion."); [7834,8055]
+
+...

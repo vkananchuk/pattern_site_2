@@ -1,0 +1,50 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -2959,16 +2959,8 @@\n         final Class<?>
+  type1 = array1.getClass().getComponentType();\n         T[] joinedArray = (T[])
+  Array.newInstance(type1, array1.length + array2.length);\n         System.arraycopy(array1,
+  0, joinedArray, 0, array1.length);\n-        try {\n             System.arraycopy(array2,
+  0, joinedArray, array1.length, array2.length);\n-        } catch (ArrayStoreException
+  ase) {\n             // Check if problem is incompatible types\n-            final
+  Class<?> type2 = array2.getClass().getComponentType();\n-            if (!type1.isAssignableFrom(type2)){\n-
+  \               throw new IllegalArgumentException(\"Cannot store \"+type2.getName()+\"
+  in an array of \"+type1.getName());\n-            }\n-            throw ase; //
+  No, so rethrow original\n-        }\n         return joinedArray;\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: System.arraycopy(array2, 0, joinedArray, array1.length, array2.length); [113828,113899]
+  to
+  block [113443,114361]
+  at 4
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: System.arraycopy(array2, 0, joinedArray, array1.length, array2.length); [113828,113899]
+  to
+  block [113443,114361]
+  at 4
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  try_statement [113824,114327]
+      block [113828,113923]
+          expression_statement: System.arraycopy(array2, 0, joinedArray, array1.length, array2.length); [113842,113913]
+      excepts [113824,114327]
+          catch_clause: catch (ArrayStoreException ase) {
+              // Check if problem is incompatible types
+              final Class<?> type2 = array2.getClass().getComponentType();
+              if (!type1.isAssignableFrom(type2)){
+                  throw new IllegalArgumentException("Cannot store "+type2.getName()+" in an array of "+type1.getName());
+              }
+              throw ase; // No, so rethrow original
+          } [113924,114327]
+
+...

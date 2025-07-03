@@ -1,0 +1,55 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -2,11 +2,9 @@\n \n import org.jsoup.helper.Validate;\n
+  \n-import java.util.Collections;\n import java.util.List;\n \n abstract class LeafNode
+  extends Node {\n-    private static final List<Node> EmptyNodes = Collections.emptyList();\n
+  \n     Object value; // either a string value, or an attribute map (in the rare
+  case multiple attributes are set)\n \n@@ -93,6 +91,6 @@\n \n     @Override\n     protected
+  List<Node> ensureChildNodes() {\n-        return EmptyNodes;\n+        throw new
+  UnsupportedOperationException(\"Leaf Nodes do not have child nodes.\");\n     }\n
+  }\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  throw_statement: throw new UnsupportedOperationException("Leaf Nodes do not have child nodes."); [2131,2210]
+  to
+  block [2225,2259]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  throw_statement: throw new UnsupportedOperationException("Leaf Nodes do not have child nodes."); [2131,2210]
+  to
+  block [2225,2259]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  field_declaration: private static final List<Node> EmptyNodes = Collections.emptyList(); [158,227]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  field_declaration: private static final List<Node> EmptyNodes = Collections.emptyList(); [158,227]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  return_statement: return EmptyNodes; [2235,2253]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  return_statement: return EmptyNodes; [2235,2253]
+  ===
+
+...

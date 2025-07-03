@@ -1,0 +1,104 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -421,7 +421,7 @@\n         throw new NoInteractionsWanted(join(\n
+  \                \"No interactions wanted here:\",\n                 new LocationImpl(),\n-
+  \               \"But found this interaction on mock '\" + safelyGetMockName(undesired.getMock())
+  + \"':\",\n+                \"But found this interaction on mock '\" + undesired.getMock()
+  + \"':\",\n                 undesired.getLocation(),\n                 scenario\n
+  \        ));\n@@ -431,7 +431,7 @@\n         throw new VerificationInOrderFailure(join(\n
+  \                \"No interactions wanted here:\",\n                 new LocationImpl(),\n-
+  \               \"But found this interaction on mock '\" + safelyGetMockName(undesired.getMock())
+  + \"':\",\n+                \"But found this interaction on mock '\" + undesired.getMock()
+  + \"':\",\n                 undesired.getLocation()\n         ));\n     }\n@@ -674,9
+  +674,6 @@\n     }\n \n     private String exceptionCauseMessageIfAvailable(Exception
+  details) {\n-        if (details.getCause() == null) {\n-            return details.getMessage();\n-
+  \       }\n         return details.getCause().getMessage();\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from throw new NoInteractionsWanted(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                  undesired.getLocation(),
+                  scenario
+          )); to throw new NoInteractionsWanted(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + undesired.getMock() + "':",
+                  undesired.getLocation(),
+                  scenario
+          ));
+  ------------
+  ===
+  update-node
+  ---
+  throw_statement: throw new NoInteractionsWanted(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                  undesired.getLocation(),
+                  scenario
+          )); [17566,17868]
+  replace throw new NoInteractionsWanted(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                  undesired.getLocation(),
+                  scenario
+          )); by throw new NoInteractionsWanted(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + undesired.getMock() + "':",
+                  undesired.getLocation(),
+                  scenario
+          ));
+
+  New cluster:
+  UPDATE from throw new VerificationInOrderFailure(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                  undesired.getLocation()
+          )); to throw new VerificationInOrderFailure(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + undesired.getMock() + "':",
+                  undesired.getLocation()
+          ));
+  ------------
+  ===
+  update-node
+  ---
+  throw_statement: throw new VerificationInOrderFailure(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                  undesired.getLocation()
+          )); [17956,18238]
+  replace throw new VerificationInOrderFailure(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                  undesired.getLocation()
+          )); by throw new VerificationInOrderFailure(join(
+                  "No interactions wanted here:",
+                  new LocationImpl(),
+                  "But found this interaction on mock '" + undesired.getMock() + "':",
+                  undesired.getLocation()
+          ));
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [30955,31039]
+      parenthesized_expression [30958,30986]
+          equals [30959,30985]
+              method_invocation: details.getCause() [30959,30977]
+              null_literal [30981,30985]
+      block [30987,31039]
+          return_statement: return details.getMessage(); [31001,31029]
+
+...

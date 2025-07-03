@@ -1,0 +1,57 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -201,12 +201,8 @@
+       {
+           // 14-Nov-2016, tatu: As per [dataformat-xml#213], we may have explicitly
+           //    configured root name...
+  -        QName rootName = _rootNameFromConfig();
+  -        if (rootName == null) {
+  -            rootName = ROOT_NAME_FOR_NULL;
+  -        }
+           if (jgen instanceof ToXmlGenerator) {
+  -            _initWithRootName((ToXmlGenerator) jgen, rootName);
+  +            _initWithRootName((ToXmlGenerator) jgen, ROOT_NAME_FOR_NULL);
+           }
+           super.serializeValue(jgen, null);
+       }
+tree_diff: |+
+  New cluster:
+  UPDATE from _initWithRootName((ToXmlGenerator) jgen, rootName); to _initWithRootName((ToXmlGenerator) jgen, ROOT_NAME_FOR_NULL);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: _initWithRootName((ToXmlGenerator) jgen, rootName); [7330,7381]
+  replace _initWithRootName((ToXmlGenerator) jgen, rootName); by _initWithRootName((ToXmlGenerator) jgen, ROOT_NAME_FOR_NULL);
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: QName rootName = _rootNameFromConfig(); [7147,7186]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: QName rootName = _rootNameFromConfig(); [7147,7186]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [7195,7271]
+      parenthesized_expression [7198,7216]
+          equals [7199,7215]
+              identifier: rootName [7199,7207]
+              null_literal [7211,7215]
+      block [7217,7271]
+          expression_statement: rootName = ROOT_NAME_FOR_NULL; [7231,7261]
+
+...

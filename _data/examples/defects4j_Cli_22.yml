@@ -1,0 +1,150 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -38,7 +38,6 @@\n     private boolean eatTheRest;\n
+  \n     /** holder for the current option */\n-    private Option currentOption;\n
+  \n     /** the command line Options */\n     private Options options;\n@@ -114,11
+  +113,10 @@\n \n                 if (!options.hasOption(opt))\n                 {\n-
+  \                   processNonOptionToken(token, stopAtNonOption);\n+                    processNonOptionToken(token);\n
+  \                }\n                 else\n                 {\n-                    currentOption
+  = options.getOption(opt);\n                     \n                     tokens.add(opt);\n
+  \                    if (pos != -1)\n@@ -145,9 +143,13 @@\n                     burstToken(token,
+  stopAtNonOption);\n                 }\n             }\n+            else if (stopAtNonOption)\n+
+  \           {\n+                processNonOptionToken(token);\n+            }\n
+  \            else\n             {\n-                processNonOptionToken(token,
+  stopAtNonOption);\n+                tokens.add(token);\n             }\n \n             gobble(iter);\n@@
+  -179,13 +181,10 @@\n      *\n      * @param value The current token\n      */\n-
+  \   private void processNonOptionToken(String value, boolean stopAtNonOption)\n+
+  \   private void processNonOptionToken(String value)\n     {\n-        if (stopAtNonOption
+  && (currentOption == null || !currentOption.hasArg()))\n-        {\n             eatTheRest
+  = true;\n             tokens.add(\"--\");\n-        }\n \n         tokens.add(value);\n
+  \    }\n@@ -209,10 +208,6 @@\n             eatTheRest = true;\n         }\n \n-
+  \       if (options.hasOption(token))\n-        {\n-            currentOption =
+  options.getOption(token);\n-        }\n \n         tokens.add(token);\n     }\n@@
+  -245,6 +240,7 @@\n      */\n     protected void burstToken(String token, boolean
+  stopAtNonOption)\n     {\n+        Option currentOption;\n         for (int i =
+  1; i < token.length(); i++)\n         {\n             String ch = String.valueOf(token.charAt(i));\n@@
+  -263,7 +259,7 @@\n             }\n             else if (stopAtNonOption)\n             {\n-
+  \               processNonOptionToken(token.substring(i), true);\n+                processNonOptionToken(token.substring(i));\n
+  \                break;\n             }\n             else\n"
+tree_diff: "New cluster:\n===\ninsert-node\n---\nmethod_declaration [3862,5766]\nto\nclass_body
+  [1161,9608]\nat 5\n------------\n===\ninsert-node\n---\nidentifier: flatten [3881,3888]\nto\nmethod_declaration
+  [3862,5766]\nat 0\n===\ninsert-node\n---\nmethod_declaration [3862,5766]\nto\nclass_body
+  [1161,9608]\nat 5\n\nNew cluster:\n===\ninsert-node\n---\nmethod_declaration [6382,6531]\nto\nclass_body
+  [1161,9608]\nat 8\n------------\n===\ninsert-node\n---\nmethod_declaration [6382,6531]\nto\nclass_body
+  [1161,9608]\nat 8\n===\ninsert-node\n---\nidentifier: processNonOptionToken [6395,6416]\nto\nmethod_declaration
+  [6382,6531]\nat 0\n\nNew cluster:\nMOVE from method_declaration [3862,5766]\n------------\n===\nmove-tree\n---\nmethod_parameters
+  [3896,5793]\n    formal_parameter: Options options [3923,3938]\nto\nmethod_declaration
+  [3862,5766]\nat 1\n\nNew cluster:\nUnknown cluster type\n------------\n===\ninsert-tree\n---\nblock
+  [3955,5766]\n    expression_statement: init(); [3965,3972]\n    expression_statement:
+  this.options = options; [3981,4004]\n    local_variable_declaration: Iterator iter
+  = Arrays.asList(arguments).iterator(); [4065,4117]\n    while_statement: while (iter.hasNext())\n
+  \       {\n            // get the next command line token\n            String token
+  = (String) iter.next();\n\n            // handle long option --foo or --foo=bar\n
+  \           if (token.startsWith(\"--\"))\n            {\n                int pos
+  = token.indexOf('=');\n                String opt = pos == -1 ? token : token.substring(0,
+  pos); // --foo\n\n                if (!options.hasOption(opt))\n                {\n
+  \                   processNonOptionToken(token);\n                }\n                else\n
+  \               {\n                    \n                    tokens.add(opt);\n
+  \                   if (pos != -1)\n                    {\n                        tokens.add(token.substring(pos
+  + 1));\n                    }\n                }\n            }\n\n            //
+  single hyphen\n            else if (\"-\".equals(token))\n            {\n                tokens.add(token);\n
+  \           }\n            else if (token.startsWith(\"-\"))\n            {\n                if
+  (token.length() == 2 || options.hasOption(token))\n                {\n                    processOptionToken(token,
+  stopAtNonOption);\n                }\n                // requires bursting\n                else\n
+  \               {\n                    burstToken(token, stopAtNonOption);\n                }\n
+  \           }\n            else if (stopAtNonOption)\n            {\n                processNonOptionToken(token);\n
+  \           }\n            else\n            {\n                tokens.add(token);\n
+  \           }\n\n            gobble(iter);\n        } [4170,5690]\n    return_statement:
+  return (String[]) tokens.toArray(new String[tokens.size()]); [5700,5760]\nto\nmethod_declaration
+  [3862,5766]\nat 2\n\nNew cluster:\nMOVE from method_declaration [6382,6531]\n------------\n===\nmove-tree\n---\nmethod_parameters
+  [6409,6686]\n    formal_parameter: String value [6444,6456]\nto\nmethod_declaration
+  [6382,6531]\nat 1\n\nNew cluster:\nUnknown cluster type\n------------\n===\ninsert-tree\n---\nblock
+  [6435,6531]\n    expression_statement: eatTheRest = true; [6449,6467]\n    expression_statement:
+  tokens.add(\"--\"); [6480,6497]\n    expression_statement: tokens.add(value); [6507,6525]\nto\nmethod_declaration
+  [6382,6531]\nat 2\n\nNew cluster:\n===\ninsert-node\n---\nlocal_variable_declaration:
+  Option currentOption; [8602,8623]\nto\nblock [8859,9606]\nat 0\n------------\n===\ninsert-node\n---\nlocal_variable_declaration:
+  Option currentOption; [8602,8623]\nto\nblock [8859,9606]\nat 0\n\nNew cluster:\nUPDATE
+  from for (int i = 1; i < token.length(); i++)\n        {\n            String ch
+  = String.valueOf(token.charAt(i));\n\n            if (options.hasOption(ch))\n            {\n
+  \               tokens.add(\"-\" + ch);\n                currentOption = options.getOption(ch);\n\n
+  \               if (currentOption.hasArg() && (token.length() != (i + 1)))\n                {\n
+  \                   tokens.add(token.substring(i + 1));\n\n                    break;\n
+  \               }\n            }\n            else if (stopAtNonOption)\n            {\n
+  \               processNonOptionToken(token.substring(i), true);\n                break;\n
+  \           }\n            else\n            {\n                tokens.add(token);\n
+  \               break;\n            }\n        } to for (int i = 1; i < token.length();
+  i++)\n        {\n            String ch = String.valueOf(token.charAt(i));\n\n            if
+  (options.hasOption(ch))\n            {\n                tokens.add(\"-\" + ch);\n
+  \               currentOption = options.getOption(ch);\n\n                if (currentOption.hasArg()
+  && (token.length() != (i + 1)))\n                {\n                    tokens.add(token.substring(i
+  + 1));\n\n                    break;\n                }\n            }\n            else
+  if (stopAtNonOption)\n            {\n                processNonOptionToken(token.substring(i));\n
+  \               break;\n            }\n            else\n            {\n                tokens.add(token);\n
+  \               break;\n            }\n        }\n------------\n===\nupdate-node\n---\nfor_statement:
+  for (int i = 1; i < token.length(); i++)\n        {\n            String ch = String.valueOf(token.charAt(i));\n\n
+  \           if (options.hasOption(ch))\n            {\n                tokens.add(\"-\"
+  + ch);\n                currentOption = options.getOption(ch);\n\n                if
+  (currentOption.hasArg() && (token.length() != (i + 1)))\n                {\n                    tokens.add(token.substring(i
+  + 1));\n\n                    break;\n                }\n            }\n            else
+  if (stopAtNonOption)\n            {\n                processNonOptionToken(token.substring(i),
+  true);\n                break;\n            }\n            else\n            {\n
+  \               tokens.add(token);\n                break;\n            }\n        }
+  [8869,9600]\nreplace for (int i = 1; i < token.length(); i++)\n        {\n            String
+  ch = String.valueOf(token.charAt(i));\n\n            if (options.hasOption(ch))\n
+  \           {\n                tokens.add(\"-\" + ch);\n                currentOption
+  = options.getOption(ch);\n\n                if (currentOption.hasArg() && (token.length()
+  != (i + 1)))\n                {\n                    tokens.add(token.substring(i
+  + 1));\n\n                    break;\n                }\n            }\n            else
+  if (stopAtNonOption)\n            {\n                processNonOptionToken(token.substring(i),
+  true);\n                break;\n            }\n            else\n            {\n
+  \               tokens.add(token);\n                break;\n            }\n        }
+  by for (int i = 1; i < token.length(); i++)\n        {\n            String ch =
+  String.valueOf(token.charAt(i));\n\n            if (options.hasOption(ch))\n            {\n
+  \               tokens.add(\"-\" + ch);\n                currentOption = options.getOption(ch);\n\n
+  \               if (currentOption.hasArg() && (token.length() != (i + 1)))\n                {\n
+  \                   tokens.add(token.substring(i + 1));\n\n                    break;\n
+  \               }\n            }\n            else if (stopAtNonOption)\n            {\n
+  \               processNonOptionToken(token.substring(i));\n                break;\n
+  \           }\n            else\n            {\n                tokens.add(token);\n
+  \               break;\n            }\n        }\n\nNew cluster:\n===\ndelete-node\n---\nfield_declaration:
+  private Option currentOption; [1413,1442]\n===\n------------\n===\ndelete-node\n---\nfield_declaration:
+  private Option currentOption; [1413,1442]\n===\n\nNew cluster:\n===\ndelete-node\n---\nmethod_declaration
+  [3896,5793]\n===\n------------\n===\ndelete-node\n---\nmethod_declaration [3896,5793]\n===\n===\ndelete-node\n---\nidentifier:
+  flatten [3915,3922]\n===\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nblock
+  [3989,5793]\n    expression_statement: init(); [3999,4006]\n    expression_statement:
+  this.options = options; [4015,4038]\n    local_variable_declaration: Iterator iter
+  = Arrays.asList(arguments).iterator(); [4099,4151]\n    while_statement: while (iter.hasNext())\n
+  \       {\n            // get the next command line token\n            String token
+  = (String) iter.next();\n\n            // handle long option --foo or --foo=bar\n
+  \           if (token.startsWith(\"--\"))\n            {\n                int pos
+  = token.indexOf('=');\n                String opt = pos == -1 ? token : token.substring(0,
+  pos); // --foo\n\n                if (!options.hasOption(opt))\n                {\n
+  \                   processNonOptionToken(token, stopAtNonOption);\n                }\n
+  \               else\n                {\n                    currentOption = options.getOption(opt);\n
+  \                   \n                    tokens.add(opt);\n                    if
+  (pos != -1)\n                    {\n                        tokens.add(token.substring(pos
+  + 1));\n                    }\n                }\n            }\n\n            //
+  single hyphen\n            else if (\"-\".equals(token))\n            {\n                tokens.add(token);\n
+  \           }\n            else if (token.startsWith(\"-\"))\n            {\n                if
+  (token.length() == 2 || options.hasOption(token))\n                {\n                    processOptionToken(token,
+  stopAtNonOption);\n                }\n                // requires bursting\n                else\n
+  \               {\n                    burstToken(token, stopAtNonOption);\n                }\n
+  \           }\n            else\n            {\n                processNonOptionToken(token,
+  stopAtNonOption);\n            }\n\n            gobble(iter);\n        } [4204,5717]\n
+  \   return_statement: return (String[]) tokens.toArray(new String[tokens.size()]);
+  [5727,5787]\n\nNew cluster:\n===\ndelete-node\n---\nmethod_declaration [6409,6686]\n===\n------------\n===\ndelete-node\n---\nidentifier:
+  processNonOptionToken [6422,6443]\n===\n===\ndelete-node\n---\nmethod_declaration
+  [6409,6686]\n===\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nblock
+  [6487,6686]\n    if_statement [6497,6652]\n        parenthesized_expression [6500,6571]\n
+  \           and [6501,6570]\n                identifier: stopAtNonOption [6501,6516]\n
+  \               parenthesized_expression [6520,6570]\n                    or [6521,6569]\n
+  \                       equals [6521,6542]\n                            identifier:
+  currentOption [6521,6534]\n                            null_literal [6538,6542]\n
+  \                       unary_expression: !currentOption.hasArg() [6546,6569]\n
+  \       block [6580,6652]\n            expression_statement: eatTheRest = true;
+  [6594,6612]\n            expression_statement: tokens.add(\"--\"); [6625,6642]\n
+  \   expression_statement: tokens.add(value); [6662,6680]\n\nNew cluster:\nUnknown
+  cluster type\n------------\n===\ndelete-tree\n---\nif_statement [7352,7455]\n    parenthesized_expression
+  [7355,7381]\n        method_invocation: options.hasOption(token) [7356,7380]\n    block
+  [7390,7455]\n        expression_statement: currentOption = options.getOption(token);
+  [7404,7445]\n\n"

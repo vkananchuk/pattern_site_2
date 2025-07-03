@@ -1,0 +1,63 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -62,10 +62,14 @@\n      */\n     static String
+  stripLeadingAndTrailingQuotes(String str)\n     {\n+        if (str.startsWith(\"\\\"\"))\n+
+  \       {\n+            str = str.substring(1, str.length());\n+        }\n         int
+  length = str.length();\n-        if (length > 1 && str.startsWith(\"\\\"\") && str.endsWith(\"\\\"\")
+  && str.substring(1, length - 1).indexOf('\"') == -1)\n+        if (str.endsWith(\"\\\"\"))\n
+  \        {\n-            str = str.substring(1, length - 1);\n+            str =
+  str.substring(0, length - 1);\n         }\n         \n         return str;\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [2009,2104]
+      parenthesized_expression [2012,2034]
+          method_invocation: str.startsWith("\"") [2013,2033]
+      block [2043,2104]
+          expression_statement: str = str.substring(1, str.length()); [2057,2094]
+  to
+  block [1999,2259]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [2148,2239]
+      parenthesized_expression [2151,2171]
+          method_invocation: str.endsWith("\"") [2152,2170]
+      block [2180,2239]
+          expression_statement: str = str.substring(0, length - 1); [2194,2229]
+  to
+  block [1999,2259]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [2044,2224]
+      parenthesized_expression [2047,2156]
+          and [2048,2155]
+              and [2048,2104]
+                  and [2048,2082]
+                      greater_than [2048,2058]
+                          identifier: length [2048,2054]
+                          decimal_integer_literal: 1 [2057,2058]
+                      method_invocation: str.startsWith("\"") [2062,2082]
+                  method_invocation: str.endsWith("\"") [2086,2104]
+              equals [2108,2155]
+                  method_invocation: str.substring(1, length - 1).indexOf('"') [2108,2149]
+                  unary_expression: -1 [2153,2155]
+      block [2165,2224]
+          expression_statement: str = str.substring(1, length - 1); [2179,2214]
+
+...

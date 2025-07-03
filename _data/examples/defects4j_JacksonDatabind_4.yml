@@ -1,0 +1,155 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -56,7 +56,6 @@\n         int ix = 0;\n         JsonToken
+  t;\n \n-        try {\n             while ((t = jp.nextToken()) != JsonToken.END_ARRAY)
+  {\n                 // Ok: no need to convert Strings, but must recognize nulls\n
+  \                String value;\n@@ -73,10 +72,7 @@\n                 }\n                 chunk[ix++]
+  = value;\n             }\n-        } catch (Exception e) {\n             // note:
+  pass String.class, not String[].class, as we need element type for error info\n-
+  \           throw JsonMappingException.wrapWithPath(e, String.class, ix);\n-        }\n
+  \        String[] result = buffer.completeAndClearBuffer(chunk, ix, String.class);\n
+  \        ctxt.returnObjectBuffer(buffer);\n         return result;\n@@ -94,7 +90,6
+  @@\n         int ix = 0;\n         JsonToken t;\n \n-        try {\n             while
+  ((t = jp.nextToken()) != JsonToken.END_ARRAY) {\n                 // Ok: no need
+  to convert Strings, but must recognize nulls\n                 String value = (t
+  == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);\n@@
+  -104,10 +99,7 @@\n                 }\n                 chunk[ix++] = value;\n             }\n-
+  \       } catch (Exception e) {\n             // note: pass String.class, not String[].class,
+  as we need element type for error info\n-            throw JsonMappingException.wrapWithPath(e,
+  String.class, ix);\n-        }\n         String[] result = buffer.completeAndClearBuffer(chunk,
+  ix, String.class);\n         ctxt.returnObjectBuffer(buffer);\n         return result;\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                  // Ok: no need to convert Strings, but must recognize nulls
+                  String value;
+                  if (t == JsonToken.VALUE_STRING) {
+                      value = jp.getText();
+                  } else if (t == JsonToken.VALUE_NULL) {
+                      value = null; // since we have established that '_elementDeserializer == null' earlier
+                  } else {
+                      value = _parseString(jp, ctxt);
+                  }
+                  if (ix >= chunk.length) {
+                      chunk = buffer.appendCompletedChunk(chunk);
+                      ix = 0;
+                  }
+                  chunk[ix++] = value;
+              } [1922,2635]
+  to
+  block [1491,3016]
+  at 6
+  ------------
+  ===
+  insert-node
+  ---
+  while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                  // Ok: no need to convert Strings, but must recognize nulls
+                  String value;
+                  if (t == JsonToken.VALUE_STRING) {
+                      value = jp.getText();
+                  } else if (t == JsonToken.VALUE_NULL) {
+                      value = null; // since we have established that '_elementDeserializer == null' earlier
+                  } else {
+                      value = _parseString(jp, ctxt);
+                  }
+                  if (ix >= chunk.length) {
+                      chunk = buffer.appendCompletedChunk(chunk);
+                      ix = 0;
+                  }
+                  chunk[ix++] = value;
+              } [1922,2635]
+  to
+  block [1491,3016]
+  at 6
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                  // Ok: no need to convert Strings, but must recognize nulls
+                  String value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);
+                  if (ix >= chunk.length) {
+                      chunk = buffer.appendCompletedChunk(chunk);
+                      ix = 0;
+                  }
+                  chunk[ix++] = value;
+              } [3348,3793]
+  to
+  block [3233,4304]
+  at 5
+  ------------
+  ===
+  insert-node
+  ---
+  while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                  // Ok: no need to convert Strings, but must recognize nulls
+                  String value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);
+                  if (ix >= chunk.length) {
+                      chunk = buffer.appendCompletedChunk(chunk);
+                      ix = 0;
+                  }
+                  chunk[ix++] = value;
+              } [3348,3793]
+  to
+  block [3233,4304]
+  at 5
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  try_statement [1918,2864]
+      block [1922,2659]
+          while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                  // Ok: no need to convert Strings, but must recognize nulls
+                  String value;
+                  if (t == JsonToken.VALUE_STRING) {
+                      value = jp.getText();
+                  } else if (t == JsonToken.VALUE_NULL) {
+                      value = null; // since we have established that '_elementDeserializer == null' earlier
+                  } else {
+                      value = _parseString(jp, ctxt);
+                  }
+                  if (ix >= chunk.length) {
+                      chunk = buffer.appendCompletedChunk(chunk);
+                      ix = 0;
+                  }
+                  chunk[ix++] = value;
+              } [1936,2649]
+      excepts [1918,2864]
+          catch_clause: catch (Exception e) {
+              // note: pass String.class, not String[].class, as we need element type for error info
+              throw JsonMappingException.wrapWithPath(e, String.class, ix);
+          } [2660,2864]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  try_statement [3474,4152]
+      block [3478,3947]
+          while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                  // Ok: no need to convert Strings, but must recognize nulls
+                  String value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);
+                  if (ix >= chunk.length) {
+                      chunk = buffer.appendCompletedChunk(chunk);
+                      ix = 0;
+                  }
+                  chunk[ix++] = value;
+              } [3492,3937]
+      excepts [3474,4152]
+          catch_clause: catch (Exception e) {
+              // note: pass String.class, not String[].class, as we need element type for error info
+              throw JsonMappingException.wrapWithPath(e, String.class, ix);
+          } [3948,4152]
+
+...

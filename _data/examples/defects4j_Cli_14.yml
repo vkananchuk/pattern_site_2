@@ -1,0 +1,115 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -247,6 +247,9 @@\n \n             // needs validation?\n
+  \            boolean validate = option.isRequired() || option instanceof Group;\n+
+  \           if (validate) {\n+                option.validate(commandLine);\n+            }\n
+  \n             // if the child option is present then validate it\n             if
+  (commandLine.hasOption(option)) {\n@@ -255,10 +258,7 @@\n \n                     break;\n
+  \                }\n-                validate = true;\n-            }\n \n-            if
+  (validate) {\n                 option.validate(commandLine);\n             }\n         }\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from for (final Iterator i = options.iterator(); i.hasNext();) {
+              final Option option = (Option) i.next();
+
+              // needs validation?
+              boolean validate = option.isRequired() || option instanceof Group;
+
+              // if the child option is present then validate it
+              if (commandLine.hasOption(option)) {
+                  if (++present > maximum) {
+                      unexpected = option;
+
+                      break;
+                  }
+                  validate = true;
+              }
+
+              if (validate) {
+                  option.validate(commandLine);
+              }
+          } to for (final Iterator i = options.iterator(); i.hasNext();) {
+              final Option option = (Option) i.next();
+
+              // needs validation?
+              boolean validate = option.isRequired() || option instanceof Group;
+              if (validate) {
+                  option.validate(commandLine);
+              }
+
+              // if the child option is present then validate it
+              if (commandLine.hasOption(option)) {
+                  if (++present > maximum) {
+                      unexpected = option;
+
+                      break;
+                  }
+
+                  option.validate(commandLine);
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (final Iterator i = options.iterator(); i.hasNext();) {
+              final Option option = (Option) i.next();
+
+              // needs validation?
+              boolean validate = option.isRequired() || option instanceof Group;
+
+              // if the child option is present then validate it
+              if (commandLine.hasOption(option)) {
+                  if (++present > maximum) {
+                      unexpected = option;
+
+                      break;
+                  }
+                  validate = true;
+              }
+
+              if (validate) {
+                  option.validate(commandLine);
+              }
+          } [8351,8965]
+  replace for (final Iterator i = options.iterator(); i.hasNext();) {
+              final Option option = (Option) i.next();
+
+              // needs validation?
+              boolean validate = option.isRequired() || option instanceof Group;
+
+              // if the child option is present then validate it
+              if (commandLine.hasOption(option)) {
+                  if (++present > maximum) {
+                      unexpected = option;
+
+                      break;
+                  }
+                  validate = true;
+              }
+
+              if (validate) {
+                  option.validate(commandLine);
+              }
+          } by for (final Iterator i = options.iterator(); i.hasNext();) {
+              final Option option = (Option) i.next();
+
+              // needs validation?
+              boolean validate = option.isRequired() || option instanceof Group;
+              if (validate) {
+                  option.validate(commandLine);
+              }
+
+              // if the child option is present then validate it
+              if (commandLine.hasOption(option)) {
+                  if (++present > maximum) {
+                      unexpected = option;
+
+                      break;
+                  }
+
+                  option.validate(commandLine);
+              }
+          }
+
+...

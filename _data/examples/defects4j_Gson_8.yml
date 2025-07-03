@@ -1,0 +1,266 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -20,7 +20,6 @@\n import java.io.ObjectStreamClass;\n
+  import java.lang.reflect.Field;\n import java.lang.reflect.Method;\n-import java.lang.reflect.Modifier;\n
+  \n /**\n  * Do sneaky things to allocate objects without invoking their constructors.\n@@
+  -46,7 +45,6 @@\n         @Override\n         @SuppressWarnings(\"unchecked\")\n
+  \        public <T> T newInstance(Class<T> c) throws Exception {\n-          assertInstantiable(c);\n
+  \          return (T) allocateInstance.invoke(unsafe, c);\n         }\n       };\n@@
+  -70,7 +68,6 @@\n         @Override\n         @SuppressWarnings(\"unchecked\")\n
+  \        public <T> T newInstance(Class<T> c) throws Exception {\n-          assertInstantiable(c);\n
+  \          return (T) newInstance.invoke(null, c, constructorId);\n         }\n
+  \      };\n@@ -90,7 +87,6 @@\n         @Override\n         @SuppressWarnings(\"unchecked\")\n
+  \        public <T> T newInstance(Class<T> c) throws Exception {\n-          assertInstantiable(c);\n
+  \          return (T) newInstance.invoke(null, c, Object.class);\n         }\n       };\n@@
+  -111,13 +107,4 @@\n    * throw an {@link java.lang.UnsupportedOperationException}\n
+  \   * @param c instance of the class to be checked\n    */\n-  private static void
+  assertInstantiable(Class<?> c) {\n-    int modifiers = c.getModifiers();\n-    if
+  (Modifier.isInterface(modifiers)) {\n-      throw new UnsupportedOperationException(\"Interface
+  can't be instantiated! Interface name: \" + c.getName());\n-    }\n-    if (Modifier.isAbstract(modifiers))
+  {\n-      throw new UnsupportedOperationException(\"Abstract class can't be instantiated!
+  Class name: \" + c.getName());\n-    }\n-  }\n }\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  try_statement [1163,1728]
+  to
+  block [1083,3684]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  try_statement [1163,1728]
+  to
+  block [1083,3684]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  try_statement [1980,2682]
+  to
+  block [1083,3684]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  try_statement [1980,2682]
+  to
+  block [1083,3684]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [1167,1694]
+      local_variable_declaration: Class<?> unsafeClass = Class.forName("sun.misc.Unsafe"); [1175,1231]
+      local_variable_declaration: Field f = unsafeClass.getDeclaredField("theUnsafe"); [1238,1290]
+      expression_statement: f.setAccessible(true); [1297,1319]
+      local_variable_declaration: final Object unsafe = f.get(null); [1326,1360]
+      local_variable_declaration: final Method allocateInstance = unsafeClass.getMethod("allocateInstance", Class.class); [1367,1454]
+      return_statement: return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            return (T) allocateInstance.invoke(unsafe, c);
+          }
+        }; [1461,1688]
+  to
+  try_statement [1163,1728]
+  at 0
+
+  New cluster:
+  MOVE from try_statement [1163,1728]
+  ------------
+  ===
+  move-tree
+  ---
+  excepts [1198,1796]
+      catch_clause: catch (Exception ignored) {
+      } [1763,1796]
+  to
+  try_statement [1163,1728]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [1984,2648]
+      local_variable_declaration: Method getConstructorId = ObjectStreamClass.class
+            .getDeclaredMethod("getConstructorId", Class.class); [1992,2104]
+      expression_statement: getConstructorId.setAccessible(true); [2111,2148]
+      local_variable_declaration: final int constructorId = (Integer) getConstructorId.invoke(null, Object.class); [2155,2235]
+      local_variable_declaration: final Method newInstance = ObjectStreamClass.class
+            .getDeclaredMethod("newInstance", Class.class, int.class); [2242,2361]
+      expression_statement: newInstance.setAccessible(true); [2368,2400]
+      return_statement: return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            return (T) newInstance.invoke(null, c, constructorId);
+          }
+        }; [2407,2642]
+  to
+  try_statement [1980,2682]
+  at 0
+
+  New cluster:
+  MOVE from try_statement [1980,2682]
+  ------------
+  ===
+  move-tree
+  ---
+  excepts [2048,2783]
+      catch_clause: catch (Exception ignored) {
+      } [2750,2783]
+  to
+  try_statement [1980,2682]
+  at 1
+
+  New cluster:
+  UPDATE from return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            assertInstantiable(c);
+            return (T) newInstance.invoke(null, c, Object.class);
+          }
+        }; to return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            return (T) newInstance.invoke(null, c, Object.class);
+          }
+        };
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            assertInstantiable(c);
+            return (T) newInstance.invoke(null, c, Object.class);
+          }
+        }; [3173,3440]
+  replace return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            assertInstantiable(c);
+            return (T) newInstance.invoke(null, c, Object.class);
+          }
+        }; by return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            return (T) newInstance.invoke(null, c, Object.class);
+          }
+        };
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [1202,1762]
+      local_variable_declaration: Class<?> unsafeClass = Class.forName("sun.misc.Unsafe"); [1210,1266]
+      local_variable_declaration: Field f = unsafeClass.getDeclaredField("theUnsafe"); [1273,1325]
+      expression_statement: f.setAccessible(true); [1332,1354]
+      local_variable_declaration: final Object unsafe = f.get(null); [1361,1395]
+      local_variable_declaration: final Method allocateInstance = unsafeClass.getMethod("allocateInstance", Class.class); [1402,1489]
+      return_statement: return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            assertInstantiable(c);
+            return (T) allocateInstance.invoke(unsafe, c);
+          }
+        }; [1496,1756]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  try_statement [1198,1796]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  try_statement [1198,1796]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [2052,2749]
+      local_variable_declaration: Method getConstructorId = ObjectStreamClass.class
+            .getDeclaredMethod("getConstructorId", Class.class); [2060,2172]
+      expression_statement: getConstructorId.setAccessible(true); [2179,2216]
+      local_variable_declaration: final int constructorId = (Integer) getConstructorId.invoke(null, Object.class); [2223,2303]
+      local_variable_declaration: final Method newInstance = ObjectStreamClass.class
+            .getDeclaredMethod("newInstance", Class.class, int.class); [2310,2429]
+      expression_statement: newInstance.setAccessible(true); [2436,2468]
+      return_statement: return new UnsafeAllocator() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public <T> T newInstance(Class<T> c) throws Exception {
+            assertInstantiable(c);
+            return (T) newInstance.invoke(null, c, constructorId);
+          }
+        }; [2475,2743]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  try_statement [2048,2783]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  try_statement [2048,2783]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [3929,4349]
+      identifier: assertInstantiable [3949,3967]
+      method_parameters [3929,4349]
+          formal_parameter: Class<?> c [3968,3978]
+      block [3980,4349]
+          local_variable_declaration: int modifiers = c.getModifiers(); [3986,4019]
+          if_statement [4024,4182]
+              parenthesized_expression [4027,4060]
+                  method_invocation: Modifier.isInterface(modifiers) [4028,4059]
+              block [4061,4182]
+                  throw_statement: throw new UnsupportedOperationException("Interface can't be instantiated! Interface name: " + c.getName()); [4069,4176]
+          if_statement [4187,4345]
+              parenthesized_expression [4190,4222]
+                  method_invocation: Modifier.isAbstract(modifiers) [4191,4221]
+              block [4223,4345]
+                  throw_statement: throw new UnsupportedOperationException("Abstract class can't be instantiated! Class name: " + c.getName()); [4231,4339]
+
+...

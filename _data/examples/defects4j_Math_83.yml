@@ -1,0 +1,65 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -289,7 +289,7 @@\n      */\n     private Integer
+  getBasicRow(final int col, boolean ignoreObjectiveRows) {\n         Integer row
+  = null;\n-        int start = ignoreObjectiveRows ? getNumObjectiveFunctions() :
+  0;\n+        int start = getNumObjectiveFunctions();\n         for (int i = start;
+  i < getHeight(); i++) {\n             if (MathUtils.equals(getEntry(i, col), 1.0,
+  epsilon) && (row == null)) {\n                 row = i;\n@@ -338,11 +338,11 @@\n
+  \     */\n     protected RealPointValuePair getSolution() {\n       double[] coefficients
+  = new double[getOriginalNumDecisionVariables()];\n-      Integer negativeVarBasicRow
+  = getBasicRowForSolution(getNegativeDecisionVariableOffset());\n+      Integer negativeVarBasicRow
+  = getBasicRow(getNegativeDecisionVariableOffset());\n       double mostNegative
+  = negativeVarBasicRow == null ? 0 : getEntry(negativeVarBasicRow, getRhsOffset());\n
+  \      Set<Integer> basicRows = new HashSet<Integer>();\n       for (int i = 0;
+  i < coefficients.length; i++) {\n-          Integer basicRow = getBasicRowForSolution(getNumObjectiveFunctions()
+  + i);\n+          Integer basicRow = getBasicRow(getNumObjectiveFunctions() + i);\n
+  \          if (basicRows.contains(basicRow)) {\n               // if multiple variables
+  can take a given value \n               // then we choose the first and set the
+  rest equal to 0\n"
+tree_diff: "New cluster:\nUPDATE from int start = ignoreObjectiveRows ? getNumObjectiveFunctions()
+  : 0; to int start = getNumObjectiveFunctions();\n------------\n===\nupdate-node\n---\nlocal_variable_declaration:
+  int start = ignoreObjectiveRows ? getNumObjectiveFunctions() : 0; [11687,11752]\nreplace
+  int start = ignoreObjectiveRows ? getNumObjectiveFunctions() : 0; by int start =
+  getNumObjectiveFunctions();\n\nNew cluster:\nUPDATE from Integer negativeVarBasicRow
+  = getBasicRowForSolution(getNegativeDecisionVariableOffset()); to Integer negativeVarBasicRow
+  = getBasicRow(getNegativeDecisionVariableOffset());\n------------\n===\nupdate-node\n---\nlocal_variable_declaration:
+  Integer negativeVarBasicRow = getBasicRowForSolution(getNegativeDecisionVariableOffset());
+  [13364,13454]\nreplace Integer negativeVarBasicRow = getBasicRowForSolution(getNegativeDecisionVariableOffset());
+  by Integer negativeVarBasicRow = getBasicRow(getNegativeDecisionVariableOffset());\n\nNew
+  cluster:\nUPDATE from for (int i = 0; i < coefficients.length; i++) {\n          Integer
+  basicRow = getBasicRowForSolution(getNumObjectiveFunctions() + i);\n          if
+  (basicRows.contains(basicRow)) {\n              // if multiple variables can take
+  a given value \n              // then we choose the first and set the rest equal
+  to 0\n              coefficients[i] = 0;\n          } else {\n              basicRows.add(basicRow);\n
+  \             coefficients[i] =\n                  (basicRow == null ? 0 : getEntry(basicRow,
+  getRhsOffset())) -\n                  (restrictToNonNegative ? 0 : mostNegative);\n
+  \         }\n      } to for (int i = 0; i < coefficients.length; i++) {\n          Integer
+  basicRow = getBasicRow(getNumObjectiveFunctions() + i);\n          if (basicRows.contains(basicRow))
+  {\n              // if multiple variables can take a given value \n              //
+  then we choose the first and set the rest equal to 0\n              coefficients[i]
+  = 0;\n          } else {\n              basicRows.add(basicRow);\n              coefficients[i]
+  =\n                  (basicRow == null ? 0 : getEntry(basicRow, getRhsOffset()))
+  -\n                  (restrictToNonNegative ? 0 : mostNegative);\n          }\n
+  \     }\n------------\n===\nupdate-node\n---\nfor_statement: for (int i = 0; i <
+  coefficients.length; i++) {\n          Integer basicRow = getBasicRowForSolution(getNumObjectiveFunctions()
+  + i);\n          if (basicRows.contains(basicRow)) {\n              // if multiple
+  variables can take a given value \n              // then we choose the first and
+  set the rest equal to 0\n              coefficients[i] = 0;\n          } else {\n
+  \             basicRows.add(basicRow);\n              coefficients[i] =\n                  (basicRow
+  == null ? 0 : getEntry(basicRow, getRhsOffset())) -\n                  (restrictToNonNegative
+  ? 0 : mostNegative);\n          }\n      } [13625,14223]\nreplace for (int i = 0;
+  i < coefficients.length; i++) {\n          Integer basicRow = getBasicRowForSolution(getNumObjectiveFunctions()
+  + i);\n          if (basicRows.contains(basicRow)) {\n              // if multiple
+  variables can take a given value \n              // then we choose the first and
+  set the rest equal to 0\n              coefficients[i] = 0;\n          } else {\n
+  \             basicRows.add(basicRow);\n              coefficients[i] =\n                  (basicRow
+  == null ? 0 : getEntry(basicRow, getRhsOffset())) -\n                  (restrictToNonNegative
+  ? 0 : mostNegative);\n          }\n      } by for (int i = 0; i < coefficients.length;
+  i++) {\n          Integer basicRow = getBasicRow(getNumObjectiveFunctions() + i);\n
+  \         if (basicRows.contains(basicRow)) {\n              // if multiple variables
+  can take a given value \n              // then we choose the first and set the rest
+  equal to 0\n              coefficients[i] = 0;\n          } else {\n              basicRows.add(basicRow);\n
+  \             coefficients[i] =\n                  (basicRow == null ? 0 : getEntry(basicRow,
+  getRhsOffset())) -\n                  (restrictToNonNegative ? 0 : mostNegative);\n
+  \         }\n      }\n\n"

@@ -1,0 +1,105 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1,7 +1,9 @@\n-package java_programs;\n+package
+  correct_java_programs;\n import java.util.*;\n import java.util.ArrayDeque;\n \n+import
+  java_programs.Node;\n+\n /*\n  * To change this template, choose Tools | Templates\n
+  \ * and open the template in the editor.\n@@ -21,7 +23,7 @@\n \n         nodesvisited.add(startnode);\n
+  \n-        while (true) {\n+        while (!queue.isEmpty()) {\n             Node
+  node = queue.removeFirst();\n \n             if (node == goalnode) {\n@@ -39,7 +41,7
+  @@\n          * The buggy program always drops into while(true) loop and will not
+  return false\n          * Removed below line to fix compilation error\n          */\n-
+  \       // return false;\n+         return false;\n     }\n \n }\n\\ No newline
+  at end of file\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from while (true) {
+              Node node = queue.removeFirst();
+
+              if (node == goalnode) {
+                  return true;
+              } else {
+                  for (Node successor_node : node.getSuccessors()) {
+                      if (!nodesvisited.contains(successor_node)) {
+                          queue.addFirst(successor_node);
+                          nodesvisited.add(successor_node);
+                      }
+                  }
+              }
+          } to while (!queue.isEmpty()) {
+              Node node = queue.removeFirst();
+
+              if (node == goalnode) {
+                  return true;
+              } else {
+                  for (Node successor_node : node.getSuccessors()) {
+                      if (!nodesvisited.contains(successor_node)) {
+                          queue.addFirst(successor_node);
+                          nodesvisited.add(successor_node);
+                      }
+                  }
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while (true) {
+              Node node = queue.removeFirst();
+
+              if (node == goalnode) {
+                  return true;
+              } else {
+                  for (Node successor_node : node.getSuccessors()) {
+                      if (!nodesvisited.contains(successor_node)) {
+                          queue.addFirst(successor_node);
+                          nodesvisited.add(successor_node);
+                      }
+                  }
+              }
+          } [514,971]
+  replace while (true) {
+              Node node = queue.removeFirst();
+
+              if (node == goalnode) {
+                  return true;
+              } else {
+                  for (Node successor_node : node.getSuccessors()) {
+                      if (!nodesvisited.contains(successor_node)) {
+                          queue.addFirst(successor_node);
+                          nodesvisited.add(successor_node);
+                      }
+                  }
+              }
+          } by while (!queue.isEmpty()) {
+              Node node = queue.removeFirst();
+
+              if (node == goalnode) {
+                  return true;
+              } else {
+                  for (Node successor_node : node.getSuccessors()) {
+                      if (!nodesvisited.contains(successor_node)) {
+                          queue.addFirst(successor_node);
+                          nodesvisited.add(successor_node);
+                      }
+                  }
+              }
+          }
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return false; [1198,1211]
+  to
+  block [383,1171]
+  at 4
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return false; [1198,1211]
+  to
+  block [383,1171]
+  at 4
+
+...

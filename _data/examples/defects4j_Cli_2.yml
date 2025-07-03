@@ -1,0 +1,157 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -302,9 +302,8 @@
+               }
+               else
+               {
+  -                tokens.add(token);
+  -                break;
+  +                tokens.add("-" + ch);
+               }
+           }
+       }
+  -}
+  \ No newline at end of file
+  +}
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 1; i < tokenLength; i++)
+          {
+              String ch = String.valueOf(token.charAt(i));
+              boolean hasOption = options.hasOption(ch);
+
+              if (hasOption)
+              {
+                  tokens.add("-" + ch);
+                  currentOption = options.getOption(ch);
+
+                  if (currentOption.hasArg() && (token.length() != (i + 1)))
+                  {
+                      tokens.add(token.substring(i + 1));
+
+                      break;
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token.substring(i));
+              }
+              else
+              {
+                  tokens.add(token);
+                  break;
+              }
+          } to for (int i = 1; i < tokenLength; i++)
+          {
+              String ch = String.valueOf(token.charAt(i));
+              boolean hasOption = options.hasOption(ch);
+
+              if (hasOption)
+              {
+                  tokens.add("-" + ch);
+                  currentOption = options.getOption(ch);
+
+                  if (currentOption.hasArg() && (token.length() != (i + 1)))
+                  {
+                      tokens.add(token.substring(i + 1));
+
+                      break;
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token.substring(i));
+              }
+              else
+              {
+                  tokens.add("-" + ch);
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 1; i < tokenLength; i++)
+          {
+              String ch = String.valueOf(token.charAt(i));
+              boolean hasOption = options.hasOption(ch);
+
+              if (hasOption)
+              {
+                  tokens.add("-" + ch);
+                  currentOption = options.getOption(ch);
+
+                  if (currentOption.hasArg() && (token.length() != (i + 1)))
+                  {
+                      tokens.add(token.substring(i + 1));
+
+                      break;
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token.substring(i));
+              }
+              else
+              {
+                  tokens.add(token);
+                  break;
+              }
+          } [9795,10523]
+  replace for (int i = 1; i < tokenLength; i++)
+          {
+              String ch = String.valueOf(token.charAt(i));
+              boolean hasOption = options.hasOption(ch);
+
+              if (hasOption)
+              {
+                  tokens.add("-" + ch);
+                  currentOption = options.getOption(ch);
+
+                  if (currentOption.hasArg() && (token.length() != (i + 1)))
+                  {
+                      tokens.add(token.substring(i + 1));
+
+                      break;
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token.substring(i));
+              }
+              else
+              {
+                  tokens.add(token);
+                  break;
+              }
+          } by for (int i = 1; i < tokenLength; i++)
+          {
+              String ch = String.valueOf(token.charAt(i));
+              boolean hasOption = options.hasOption(ch);
+
+              if (hasOption)
+              {
+                  tokens.add("-" + ch);
+                  currentOption = options.getOption(ch);
+
+                  if (currentOption.hasArg() && (token.length() != (i + 1)))
+                  {
+                      tokens.add(token.substring(i + 1));
+
+                      break;
+                  }
+              }
+              else if (stopAtNonOption)
+              {
+                  process(token.substring(i));
+              }
+              else
+              {
+                  tokens.add("-" + ch);
+              }
+          }
+
+...

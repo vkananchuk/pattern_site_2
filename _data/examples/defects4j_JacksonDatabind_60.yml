@@ -1,0 +1,213 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -6,7 +6,6 @@\n import java.util.LinkedHashSet;\n
+  import java.util.Set;\n \n-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;\n
+  import com.fasterxml.jackson.core.*;\n import com.fasterxml.jackson.databind.*;\n
+  import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;\n@@ -15,7 +14,6
+  @@\n import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper;\n
+  import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonStringFormatVisitor;\n
+  import com.fasterxml.jackson.databind.jsonschema.SchemaAware;\n-import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;\n
+  import com.fasterxml.jackson.databind.jsontype.TypeSerializer;\n import com.fasterxml.jackson.databind.ser.BeanSerializer;\n
+  import com.fasterxml.jackson.databind.ser.ContextualSerializer;\n@@ -225,8 +223,7
+  @@\n             // 28-Sep-2016, tatu: As per [databind#1385], we do need to do
+  some juggling\n             //    to use different Object for type id (logical type)
+  and actual serialization\n             //    (delegat type).\n-            TypeSerializerRerouter
+  rr = new TypeSerializerRerouter(typeSer0, bean);\n-            ser.serializeWithType(value,
+  gen, provider, rr);\n+            ser.serializeWithType(value, gen, provider, typeSer0);\n
+  \        } catch (IOException ioe) {\n             throw ioe;\n         } catch
+  (Exception e) {\n@@ -363,108 +360,24 @@\n      * override Object to use for type
+  id (logical type) even when asking serialization\n      * of something else (delegate
+  type)\n      */\n-    static class TypeSerializerRerouter\n-        extends TypeSerializer\n-
+  \   {\n-        protected final TypeSerializer _typeSerializer;\n-        protected
+  final Object _forObject;\n \n-        public TypeSerializerRerouter(TypeSerializer
+  ts, Object ob) {\n-            _typeSerializer = ts;\n-            _forObject =
+  ob;\n-        }\n \n-        @Override\n-        public TypeSerializer forProperty(BeanProperty
+  prop) { // should never get called\n-            throw new UnsupportedOperationException();\n-
+  \       }\n \n-        @Override\n-        public As getTypeInclusion() {\n-            return
+  _typeSerializer.getTypeInclusion();\n-        }\n \n-        @Override\n-        public
+  String getPropertyName() {\n-            return _typeSerializer.getPropertyName();\n-
+  \       }\n \n-        @Override\n-        public TypeIdResolver getTypeIdResolver()
+  {\n-            return _typeSerializer.getTypeIdResolver();\n-        }\n \n-        @Override\n-
+  \       public void writeTypePrefixForScalar(Object value, JsonGenerator gen) throws
+  IOException {\n-            _typeSerializer.writeTypePrefixForScalar(_forObject,
+  gen);\n-        }\n \n-        @Override\n-        public void writeTypePrefixForObject(Object
+  value, JsonGenerator gen) throws IOException {\n-            _typeSerializer.writeTypePrefixForObject(_forObject,
+  gen);\n-        }\n \n-        @Override\n-        public void writeTypePrefixForArray(Object
+  value, JsonGenerator gen) throws IOException {\n-            _typeSerializer.writeTypePrefixForArray(_forObject,
+  gen);\n-        }\n \n-        @Override\n-        public void writeTypeSuffixForScalar(Object
+  value, JsonGenerator gen) throws IOException {\n-            _typeSerializer.writeTypeSuffixForScalar(_forObject,
+  gen);\n-        }\n \n-        @Override\n-        public void writeTypeSuffixForObject(Object
+  value, JsonGenerator gen) throws IOException {\n-            _typeSerializer.writeTypeSuffixForObject(_forObject,
+  gen);\n-        }\n \n-        @Override\n-        public void writeTypeSuffixForArray(Object
+  value, JsonGenerator gen) throws IOException {\n-            _typeSerializer.writeTypeSuffixForArray(_forObject,
+  gen);\n-        }\n \n-        public void writeTypePrefixForScalar(Object value,
+  JsonGenerator gen, Class<?> type) throws IOException {\n-            _typeSerializer.writeTypePrefixForScalar(_forObject,
+  gen, type);\n-        }\n \n-        public void writeTypePrefixForObject(Object
+  value, JsonGenerator gen, Class<?> type) throws IOException {\n-            _typeSerializer.writeTypePrefixForObject(_forObject,
+  gen, type);\n-        }\n \n-        public void writeTypePrefixForArray(Object
+  value, JsonGenerator gen, Class<?> type) throws IOException {\n-            _typeSerializer.writeTypePrefixForArray(_forObject,
+  gen, type);\n-        }\n         \n-        @Override\n-        public void writeCustomTypePrefixForScalar(Object
+  value, JsonGenerator gen, String typeId)\n-                throws IOException {\n-
+  \           _typeSerializer.writeCustomTypePrefixForScalar(_forObject, gen, typeId);\n-
+  \       }\n \n-        @Override\n-        public void writeCustomTypePrefixForObject(Object
+  value, JsonGenerator gen, String typeId) throws IOException {\n-            _typeSerializer.writeCustomTypePrefixForObject(_forObject,
+  gen, typeId);\n-        }\n \n-        @Override\n-        public void writeCustomTypePrefixForArray(Object
+  value, JsonGenerator gen, String typeId) throws IOException {\n-            _typeSerializer.writeCustomTypePrefixForArray(_forObject,
+  gen, typeId);\n-        }\n \n-        @Override\n-        public void writeCustomTypeSuffixForScalar(Object
+  value, JsonGenerator gen, String typeId) throws IOException {\n-            _typeSerializer.writeCustomTypeSuffixForScalar(_forObject,
+  gen, typeId);\n-        }\n \n-        @Override\n-        public void writeCustomTypeSuffixForObject(Object
+  value, JsonGenerator gen, String typeId) throws IOException {\n-            _typeSerializer.writeCustomTypeSuffixForObject(_forObject,
+  gen, typeId);\n-        }\n \n-        @Override\n-        public void writeCustomTypeSuffixForArray(Object
+  value, JsonGenerator gen, String typeId) throws IOException {\n-            _typeSerializer.writeCustomTypeSuffixForArray(_forObject,
+  gen, typeId);\n-        }\n-    }\n }\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from ser.serializeWithType(value, gen, provider, rr); to ser.serializeWithType(value, gen, provider, typeSer0);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: ser.serializeWithType(value, gen, provider, rr); [9772,9820]
+  replace ser.serializeWithType(value, gen, provider, rr); by ser.serializeWithType(value, gen, provider, typeSer0);
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: TypeSerializerRerouter rr = new TypeSerializerRerouter(typeSer0, bean); [9688,9759]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: TypeSerializerRerouter rr = new TypeSerializerRerouter(typeSer0, bean); [9688,9759]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  class_declaration [15247,19345]
+      identifier: TypeSerializerRerouter [15260,15282]
+      class_body [15247,19345]
+          field_declaration: protected final TypeSerializer _typeSerializer; [15328,15375]
+          field_declaration: protected final Object _forObject; [15384,15418]
+          constructor_declaration: public TypeSerializerRerouter(TypeSerializer ts, Object ob) {
+              _typeSerializer = ts;
+              _forObject = ob;
+          } [15428,15562]
+          method_declaration [15572,15736]
+              identifier: forProperty [15612,15623]
+              method_parameters [15572,15736]
+                  formal_parameter: BeanProperty prop [15624,15641]
+              block [15643,15736]
+                  throw_statement: throw new UnsupportedOperationException(); [15684,15726]
+          method_declaration [15746,15859]
+              identifier: getTypeInclusion [15774,15790]
+              method_parameters [15746,15859]
+              block [15793,15859]
+                  return_statement: return _typeSerializer.getTypeInclusion(); [15807,15849]
+          method_declaration [15869,15984]
+              identifier: getPropertyName [15901,15916]
+              method_parameters [15869,15984]
+              block [15919,15984]
+                  return_statement: return _typeSerializer.getPropertyName(); [15933,15974]
+          method_declaration [15994,16121]
+              identifier: getTypeIdResolver [16034,16051]
+              method_parameters [15994,16121]
+              block [16054,16121]
+                  return_statement: return _typeSerializer.getTypeIdResolver(); [16068,16111]
+          method_declaration [16131,16320]
+              identifier: writeTypePrefixForScalar [16161,16185]
+              method_parameters [16131,16320]
+                  formal_parameter: Object value [16186,16198]
+              block [16238,16320]
+                  expression_statement: _typeSerializer.writeTypePrefixForScalar(_forObject, gen); [16252,16310]
+          method_declaration [16330,16519]
+              identifier: writeTypePrefixForObject [16360,16384]
+              method_parameters [16330,16519]
+                  formal_parameter: Object value [16385,16397]
+              block [16437,16519]
+                  expression_statement: _typeSerializer.writeTypePrefixForObject(_forObject, gen); [16451,16509]
+          method_declaration [16529,16716]
+              identifier: writeTypePrefixForArray [16559,16582]
+              method_parameters [16529,16716]
+                  formal_parameter: Object value [16583,16595]
+              block [16635,16716]
+                  expression_statement: _typeSerializer.writeTypePrefixForArray(_forObject, gen); [16649,16706]
+          method_declaration [16726,16915]
+              identifier: writeTypeSuffixForScalar [16756,16780]
+              method_parameters [16726,16915]
+                  formal_parameter: Object value [16781,16793]
+              block [16833,16915]
+                  expression_statement: _typeSerializer.writeTypeSuffixForScalar(_forObject, gen); [16847,16905]
+          method_declaration [16925,17114]
+              identifier: writeTypeSuffixForObject [16955,16979]
+              method_parameters [16925,17114]
+                  formal_parameter: Object value [16980,16992]
+              block [17032,17114]
+                  expression_statement: _typeSerializer.writeTypeSuffixForObject(_forObject, gen); [17046,17104]
+          method_declaration [17124,17311]
+              identifier: writeTypeSuffixForArray [17154,17177]
+              method_parameters [17124,17311]
+                  formal_parameter: Object value [17178,17190]
+              block [17230,17311]
+                  expression_statement: _typeSerializer.writeTypeSuffixForArray(_forObject, gen); [17244,17301]
+          method_declaration [17321,17513]
+              identifier: writeTypePrefixForScalar [17333,17357]
+              method_parameters [17321,17513]
+                  formal_parameter: Object value [17358,17370]
+              block [17425,17513]
+                  expression_statement: _typeSerializer.writeTypePrefixForScalar(_forObject, gen, type); [17439,17503]
+          method_declaration [17523,17715]
+              identifier: writeTypePrefixForObject [17535,17559]
+              method_parameters [17523,17715]
+                  formal_parameter: Object value [17560,17572]
+              block [17627,17715]
+                  expression_statement: _typeSerializer.writeTypePrefixForObject(_forObject, gen, type); [17641,17705]
+          method_declaration [17725,17915]
+              identifier: writeTypePrefixForArray [17737,17760]
+              method_parameters [17725,17915]
+                  formal_parameter: Object value [17761,17773]
+              block [17828,17915]
+                  expression_statement: _typeSerializer.writeTypePrefixForArray(_forObject, gen, type); [17842,17905]
+          method_declaration [17933,18173]
+              identifier: writeCustomTypePrefixForScalar [17963,17993]
+              method_parameters [17933,18173]
+                  formal_parameter: Object value [17994,18006]
+              block [18077,18173]
+                  expression_statement: _typeSerializer.writeCustomTypePrefixForScalar(_forObject, gen, typeId); [18091,18163]
+          method_declaration [18183,18407]
+              identifier: writeCustomTypePrefixForObject [18213,18243]
+              method_parameters [18183,18407]
+                  formal_parameter: Object value [18244,18256]
+              block [18311,18407]
+                  expression_statement: _typeSerializer.writeCustomTypePrefixForObject(_forObject, gen, typeId); [18325,18397]
+          method_declaration [18417,18639]
+              identifier: writeCustomTypePrefixForArray [18447,18476]
+              method_parameters [18417,18639]
+                  formal_parameter: Object value [18477,18489]
+              block [18544,18639]
+                  expression_statement: _typeSerializer.writeCustomTypePrefixForArray(_forObject, gen, typeId); [18558,18629]
+          method_declaration [18649,18873]
+              identifier: writeCustomTypeSuffixForScalar [18679,18709]
+              method_parameters [18649,18873]
+                  formal_parameter: Object value [18710,18722]
+              block [18777,18873]
+                  expression_statement: _typeSerializer.writeCustomTypeSuffixForScalar(_forObject, gen, typeId); [18791,18863]
+          method_declaration [18883,19107]
+              identifier: writeCustomTypeSuffixForObject [18913,18943]
+              method_parameters [18883,19107]
+                  formal_parameter: Object value [18944,18956]
+              block [19011,19107]
+                  expression_statement: _typeSerializer.writeCustomTypeSuffixForObject(_forObject, gen, typeId); [19025,19097]
+          method_declaration [19117,19339]
+              identifier: writeCustomTypeSuffixForArray [19147,19176]
+              method_parameters [19117,19339]
+                  formal_parameter: Object value [19177,19189]
+              block [19244,19339]
+                  expression_statement: _typeSerializer.writeCustomTypeSuffixForArray(_forObject, gen, typeId); [19258,19329]
+
+...

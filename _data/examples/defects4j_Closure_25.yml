@@ -1,0 +1,55 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1033,9 +1033,9 @@\n   }\n \n   private FlowScope
+  traverseNew(Node n, FlowScope scope) {\n-    scope = traverseChildren(n, scope);\n
+  \n     Node constructor = n.getFirstChild();\n+    scope = traverse(constructor,
+  scope);\n     JSType constructorType = constructor.getJSType();\n     JSType type
+  = null;\n     if (constructorType != null) {\n@@ -1052,11 +1052,13 @@\n         }\n
+  \        if (ct != null && ct.isConstructor()) {\n           type = ct.getInstanceType();\n-
+  \         backwardsInferenceFromCallSite(n, ct);\n         }\n       }\n     }\n
+  \    n.setJSType(type);\n+    for (Node arg = constructor.getNext(); arg != null;
+  arg = arg.getNext()) {\n+      scope = traverse(arg, scope);\n+    }\n     return
+  scope;\n   }\n \n"
+tree_diff: |+
+  New cluster:
+  MOVE from block [36743,37740]
+  ------------
+  ===
+  move-tree
+  ---
+  expression_statement: scope = traverseChildren(n, scope); [36749,36784]
+  to
+  block [36743,37740]
+  at 1
+
+  New cluster:
+  UPDATE from scope = traverseChildren(n, scope); to scope = traverse(constructor, scope);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: scope = traverseChildren(n, scope); [36749,36784]
+  replace scope = traverseChildren(n, scope); by scope = traverse(constructor, scope);
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  for_statement: for (Node arg = constructor.getNext(); arg != null; arg = arg.getNext()) {
+        scope = traverse(arg, scope);
+      } [37676,37792]
+  to
+  block [36743,37740]
+  at 6
+  ------------
+  ===
+  insert-node
+  ---
+  for_statement: for (Node arg = constructor.getNext(); arg != null; arg = arg.getNext()) {
+        scope = traverse(arg, scope);
+      } [37676,37792]
+  to
+  block [36743,37740]
+  at 6
+
+...

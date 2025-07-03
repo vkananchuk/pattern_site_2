@@ -1,0 +1,36 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -116,7 +116,6 @@\n   private String normalizeSourceName(String
+  filename) {\n     // The DOS command shell will normalize \"/\" to \"\\\", so we
+  have to\n     // wrestle it back.\n-    filename = filename.replace(\"\\\\\", \"/\");\n
+  \n     if (filename.indexOf(filenamePrefix) == 0) {\n       filename = filename.substring(filenamePrefix.length());\n@@
+  -181,7 +180,7 @@\n       Preconditions.checkArgument(scriptNodeCount == 1,\n           \"ProcessCommonJSModules
+  supports only one invocation per \" +\n           \"CompilerInput / script node\");\n-
+  \     String moduleName = guessCJSModuleName(script.getSourceFileName());\n+      String
+  moduleName = guessCJSModuleName(normalizeSourceName(script.getSourceFileName()));\n
+  \      script.addChildToFront(IR.var(IR.name(moduleName), IR.objectlit())\n           .copyInformationFromForTree(script));\n
+  \      if (reportDependencies) {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from String moduleName = guessCJSModuleName(script.getSourceFileName()); to String moduleName = guessCJSModuleName(normalizeSourceName(script.getSourceFileName()));
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: String moduleName = guessCJSModuleName(script.getSourceFileName()); [6475,6542]
+  replace String moduleName = guessCJSModuleName(script.getSourceFileName()); by String moduleName = guessCJSModuleName(normalizeSourceName(script.getSourceFileName()));
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: filename = filename.replace("\\", "/"); [4272,4311]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: filename = filename.replace("\\", "/"); [4272,4311]
+  ===
+
+...

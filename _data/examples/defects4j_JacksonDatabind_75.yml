@@ -1,0 +1,61 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -83,7 +83,7 @@\n          *   handle toString()
+  case dynamically (for example)\n          */\n         EnumValues v = EnumValues.constructFromName(config,
+  (Class<Enum<?>>) enumClass);\n-        Boolean serializeAsIndex = _isShapeWrittenUsingIndex(enumClass,
+  format, true, null);\n+        Boolean serializeAsIndex = _isShapeWrittenUsingIndex(enumClass,
+  format, true);\n         return new EnumSerializer(v, serializeAsIndex);\n     }\n
+  \n@@ -101,7 +101,7 @@\n                     property, handledType());\n             if
+  (format != null) {\n                 Boolean serializeAsIndex = _isShapeWrittenUsingIndex(property.getType().getRawClass(),\n-
+  \                       format, false, _serializeAsIndex);\n+                        format,
+  false);\n                 if (serializeAsIndex != _serializeAsIndex) {\n                     return
+  new EnumSerializer(_values, serializeAsIndex);\n                 }\n@@ -214,16 +214,15
+  @@\n      * index (number) or not.\n      */\n     protected static Boolean _isShapeWrittenUsingIndex(Class<?>
+  enumClass,\n-            JsonFormat.Value format, boolean fromClass,\n-            Boolean
+  defaultValue)\n+            JsonFormat.Value format, boolean fromClass)\n     {\n
+  \        JsonFormat.Shape shape = (format == null) ? null : format.getShape();\n
+  \        if (shape == null) {\n-            return defaultValue;\n+            return
+  null;\n         }\n         // i.e. \"default\", check dynamically\n         if
+  (shape == Shape.ANY || shape == Shape.SCALAR) {\n-            return defaultValue;\n+
+  \           return null;\n         }\n         // 19-May-2016, tatu: also consider
+  \"natural\" shape\n         if (shape == Shape.STRING || shape == Shape.NATURAL)
+  {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from Boolean serializeAsIndex = _isShapeWrittenUsingIndex(enumClass, format, true, null); to Boolean serializeAsIndex = _isShapeWrittenUsingIndex(enumClass, format, true);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: Boolean serializeAsIndex = _isShapeWrittenUsingIndex(enumClass, format, true, null); [2812,2896]
+  replace Boolean serializeAsIndex = _isShapeWrittenUsingIndex(enumClass, format, true, null); by Boolean serializeAsIndex = _isShapeWrittenUsingIndex(enumClass, format, true);
+
+  New cluster:
+  UPDATE from return defaultValue; to return null;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return defaultValue; [7704,7724]
+  replace return defaultValue; by return null;
+  ===
+  update-node
+  ---
+  return_statement: return defaultValue; [7851,7871]
+  replace return defaultValue; by return null;
+
+  New cluster:
+  UPDATE from Boolean serializeAsIndex = _isShapeWrittenUsingIndex(property.getType().getRawClass(),
+                          format, false, _serializeAsIndex); to Boolean serializeAsIndex = _isShapeWrittenUsingIndex(property.getType().getRawClass(),
+                          format, false);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: Boolean serializeAsIndex = _isShapeWrittenUsingIndex(property.getType().getRawClass(),
+                          format, false, _serializeAsIndex); [3509,3654]
+  replace Boolean serializeAsIndex = _isShapeWrittenUsingIndex(property.getType().getRawClass(),
+                          format, false, _serializeAsIndex); by Boolean serializeAsIndex = _isShapeWrittenUsingIndex(property.getType().getRawClass(),
+                          format, false);
+
+...

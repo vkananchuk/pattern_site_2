@@ -1,0 +1,80 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -51,8 +51,7 @@\n       new RestrictByTrueTypeOfResultVisitor()
+  {\n         @Override\n         protected JSType caseTopType(JSType topType) {\n-
+  \         return topType.isAllType() ?\n-              getNativeType(ARRAY_TYPE)
+  : topType;\n+          return topType;\n         }\n \n         @Override\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from private final Visitor<JSType> restrictToArrayVisitor =
+        new RestrictByTrueTypeOfResultVisitor() {
+          @Override
+          protected JSType caseTopType(JSType topType) {
+            return topType.isAllType() ?
+                getNativeType(ARRAY_TYPE) : topType;
+          }
+
+          @Override
+          public JSType caseObjectType(ObjectType type) {
+            JSType arrayType = getNativeType(ARRAY_TYPE);
+            return arrayType.isSubtype(type) ? arrayType : null;
+          }
+        }; to private final Visitor<JSType> restrictToArrayVisitor =
+        new RestrictByTrueTypeOfResultVisitor() {
+          @Override
+          protected JSType caseTopType(JSType topType) {
+            return topType;
+          }
+
+          @Override
+          public JSType caseObjectType(ObjectType type) {
+            JSType arrayType = getNativeType(ARRAY_TYPE);
+            return arrayType.isSubtype(type) ? arrayType : null;
+          }
+        };
+  ------------
+  ===
+  update-node
+  ---
+  field_declaration: private final Visitor<JSType> restrictToArrayVisitor =
+        new RestrictByTrueTypeOfResultVisitor() {
+          @Override
+          protected JSType caseTopType(JSType topType) {
+            return topType.isAllType() ?
+                getNativeType(ARRAY_TYPE) : topType;
+          }
+
+          @Override
+          public JSType caseObjectType(ObjectType type) {
+            JSType arrayType = getNativeType(ARRAY_TYPE);
+            return arrayType.isSubtype(type) ? arrayType : null;
+          }
+        }; [1938,2426]
+  replace private final Visitor<JSType> restrictToArrayVisitor =
+        new RestrictByTrueTypeOfResultVisitor() {
+          @Override
+          protected JSType caseTopType(JSType topType) {
+            return topType.isAllType() ?
+                getNativeType(ARRAY_TYPE) : topType;
+          }
+
+          @Override
+          public JSType caseObjectType(ObjectType type) {
+            JSType arrayType = getNativeType(ARRAY_TYPE);
+            return arrayType.isSubtype(type) ? arrayType : null;
+          }
+        }; by private final Visitor<JSType> restrictToArrayVisitor =
+        new RestrictByTrueTypeOfResultVisitor() {
+          @Override
+          protected JSType caseTopType(JSType topType) {
+            return topType;
+          }
+
+          @Override
+          public JSType caseObjectType(ObjectType type) {
+            JSType arrayType = getNativeType(ARRAY_TYPE);
+            return arrayType.isSubtype(type) ? arrayType : null;
+          }
+        };
+
+...

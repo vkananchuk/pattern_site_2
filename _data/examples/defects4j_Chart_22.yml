@@ -1,0 +1,79 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -228,10 +228,9 @@\n             throw new UnknownKeyException(\"Column
+  key (\" + columnKey \r\n                     + \") not recognised.\");\r\n         }\r\n+
+  \       if (row >= 0) {\r\n         KeyedObjects rowData = (KeyedObjects) this.rows.get(row);\r\n-
+  \       int index = rowData.getIndex(columnKey);\r\n-        if (index >= 0) {\r\n-
+  \           return rowData.getObject(index);\r\n+            return rowData.getObject(columnKey);\r\n
+  \        }\r\n         else {\r\n             return null;\r\n@@ -316,29 +315,8
+  @@\n         }\r\n         \r\n         // 2. check whether the column is now empty.\r\n-
+  \       allNull = true;\r\n         \r\n-        for (int item = 0, itemCount =
+  this.rows.size(); item < itemCount; \r\n-             item++) {\r\n-            row
+  = (KeyedObjects) this.rows.get(item);\r\n-            int columnIndex = row.getIndex(columnKey);\r\n-
+  \           if (columnIndex >= 0 && row.getObject(columnIndex) != null) {\r\n-                allNull
+  = false;\r\n-                break;\r\n-            }\r\n-        }\r\n         \r\n-
+  \       if (allNull) {\r\n-            for (int item = 0, itemCount = this.rows.size();
+  item < itemCount; \r\n-                 item++) {\r\n-                row = (KeyedObjects)
+  this.rows.get(item);\r\n-                int columnIndex = row.getIndex(columnKey);\r\n-
+  \               if (columnIndex >= 0) {\r\n-                    row.removeValue(columnIndex);\r\n-
+  \               }\r\n-            }\r\n-            this.columnKeys.remove(columnKey);\r\n-
+  \       }\r\n     }\r\n \r\n     /**\r\n@@ -364,10 +342,6 @@\n      */\r\n     public
+  void removeRow(Comparable rowKey) {\r\n         int index = getRowIndex(rowKey);\r\n-
+  \       if (index < 0) {\r\n-            throw new UnknownKeyException(\"Row key
+  (\" + rowKey \r\n-                    + \") not recognised.\");\r\n-        }\r\n
+  \        removeRow(index);\r\n     }\r\n \r\n@@ -401,10 +375,7 @@\n         Iterator
+  iterator = this.rows.iterator();\r\n         while (iterator.hasNext()) {\r\n             KeyedObjects
+  rowData = (KeyedObjects) iterator.next();\r\n-            int i = rowData.getIndex(columnKey);\r\n-
+  \           if (i >= 0) {\r\n-                rowData.removeValue(i);\r\n-            }\r\n+
+  \               rowData.removeValue(columnKey);\r\n         }\r\n         this.columnKeys.remove(columnKey);\r\n
+  \    }\r\n"
+tree_diff: "New cluster:\nUPDATE from while (iterator.hasNext()) {\r\n            KeyedObjects
+  rowData = (KeyedObjects) iterator.next();\r\n            int i = rowData.getIndex(columnKey);\r\n
+  \           if (i >= 0) {\r\n                rowData.removeValue(i);\r\n            }\r\n
+  \       } to while (iterator.hasNext()) {\r\n            KeyedObjects rowData =
+  (KeyedObjects) iterator.next();\r\n                rowData.removeValue(columnKey);\r\n
+  \       }\n------------\n===\nupdate-node\n---\nwhile_statement: while (iterator.hasNext())
+  {\r\n            KeyedObjects rowData = (KeyedObjects) iterator.next();\r\n            int
+  i = rowData.getIndex(columnKey);\r\n            if (i >= 0) {\r\n                rowData.removeValue(i);\r\n
+  \           }\r\n        } [12568,12808]\nreplace while (iterator.hasNext()) {\r\n
+  \           KeyedObjects rowData = (KeyedObjects) iterator.next();\r\n            int
+  i = rowData.getIndex(columnKey);\r\n            if (i >= 0) {\r\n                rowData.removeValue(i);\r\n
+  \           }\r\n        } by while (iterator.hasNext()) {\r\n            KeyedObjects
+  rowData = (KeyedObjects) iterator.next();\r\n                rowData.removeValue(columnKey);\r\n
+  \       }\n\nNew cluster:\n===\ninsert-node\n---\nlocal_variable_declaration: KeyedObjects
+  rowData = (KeyedObjects) this.rows.get(row); [6967,7024]\nto\nblock [7075,7133]\nat
+  0\n------------\n===\ninsert-node\n---\nlocal_variable_declaration: KeyedObjects
+  rowData = (KeyedObjects) this.rows.get(row); [6967,7024]\nto\nblock [7075,7133]\nat
+  0\n\nNew cluster:\nUPDATE from return rowData.getObject(index); to return rowData.getObject(columnKey);\n------------\n===\nupdate-node\n---\nreturn_statement:
+  return rowData.getObject(index); [7090,7122]\nreplace return rowData.getObject(index);
+  by return rowData.getObject(columnKey);\n\nNew cluster:\nUPDATE from index to row\n------------\n===\nupdate-node\n---\nidentifier:
+  index [7063,7068]\nreplace index by row\n\nNew cluster:\n===\ndelete-node\n---\nlocal_variable_declaration:
+  KeyedObjects rowData = (KeyedObjects) this.rows.get(row); [6942,6999]\n===\n------------\n===\ndelete-node\n---\nlocal_variable_declaration:
+  KeyedObjects rowData = (KeyedObjects) this.rows.get(row); [6942,6999]\n===\n\nNew
+  cluster:\n===\ndelete-node\n---\nlocal_variable_declaration: int index = rowData.getIndex(columnKey);
+  [7009,7049]\n===\n------------\n===\ndelete-node\n---\nlocal_variable_declaration:
+  int index = rowData.getIndex(columnKey); [7009,7049]\n===\n\nNew cluster:\n===\ndelete-node\n---\nexpression_statement:
+  allNull = true; [9975,9990]\n===\n------------\n===\ndelete-node\n---\nexpression_statement:
+  allNull = true; [9975,9990]\n===\n\nNew cluster:\n===\ndelete-node\n---\nfor_statement:
+  for (int item = 0, itemCount = this.rows.size(); item < itemCount; \r\n             item++)
+  {\r\n            row = (KeyedObjects) this.rows.get(item);\r\n            int columnIndex
+  = row.getIndex(columnKey);\r\n            if (columnIndex >= 0 && row.getObject(columnIndex)
+  != null) {\r\n                allNull = false;\r\n                break;\r\n            }\r\n
+  \       } [10010,10371]\n===\n------------\n===\ndelete-node\n---\nfor_statement:
+  for (int item = 0, itemCount = this.rows.size(); item < itemCount; \r\n             item++)
+  {\r\n            row = (KeyedObjects) this.rows.get(item);\r\n            int columnIndex
+  = row.getIndex(columnKey);\r\n            if (columnIndex >= 0 && row.getObject(columnIndex)
+  != null) {\r\n                allNull = false;\r\n                break;\r\n            }\r\n
+  \       } [10010,10371]\n===\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nif_statement
+  [10391,10818]\n    parenthesized_expression [10394,10403]\n        identifier: allNull
+  [10395,10402]\n    block [10404,10818]\n        for_statement: for (int item = 0,
+  itemCount = this.rows.size(); item < itemCount; \r\n                 item++) {\r\n
+  \               row = (KeyedObjects) this.rows.get(item);\r\n                int
+  columnIndex = row.getIndex(columnKey);\r\n                if (columnIndex >= 0)
+  {\r\n                    row.removeValue(columnIndex);\r\n                }\r\n
+  \           } [10419,10759]\n        expression_statement: this.columnKeys.remove(columnKey);
+  [10773,10807]\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nif_statement
+  [11486,11623]\n    parenthesized_expression [11489,11500]\n        less_than [11490,11499]\n
+  \           identifier: index [11490,11495]\n            decimal_integer_literal:
+  0 [11498,11499]\n    block [11501,11623]\n        throw_statement: throw new UnknownKeyException(\"Row
+  key (\" + rowKey \r\n                    + \") not recognised.\"); [11516,11612]\n\n"

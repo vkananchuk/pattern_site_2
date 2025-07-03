@@ -1,0 +1,49 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -112,15 +112,6 @@\n       }\n \n       // Don't
+  traverse functions that are getting lent to a prototype.\n-      Node gramps = parent.getParent();\n-
+  \     if (NodeUtil.isObjectLitKey(parent, gramps)) {\n-        JSDocInfo maybeLends
+  = gramps.getJSDocInfo();\n-        if (maybeLends != null &&\n-            maybeLends.getLendsName()
+  != null &&\n-            maybeLends.getLendsName().endsWith(\".prototype\")) {\n-
+  \         return false;\n-        }\n-      }\n     }\n \n     if (parent != null
+  && parent.getType() == Token.ASSIGN) {\n"
+tree_diff: |+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Node gramps = parent.getParent(); [3761,3794]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Node gramps = parent.getParent(); [3761,3794]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [3801,4090]
+      parenthesized_expression [3804,3845]
+          method_invocation: NodeUtil.isObjectLitKey(parent, gramps) [3805,3844]
+      block [3846,4090]
+          local_variable_declaration: JSDocInfo maybeLends = gramps.getJSDocInfo(); [3856,3901]
+          if_statement [3910,4082]
+              parenthesized_expression [3913,4046]
+                  and [3914,4045]
+                      and [3914,3981]
+                          not_equals [3914,3932]
+                              identifier: maybeLends [3914,3924]
+                              null_literal [3928,3932]
+                          not_equals [3948,3981]
+                              method_invocation: maybeLends.getLendsName() [3948,3973]
+                              null_literal [3977,3981]
+                      method_invocation: maybeLends.getLendsName().endsWith(".prototype") [3997,4045]
+              block [4047,4082]
+                  return_statement: return false; [4059,4072]
+
+...

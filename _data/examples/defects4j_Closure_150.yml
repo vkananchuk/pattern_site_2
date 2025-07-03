@@ -1,0 +1,48 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1448,7 +1448,21 @@\n         return;\n       }\n
+  \n-      super.visit(t, n, parent);\n+      attachLiteralTypes(n);\n+      switch
+  (n.getType()) {\n+        case Token.FUNCTION:\n+          if (parent.getType()
+  == Token.NAME) {\n+            return;\n+          }\n+          defineDeclaredFunction(n,
+  parent);\n+          break;\n+        case Token.CATCH:\n+          defineCatch(n,
+  parent);\n+          break;\n+        case Token.VAR:\n+          defineVar(n, parent);\n+
+  \         break;\n+      }\n     }\n \n     /** Handle bleeding functions and function
+  parameters. */\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from super.visit(t, n, parent); to attachLiteralTypes(n);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: super.visit(t, n, parent); [52866,52892]
+  replace super.visit(t, n, parent); by attachLiteralTypes(n);
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  switch_expression [52895,53246]
+      parenthesized_expression [52902,52915]
+          method_invocation: n.getType() [52903,52914]
+      switch_block: {
+          case Token.FUNCTION:
+            if (parent.getType() == Token.NAME) {
+              return;
+            }
+            defineDeclaredFunction(n, parent);
+            break;
+          case Token.CATCH:
+            defineCatch(n, parent);
+            break;
+          case Token.VAR:
+            defineVar(n, parent);
+            break;
+        } [52916,53246]
+  to
+  block [52680,52898]
+  at 3
+
+...

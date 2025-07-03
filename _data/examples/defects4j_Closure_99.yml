@@ -1,0 +1,42 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -89,7 +89,6 @@\n       JSDocInfo jsDoc = getFunctionJsDocInfo(n);\n
+  \      if (jsDoc != null &&\n           (jsDoc.isConstructor() ||\n-           jsDoc.isInterface()
+  ||\n            jsDoc.hasThisType() ||\n            jsDoc.isOverride())) {\n         return
+  false;\n@@ -123,17 +122,13 @@\n       } else {\n         // Only traverse the right
+  side if it's not an assignment to a prototype\n         // property or subproperty.\n-
+  \       if (NodeUtil.isGet(lhs)) {\n           if (lhs.getType() == Token.GETPROP
+  &&\n               lhs.getLastChild().getString().equals(\"prototype\")) {\n             return
+  false;\n           }\n-          Node llhs = lhs.getFirstChild();\n-          if
+  (llhs.getType() == Token.GETPROP &&\n-              llhs.getLastChild().getString().equals(\"prototype\"))
+  {\n+          if (lhs.getQualifiedName() != null && lhs.getQualifiedName().contains(\".prototype.\"))
+  {\n             return false;\n           }\n-        }\n       }\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_invocation: jsDoc.isConstructor() [2932,2953]
+  to
+  or [2932,3021]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  method_invocation: jsDoc.isConstructor() [2932,2953]
+  to
+  or [2932,3021]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  or [2932,2987]
+      method_invocation: jsDoc.isConstructor() [2932,2953]
+      method_invocation: jsDoc.isInterface() [2968,2987]
+
+...

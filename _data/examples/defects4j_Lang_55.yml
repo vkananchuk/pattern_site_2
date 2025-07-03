@@ -1,0 +1,40 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -115,9 +115,7 @@\n         if(this.runningState
+  != STATE_RUNNING && this.runningState != STATE_SUSPENDED) {\n             throw
+  new IllegalStateException(\"Stopwatch is not running. \");\n         }\n-        if(this.runningState
+  == STATE_RUNNING) {\n             stopTime = System.currentTimeMillis();\n-        }\n
+  \        this.runningState = STATE_STOPPED;\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: stopTime = System.currentTimeMillis(); [4234,4272]
+  to
+  block [4046,4380]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: stopTime = System.currentTimeMillis(); [4234,4272]
+  to
+  block [4046,4380]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [4230,4331]
+      parenthesized_expression [4232,4268]
+          equals [4233,4267]
+              field_access: this.runningState [4233,4250]
+              identifier: STATE_RUNNING [4254,4267]
+      block [4269,4331]
+          expression_statement: stopTime = System.currentTimeMillis(); [4283,4321]
+
+...

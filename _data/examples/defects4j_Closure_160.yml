@@ -1,0 +1,81 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -265,7 +265,6 @@\n             getDiagnosticGroups().getRegisteredGroups()));\n
+  \    guards.add(options.getWarningsGuard());\n \n-    ComposeWarningsGuard composedGuards
+  = new ComposeWarningsGuard(guards);\n \n     // All passes must run the variable
+  check. This synthesizes\n     // variables later so that the compiler doesn't crash.
+  It also\n@@ -273,12 +272,13 @@\n     // about missing variable declarations, we
+  shut that specific\n     // error off.\n     if (!options.checkSymbols &&\n-        !composedGuards.enables(DiagnosticGroups.CHECK_VARIABLES))
+  {\n-      composedGuards.addGuard(new DiagnosticGroupWarningsGuard(\n+        (warningsGuard
+  == null || !warningsGuard.disables(\n+            DiagnosticGroups.CHECK_VARIABLES)))
+  {\n+      guards.add(new DiagnosticGroupWarningsGuard(\n           DiagnosticGroups.CHECK_VARIABLES,
+  CheckLevel.OFF));\n     }\n \n-    this.warningsGuard = composedGuards;\n+    this.warningsGuard
+  = new ComposeWarningsGuard(guards);\n   }\n \n   /**\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from this.warningsGuard = composedGuards; to this.warningsGuard = new ComposeWarningsGuard(guards);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: this.warningsGuard = composedGuards; [9439,9475]
+  replace this.warningsGuard = composedGuards; by this.warningsGuard = new ComposeWarningsGuard(guards);
+
+  New cluster:
+  UPDATE from composedGuards.addGuard(new DiagnosticGroupWarningsGuard(
+            DiagnosticGroups.CHECK_VARIABLES, CheckLevel.OFF)); to guards.add(new DiagnosticGroupWarningsGuard(
+            DiagnosticGroups.CHECK_VARIABLES, CheckLevel.OFF));
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: composedGuards.addGuard(new DiagnosticGroupWarningsGuard(
+            DiagnosticGroups.CHECK_VARIABLES, CheckLevel.OFF)); [9308,9427]
+  replace composedGuards.addGuard(new DiagnosticGroupWarningsGuard(
+            DiagnosticGroups.CHECK_VARIABLES, CheckLevel.OFF)); by guards.add(new DiagnosticGroupWarningsGuard(
+            DiagnosticGroups.CHECK_VARIABLES, CheckLevel.OFF));
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  parenthesized_expression [9165,9262]
+      or [9166,9261]
+          equals [9166,9187]
+              identifier: warningsGuard [9166,9179]
+              null_literal [9183,9187]
+          unary_expression: !warningsGuard.disables(
+              DiagnosticGroups.CHECK_VARIABLES) [9191,9261]
+  to
+  and [9208,9298]
+  at 1
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: ComposeWarningsGuard composedGuards = new ComposeWarningsGuard(guards); [8841,8912]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: ComposeWarningsGuard composedGuards = new ComposeWarningsGuard(guards); [8841,8912]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  unary_expression: !composedGuards.enables(DiagnosticGroups.CHECK_VARIABLES) [9241,9298]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  unary_expression: !composedGuards.enables(DiagnosticGroups.CHECK_VARIABLES) [9241,9298]
+  ===
+
+...

@@ -1,0 +1,157 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1,5 +1,9 @@\n-package java_programs;\n+package
+  correct_java_programs;\n import java.util.*;\n+\n+import java_programs.Node;\n+import
+  java_programs.WeightedEdge;\n+\n import java.lang.Math.*;\n \n /**\n@@ -27,37 +31,11
+  @@\n                         weight_by_node.get(edge.get(0))\n                                 +
+  weight_by_edge.get(edge),\n                         weight_by_node.get(edge.get(1)));\n-
+  \               weight_by_edge.put(edge, update_weight);\n-            }\n-        }\n-
+  \       return weight_by_node;\n-    }\n-\n \n-    /**\n-     * Rewrite shortest_paths
+  method\n-     * @param node\n-     * @param weight_by_edge\n-     * @return\n-     */\n-\n-
+  \   public static Map<String, Integer> shortest_paths(Node source, List<WeightedEdge>
+  weight_by_edge) {\n-        Map<String,Integer> weight_by_node = new HashMap<String,Integer>();\n-
+  \       for (WeightedEdge edge : weight_by_edge) {\n-                weight_by_node.put(edge.node1.toString(),
+  INF);\n-                weight_by_node.put(edge.node2.toString(), INF);\n-        }\n-\n-
+  \       weight_by_node.put(source.getValue(), 0);\n-        for (int i = 0; i <
+  weight_by_node.size(); i++) {\n-            for (WeightedEdge edge : weight_by_edge)
+  {\n-                int update_weight = Math.min(\n-                        weight_by_node.get(edge.node1.toString())\n-
+  \                               + edge.weight,\n-                        weight_by_node.get(edge.node2.toString()));\n-
+  \               edge.weight = update_weight;\n+                weight_by_node.put(edge.get(1),
+  update_weight);\n             }\n         }\n         return weight_by_node;\n     }\n+\n
+  }\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [366,1236]
+  to
+  class_body [103,2143]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [366,1236]
+  to
+  class_body [103,2143]
+  at 1
+  ===
+  insert-node
+  ---
+  identifier: shortest_paths [401,415]
+  to
+  method_declaration [366,1236]
+  at 0
+
+  New cluster:
+  MOVE from method_declaration [366,1236]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [294,1156]
+      formal_parameter: String source [344,357]
+  to
+  method_declaration [366,1236]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [473,1236]
+      local_variable_declaration: Map<String,Integer> weight_by_node = new HashMap<String,Integer>(); [483,550]
+      enhanced_for_statement: for (List<String> edge : weight_by_edge.keySet()) {
+                  weight_by_node.put(edge.get(1), INF);
+                  weight_by_node.put(edge.get(0), INF);
+          } [559,728]
+      expression_statement: weight_by_node.put(source, 0); [738,768]
+      for_statement: for (int i = 0; i < weight_by_node.size(); i++) {
+              for (List<String> edge : weight_by_edge.keySet()) {
+                  int update_weight = Math.min(
+                          weight_by_node.get(edge.get(0))
+                                  + weight_by_edge.get(edge),
+                          weight_by_node.get(edge.get(1)));
+
+                  weight_by_node.put(edge.get(1), update_weight);
+              }
+          } [777,1199]
+      return_statement: return weight_by_node; [1208,1230]
+  to
+  method_declaration [366,1236]
+  at 2
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [294,1156]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: shortest_paths [329,343]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [294,1156]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [401,1156]
+      local_variable_declaration: Map<String,Integer> weight_by_node = new HashMap<String,Integer>(); [411,478]
+      enhanced_for_statement: for (List<String> edge : weight_by_edge.keySet()) {
+                  weight_by_node.put(edge.get(1), INF);
+                  weight_by_node.put(edge.get(0), INF);
+          } [487,656]
+      expression_statement: weight_by_node.put(source, 0); [666,696]
+      for_statement: for (int i = 0; i < weight_by_node.size(); i++) {
+              for (List<String> edge : weight_by_edge.keySet()) {
+                  int update_weight = Math.min(
+                          weight_by_node.get(edge.get(0))
+                                  + weight_by_edge.get(edge),
+                          weight_by_node.get(edge.get(1)));
+                  weight_by_edge.put(edge, update_weight);
+              }
+          } [705,1119]
+      return_statement: return weight_by_node; [1128,1150]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [1280,2141]
+      identifier: shortest_paths [1315,1329]
+      method_parameters [1280,2141]
+          formal_parameter: Node source [1330,1341]
+      block [1378,2141]
+          local_variable_declaration: Map<String,Integer> weight_by_node = new HashMap<String,Integer>(); [1388,1455]
+          enhanced_for_statement: for (WeightedEdge edge : weight_by_edge) {
+                  weight_by_node.put(edge.node1.toString(), INF);
+                  weight_by_node.put(edge.node2.toString(), INF);
+          } [1464,1644]
+          expression_statement: weight_by_node.put(source.getValue(), 0); [1654,1695]
+          for_statement: for (int i = 0; i < weight_by_node.size(); i++) {
+              for (WeightedEdge edge : weight_by_edge) {
+                  int update_weight = Math.min(
+                          weight_by_node.get(edge.node1.toString())
+                                  + edge.weight,
+                          weight_by_node.get(edge.node2.toString()));
+                  edge.weight = update_weight;
+              }
+          } [1704,2104]
+          return_statement: return weight_by_node; [2113,2135]
+
+...

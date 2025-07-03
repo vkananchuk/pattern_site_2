@@ -1,0 +1,282 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -50,50 +50,30 @@\n      */\n     public static
+  long parseOctal(final byte[] buffer, final int offset, final int length) {\n         long
+  \   result = 0;\n+        boolean stillPadding = true;\n         int     end = offset
+  + length;\n         int     start = offset;\n \n-        if (length < 2){\n-            throw
+  new IllegalArgumentException(\"Length \"+length+\" must be at least 2\");\n-        }\n-\n-
+  \       boolean allNUL = true;\n         for (int i = start; i < end; i++){\n-            if
+  (buffer[i] != 0){\n-                allNUL = false;\n+            final byte currentByte
+  = buffer[i];\n+            if (currentByte == 0) {\n                 break;\n             }\n-
+  \       }\n-        if (allNUL) {\n-            return 0L;\n-        }\n \n         //
+  Skip leading spaces\n-        while (start < end){\n-            if (buffer[start]
+  == ' '){\n-                start++;\n-            } else {\n+            if (currentByte
+  == (byte) ' ' || currentByte == '0') {\n+                if (stillPadding) {\n+
+  \                  continue;\n+            }\n+                if (currentByte ==
+  (byte) ' ') {\n                 break;\n+                }\n             }\n-        }\n
+  \n         // Must have trailing NUL or space\n-        byte trailer;\n-        trailer
+  = buffer[end-1];\n-        if (trailer == 0 || trailer == ' '){\n-            end--;\n-
+  \       } else {\n-            throw new IllegalArgumentException(\n-                    exceptionMessage(buffer,
+  offset, length, end-1, trailer));\n-        }\n         // May have additional NUL
+  or space\n-        trailer = buffer[end-1];\n-        if (trailer == 0 || trailer
+  == ' '){\n-            end--;\n-        }\n \n-        for ( ;start < end; start++)
+  {\n-            final byte currentByte = buffer[start];\n+            stillPadding
+  = false;\n             // CheckStyle:MagicNumber OFF\n             if (currentByte
+  < '0' || currentByte > '7'){\n                 throw new IllegalArgumentException(\n"
+tree_diff: |+
+  New cluster:
+  MOVE from block [2024,3656]
+  ------------
+  ===
+  move-tree
+  ---
+  local_variable_declaration: boolean allNUL = true; [2258,2280]
+  to
+  block [2024,3656]
+  at 1
+
+  New cluster:
+  UPDATE from boolean allNUL = true; to boolean stillPadding = true;
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: boolean allNUL = true; [2258,2280]
+  replace boolean allNUL = true; by boolean stillPadding = true;
+
+  New cluster:
+  UPDATE from for (int i = start; i < end; i++){
+              if (buffer[i] != 0){
+                  allNUL = false;
+                  break;
+              }
+          } to for (int i = start; i < end; i++){
+              final byte currentByte = buffer[i];
+              if (currentByte == 0) {
+                  break;
+              }
+
+          // Skip leading spaces
+              if (currentByte == (byte) ' ' || currentByte == '0') {
+                  if (stillPadding) {
+                     continue;
+              }
+                  if (currentByte == (byte) ' ') {
+                  break;
+                  }
+              }
+
+          // Must have trailing NUL or space
+          // May have additional NUL or space
+
+              stillPadding = false;
+              // CheckStyle:MagicNumber OFF
+              if (currentByte < '0' || currentByte > '7'){
+                  throw new IllegalArgumentException(
+                          exceptionMessage(buffer, offset, length, start, currentByte));
+              }
+              result = (result << 3) + (currentByte - '0'); // convert from ASCII
+              // CheckStyle:MagicNumber ON
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = start; i < end; i++){
+              if (buffer[i] != 0){
+                  allNUL = false;
+                  break;
+              }
+          } [2289,2435]
+  replace for (int i = start; i < end; i++){
+              if (buffer[i] != 0){
+                  allNUL = false;
+                  break;
+              }
+          } by for (int i = start; i < end; i++){
+              final byte currentByte = buffer[i];
+              if (currentByte == 0) {
+                  break;
+              }
+
+          // Skip leading spaces
+              if (currentByte == (byte) ' ' || currentByte == '0') {
+                  if (stillPadding) {
+                     continue;
+              }
+                  if (currentByte == (byte) ' ') {
+                  break;
+                  }
+              }
+
+          // Must have trailing NUL or space
+          // May have additional NUL or space
+
+              stillPadding = false;
+              // CheckStyle:MagicNumber OFF
+              if (currentByte < '0' || currentByte > '7'){
+                  throw new IllegalArgumentException(
+                          exceptionMessage(buffer, offset, length, start, currentByte));
+              }
+              result = (result << 3) + (currentByte - '0'); // convert from ASCII
+              // CheckStyle:MagicNumber ON
+          }
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [2134,2248]
+      parenthesized_expression [2137,2149]
+          less_than [2138,2148]
+              identifier: length [2138,2144]
+              decimal_integer_literal: 2 [2147,2148]
+      block [2149,2248]
+          throw_statement: throw new IllegalArgumentException("Length "+length+" must be at least 2"); [2163,2238]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [2444,2490]
+      parenthesized_expression [2447,2455]
+          identifier: allNUL [2448,2454]
+      block [2456,2490]
+          return_statement: return 0L; [2470,2480]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  while_statement: while (start < end){
+              if (buffer[start] == ' '){
+                  start++;
+              } else {
+                  break;
+              }
+          } [2531,2683]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  while_statement: while (start < end){
+              if (buffer[start] == ' '){
+                  start++;
+              } else {
+                  break;
+              }
+          } [2531,2683]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: byte trailer; [2736,2749]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: byte trailer; [2736,2749]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: trailer = buffer[end-1]; [2758,2782]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: trailer = buffer[end-1]; [2758,2782]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [2791,3000]
+      parenthesized_expression [2794,2826]
+          or [2795,2825]
+              equals [2795,2807]
+                  identifier: trailer [2795,2802]
+                  decimal_integer_literal: 0 [2806,2807]
+              equals [2811,2825]
+                  identifier: trailer [2811,2818]
+                  character_literal: ' ' [2822,2825]
+      block [2826,2856]
+          expression_statement: end--; [2840,2846]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: trailer = buffer[end-1]; [3053,3077]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: trailer = buffer[end-1]; [3053,3077]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [3086,3151]
+      parenthesized_expression [3089,3121]
+          or [3090,3120]
+              equals [3090,3102]
+                  identifier: trailer [3090,3097]
+                  decimal_integer_literal: 0 [3101,3102]
+              equals [3106,3120]
+                  identifier: trailer [3106,3113]
+                  character_literal: ' ' [3117,3120]
+      block [3121,3151]
+          expression_statement: end--; [3135,3141]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  for_statement: for ( ;start < end; start++) {
+              final byte currentByte = buffer[start];
+              // CheckStyle:MagicNumber OFF
+              if (currentByte < '0' || currentByte > '7'){
+                  throw new IllegalArgumentException(
+                          exceptionMessage(buffer, offset, length, start, currentByte));
+              }
+              result = (result << 3) + (currentByte - '0'); // convert from ASCII
+              // CheckStyle:MagicNumber ON
+          } [3161,3626]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  for_statement: for ( ;start < end; start++) {
+              final byte currentByte = buffer[start];
+              // CheckStyle:MagicNumber OFF
+              if (currentByte < '0' || currentByte > '7'){
+                  throw new IllegalArgumentException(
+                          exceptionMessage(buffer, offset, length, start, currentByte));
+              }
+              result = (result << 3) + (currentByte - '0'); // convert from ASCII
+              // CheckStyle:MagicNumber ON
+          } [3161,3626]
+  ===
+
+...

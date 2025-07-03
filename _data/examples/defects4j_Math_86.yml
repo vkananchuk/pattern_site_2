@@ -1,0 +1,313 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -111,6 +111,9 @@\n \n             final double[]
+  lI = lTData[i];\n \n+            if (lTData[i][i] < absolutePositivityThreshold)
+  {\n+                throw new NotPositiveDefiniteMatrixException();\n+            }\n
+  \            // check off-diagonal elements (and reset them to 0)\n             for
+  (int j = i + 1; j < order; ++j) {\n                 final double[] lJ = lTData[j];\n@@
+  -131,9 +134,6 @@\n             final double[] ltI = lTData[i];\n \n             //
+  check diagonal element\n-            if (ltI[i] < absolutePositivityThreshold) {\n-
+  \               throw new NotPositiveDefiniteMatrixException();\n-            }\n
+  \n             ltI[i] = Math.sqrt(ltI[i]);\n             final double inverse =
+  1.0 / ltI[i];\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from public CholeskyDecompositionImpl(final RealMatrix matrix,
+                                       final double relativeSymmetryThreshold,
+                                       final double absolutePositivityThreshold)
+          throws NonSquareMatrixException,
+                 NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+
+          if (!matrix.isSquare()) {
+              throw new NonSquareMatrixException(matrix.getRowDimension(),
+                                                 matrix.getColumnDimension());
+          }
+
+          final int order = matrix.getRowDimension();
+          lTData   = matrix.getData();
+          cachedL  = null;
+          cachedLT = null;
+
+          // check the matrix before transformation
+          for (int i = 0; i < order; ++i) {
+
+              final double[] lI = lTData[i];
+
+              // check off-diagonal elements (and reset them to 0)
+              for (int j = i + 1; j < order; ++j) {
+                  final double[] lJ = lTData[j];
+                  final double lIJ = lI[j];
+                  final double lJI = lJ[i];
+                  final double maxDelta =
+                      relativeSymmetryThreshold * Math.max(Math.abs(lIJ), Math.abs(lJI));
+                  if (Math.abs(lIJ - lJI) > maxDelta) {
+                      throw new NotSymmetricMatrixException();
+                  }
+                  lJ[i] = 0;
+             }
+          }
+
+          // transform the matrix
+          for (int i = 0; i < order; ++i) {
+
+              final double[] ltI = lTData[i];
+
+              // check diagonal element
+              if (ltI[i] < absolutePositivityThreshold) {
+                  throw new NotPositiveDefiniteMatrixException();
+              }
+
+              ltI[i] = Math.sqrt(ltI[i]);
+              final double inverse = 1.0 / ltI[i];
+
+              for (int q = order - 1; q > i; --q) {
+                  ltI[q] *= inverse;
+                  final double[] ltQ = lTData[q];
+                  for (int p = q; p < order; ++p) {
+                      ltQ[p] -= ltI[q] * ltI[p];
+                  }
+              }
+
+          }
+
+      } to public CholeskyDecompositionImpl(final RealMatrix matrix,
+                                       final double relativeSymmetryThreshold,
+                                       final double absolutePositivityThreshold)
+          throws NonSquareMatrixException,
+                 NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+
+          if (!matrix.isSquare()) {
+              throw new NonSquareMatrixException(matrix.getRowDimension(),
+                                                 matrix.getColumnDimension());
+          }
+
+          final int order = matrix.getRowDimension();
+          lTData   = matrix.getData();
+          cachedL  = null;
+          cachedLT = null;
+
+          // check the matrix before transformation
+          for (int i = 0; i < order; ++i) {
+
+              final double[] lI = lTData[i];
+
+              if (lTData[i][i] < absolutePositivityThreshold) {
+                  throw new NotPositiveDefiniteMatrixException();
+              }
+              // check off-diagonal elements (and reset them to 0)
+              for (int j = i + 1; j < order; ++j) {
+                  final double[] lJ = lTData[j];
+                  final double lIJ = lI[j];
+                  final double lJI = lJ[i];
+                  final double maxDelta =
+                      relativeSymmetryThreshold * Math.max(Math.abs(lIJ), Math.abs(lJI));
+                  if (Math.abs(lIJ - lJI) > maxDelta) {
+                      throw new NotSymmetricMatrixException();
+                  }
+                  lJ[i] = 0;
+             }
+          }
+
+          // transform the matrix
+          for (int i = 0; i < order; ++i) {
+
+              final double[] ltI = lTData[i];
+
+              // check diagonal element
+
+              ltI[i] = Math.sqrt(ltI[i]);
+              final double inverse = 1.0 / ltI[i];
+
+              for (int q = order - 1; q > i; --q) {
+                  ltI[q] *= inverse;
+                  final double[] ltQ = lTData[q];
+                  for (int p = q; p < order; ++p) {
+                      ltQ[p] -= ltI[q] * ltI[p];
+                  }
+              }
+
+          }
+
+      }
+  ------------
+  ===
+  update-node
+  ---
+  constructor_declaration: public CholeskyDecompositionImpl(final RealMatrix matrix,
+                                       final double relativeSymmetryThreshold,
+                                       final double absolutePositivityThreshold)
+          throws NonSquareMatrixException,
+                 NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+
+          if (!matrix.isSquare()) {
+              throw new NonSquareMatrixException(matrix.getRowDimension(),
+                                                 matrix.getColumnDimension());
+          }
+
+          final int order = matrix.getRowDimension();
+          lTData   = matrix.getData();
+          cachedL  = null;
+          cachedLT = null;
+
+          // check the matrix before transformation
+          for (int i = 0; i < order; ++i) {
+
+              final double[] lI = lTData[i];
+
+              // check off-diagonal elements (and reset them to 0)
+              for (int j = i + 1; j < order; ++j) {
+                  final double[] lJ = lTData[j];
+                  final double lIJ = lI[j];
+                  final double lJI = lJ[i];
+                  final double maxDelta =
+                      relativeSymmetryThreshold * Math.max(Math.abs(lIJ), Math.abs(lJI));
+                  if (Math.abs(lIJ - lJI) > maxDelta) {
+                      throw new NotSymmetricMatrixException();
+                  }
+                  lJ[i] = 0;
+             }
+          }
+
+          // transform the matrix
+          for (int i = 0; i < order; ++i) {
+
+              final double[] ltI = lTData[i];
+
+              // check diagonal element
+              if (ltI[i] < absolutePositivityThreshold) {
+                  throw new NotPositiveDefiniteMatrixException();
+              }
+
+              ltI[i] = Math.sqrt(ltI[i]);
+              final double inverse = 1.0 / ltI[i];
+
+              for (int q = order - 1; q > i; --q) {
+                  ltI[q] *= inverse;
+                  final double[] ltQ = lTData[q];
+                  for (int p = q; p < order; ++p) {
+                      ltQ[p] -= ltI[q] * ltI[p];
+                  }
+              }
+
+          }
+
+      } [4082,6111]
+  replace public CholeskyDecompositionImpl(final RealMatrix matrix,
+                                       final double relativeSymmetryThreshold,
+                                       final double absolutePositivityThreshold)
+          throws NonSquareMatrixException,
+                 NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+
+          if (!matrix.isSquare()) {
+              throw new NonSquareMatrixException(matrix.getRowDimension(),
+                                                 matrix.getColumnDimension());
+          }
+
+          final int order = matrix.getRowDimension();
+          lTData   = matrix.getData();
+          cachedL  = null;
+          cachedLT = null;
+
+          // check the matrix before transformation
+          for (int i = 0; i < order; ++i) {
+
+              final double[] lI = lTData[i];
+
+              // check off-diagonal elements (and reset them to 0)
+              for (int j = i + 1; j < order; ++j) {
+                  final double[] lJ = lTData[j];
+                  final double lIJ = lI[j];
+                  final double lJI = lJ[i];
+                  final double maxDelta =
+                      relativeSymmetryThreshold * Math.max(Math.abs(lIJ), Math.abs(lJI));
+                  if (Math.abs(lIJ - lJI) > maxDelta) {
+                      throw new NotSymmetricMatrixException();
+                  }
+                  lJ[i] = 0;
+             }
+          }
+
+          // transform the matrix
+          for (int i = 0; i < order; ++i) {
+
+              final double[] ltI = lTData[i];
+
+              // check diagonal element
+              if (ltI[i] < absolutePositivityThreshold) {
+                  throw new NotPositiveDefiniteMatrixException();
+              }
+
+              ltI[i] = Math.sqrt(ltI[i]);
+              final double inverse = 1.0 / ltI[i];
+
+              for (int q = order - 1; q > i; --q) {
+                  ltI[q] *= inverse;
+                  final double[] ltQ = lTData[q];
+                  for (int p = q; p < order; ++p) {
+                      ltQ[p] -= ltI[q] * ltI[p];
+                  }
+              }
+
+          }
+
+      } by public CholeskyDecompositionImpl(final RealMatrix matrix,
+                                       final double relativeSymmetryThreshold,
+                                       final double absolutePositivityThreshold)
+          throws NonSquareMatrixException,
+                 NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+
+          if (!matrix.isSquare()) {
+              throw new NonSquareMatrixException(matrix.getRowDimension(),
+                                                 matrix.getColumnDimension());
+          }
+
+          final int order = matrix.getRowDimension();
+          lTData   = matrix.getData();
+          cachedL  = null;
+          cachedLT = null;
+
+          // check the matrix before transformation
+          for (int i = 0; i < order; ++i) {
+
+              final double[] lI = lTData[i];
+
+              if (lTData[i][i] < absolutePositivityThreshold) {
+                  throw new NotPositiveDefiniteMatrixException();
+              }
+              // check off-diagonal elements (and reset them to 0)
+              for (int j = i + 1; j < order; ++j) {
+                  final double[] lJ = lTData[j];
+                  final double lIJ = lI[j];
+                  final double lJI = lJ[i];
+                  final double maxDelta =
+                      relativeSymmetryThreshold * Math.max(Math.abs(lIJ), Math.abs(lJI));
+                  if (Math.abs(lIJ - lJI) > maxDelta) {
+                      throw new NotSymmetricMatrixException();
+                  }
+                  lJ[i] = 0;
+             }
+          }
+
+          // transform the matrix
+          for (int i = 0; i < order; ++i) {
+
+              final double[] ltI = lTData[i];
+
+              // check diagonal element
+
+              ltI[i] = Math.sqrt(ltI[i]);
+              final double inverse = 1.0 / ltI[i];
+
+              for (int q = order - 1; q > i; --q) {
+                  ltI[q] *= inverse;
+                  final double[] ltQ = lTData[q];
+                  for (int p = q; p < order; ++p) {
+                      ltQ[p] -= ltI[q] * ltI[p];
+                  }
+              }
+
+          }
+
+      }
+
+...

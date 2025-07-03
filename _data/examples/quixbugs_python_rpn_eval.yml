@@ -1,0 +1,170 @@
+---
+language: python
+text_diff: "--- before\n+++ after\n@@ -17,27 +17,32 @@\n             a = stack.pop()\n
+  \            b = stack.pop()\n             stack.append(\n-                op(token,
+  a, b)\n+                op(token, b, a)\n             )\n \n     return stack.pop()\n
+  \n-\n-\n \"\"\"\n-Reverse Polish Notation\n-\n-Four-function calculator with input
+  given in Reverse Polish Notation (RPN).\n-\n-Input:\n-    A list of values and operators
+  encoded as floats and strings\n-\n-Precondition:\n-    all(\n-        isinstance(token,
+  float) or token in ('+', '-', '*', '/') for token in tokens\n-    )\n+def rpn_eval(tokens):\n+
+  \   def op(symbol, a, b):\n+        return {\n+            '+': lambda a, b: a +
+  b,\n+            '-': lambda a, b: a - b,\n+            '*': lambda a, b: a * b,\n+
+  \           '/': lambda a, b: a / b\n+        }[symbol](b, a)\n+\n+    stack = Stack()\n+\n+
+  \   for token in tokens:\n+        if isinstance(token, float):\n+            stack.push(token)\n+
+  \       else:\n+            a = stack.pop()\n+            b = stack.pop()\n+            stack.push(\n+
+  \               op(token, a, b)\n+            )\n \n-Example:\n-    >>> rpn_eval([3.0,
+  5.0, '+', 2.0, '/'])\n-    4.0\n+    return stack.pop()\n \"\"\"\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from """
+  Reverse Polish Notation
+
+  Four-function calculator with input given in Reverse Polish Notation (RPN).
+
+  Input:
+      A list of values and operators encoded as floats and strings
+
+  Precondition:
+      all(
+          isinstance(token, float) or token in ('+', '-', '*', '/') for token in tokens
+      )
+
+  Example:
+      >>> rpn_eval([3.0, 5.0, '+', 2.0, '/'])
+      4.0
+  """ to """
+  def rpn_eval(tokens):
+      def op(symbol, a, b):
+          return {
+              '+': lambda a, b: a + b,
+              '-': lambda a, b: a - b,
+              '*': lambda a, b: a * b,
+              '/': lambda a, b: a / b
+          }[symbol](b, a)
+
+      stack = Stack()
+
+      for token in tokens:
+          if isinstance(token, float):
+              stack.push(token)
+          else:
+              a = stack.pop()
+              b = stack.pop()
+              stack.push(
+                  op(token, a, b)
+              )
+
+      return stack.pop()
+  """
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: """
+  Reverse Polish Notation
+
+  Four-function calculator with input given in Reverse Polish Notation (RPN).
+
+  Input:
+      A list of values and operators encoded as floats and strings
+
+  Precondition:
+      all(
+          isinstance(token, float) or token in ('+', '-', '*', '/') for token in tokens
+      )
+
+  Example:
+      >>> rpn_eval([3.0, 5.0, '+', 2.0, '/'])
+      4.0
+  """ [517,876]
+  replace """
+  Reverse Polish Notation
+
+  Four-function calculator with input given in Reverse Polish Notation (RPN).
+
+  Input:
+      A list of values and operators encoded as floats and strings
+
+  Precondition:
+      all(
+          isinstance(token, float) or token in ('+', '-', '*', '/') for token in tokens
+      )
+
+  Example:
+      >>> rpn_eval([3.0, 5.0, '+', 2.0, '/'])
+      4.0
+  """ by """
+  def rpn_eval(tokens):
+      def op(symbol, a, b):
+          return {
+              '+': lambda a, b: a + b,
+              '-': lambda a, b: a - b,
+              '*': lambda a, b: a * b,
+              '/': lambda a, b: a / b
+          }[symbol](b, a)
+
+      stack = Stack()
+
+      for token in tokens:
+          if isinstance(token, float):
+              stack.push(token)
+          else:
+              a = stack.pop()
+              b = stack.pop()
+              stack.push(
+                  op(token, a, b)
+              )
+
+      return stack.pop()
+  """
+
+  New cluster:
+  UPDATE from for token in tokens:
+          if isinstance(token, float):
+              stack.append(token)
+          else:
+              a = stack.pop()
+              b = stack.pop()
+              stack.append(
+                  op(token, a, b)
+              ) to for token in tokens:
+          if isinstance(token, float):
+              stack.append(token)
+          else:
+              a = stack.pop()
+              b = stack.pop()
+              stack.append(
+                  op(token, b, a)
+              )
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for token in tokens:
+          if isinstance(token, float):
+              stack.append(token)
+          else:
+              a = stack.pop()
+              b = stack.pop()
+              stack.append(
+                  op(token, a, b)
+              ) [258,489]
+  replace for token in tokens:
+          if isinstance(token, float):
+              stack.append(token)
+          else:
+              a = stack.pop()
+              b = stack.pop()
+              stack.append(
+                  op(token, a, b)
+              ) by for token in tokens:
+          if isinstance(token, float):
+              stack.append(token)
+          else:
+              a = stack.pop()
+              b = stack.pop()
+              stack.append(
+                  op(token, b, a)
+              )
+
+...

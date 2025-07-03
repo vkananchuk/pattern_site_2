@@ -1,0 +1,214 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -225,9 +225,6 @@\n         JsonParser p2 = _tokens[index].asParser(p);\n
+  \        JsonToken t = p2.nextToken();\n         // 29-Sep-2015, tatu: As per [databind#942],
+  nulls need special support\n-        if (t == JsonToken.VALUE_NULL) {\n-            return
+  null;\n-        }\n \n         TokenBuffer merged = new TokenBuffer(p);\n         merged.writeStartArray();\n@@
+  -251,10 +248,6 @@\n         JsonParser p2 = _tokens[index].asParser(p);\n         JsonToken
+  t = p2.nextToken();\n         // 29-Sep-2015, tatu: As per [databind#942], nulls
+  need special support\n-        if (t == JsonToken.VALUE_NULL) {\n-            _properties[index].getProperty().set(bean,
+  null);\n-            return;\n-        }\n         TokenBuffer merged = new TokenBuffer(p);\n
+  \        merged.writeStartArray();\n         merged.writeString(typeId);\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [9173,9928]
+  to
+  class_body [731,13308]
+  at 11
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: _deserialize [9230,9242]
+  to
+  method_declaration [9173,9928]
+  at 0
+  ===
+  insert-node
+  ---
+  method_declaration [9173,9928]
+  to
+  class_body [731,13308]
+  at 11
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [9934,10885]
+  to
+  class_body [731,13308]
+  at 12
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [9934,10885]
+  to
+  class_body [731,13308]
+  at 12
+  ===
+  insert-node
+  ---
+  identifier: _deserializeAndSet [9989,10007]
+  to
+  method_declaration [9934,10885]
+  at 0
+
+  New cluster:
+  MOVE from method_declaration [9173,9928]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [9173,10004]
+      formal_parameter: JsonParser p [9243,9255]
+  to
+  method_declaration [9173,9928]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [9347,9928]
+      local_variable_declaration: JsonParser p2 = _tokens[index].asParser(p); [9357,9400]
+      local_variable_declaration: JsonToken t = p2.nextToken(); [9409,9438]
+      local_variable_declaration: TokenBuffer merged = new TokenBuffer(p); [9528,9568]
+      expression_statement: merged.writeStartArray(); [9577,9602]
+      expression_statement: merged.writeString(typeId); [9611,9638]
+      expression_statement: merged.copyCurrentStructure(p2); [9647,9679]
+      expression_statement: merged.writeEndArray(); [9688,9711]
+      local_variable_declaration: JsonParser mp = merged.asParser(p); [9792,9827]
+      expression_statement: mp.nextToken(); [9836,9851]
+      return_statement: return _properties[index].getProperty().deserialize(mp, ctxt); [9860,9922]
+  to
+  method_declaration [9173,9928]
+  at 2
+
+  New cluster:
+  MOVE from method_declaration [9934,10885]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [10010,11094]
+      formal_parameter: JsonParser p [10084,10096]
+  to
+  method_declaration [9934,10885]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [10125,10885]
+      local_variable_declaration: JsonParser p2 = _tokens[index].asParser(p); [10302,10345]
+      local_variable_declaration: JsonToken t = p2.nextToken(); [10354,10383]
+      local_variable_declaration: TokenBuffer merged = new TokenBuffer(p); [10472,10512]
+      expression_statement: merged.writeStartArray(); [10521,10546]
+      expression_statement: merged.writeString(typeId); [10555,10582]
+      expression_statement: merged.copyCurrentStructure(p2); [10600,10632]
+      expression_statement: merged.writeEndArray(); [10641,10664]
+      local_variable_declaration: JsonParser mp = merged.asParser(p); [10744,10779]
+      expression_statement: mp.nextToken(); [10788,10803]
+      expression_statement: _properties[index].getProperty().deserializeAndSet(mp, ctxt, bean); [10812,10879]
+  to
+  method_declaration [9934,10885]
+  at 2
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [9173,10004]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: _deserialize [9230,9242]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [9173,10004]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [9347,10004]
+      local_variable_declaration: JsonParser p2 = _tokens[index].asParser(p); [9357,9400]
+      local_variable_declaration: JsonToken t = p2.nextToken(); [9409,9438]
+      if_statement [9527,9594]
+          parenthesized_expression [9530,9557]
+              equals [9531,9556]
+                  identifier: t [9531,9532]
+                  field_access: JsonToken.VALUE_NULL [9536,9556]
+          block [9558,9594]
+              return_statement: return null; [9572,9584]
+      local_variable_declaration: TokenBuffer merged = new TokenBuffer(p); [9604,9644]
+      expression_statement: merged.writeStartArray(); [9653,9678]
+      expression_statement: merged.writeString(typeId); [9687,9714]
+      expression_statement: merged.copyCurrentStructure(p2); [9723,9755]
+      expression_statement: merged.writeEndArray(); [9764,9787]
+      local_variable_declaration: JsonParser mp = merged.asParser(p); [9868,9903]
+      expression_statement: mp.nextToken(); [9912,9927]
+      return_statement: return _properties[index].getProperty().deserialize(mp, ctxt); [9936,9998]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [10010,11094]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_declaration [10010,11094]
+  ===
+  ===
+  delete-node
+  ---
+  identifier: _deserializeAndSet [10065,10083]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [10201,11094]
+      local_variable_declaration: JsonParser p2 = _tokens[index].asParser(p); [10378,10421]
+      local_variable_declaration: JsonToken t = p2.nextToken(); [10430,10459]
+      if_statement [10548,10672]
+          parenthesized_expression [10551,10578]
+              equals [10552,10577]
+                  identifier: t [10552,10553]
+                  field_access: JsonToken.VALUE_NULL [10557,10577]
+          block [10579,10672]
+              expression_statement: _properties[index].getProperty().set(bean, null); [10593,10642]
+              return_statement: return; [10655,10662]
+      local_variable_declaration: TokenBuffer merged = new TokenBuffer(p); [10681,10721]
+      expression_statement: merged.writeStartArray(); [10730,10755]
+      expression_statement: merged.writeString(typeId); [10764,10791]
+      expression_statement: merged.copyCurrentStructure(p2); [10809,10841]
+      expression_statement: merged.writeEndArray(); [10850,10873]
+      local_variable_declaration: JsonParser mp = merged.asParser(p); [10953,10988]
+      expression_statement: mp.nextToken(); [10997,11012]
+      expression_statement: _properties[index].getProperty().deserializeAndSet(mp, ctxt, bean); [11021,11088]
+
+...

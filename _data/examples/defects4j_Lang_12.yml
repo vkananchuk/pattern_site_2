@@ -1,0 +1,64 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -227,21 +227,14 @@\n         } else if (count
+  < 0) {\n             throw new IllegalArgumentException(\"Requested random string
+  length \" + count + \" is less than 0.\");\n         }\n-        if (chars != null
+  && chars.length == 0) {\n-            throw new IllegalArgumentException(\"The chars
+  array must not be empty\");\n-        }\n \n         if (start == 0 && end == 0)
+  {\n-            if (chars != null) {\n-                end = chars.length;\n-            }
+  else {\n                 if (!letters && !numbers) {\n                     end =
+  Integer.MAX_VALUE;\n                 } else {\n                     end = 'z' +
+  1;\n                     start = ' ';                \n                 }\n-            }\n
+  \        }\n \n         char[] buffer = new char[count];\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  and [9037,9057]
+      unary_expression: !letters [9037,9045]
+      unary_expression: !numbers [9049,9057]
+  to
+  parenthesized_expression [9177,9192]
+  at 0
+
+  New cluster:
+  UPDATE from end = chars.length; to end = Integer.MAX_VALUE;
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: end = chars.length; [9211,9230]
+  replace end = chars.length; by end = Integer.MAX_VALUE;
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [8986,9122]
+      parenthesized_expression [8989,9025]
+          and [8990,9024]
+              not_equals [8990,9003]
+                  identifier: chars [8990,8995]
+                  null_literal [8999,9003]
+              equals [9007,9024]
+                  field_access: chars.length [9007,9019]
+                  decimal_integer_literal: 0 [9023,9024]
+      block [9026,9122]
+          throw_statement: throw new IllegalArgumentException("The chars array must not be empty"); [9040,9112]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  not_equals [9178,9191]
+      identifier: chars [9178,9183]
+      null_literal [9187,9191]
+
+...

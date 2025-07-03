@@ -1,0 +1,26 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -95,19 +95,8 @@\n         Method m1 = invocation.getMethod();\n
+  \        Method m2 = candidate.getMethod();\n         \n-        if (m1.getName()
+  != null && m1.getName().equals(m2.getName())) {\n         \t/* Avoid unnecessary
+  cloning */\n-        \tClass[] params1 = m1.getParameterTypes();\n-        \tClass[]
+  params2 = m2.getParameterTypes();\n-        \tif (params1.length == params2.length)
+  {\n-        \t    for (int i = 0; i < params1.length; i++) {\n-        \t\tif (params1[i]
+  != params2[i])\n-        \t\t    return false;\n-        \t    }\n-        \t    return
+  true;\n-        \t}\n-        }\n-        return false;\n+        return m1.equals(m2);\n
+  \    }\n     \n     public Location getLocation() {\n"
+tree_diff: "New cluster:\nUPDATE from return false; to return m1.equals(m2);\n------------\n===\nupdate-node\n---\nreturn_statement:
+  return false; [3852,3865]\nreplace return false; by return m1.equals(m2);\n\nNew
+  cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nif_statement
+  [3401,3843]\n    parenthesized_expression [3404,3463]\n        and [3405,3462]\n
+  \           not_equals [3405,3425]\n                method_invocation: m1.getName()
+  [3405,3417]\n                null_literal [3421,3425]\n            method_invocation:
+  m1.getName().equals(m2.getName()) [3429,3462]\n    block [3464,3843]\n        local_variable_declaration:
+  Class[] params1 = m1.getParameterTypes(); [3516,3557]\n        local_variable_declaration:
+  Class[] params2 = m2.getParameterTypes(); [3567,3608]\n        if_statement [3618,3833]\n
+  \           parenthesized_expression [3621,3655]\n                equals [3622,3654]\n
+  \                   field_access: params1.length [3622,3636]\n                    field_access:
+  params2.length [3640,3654]\n            block [3656,3833]\n                for_statement:
+  for (int i = 0; i < params1.length; i++) {\n        \t\tif (params1[i] != params2[i])\n
+  \       \t\t    return false;\n        \t    } [3671,3796]\n                return_statement:
+  return true; [3810,3822]\n\n"

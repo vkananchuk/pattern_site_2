@@ -1,0 +1,207 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -125,7 +125,6 @@\n       AbstractPostOrderCallback
+  {\n \n     private int scriptNodeCount = 0;\n-    private Set<String> modulesWithExports
+  = Sets.newHashSet();\n \n     @Override\n     public void visit(NodeTraversal t,
+  Node n, Node parent) {\n@@ -205,9 +204,6 @@\n      */\n     private void emitOptionalModuleExportsOverride(Node
+  script,\n         String moduleName) {\n-      if (!modulesWithExports.contains(moduleName))
+  {\n-        return;\n-      }\n \n       Node moduleExportsProp = IR.getprop(IR.name(moduleName),\n
+  \          IR.string(\"module$exports\"));\n@@ -229,7 +225,6 @@\n       Node exports
+  = prop.getChildAtIndex(1);\n       exports.putProp(Node.ORIGINALNAME_PROP, \"exports\");\n
+  \      exports.setString(\"module$exports\");\n-      modulesWithExports.add(moduleName);\n
+  \    }\n \n     /**\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [7199,7625]
+  to
+  class_body [4300,8530]
+  at 5
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: emitOptionalModuleExportsOverride [7212,7245]
+  to
+  method_declaration [7199,7625]
+  at 0
+  ===
+  insert-node
+  ---
+  method_declaration [7199,7625]
+  to
+  class_body [4300,8530]
+  at 5
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [7707,8113]
+  to
+  class_body [4300,8530]
+  at 6
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [7707,8113]
+  to
+  class_body [4300,8530]
+  at 6
+  ===
+  insert-node
+  ---
+  identifier: visitModuleExports [7720,7738]
+  to
+  method_declaration [7707,8113]
+  at 0
+
+  New cluster:
+  MOVE from method_declaration [7199,7625]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [7263,7767]
+      formal_parameter: Node script [7310,7321]
+  to
+  method_declaration [7199,7625]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [7286,7625]
+      local_variable_declaration: Node moduleExportsProp = IR.getprop(IR.name(moduleName),
+            IR.string("module$exports")); [7295,7391]
+      expression_statement: script.addChildToBack(IR.ifNode(
+            moduleExportsProp,
+            IR.block(IR.exprResult(IR.assign(IR.name(moduleName),
+                moduleExportsProp.cloneTree())))).copyInformationFromForTree(
+            script)); [7398,7619]
+  to
+  method_declaration [7199,7625]
+  at 2
+
+  New cluster:
+  MOVE from method_declaration [7707,8113]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [7849,8297]
+      formal_parameter: Node prop [7881,7890]
+  to
+  method_declaration [7707,8113]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [7750,8113]
+      local_variable_declaration: String moduleName = guessCJSModuleName(prop.getSourceFileName()); [7758,7823]
+      local_variable_declaration: Node module = prop.getChildAtIndex(0); [7830,7868]
+      expression_statement: module.putProp(Node.ORIGINALNAME_PROP, "module"); [7875,7924]
+      expression_statement: module.setString(moduleName); [7931,7960]
+      local_variable_declaration: Node exports = prop.getChildAtIndex(1); [7967,8006]
+      expression_statement: exports.putProp(Node.ORIGINALNAME_PROP, "exports"); [8013,8064]
+      expression_statement: exports.setString("module$exports"); [8071,8107]
+  to
+  method_declaration [7707,8113]
+  at 2
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  field_declaration: private Set<String> modulesWithExports = Sets.newHashSet(); [4429,4488]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  field_declaration: private Set<String> modulesWithExports = Sets.newHashSet(); [4429,4488]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [7263,7767]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: emitOptionalModuleExportsOverride [7276,7309]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [7263,7767]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [7350,7767]
+      if_statement [7358,7429]
+          parenthesized_expression [7361,7403]
+              unary_expression: !modulesWithExports.contains(moduleName) [7362,7402]
+          block [7404,7429]
+              return_statement: return; [7414,7421]
+      local_variable_declaration: Node moduleExportsProp = IR.getprop(IR.name(moduleName),
+            IR.string("module$exports")); [7437,7533]
+      expression_statement: script.addChildToBack(IR.ifNode(
+            moduleExportsProp,
+            IR.block(IR.exprResult(IR.assign(IR.name(moduleName),
+                moduleExportsProp.cloneTree())))).copyInformationFromForTree(
+            script)); [7540,7761]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [7849,8297]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: visitModuleExports [7862,7880]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [7849,8297]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [7892,8297]
+      local_variable_declaration: String moduleName = guessCJSModuleName(prop.getSourceFileName()); [7900,7965]
+      local_variable_declaration: Node module = prop.getChildAtIndex(0); [7972,8010]
+      expression_statement: module.putProp(Node.ORIGINALNAME_PROP, "module"); [8017,8066]
+      expression_statement: module.setString(moduleName); [8073,8102]
+      local_variable_declaration: Node exports = prop.getChildAtIndex(1); [8109,8148]
+      expression_statement: exports.putProp(Node.ORIGINALNAME_PROP, "exports"); [8155,8206]
+      expression_statement: exports.setString("module$exports"); [8213,8249]
+      expression_statement: modulesWithExports.add(moduleName); [8256,8291]
+
+...

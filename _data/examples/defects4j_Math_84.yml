@@ -1,0 +1,227 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -61,7 +61,6 @@\n     protected void iterateSimplex(final
+  Comparator<RealPointValuePair> comparator)\n         throws FunctionEvaluationException,
+  OptimizationException, IllegalArgumentException {\n \n-        final RealConvergenceChecker
+  checker = getConvergenceChecker();\n         while (true) {\n \n             incrementIterationsCounter();\n@@
+  -90,16 +89,8 @@\n             final RealPointValuePair contracted = evaluateNewSimplex(original,
+  gamma, comparator);\n             if (comparator.compare(contracted, best) < 0)
+  {\n                 // accept the contracted simplex\n-                return;\n-
+  \           }\n \n             // check convergence\n-            final int iter
+  = getIterations();\n-            boolean converged = true;\n-            for (int
+  i = 0; i < simplex.length; ++i) {\n-                converged &= checker.converged(iter,
+  original[i], simplex[i]);\n-            }\n-            if (converged) {\n                 return;\n
+  \            }\n \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from while (true) {
+
+              incrementIterationsCounter();
+
+              // save the original vertex
+              final RealPointValuePair[] original = simplex;
+              final RealPointValuePair best = original[0];
+
+              // perform a reflection step
+              final RealPointValuePair reflected = evaluateNewSimplex(original, 1.0, comparator);
+              if (comparator.compare(reflected, best) < 0) {
+
+                  // compute the expanded simplex
+                  final RealPointValuePair[] reflectedSimplex = simplex;
+                  final RealPointValuePair expanded = evaluateNewSimplex(original, khi, comparator);
+                  if (comparator.compare(reflected, expanded) <= 0) {
+                      // accept the reflected simplex
+                      simplex = reflectedSimplex;
+                  }
+
+                  return;
+
+              }
+
+              // compute the contracted simplex
+              final RealPointValuePair contracted = evaluateNewSimplex(original, gamma, comparator);
+              if (comparator.compare(contracted, best) < 0) {
+                  // accept the contracted simplex
+                  return;
+              }
+
+              // check convergence
+              final int iter = getIterations();
+              boolean converged = true;
+              for (int i = 0; i < simplex.length; ++i) {
+                  converged &= checker.converged(iter, original[i], simplex[i]);
+              }
+              if (converged) {
+                  return;
+              }
+
+          } to while (true) {
+
+              incrementIterationsCounter();
+
+              // save the original vertex
+              final RealPointValuePair[] original = simplex;
+              final RealPointValuePair best = original[0];
+
+              // perform a reflection step
+              final RealPointValuePair reflected = evaluateNewSimplex(original, 1.0, comparator);
+              if (comparator.compare(reflected, best) < 0) {
+
+                  // compute the expanded simplex
+                  final RealPointValuePair[] reflectedSimplex = simplex;
+                  final RealPointValuePair expanded = evaluateNewSimplex(original, khi, comparator);
+                  if (comparator.compare(reflected, expanded) <= 0) {
+                      // accept the reflected simplex
+                      simplex = reflectedSimplex;
+                  }
+
+                  return;
+
+              }
+
+              // compute the contracted simplex
+              final RealPointValuePair contracted = evaluateNewSimplex(original, gamma, comparator);
+              if (comparator.compare(contracted, best) < 0) {
+                  // accept the contracted simplex
+
+              // check convergence
+                  return;
+              }
+
+          }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while (true) {
+
+              incrementIterationsCounter();
+
+              // save the original vertex
+              final RealPointValuePair[] original = simplex;
+              final RealPointValuePair best = original[0];
+
+              // perform a reflection step
+              final RealPointValuePair reflected = evaluateNewSimplex(original, 1.0, comparator);
+              if (comparator.compare(reflected, best) < 0) {
+
+                  // compute the expanded simplex
+                  final RealPointValuePair[] reflectedSimplex = simplex;
+                  final RealPointValuePair expanded = evaluateNewSimplex(original, khi, comparator);
+                  if (comparator.compare(reflected, expanded) <= 0) {
+                      // accept the reflected simplex
+                      simplex = reflectedSimplex;
+                  }
+
+                  return;
+
+              }
+
+              // compute the contracted simplex
+              final RealPointValuePair contracted = evaluateNewSimplex(original, gamma, comparator);
+              if (comparator.compare(contracted, best) < 0) {
+                  // accept the contracted simplex
+                  return;
+              }
+
+              // check convergence
+              final int iter = getIterations();
+              boolean converged = true;
+              for (int i = 0; i < simplex.length; ++i) {
+                  converged &= checker.converged(iter, original[i], simplex[i]);
+              }
+              if (converged) {
+                  return;
+              }
+
+          } [2318,3811]
+  replace while (true) {
+
+              incrementIterationsCounter();
+
+              // save the original vertex
+              final RealPointValuePair[] original = simplex;
+              final RealPointValuePair best = original[0];
+
+              // perform a reflection step
+              final RealPointValuePair reflected = evaluateNewSimplex(original, 1.0, comparator);
+              if (comparator.compare(reflected, best) < 0) {
+
+                  // compute the expanded simplex
+                  final RealPointValuePair[] reflectedSimplex = simplex;
+                  final RealPointValuePair expanded = evaluateNewSimplex(original, khi, comparator);
+                  if (comparator.compare(reflected, expanded) <= 0) {
+                      // accept the reflected simplex
+                      simplex = reflectedSimplex;
+                  }
+
+                  return;
+
+              }
+
+              // compute the contracted simplex
+              final RealPointValuePair contracted = evaluateNewSimplex(original, gamma, comparator);
+              if (comparator.compare(contracted, best) < 0) {
+                  // accept the contracted simplex
+                  return;
+              }
+
+              // check convergence
+              final int iter = getIterations();
+              boolean converged = true;
+              for (int i = 0; i < simplex.length; ++i) {
+                  converged &= checker.converged(iter, original[i], simplex[i]);
+              }
+              if (converged) {
+                  return;
+              }
+
+          } by while (true) {
+
+              incrementIterationsCounter();
+
+              // save the original vertex
+              final RealPointValuePair[] original = simplex;
+              final RealPointValuePair best = original[0];
+
+              // perform a reflection step
+              final RealPointValuePair reflected = evaluateNewSimplex(original, 1.0, comparator);
+              if (comparator.compare(reflected, best) < 0) {
+
+                  // compute the expanded simplex
+                  final RealPointValuePair[] reflectedSimplex = simplex;
+                  final RealPointValuePair expanded = evaluateNewSimplex(original, khi, comparator);
+                  if (comparator.compare(reflected, expanded) <= 0) {
+                      // accept the reflected simplex
+                      simplex = reflectedSimplex;
+                  }
+
+                  return;
+
+              }
+
+              // compute the contracted simplex
+              final RealPointValuePair contracted = evaluateNewSimplex(original, gamma, comparator);
+              if (comparator.compare(contracted, best) < 0) {
+                  // accept the contracted simplex
+
+              // check convergence
+                  return;
+              }
+
+          }
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final RealConvergenceChecker checker = getConvergenceChecker(); [2246,2309]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final RealConvergenceChecker checker = getConvergenceChecker(); [2246,2309]
+  ===
+
+...

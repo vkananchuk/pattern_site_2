@@ -1,0 +1,93 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -683,14 +683,8 @@\n     @Override\n     public
+  double doubleValue() {\n         double result = numerator.doubleValue() / denominator.doubleValue();\n-
+  \       if (Double.isNaN(result)) {\n             // Numerator and/or denominator
+  must be out of range:\n             // Calculate how far to shift them to put them
+  in range.\n-            int shift = Math.max(numerator.bitLength(),\n-                                 denominator.bitLength())
+  - Double.MAX_EXPONENT;\n-            result = numerator.shiftRight(shift).doubleValue()
+  /\n-                denominator.shiftRight(shift).doubleValue();\n-        }\n         return
+  result;\n     }\n \n@@ -736,14 +730,8 @@\n     @Override\n     public float floatValue()
+  {\n         float result = numerator.floatValue() / denominator.floatValue();\n-
+  \       if (Double.isNaN(result)) {\n             // Numerator and/or denominator
+  must be out of range:\n             // Calculate how far to shift them to put them
+  in range.\n-            int shift = Math.max(numerator.bitLength(),\n-                                 denominator.bitLength())
+  - Float.MAX_EXPONENT;\n-            result = numerator.shiftRight(shift).floatValue()
+  /\n-                denominator.shiftRight(shift).floatValue();\n-        }\n         return
+  result;\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  method_declaration [23721,24005]
+      identifier: doubleValue [23749,23760]
+      method_parameters [23721,24005]
+      block [23763,24005]
+          local_variable_declaration: double result = numerator.doubleValue() / denominator.doubleValue(); [23773,23841]
+          return_statement: return result; [23985,23999]
+  to
+  class_body [1512,38247]
+  at 42
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  method_declaration [25334,25613]
+      identifier: floatValue [25361,25371]
+      method_parameters [25334,25613]
+      block [25374,25613]
+          local_variable_declaration: float result = numerator.floatValue() / denominator.floatValue(); [25384,25449]
+          return_statement: return result; [25593,25607]
+  to
+  class_body [1512,38247]
+  at 45
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [23721,24314]
+      identifier: doubleValue [23749,23760]
+      method_parameters [23721,24314]
+      block [23763,24314]
+          local_variable_declaration: double result = numerator.doubleValue() / denominator.doubleValue(); [23773,23841]
+          if_statement [23850,24285]
+              parenthesized_expression [23853,23875]
+                  method_invocation: Double.isNaN(result) [23854,23874]
+              block [23876,24285]
+                  local_variable_declaration: int shift = Math.max(numerator.bitLength(),
+                                   denominator.bitLength()) - Double.MAX_EXPONENT; [24025,24149]
+                  expression_statement: result = numerator.shiftRight(shift).doubleValue() /
+                  denominator.shiftRight(shift).doubleValue(); [24162,24275]
+          return_statement: return result; [24294,24308]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [25643,26228]
+      identifier: floatValue [25670,25680]
+      method_parameters [25643,26228]
+      block [25683,26228]
+          local_variable_declaration: float result = numerator.floatValue() / denominator.floatValue(); [25693,25758]
+          if_statement [25767,26199]
+              parenthesized_expression [25770,25792]
+                  method_invocation: Double.isNaN(result) [25771,25791]
+              block [25793,26199]
+                  local_variable_declaration: int shift = Math.max(numerator.bitLength(),
+                                   denominator.bitLength()) - Float.MAX_EXPONENT; [25942,26065]
+                  expression_statement: result = numerator.shiftRight(shift).floatValue() /
+                  denominator.shiftRight(shift).floatValue(); [26078,26189]
+          return_statement: return result; [26208,26222]
+
+...

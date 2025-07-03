@@ -1,0 +1,73 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -41,16 +41,14 @@\n     \r\n     private static
+  final long serialVersionUID = -7105341425736035847L;\r\n \r\n-    private transient
+  MockitoCore mockitoCore;\r\n-    private transient ReturnsEmptyValues delegate;\r\n+
+  \   private MockitoCore mockitoCore = new MockitoCore();\r\n+    private ReturnsEmptyValues
+  delegate = new ReturnsEmptyValues();\r\n \r\n     public Object answer(InvocationOnMock
+  invocation) throws Throwable {\r\n         GenericMetadataSupport returnTypeGenericMetadata
+  =\r\n                 actualParameterizedType(invocation.getMock()).resolveGenericReturnType(invocation.getMethod());\r\n
+  \r\n         Class<?> rawType = returnTypeGenericMetadata.rawType();\r\n-        instantiateMockitoCoreIfNeeded();\r\n-
+  \       instantiateDelegateIfNeeded();\r\n         if (!mockitoCore.isTypeMockable(rawType))
+  {\r\n             return delegate.returnValueFor(rawType);\r\n         }\r\n@@ -58,17
+  +56,7 @@\n         return getMock(invocation, returnTypeGenericMetadata);\r\n     }\r\n
+  \r\n-    private synchronized void instantiateMockitoCoreIfNeeded() {\r\n-        if
+  (mockitoCore == null) {\r\n-            mockitoCore = new MockitoCore();\r\n-        }\r\n-
+  \   }\r\n \r\n-    private synchronized void instantiateDelegateIfNeeded() {\r\n-
+  \       if (delegate == null) {\r\n-            delegate = new ReturnsEmptyValues();\r\n-
+  \       }\r\n-    }\r\n \r\n     private Object getMock(InvocationOnMock invocation,
+  GenericMetadataSupport returnTypeGenericMetadata) throws Throwable {\r\n     \tInternalMockHandler<Object>
+  handler = new MockUtil().getMockHandler(invocation.getMock());\r\n@@ -109,7 +97,6
+  @@\n                 : withSettings();\r\n \r\n         return mockSettings\r\n-\t\t
+  \       .serializable()\r\n                 .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\r\n
+  \    }\r\n \r\n@@ -124,7 +111,7 @@\n \r\n     private Object recordDeepStubMock(final
+  Object mock, InvocationContainerImpl container) throws Throwable {\r\n \r\n-        container.addAnswer(new
+  SerializableAnswer() {\r\n+        container.addAnswer(new Answer<Object>() {\r\n
+  \            public Object answer(InvocationOnMock invocation) throws Throwable
+  {\r\n                 return mock;\r\n             }\r\n@@ -133,9 +120,7 @@\n         return
+  mock;\r\n     }\r\n \t\r\n-\tabstract class SerializableAnswer implements Answer<Object>,
+  Serializable {\r\n \t\t\r\n-\t}\r\n \t\r\n \r\n     protected GenericMetadataSupport
+  actualParameterizedType(Object mock) {\r\n"
+tree_diff: "New cluster:\nUPDATE from private transient MockitoCore mockitoCore; to
+  private MockitoCore mockitoCore = new MockitoCore();\n------------\n===\nupdate-node\n---\nfield_declaration:
+  private transient MockitoCore mockitoCore; [1629,1671]\nreplace private transient
+  MockitoCore mockitoCore; by private MockitoCore mockitoCore = new MockitoCore();\n\nNew
+  cluster:\nUPDATE from private transient ReturnsEmptyValues delegate; to private
+  ReturnsEmptyValues delegate = new ReturnsEmptyValues();\n------------\n===\nupdate-node\n---\nfield_declaration:
+  private transient ReturnsEmptyValues delegate; [1677,1723]\nreplace private transient
+  ReturnsEmptyValues delegate; by private ReturnsEmptyValues delegate = new ReturnsEmptyValues();\n\nNew
+  cluster:\nUPDATE from return mockSettings\r\n\t\t        .serializable()\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+  to return mockSettings\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\n------------\n===\nupdate-node\n---\nreturn_statement:
+  return mockSettings\r\n\t\t        .serializable()\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+  [4578,4713]\nreplace return mockSettings\r\n\t\t        .serializable()\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+  by return mockSettings\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\n\nNew
+  cluster:\nUPDATE from container.addAnswer(new SerializableAnswer() {\r\n            public
+  Object answer(InvocationOnMock invocation) throws Throwable {\r\n                return
+  mock;\r\n            }\r\n        }, false); to container.addAnswer(new Answer<Object>()
+  {\r\n            public Object answer(InvocationOnMock invocation) throws Throwable
+  {\r\n                return mock;\r\n            }\r\n        }, false);\n------------\n===\nupdate-node\n---\nexpression_statement:
+  container.addAnswer(new SerializableAnswer() {\r\n            public Object answer(InvocationOnMock
+  invocation) throws Throwable {\r\n                return mock;\r\n            }\r\n
+  \       }, false); [5198,5391]\nreplace container.addAnswer(new SerializableAnswer()
+  {\r\n            public Object answer(InvocationOnMock invocation) throws Throwable
+  {\r\n                return mock;\r\n            }\r\n        }, false); by container.addAnswer(new
+  Answer<Object>() {\r\n            public Object answer(InvocationOnMock invocation)
+  throws Throwable {\r\n                return mock;\r\n            }\r\n        },
+  false);\n\nNew cluster:\n===\ndelete-node\n---\nexpression_statement: instantiateMockitoCoreIfNeeded();
+  [2049,2082]\n===\n------------\n===\ndelete-node\n---\nexpression_statement: instantiateMockitoCoreIfNeeded();
+  [2049,2082]\n===\n\nNew cluster:\n===\ndelete-node\n---\nexpression_statement: instantiateDelegateIfNeeded();
+  [2092,2122]\n===\n------------\n===\ndelete-node\n---\nexpression_statement: instantiateDelegateIfNeeded();
+  [2092,2122]\n===\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nmethod_declaration
+  [2321,2481]\n    identifier: instantiateMockitoCoreIfNeeded [2347,2377]\n    method_parameters
+  [2321,2481]\n    block [2380,2481]\n        if_statement [2391,2474]\n            parenthesized_expression
+  [2394,2415]\n                equals [2395,2414]\n                    identifier:
+  mockitoCore [2395,2406]\n                    null_literal [2410,2414]\n            block
+  [2416,2474]\n                expression_statement: mockitoCore = new MockitoCore();
+  [2431,2463]\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nmethod_declaration
+  [2489,2647]\n    identifier: instantiateDelegateIfNeeded [2515,2542]\n    method_parameters
+  [2489,2647]\n    block [2545,2647]\n        if_statement [2556,2640]\n            parenthesized_expression
+  [2559,2577]\n                equals [2560,2576]\n                    identifier:
+  delegate [2560,2568]\n                    null_literal [2572,2576]\n            block
+  [2578,2640]\n                expression_statement: delegate = new ReturnsEmptyValues();
+  [2593,2629]\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nclass_declaration
+  [5428,5511]\n    identifier: SerializableAnswer [5443,5461]\n    class_body [5428,5511]\n\n"

@@ -1,0 +1,100 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -190,15 +190,8 @@
+               return -1;
+           }
+           // [core#176]: no leading zeroes allowed
+  -        char c = str.charAt(0);
+  -        if (c <= '0') {
+  -            return (len == 1 && c == '0') ? 0 : -1;
+  -        }
+  -        if (c > '9') {
+  -            return -1;
+  -        }
+  -        for (int i = 1; i < len; ++i) {
+  -            c = str.charAt(i);
+  +        for (int i = 0; i < len; ++i) {
+  +            char c = str.charAt(i);
+               if (c > '9' || c < '0') {
+                   return -1;
+               }
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 1; i < len; ++i) {
+              c = str.charAt(i);
+              if (c > '9' || c < '0') {
+                  return -1;
+              }
+          } to for (int i = 0; i < len; ++i) {
+              char c = str.charAt(i);
+              if (c > '9' || c < '0') {
+                  return -1;
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 1; i < len; ++i) {
+              c = str.charAt(i);
+              if (c > '9' || c < '0') {
+                  return -1;
+              }
+          } [6389,6540]
+  replace for (int i = 1; i < len; ++i) {
+              c = str.charAt(i);
+              if (c > '9' || c < '0') {
+                  return -1;
+              }
+          } by for (int i = 0; i < len; ++i) {
+              char c = str.charAt(i);
+              if (c > '9' || c < '0') {
+                  return -1;
+              }
+          }
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: char c = str.charAt(0); [6215,6238]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: char c = str.charAt(0); [6215,6238]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [6247,6324]
+      parenthesized_expression [6250,6260]
+          less_or_equals [6251,6259]
+              identifier: c [6251,6252]
+              character_literal: '0' [6256,6259]
+      block [6261,6324]
+          return_statement: return (len == 1 && c == '0') ? 0 : -1; [6275,6314]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [6333,6380]
+      parenthesized_expression [6336,6345]
+          greater_than [6337,6344]
+              identifier: c [6337,6338]
+              character_literal: '9' [6341,6344]
+      block [6346,6380]
+          return_statement: return -1; [6360,6370]
+
+...

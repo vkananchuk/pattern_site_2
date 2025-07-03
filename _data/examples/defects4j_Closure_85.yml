@@ -1,0 +1,213 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -150,7 +150,20 @@\n       return n;\n     }\n
+  \n+    if (n.getParent() == null) {\n+      List<DiGraphEdge<Node,Branch>> outEdges
+  = gNode.getOutEdges();\n+      if (outEdges.size() == 1) {\n+        return tryRemoveUnconditionalBranching(outEdges.get(0).getDestination().getValue());\n+
+  \     }\n+    }\n     switch (n.getType()) {\n+      case Token.BLOCK:\n+        if
+  (n.hasChildren()) {\n+          Node first = n.getFirstChild();\n+          return
+  tryRemoveUnconditionalBranching(first);\n+        } else {\n+          return tryRemoveUnconditionalBranching(ControlFlowAnalysis.computeFollowNode(n));\n+
+  \       }\n       case Token.RETURN:\n         if (n.hasChildren()) {\n           break;\n@@
+  -167,7 +180,7 @@\n             (n.getNext() == null || n.getNext().getType() ==
+  Token.FUNCTION)) {\n \n           Preconditions.checkState(outEdges.get(0).getValue()
+  == Branch.UNCOND);\n-          Node fallThrough = computeFollowing(n);\n+          Node
+  fallThrough = tryRemoveUnconditionalBranching(computeFollowing(n));\n           Node
+  nextCfgNode = outEdges.get(0).getDestination().getValue();\n           if (nextCfgNode
+  == fallThrough) {\n             removeDeadExprStatementSafely(n);\n@@ -180,13 +193,6
+  @@\n \n   private Node computeFollowing(Node n) {\n     Node next = ControlFlowAnalysis.computeFollowNode(n);\n-
+  \   while (next != null && next.getType() == Token.BLOCK) {\n-      if (next.hasChildren())
+  {\n-        next = next.getFirstChild();\n-      } else {\n-        next = computeFollowing(next);\n-
+  \     }\n-    }\n     return next;\n   }\n \n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [5394,5632]
+      parenthesized_expression [5397,5420]
+          equals [5398,5419]
+              method_invocation: n.getParent() [5398,5411]
+              null_literal [5415,5419]
+      block [5421,5632]
+          local_variable_declaration: List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges(); [5429,5491]
+          if_statement [5498,5626]
+              parenthesized_expression [5501,5523]
+                  equals [5502,5522]
+                      method_invocation: outEdges.size() [5502,5517]
+                      decimal_integer_literal: 1 [5521,5522]
+              block [5524,5626]
+                  return_statement: return tryRemoveUnconditionalBranching(outEdges.get(0).getDestination().getValue()); [5534,5618]
+  to
+  block [4722,6409]
+  at 3
+
+  New cluster:
+  UPDATE from {
+        case Token.RETURN:
+          if (n.hasChildren()) {
+            break;
+          }
+        case Token.BREAK:
+        case Token.CONTINUE:
+
+          // We are looking for a control flow changing statement that always
+          // branches to the same node. If removing it the control flow still
+          // branches to that same node. It is safe to remove it.
+          List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges();
+          if (outEdges.size() == 1 &&
+              // If there is a next node, there is no chance this jump is useless.
+              (n.getNext() == null || n.getNext().getType() == Token.FUNCTION)) {
+
+            Preconditions.checkState(outEdges.get(0).getValue() == Branch.UNCOND);
+            Node fallThrough = computeFollowing(n);
+            Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+            if (nextCfgNode == fallThrough) {
+              removeDeadExprStatementSafely(n);
+              return fallThrough;
+            }
+          }
+      } to {
+        case Token.BLOCK:
+          if (n.hasChildren()) {
+            Node first = n.getFirstChild();
+            return tryRemoveUnconditionalBranching(first);
+          } else {
+            return tryRemoveUnconditionalBranching(ControlFlowAnalysis.computeFollowNode(n));
+          }
+        case Token.RETURN:
+          if (n.hasChildren()) {
+            break;
+          }
+        case Token.BREAK:
+        case Token.CONTINUE:
+
+          // We are looking for a control flow changing statement that always
+          // branches to the same node. If removing it the control flow still
+          // branches to that same node. It is safe to remove it.
+          List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges();
+          if (outEdges.size() == 1 &&
+              // If there is a next node, there is no chance this jump is useless.
+              (n.getNext() == null || n.getNext().getType() == Token.FUNCTION)) {
+
+            Preconditions.checkState(outEdges.get(0).getValue() == Branch.UNCOND);
+            Node fallThrough = tryRemoveUnconditionalBranching(computeFollowing(n));
+            Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+            if (nextCfgNode == fallThrough) {
+              removeDeadExprStatementSafely(n);
+              return fallThrough;
+            }
+          }
+      }
+  ------------
+  ===
+  update-node
+  ---
+  switch_block: {
+        case Token.RETURN:
+          if (n.hasChildren()) {
+            break;
+          }
+        case Token.BREAK:
+        case Token.CONTINUE:
+
+          // We are looking for a control flow changing statement that always
+          // branches to the same node. If removing it the control flow still
+          // branches to that same node. It is safe to remove it.
+          List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges();
+          if (outEdges.size() == 1 &&
+              // If there is a next node, there is no chance this jump is useless.
+              (n.getNext() == null || n.getNext().getType() == Token.FUNCTION)) {
+
+            Preconditions.checkState(outEdges.get(0).getValue() == Branch.UNCOND);
+            Node fallThrough = computeFollowing(n);
+            Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+            if (nextCfgNode == fallThrough) {
+              removeDeadExprStatementSafely(n);
+              return fallThrough;
+            }
+          }
+      } [5415,6391]
+  replace {
+        case Token.RETURN:
+          if (n.hasChildren()) {
+            break;
+          }
+        case Token.BREAK:
+        case Token.CONTINUE:
+
+          // We are looking for a control flow changing statement that always
+          // branches to the same node. If removing it the control flow still
+          // branches to that same node. It is safe to remove it.
+          List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges();
+          if (outEdges.size() == 1 &&
+              // If there is a next node, there is no chance this jump is useless.
+              (n.getNext() == null || n.getNext().getType() == Token.FUNCTION)) {
+
+            Preconditions.checkState(outEdges.get(0).getValue() == Branch.UNCOND);
+            Node fallThrough = computeFollowing(n);
+            Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+            if (nextCfgNode == fallThrough) {
+              removeDeadExprStatementSafely(n);
+              return fallThrough;
+            }
+          }
+      } by {
+        case Token.BLOCK:
+          if (n.hasChildren()) {
+            Node first = n.getFirstChild();
+            return tryRemoveUnconditionalBranching(first);
+          } else {
+            return tryRemoveUnconditionalBranching(ControlFlowAnalysis.computeFollowNode(n));
+          }
+        case Token.RETURN:
+          if (n.hasChildren()) {
+            break;
+          }
+        case Token.BREAK:
+        case Token.CONTINUE:
+
+          // We are looking for a control flow changing statement that always
+          // branches to the same node. If removing it the control flow still
+          // branches to that same node. It is safe to remove it.
+          List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges();
+          if (outEdges.size() == 1 &&
+              // If there is a next node, there is no chance this jump is useless.
+              (n.getNext() == null || n.getNext().getType() == Token.FUNCTION)) {
+
+            Preconditions.checkState(outEdges.get(0).getValue() == Branch.UNCOND);
+            Node fallThrough = tryRemoveUnconditionalBranching(computeFollowing(n));
+            Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+            if (nextCfgNode == fallThrough) {
+              removeDeadExprStatementSafely(n);
+              return fallThrough;
+            }
+          }
+      }
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  while_statement: while (next != null && next.getType() == Token.BLOCK) {
+        if (next.hasChildren()) {
+          next = next.getFirstChild();
+        } else {
+          next = computeFollowing(next);
+        }
+      } [6515,6707]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  while_statement: while (next != null && next.getType() == Token.BLOCK) {
+        if (next.hasChildren()) {
+          next = next.getFirstChild();
+        } else {
+          next = computeFollowing(next);
+        }
+      } [6515,6707]
+  ===
+
+...

@@ -1,0 +1,251 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -152,7 +152,7 @@\n     reachingUses = new MaybeReachingVariableUse(cfg,
+  t.getScope(), compiler);\n     reachingUses.analyze();\n     for (Candidate c :
+  candidates) {\n-      if (c.canInline(t.getScope())) {\n+      if (c.canInline())
+  {\n         c.inlineVariable();\n \n         // If definition c has dependencies,
+  then inlining it may have\n@@ -277,7 +277,7 @@\n       return defMetadata.node;\n
+  \    }\n \n-    private boolean canInline(final Scope scope) {\n+    private boolean
+  canInline() {\n       // Cannot inline a parameter.\n       if (getDefCfgNode().isFunction())
+  {\n         return false;\n@@ -372,12 +372,6 @@\n                   case Token.REGEXP:\n
+  \                  case Token.NEW:\n                     return true;\n-                  case
+  Token.NAME:\n-                    Var var = scope.getOwnSlot(input.getString());\n-
+  \                   if (var != null\n-                        && var.getParentNode().isCatch())
+  {\n-                      return true;\n-                    }\n                 }\n
+  \                return false;\n               }\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from for (Candidate c : candidates) {
+        if (c.canInline(t.getScope())) {
+          c.inlineVariable();
+
+          // If definition c has dependencies, then inlining it may have
+          // introduced new dependencies for our other inlining candidates.
+          //
+          // MustBeReachingVariableDef uses this dependency graph in its
+          // analysis, so some of these candidates may no longer be valid.
+          // We keep track of when the variable dependency graph changed
+          // so that we can back off appropriately.
+          if (!c.defMetadata.depends.isEmpty()) {
+            inlinedNewDependencies.add(t.getScope().getVar(c.varName));
+          }
+        }
+      } to for (Candidate c : candidates) {
+        if (c.canInline()) {
+          c.inlineVariable();
+
+          // If definition c has dependencies, then inlining it may have
+          // introduced new dependencies for our other inlining candidates.
+          //
+          // MustBeReachingVariableDef uses this dependency graph in its
+          // analysis, so some of these candidates may no longer be valid.
+          // We keep track of when the variable dependency graph changed
+          // so that we can back off appropriately.
+          if (!c.defMetadata.depends.isEmpty()) {
+            inlinedNewDependencies.add(t.getScope().getVar(c.varName));
+          }
+        }
+      }
+  ------------
+  ===
+  update-node
+  ---
+  enhanced_for_statement: for (Candidate c : candidates) {
+        if (c.canInline(t.getScope())) {
+          c.inlineVariable();
+
+          // If definition c has dependencies, then inlining it may have
+          // introduced new dependencies for our other inlining candidates.
+          //
+          // MustBeReachingVariableDef uses this dependency graph in its
+          // analysis, so some of these candidates may no longer be valid.
+          // We keep track of when the variable dependency graph changed
+          // so that we can back off appropriately.
+          if (!c.defMetadata.depends.isEmpty()) {
+            inlinedNewDependencies.add(t.getScope().getVar(c.varName));
+          }
+        }
+      } [5645,6308]
+  replace for (Candidate c : candidates) {
+        if (c.canInline(t.getScope())) {
+          c.inlineVariable();
+
+          // If definition c has dependencies, then inlining it may have
+          // introduced new dependencies for our other inlining candidates.
+          //
+          // MustBeReachingVariableDef uses this dependency graph in its
+          // analysis, so some of these candidates may no longer be valid.
+          // We keep track of when the variable dependency graph changed
+          // so that we can back off appropriately.
+          if (!c.defMetadata.depends.isEmpty()) {
+            inlinedNewDependencies.add(t.getScope().getVar(c.varName));
+          }
+        }
+      } by for (Candidate c : candidates) {
+        if (c.canInline()) {
+          c.inlineVariable();
+
+          // If definition c has dependencies, then inlining it may have
+          // introduced new dependencies for our other inlining candidates.
+          //
+          // MustBeReachingVariableDef uses this dependency graph in its
+          // analysis, so some of these candidates may no longer be valid.
+          // We keep track of when the variable dependency graph changed
+          // so that we can back off appropriately.
+          if (!c.defMetadata.depends.isEmpty()) {
+            inlinedNewDependencies.add(t.getScope().getVar(c.varName));
+          }
+        }
+      }
+
+  New cluster:
+  UPDATE from NodeUtil.has(def.getLastChild(),
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  switch (input.getType()) {
+                    case Token.GETELEM:
+                    case Token.GETPROP:
+                    case Token.ARRAYLIT:
+                    case Token.OBJECTLIT:
+                    case Token.REGEXP:
+                    case Token.NEW:
+                      return true;
+                    case Token.NAME:
+                      Var var = scope.getOwnSlot(input.getString());
+                      if (var != null
+                          && var.getParentNode().isCatch()) {
+                        return true;
+                      }
+                  }
+                  return false;
+                }
+            },
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  // Recurse if the node is not a function.
+                  return !input.isFunction();
+                }
+            }) to NodeUtil.has(def.getLastChild(),
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  switch (input.getType()) {
+                    case Token.GETELEM:
+                    case Token.GETPROP:
+                    case Token.ARRAYLIT:
+                    case Token.OBJECTLIT:
+                    case Token.REGEXP:
+                    case Token.NEW:
+                      return true;
+                  }
+                  return false;
+                }
+            },
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  // Recurse if the node is not a function.
+                  return !input.isFunction();
+                }
+            })
+  ------------
+  ===
+  update-node
+  ---
+  method_invocation: NodeUtil.has(def.getLastChild(),
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  switch (input.getType()) {
+                    case Token.GETELEM:
+                    case Token.GETPROP:
+                    case Token.ARRAYLIT:
+                    case Token.OBJECTLIT:
+                    case Token.REGEXP:
+                    case Token.NEW:
+                      return true;
+                    case Token.NAME:
+                      Var var = scope.getOwnSlot(input.getString());
+                      if (var != null
+                          && var.getParentNode().isCatch()) {
+                        return true;
+                      }
+                  }
+                  return false;
+                }
+            },
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  // Recurse if the node is not a function.
+                  return !input.isFunction();
+                }
+            }) [12835,13846]
+  replace NodeUtil.has(def.getLastChild(),
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  switch (input.getType()) {
+                    case Token.GETELEM:
+                    case Token.GETPROP:
+                    case Token.ARRAYLIT:
+                    case Token.OBJECTLIT:
+                    case Token.REGEXP:
+                    case Token.NEW:
+                      return true;
+                    case Token.NAME:
+                      Var var = scope.getOwnSlot(input.getString());
+                      if (var != null
+                          && var.getParentNode().isCatch()) {
+                        return true;
+                      }
+                  }
+                  return false;
+                }
+            },
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  // Recurse if the node is not a function.
+                  return !input.isFunction();
+                }
+            }) by NodeUtil.has(def.getLastChild(),
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  switch (input.getType()) {
+                    case Token.GETELEM:
+                    case Token.GETPROP:
+                    case Token.ARRAYLIT:
+                    case Token.OBJECTLIT:
+                    case Token.REGEXP:
+                    case Token.NEW:
+                      return true;
+                  }
+                  return false;
+                }
+            },
+            new Predicate<Node>() {
+                @Override
+                public boolean apply(Node input) {
+                  // Recurse if the node is not a function.
+                  return !input.isFunction();
+                }
+            })
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  formal_parameter: final Scope scope [9930,9947]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  formal_parameter: final Scope scope [9930,9947]
+  ===
+
+...

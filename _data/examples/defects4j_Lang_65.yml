@@ -1,0 +1,559 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -621,9 +621,6 @@\n             throw new ArithmeticException(\"Calendar
+  value too large for accurate calculations\");\n         }\n         \n-        if
+  (field == Calendar.MILLISECOND) {\n-            return;\n-        }\n \n         //
+  ----------------- Fix for LANG-59 ---------------------- START ---------------\n
+  \        // see http://issues.apache.org/jira/browse/LANG-59\n@@ -631,39 +628,14
+  @@\n         // Manually truncate milliseconds, seconds and minutes, rather than
+  using\n         // Calendar methods.\n \n-        Date date = val.getTime();\n-
+  \       long time = date.getTime();\n-        boolean done = false;\n \n         //
+  truncate milliseconds\n-        int millisecs = val.get(Calendar.MILLISECOND);\n-
+  \       if (!round || millisecs < 500) {\n-            time = time - millisecs;\n-
+  \           if (field == Calendar.SECOND) {\n-                done = true;\n-            }\n-
+  \       }\n \n         // truncate seconds\n-        int seconds = val.get(Calendar.SECOND);\n-
+  \       if (!done && (!round || seconds < 30)) {\n-            time = time - (seconds
+  * 1000L);\n-            if (field == Calendar.MINUTE) {\n-                done =
+  true;\n-            }\n-        }\n \n         // truncate minutes\n-        int
+  minutes = val.get(Calendar.MINUTE);\n-        if (!done && (!round || minutes <
+  30)) {\n-            time = time - (minutes * 60000L);\n-        }\n \n         //
+  reset time\n-        if (date.getTime() != time) {\n-            date.setTime(time);\n-
+  \           val.setTime(date);\n-        }\n         // ----------------- Fix for
+  LANG-59 ----------------------- END ----------------\n \n         boolean roundUp
+  = false;\n@@ -734,9 +706,7 @@\n                 roundUp = offset > ((max - min)
+  / 2);\n             }\n             //We need to remove this field\n-            if
+  (offset != 0) {\n                 val.set(fields[i][0], val.get(fields[i][0]) -
+  offset);\n-            }\n         }\n         throw new IllegalArgumentException(\"The
+  field \" + field + \" is not supported\");\n \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 0; i < fields.length; i++) {
+              for (int j = 0; j < fields[i].length; j++) {
+                  if (fields[i][j] == field) {
+                      //This is our field... we stop looping
+                      if (round && roundUp) {
+                          if (field == DateUtils.SEMI_MONTH) {
+                              //This is a special case that's hard to generalize
+                              //If the date is 1, we round up to 16, otherwise
+                              //  we subtract 15 days and add 1 month
+                              if (val.get(Calendar.DATE) == 1) {
+                                  val.add(Calendar.DATE, 15);
+                              } else {
+                                  val.add(Calendar.DATE, -15);
+                                  val.add(Calendar.MONTH, 1);
+                              }
+                          } else {
+                              //We need at add one to this field since the
+                              //  last number causes us to round up
+                              val.add(fields[i][0], 1);
+                          }
+                      }
+                      return;
+                  }
+              }
+              //We have various fields that are not easy roundings
+              int offset = 0;
+              boolean offsetSet = false;
+              //These are special types of fields that require different rounding rules
+              switch (field) {
+                  case DateUtils.SEMI_MONTH:
+                      if (fields[i][0] == Calendar.DATE) {
+                          //If we're going to drop the DATE field's value,
+                          //  we want to do this our own way.
+                          //We need to subtrace 1 since the date has a minimum of 1
+                          offset = val.get(Calendar.DATE) - 1;
+                          //If we're above 15 days adjustment, that means we're in the
+                          //  bottom half of the month and should stay accordingly.
+                          if (offset >= 15) {
+                              offset -= 15;
+                          }
+                          //Record whether we're in the top or bottom half of that range
+                          roundUp = offset > 7;
+                          offsetSet = true;
+                      }
+                      break;
+                  case Calendar.AM_PM:
+                      if (fields[i][0] == Calendar.HOUR_OF_DAY) {
+                          //If we're going to drop the HOUR field's value,
+                          //  we want to do this our own way.
+                          offset = val.get(Calendar.HOUR_OF_DAY);
+                          if (offset >= 12) {
+                              offset -= 12;
+                          }
+                          roundUp = offset > 6;
+                          offsetSet = true;
+                      }
+                      break;
+              }
+              if (!offsetSet) {
+                  int min = val.getActualMinimum(fields[i][0]);
+                  int max = val.getActualMaximum(fields[i][0]);
+                  //Calculate the offset from the minimum allowed value
+                  offset = val.get(fields[i][0]) - min;
+                  //Set roundUp if this is more than half way between the minimum and maximum
+                  roundUp = offset > ((max - min) / 2);
+              }
+              //We need to remove this field
+              if (offset != 0) {
+                  val.set(fields[i][0], val.get(fields[i][0]) - offset);
+              }
+          } to for (int i = 0; i < fields.length; i++) {
+              for (int j = 0; j < fields[i].length; j++) {
+                  if (fields[i][j] == field) {
+                      //This is our field... we stop looping
+                      if (round && roundUp) {
+                          if (field == DateUtils.SEMI_MONTH) {
+                              //This is a special case that's hard to generalize
+                              //If the date is 1, we round up to 16, otherwise
+                              //  we subtract 15 days and add 1 month
+                              if (val.get(Calendar.DATE) == 1) {
+                                  val.add(Calendar.DATE, 15);
+                              } else {
+                                  val.add(Calendar.DATE, -15);
+                                  val.add(Calendar.MONTH, 1);
+                              }
+                          } else {
+                              //We need at add one to this field since the
+                              //  last number causes us to round up
+                              val.add(fields[i][0], 1);
+                          }
+                      }
+                      return;
+                  }
+              }
+              //We have various fields that are not easy roundings
+              int offset = 0;
+              boolean offsetSet = false;
+              //These are special types of fields that require different rounding rules
+              switch (field) {
+                  case DateUtils.SEMI_MONTH:
+                      if (fields[i][0] == Calendar.DATE) {
+                          //If we're going to drop the DATE field's value,
+                          //  we want to do this our own way.
+                          //We need to subtrace 1 since the date has a minimum of 1
+                          offset = val.get(Calendar.DATE) - 1;
+                          //If we're above 15 days adjustment, that means we're in the
+                          //  bottom half of the month and should stay accordingly.
+                          if (offset >= 15) {
+                              offset -= 15;
+                          }
+                          //Record whether we're in the top or bottom half of that range
+                          roundUp = offset > 7;
+                          offsetSet = true;
+                      }
+                      break;
+                  case Calendar.AM_PM:
+                      if (fields[i][0] == Calendar.HOUR_OF_DAY) {
+                          //If we're going to drop the HOUR field's value,
+                          //  we want to do this our own way.
+                          offset = val.get(Calendar.HOUR_OF_DAY);
+                          if (offset >= 12) {
+                              offset -= 12;
+                          }
+                          roundUp = offset > 6;
+                          offsetSet = true;
+                      }
+                      break;
+              }
+              if (!offsetSet) {
+                  int min = val.getActualMinimum(fields[i][0]);
+                  int max = val.getActualMaximum(fields[i][0]);
+                  //Calculate the offset from the minimum allowed value
+                  offset = val.get(fields[i][0]) - min;
+                  //Set roundUp if this is more than half way between the minimum and maximum
+                  roundUp = offset > ((max - min) / 2);
+              }
+              //We need to remove this field
+                  val.set(fields[i][0], val.get(fields[i][0]) - offset);
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 0; i < fields.length; i++) {
+              for (int j = 0; j < fields[i].length; j++) {
+                  if (fields[i][j] == field) {
+                      //This is our field... we stop looping
+                      if (round && roundUp) {
+                          if (field == DateUtils.SEMI_MONTH) {
+                              //This is a special case that's hard to generalize
+                              //If the date is 1, we round up to 16, otherwise
+                              //  we subtract 15 days and add 1 month
+                              if (val.get(Calendar.DATE) == 1) {
+                                  val.add(Calendar.DATE, 15);
+                              } else {
+                                  val.add(Calendar.DATE, -15);
+                                  val.add(Calendar.MONTH, 1);
+                              }
+                          } else {
+                              //We need at add one to this field since the
+                              //  last number causes us to round up
+                              val.add(fields[i][0], 1);
+                          }
+                      }
+                      return;
+                  }
+              }
+              //We have various fields that are not easy roundings
+              int offset = 0;
+              boolean offsetSet = false;
+              //These are special types of fields that require different rounding rules
+              switch (field) {
+                  case DateUtils.SEMI_MONTH:
+                      if (fields[i][0] == Calendar.DATE) {
+                          //If we're going to drop the DATE field's value,
+                          //  we want to do this our own way.
+                          //We need to subtrace 1 since the date has a minimum of 1
+                          offset = val.get(Calendar.DATE) - 1;
+                          //If we're above 15 days adjustment, that means we're in the
+                          //  bottom half of the month and should stay accordingly.
+                          if (offset >= 15) {
+                              offset -= 15;
+                          }
+                          //Record whether we're in the top or bottom half of that range
+                          roundUp = offset > 7;
+                          offsetSet = true;
+                      }
+                      break;
+                  case Calendar.AM_PM:
+                      if (fields[i][0] == Calendar.HOUR_OF_DAY) {
+                          //If we're going to drop the HOUR field's value,
+                          //  we want to do this our own way.
+                          offset = val.get(Calendar.HOUR_OF_DAY);
+                          if (offset >= 12) {
+                              offset -= 12;
+                          }
+                          roundUp = offset > 6;
+                          offsetSet = true;
+                      }
+                      break;
+              }
+              if (!offsetSet) {
+                  int min = val.getActualMinimum(fields[i][0]);
+                  int max = val.getActualMaximum(fields[i][0]);
+                  //Calculate the offset from the minimum allowed value
+                  offset = val.get(fields[i][0]) - min;
+                  //Set roundUp if this is more than half way between the minimum and maximum
+                  roundUp = offset > ((max - min) / 2);
+              }
+              //We need to remove this field
+              if (offset != 0) {
+                  val.set(fields[i][0], val.get(fields[i][0]) - offset);
+              }
+          } [26078,29548]
+  replace for (int i = 0; i < fields.length; i++) {
+              for (int j = 0; j < fields[i].length; j++) {
+                  if (fields[i][j] == field) {
+                      //This is our field... we stop looping
+                      if (round && roundUp) {
+                          if (field == DateUtils.SEMI_MONTH) {
+                              //This is a special case that's hard to generalize
+                              //If the date is 1, we round up to 16, otherwise
+                              //  we subtract 15 days and add 1 month
+                              if (val.get(Calendar.DATE) == 1) {
+                                  val.add(Calendar.DATE, 15);
+                              } else {
+                                  val.add(Calendar.DATE, -15);
+                                  val.add(Calendar.MONTH, 1);
+                              }
+                          } else {
+                              //We need at add one to this field since the
+                              //  last number causes us to round up
+                              val.add(fields[i][0], 1);
+                          }
+                      }
+                      return;
+                  }
+              }
+              //We have various fields that are not easy roundings
+              int offset = 0;
+              boolean offsetSet = false;
+              //These are special types of fields that require different rounding rules
+              switch (field) {
+                  case DateUtils.SEMI_MONTH:
+                      if (fields[i][0] == Calendar.DATE) {
+                          //If we're going to drop the DATE field's value,
+                          //  we want to do this our own way.
+                          //We need to subtrace 1 since the date has a minimum of 1
+                          offset = val.get(Calendar.DATE) - 1;
+                          //If we're above 15 days adjustment, that means we're in the
+                          //  bottom half of the month and should stay accordingly.
+                          if (offset >= 15) {
+                              offset -= 15;
+                          }
+                          //Record whether we're in the top or bottom half of that range
+                          roundUp = offset > 7;
+                          offsetSet = true;
+                      }
+                      break;
+                  case Calendar.AM_PM:
+                      if (fields[i][0] == Calendar.HOUR_OF_DAY) {
+                          //If we're going to drop the HOUR field's value,
+                          //  we want to do this our own way.
+                          offset = val.get(Calendar.HOUR_OF_DAY);
+                          if (offset >= 12) {
+                              offset -= 12;
+                          }
+                          roundUp = offset > 6;
+                          offsetSet = true;
+                      }
+                      break;
+              }
+              if (!offsetSet) {
+                  int min = val.getActualMinimum(fields[i][0]);
+                  int max = val.getActualMaximum(fields[i][0]);
+                  //Calculate the offset from the minimum allowed value
+                  offset = val.get(fields[i][0]) - min;
+                  //Set roundUp if this is more than half way between the minimum and maximum
+                  roundUp = offset > ((max - min) / 2);
+              }
+              //We need to remove this field
+              if (offset != 0) {
+                  val.set(fields[i][0], val.get(fields[i][0]) - offset);
+              }
+          } by for (int i = 0; i < fields.length; i++) {
+              for (int j = 0; j < fields[i].length; j++) {
+                  if (fields[i][j] == field) {
+                      //This is our field... we stop looping
+                      if (round && roundUp) {
+                          if (field == DateUtils.SEMI_MONTH) {
+                              //This is a special case that's hard to generalize
+                              //If the date is 1, we round up to 16, otherwise
+                              //  we subtract 15 days and add 1 month
+                              if (val.get(Calendar.DATE) == 1) {
+                                  val.add(Calendar.DATE, 15);
+                              } else {
+                                  val.add(Calendar.DATE, -15);
+                                  val.add(Calendar.MONTH, 1);
+                              }
+                          } else {
+                              //We need at add one to this field since the
+                              //  last number causes us to round up
+                              val.add(fields[i][0], 1);
+                          }
+                      }
+                      return;
+                  }
+              }
+              //We have various fields that are not easy roundings
+              int offset = 0;
+              boolean offsetSet = false;
+              //These are special types of fields that require different rounding rules
+              switch (field) {
+                  case DateUtils.SEMI_MONTH:
+                      if (fields[i][0] == Calendar.DATE) {
+                          //If we're going to drop the DATE field's value,
+                          //  we want to do this our own way.
+                          //We need to subtrace 1 since the date has a minimum of 1
+                          offset = val.get(Calendar.DATE) - 1;
+                          //If we're above 15 days adjustment, that means we're in the
+                          //  bottom half of the month and should stay accordingly.
+                          if (offset >= 15) {
+                              offset -= 15;
+                          }
+                          //Record whether we're in the top or bottom half of that range
+                          roundUp = offset > 7;
+                          offsetSet = true;
+                      }
+                      break;
+                  case Calendar.AM_PM:
+                      if (fields[i][0] == Calendar.HOUR_OF_DAY) {
+                          //If we're going to drop the HOUR field's value,
+                          //  we want to do this our own way.
+                          offset = val.get(Calendar.HOUR_OF_DAY);
+                          if (offset >= 12) {
+                              offset -= 12;
+                          }
+                          roundUp = offset > 6;
+                          offsetSet = true;
+                      }
+                      break;
+              }
+              if (!offsetSet) {
+                  int min = val.getActualMinimum(fields[i][0]);
+                  int max = val.getActualMaximum(fields[i][0]);
+                  //Calculate the offset from the minimum allowed value
+                  offset = val.get(fields[i][0]) - min;
+                  //Set roundUp if this is more than half way between the minimum and maximum
+                  roundUp = offset > ((max - min) / 2);
+              }
+              //We need to remove this field
+                  val.set(fields[i][0], val.get(fields[i][0]) - offset);
+          }
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [24656,24722]
+      parenthesized_expression [24659,24690]
+          equals [24660,24689]
+              identifier: field [24660,24665]
+              field_access: Calendar.MILLISECOND [24669,24689]
+      block [24691,24722]
+          return_statement: return; [24705,24712]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Date date = val.getTime(); [25005,25031]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Date date = val.getTime(); [25005,25031]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: long time = date.getTime(); [25040,25067]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: long time = date.getTime(); [25040,25067]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: boolean done = false; [25076,25097]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: boolean done = false; [25076,25097]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int millisecs = val.get(Calendar.MILLISECOND); [25140,25186]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int millisecs = val.get(Calendar.MILLISECOND); [25140,25186]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [25195,25361]
+      parenthesized_expression [25198,25225]
+          or [25199,25224]
+              unary_expression: !round [25199,25205]
+              less_than [25209,25224]
+                  identifier: millisecs [25209,25218]
+                  decimal_integer_literal: 500 [25221,25224]
+      block [25226,25361]
+          expression_statement: time = time - millisecs; [25240,25264]
+          if_statement [25277,25351]
+              parenthesized_expression [25280,25306]
+                  equals [25281,25305]
+                      identifier: field [25281,25286]
+                      field_access: Calendar.SECOND [25290,25305]
+              block [25307,25351]
+                  expression_statement: done = true; [25325,25337]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int seconds = val.get(Calendar.SECOND); [25399,25438]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int seconds = val.get(Calendar.SECOND); [25399,25438]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [25447,25629]
+      parenthesized_expression [25450,25485]
+          and [25451,25484]
+              unary_expression: !done [25451,25456]
+              parenthesized_expression [25460,25484]
+                  or [25461,25483]
+                      unary_expression: !round [25461,25467]
+                      less_than [25471,25483]
+                          identifier: seconds [25471,25478]
+                          decimal_integer_literal: 30 [25481,25483]
+      block [25486,25629]
+          expression_statement: time = time - (seconds * 1000L); [25500,25532]
+          if_statement [25545,25619]
+              parenthesized_expression [25548,25574]
+                  equals [25549,25573]
+                      identifier: field [25549,25554]
+                      field_access: Calendar.MINUTE [25558,25573]
+              block [25575,25619]
+                  expression_statement: done = true; [25593,25605]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int minutes = val.get(Calendar.MINUTE); [25667,25706]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int minutes = val.get(Calendar.MINUTE); [25667,25706]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [25715,25811]
+      parenthesized_expression [25718,25753]
+          and [25719,25752]
+              unary_expression: !done [25719,25724]
+              parenthesized_expression [25728,25752]
+                  or [25729,25751]
+                      unary_expression: !round [25729,25735]
+                      less_than [25739,25751]
+                          identifier: minutes [25739,25746]
+                          decimal_integer_literal: 30 [25749,25751]
+      block [25754,25811]
+          expression_statement: time = time - (minutes * 60000L); [25768,25801]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [25843,25945]
+      parenthesized_expression [25846,25870]
+          not_equals [25847,25869]
+              method_invocation: date.getTime() [25847,25861]
+              identifier: time [25865,25869]
+      block [25871,25945]
+          expression_statement: date.setTime(time); [25885,25904]
+          expression_statement: val.setTime(date); [25917,25935]
+
+...

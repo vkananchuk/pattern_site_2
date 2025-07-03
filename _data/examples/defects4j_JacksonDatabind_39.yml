@@ -1,0 +1,46 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -32,17 +32,7 @@\n     {\n         // 29-Jan-2016,
+  tatu: Simple skipping for all other tokens, but FIELD_NAME bit\n         //    special
+  unfortunately\n-        if (p.hasToken(JsonToken.FIELD_NAME)) {\n-            while
+  (true) {\n-                JsonToken t = p.nextToken();\n-                if ((t
+  == null) || (t == JsonToken.END_OBJECT)) {\n-                    break;\n-                }\n-
+  \               p.skipChildren();\n-            }\n-        } else {\n             p.skipChildren();\n-
+  \       }\n         return null;\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: p.skipChildren(); [1060,1077]
+  to
+  block [923,1410]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: p.skipChildren(); [1060,1077]
+  to
+  block [923,1410]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [1056,1383]
+      parenthesized_expression [1059,1093]
+          method_invocation: p.hasToken(JsonToken.FIELD_NAME) [1060,1092]
+      block [1094,1336]
+          while_statement: while (true) {
+                  JsonToken t = p.nextToken();
+                  if ((t == null) || (t == JsonToken.END_OBJECT)) {
+                      break;
+                  }
+                  p.skipChildren();
+              } [1108,1326]
+
+...

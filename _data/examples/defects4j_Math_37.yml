@@ -1,0 +1,392 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1015,15 +1015,9 @@\n      * @since 1.2\n      */\n
+  \    public Complex tan() {\n-        if (isNaN || Double.isInfinite(real)) {\n+
+  \       if (isNaN) {\n             return NaN;\n         }\n-        if (imaginary
+  > 20.0) {\n-            return createComplex(0.0, 1.0);\n-        }\n-        if
+  (imaginary < -20.0) {\n-            return createComplex(0.0, -1.0);\n-        }\n
+  \n         double real2 = 2.0 * real;\n         double imaginary2 = 2.0 * imaginary;\n@@
+  -1066,15 +1060,9 @@\n      * @since 1.2\n      */\n     public Complex tanh() {\n-
+  \       if (isNaN || Double.isInfinite(imaginary)) {\n+        if (isNaN) {\n             return
+  NaN;\n         }\n-        if (real > 20.0) {\n-            return createComplex(1.0,
+  0.0);\n-        }\n-        if (real < -20.0) {\n-            return createComplex(-1.0,
+  0.0);\n-        }\n         double real2 = 2.0 * real;\n         double imaginary2
+  = 2.0 * imaginary;\n         double d = FastMath.cosh(real2) + FastMath.cos(imaginary2);\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [34310,34658]
+  to
+  class_body [2314,41451]
+  at 44
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: double d = FastMath.cos(real2) + FastMath.cosh(imaginary2); [34477,34536]
+  to
+  block [34331,34658]
+  at 3
+  ===
+  insert-node
+  ---
+  block [34331,34658]
+  to
+  method_declaration [34310,34658]
+  at 2
+  ===
+  insert-node
+  ---
+  local_variable_declaration: double real2 = 2.0 * real; [34397,34423]
+  to
+  block [34331,34658]
+  at 1
+  ===
+  insert-node
+  ---
+  local_variable_declaration: double imaginary2 = 2.0 * imaginary; [34432,34468]
+  to
+  block [34331,34658]
+  at 2
+  ===
+  insert-node
+  ---
+  method_parameters [34310,34658]
+  to
+  method_declaration [34310,34658]
+  at 1
+  ===
+  insert-node
+  ---
+  method_declaration [34310,34658]
+  to
+  class_body [2314,41451]
+  at 44
+  ===
+  insert-node
+  ---
+  return_statement: return createComplex(FastMath.sin(real2) / d,
+                               FastMath.sinh(imaginary2) / d); [34546,34652]
+  to
+  block [34331,34658]
+  at 4
+  ===
+  insert-node
+  ---
+  identifier: tan [34325,34328]
+  to
+  method_declaration [34310,34658]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [35832,36180]
+  to
+  class_body [2314,41451]
+  at 45
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: double imaginary2 = 2.0 * imaginary; [35954,35990]
+  to
+  block [35854,36180]
+  at 2
+  ===
+  insert-node
+  ---
+  method_parameters [35832,36180]
+  to
+  method_declaration [35832,36180]
+  at 1
+  ===
+  insert-node
+  ---
+  local_variable_declaration: double d = FastMath.cosh(real2) + FastMath.cos(imaginary2); [35999,36058]
+  to
+  block [35854,36180]
+  at 3
+  ===
+  insert-node
+  ---
+  method_declaration [35832,36180]
+  to
+  class_body [2314,41451]
+  at 45
+  ===
+  insert-node
+  ---
+  return_statement: return createComplex(FastMath.sinh(real2) / d,
+                               FastMath.sin(imaginary2) / d); [36068,36174]
+  to
+  block [35854,36180]
+  at 4
+  ===
+  insert-node
+  ---
+  local_variable_declaration: double real2 = 2.0 * real; [35919,35945]
+  to
+  block [35854,36180]
+  at 1
+  ===
+  insert-node
+  ---
+  identifier: tanh [35847,35851]
+  to
+  method_declaration [35832,36180]
+  at 0
+  ===
+  insert-node
+  ---
+  block [35854,36180]
+  to
+  method_declaration [35832,36180]
+  at 2
+
+  New cluster:
+  MOVE from block [34331,34658]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [34341,34414]
+      parenthesized_expression [34344,34378]
+          or [34345,34377]
+              identifier: isNaN [34345,34350]
+              method_invocation: Double.isInfinite(real) [34354,34377]
+      block [34379,34414]
+          return_statement: return NaN; [34393,34404]
+  to
+  block [34331,34658]
+  at 0
+
+  New cluster:
+  MOVE from block [35854,36180]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [36065,36143]
+      parenthesized_expression [36068,36107]
+          or [36069,36106]
+              identifier: isNaN [36069,36074]
+              method_invocation: Double.isInfinite(imaginary) [36078,36106]
+      block [36108,36143]
+          return_statement: return NaN; [36122,36133]
+  to
+  block [35854,36180]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  identifier: isNaN [34345,34350]
+  to
+  parenthesized_expression [34344,34378]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: isNaN [34345,34350]
+  to
+  parenthesized_expression [34344,34378]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  identifier: isNaN [35868,35873]
+  to
+  parenthesized_expression [36068,36107]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: isNaN [35868,35873]
+  to
+  parenthesized_expression [36068,36107]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  or [34345,34377]
+      identifier: isNaN [34345,34350]
+      method_invocation: Double.isInfinite(real) [34354,34377]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  or [36069,36106]
+      identifier: isNaN [36069,36074]
+      method_invocation: Double.isInfinite(imaginary) [36078,36106]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [34310,34859]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_declaration [34310,34859]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: double imaginary2 = 2.0 * imaginary; [34633,34669]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: double real2 = 2.0 * real; [34598,34624]
+  ===
+  ===
+  delete-node
+  ---
+  method_parameters [34310,34859]
+  ===
+  ===
+  delete-node
+  ---
+  block [34331,34859]
+  ===
+  ===
+  delete-node
+  ---
+  identifier: tan [34325,34328]
+  ===
+  ===
+  delete-node
+  ---
+  return_statement: return createComplex(FastMath.sin(real2) / d,
+                               FastMath.sinh(imaginary2) / d); [34747,34853]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: double d = FastMath.cos(real2) + FastMath.cosh(imaginary2); [34678,34737]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [34423,34500]
+      parenthesized_expression [34426,34444]
+          greater_than [34427,34443]
+              identifier: imaginary [34427,34436]
+              decimal_floating_point_literal: 20.0 [34439,34443]
+      block [34445,34500]
+          return_statement: return createComplex(0.0, 1.0); [34459,34490]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [34509,34588]
+      parenthesized_expression [34512,34531]
+          less_than [34513,34530]
+              identifier: imaginary [34513,34522]
+              unary_expression: -20.0 [34525,34530]
+      block [34532,34588]
+          return_statement: return createComplex(0.0, -1.0); [34546,34578]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [36033,36577]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: double real2 = 2.0 * real; [36316,36342]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [36033,36577]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: double d = FastMath.cosh(real2) + FastMath.cos(imaginary2); [36396,36455]
+  ===
+  ===
+  delete-node
+  ---
+  method_parameters [36033,36577]
+  ===
+  ===
+  delete-node
+  ---
+  identifier: tanh [36048,36052]
+  ===
+  ===
+  delete-node
+  ---
+  block [36055,36577]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: double imaginary2 = 2.0 * imaginary; [36351,36387]
+  ===
+  ===
+  delete-node
+  ---
+  return_statement: return createComplex(FastMath.sinh(real2) / d,
+                               FastMath.sin(imaginary2) / d); [36465,36571]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [36152,36224]
+      parenthesized_expression [36155,36168]
+          greater_than [36156,36167]
+              identifier: real [36156,36160]
+              decimal_floating_point_literal: 20.0 [36163,36167]
+      block [36169,36224]
+          return_statement: return createComplex(1.0, 0.0); [36183,36214]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [36233,36307]
+      parenthesized_expression [36236,36250]
+          less_than [36237,36249]
+              identifier: real [36237,36241]
+              unary_expression: -20.0 [36244,36249]
+      block [36251,36307]
+          return_statement: return createComplex(-1.0, 0.0); [36265,36297]
+
+...

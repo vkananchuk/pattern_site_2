@@ -1,0 +1,64 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -52,19 +52,11 @@\n      */\n     @Override\n
+  \    public boolean equals(Object o) {\n-        if (this == o) {\n-            return
+  true;\n-        }\n-        if (o instanceof DelegatingMethod) {\n-            DelegatingMethod
+  that = (DelegatingMethod) o;\n-            return method.equals(that.method);\n-
+  \       } else {\n             return method.equals(o);\n-        }\n     }\n \n
+  \    @Override\n     public int hashCode() {\n-        return method.hashCode();\n+
+  \       return 1;\n     }\n }\n\\ No newline at end of file\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return method.equals(o); [1445,1469]
+  to
+  block [1431,1712]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return method.equals(o); [1445,1469]
+  to
+  block [1431,1712]
+  at 0
+
+  New cluster:
+  UPDATE from return method.hashCode(); to return 1;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return method.hashCode(); [1764,1789]
+  replace return method.hashCode(); by return 1;
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [1441,1492]
+      parenthesized_expression [1444,1455]
+          equals [1445,1454]
+              this [1445,1449]
+              identifier: o [1453,1454]
+      block [1456,1492]
+          return_statement: return true; [1470,1482]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [1501,1706]
+      parenthesized_expression [1504,1535]
+          instanceof_expression: o instanceof DelegatingMethod [1505,1534]
+      block [1536,1652]
+          local_variable_declaration: DelegatingMethod that = (DelegatingMethod) o; [1550,1595]
+          return_statement: return method.equals(that.method); [1608,1642]
+
+...

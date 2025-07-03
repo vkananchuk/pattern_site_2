@@ -1,0 +1,292 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -78,14 +78,9 @@
+                   }
+                   else
+                   {
+  -                    if (opt.indexOf('=') != -1 && options.hasOption(opt.substring(0, opt.indexOf('='))))
+  +                    if (options.hasOption(arg.substring(0, 2)))
+                       {
+                           // the format is --foo=value or -foo=value
+  -                        tokens.add(arg.substring(0, arg.indexOf('='))); // --foo
+  -                        tokens.add(arg.substring(arg.indexOf('=') + 1)); // value
+  -                    }
+  -                    else if (options.hasOption(arg.substring(0, 2)))
+  -                    {
+                           // the format is a special properties option (-Dproperty=value)
+                           tokens.add(arg.substring(0, 2)); // -D
+                           tokens.add(arg.substring(2)); // property=value
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 0; i < arguments.length; i++)
+          {
+              String arg = arguments[i];
+
+              if ("--".equals(arg))
+              {
+                  eatTheRest = true;
+                  tokens.add("--");
+              }
+              else if ("-".equals(arg))
+              {
+                  tokens.add("-");
+              }
+              else if (arg.startsWith("-"))
+              {
+                  String opt = Util.stripLeadingHyphens(arg);
+
+                  if (options.hasOption(opt))
+                  {
+                      tokens.add(arg);
+                  }
+                  else
+                  {
+                      if (opt.indexOf('=') != -1 && options.hasOption(opt.substring(0, opt.indexOf('='))))
+                      {
+                          // the format is --foo=value or -foo=value
+                          tokens.add(arg.substring(0, arg.indexOf('='))); // --foo
+                          tokens.add(arg.substring(arg.indexOf('=') + 1)); // value
+                      }
+                      else if (options.hasOption(arg.substring(0, 2)))
+                      {
+                          // the format is a special properties option (-Dproperty=value)
+                          tokens.add(arg.substring(0, 2)); // -D
+                          tokens.add(arg.substring(2)); // property=value
+                      }
+                      else
+                      {
+                          eatTheRest = stopAtNonOption;
+                          tokens.add(arg);
+                      }
+                  }
+              }
+              else
+              {
+                  tokens.add(arg);
+              }
+
+              if (eatTheRest)
+              {
+                  for (i++; i < arguments.length; i++)
+                  {
+                      tokens.add(arguments[i]);
+                  }
+              }
+          } to for (int i = 0; i < arguments.length; i++)
+          {
+              String arg = arguments[i];
+
+              if ("--".equals(arg))
+              {
+                  eatTheRest = true;
+                  tokens.add("--");
+              }
+              else if ("-".equals(arg))
+              {
+                  tokens.add("-");
+              }
+              else if (arg.startsWith("-"))
+              {
+                  String opt = Util.stripLeadingHyphens(arg);
+
+                  if (options.hasOption(opt))
+                  {
+                      tokens.add(arg);
+                  }
+                  else
+                  {
+                      if (options.hasOption(arg.substring(0, 2)))
+                      {
+                          // the format is --foo=value or -foo=value
+                          // the format is a special properties option (-Dproperty=value)
+                          tokens.add(arg.substring(0, 2)); // -D
+                          tokens.add(arg.substring(2)); // property=value
+                      }
+                      else
+                      {
+                          eatTheRest = stopAtNonOption;
+                          tokens.add(arg);
+                      }
+                  }
+              }
+              else
+              {
+                  tokens.add(arg);
+              }
+
+              if (eatTheRest)
+              {
+                  for (i++; i < arguments.length; i++)
+                  {
+                      tokens.add(arguments[i]);
+                  }
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 0; i < arguments.length; i++)
+          {
+              String arg = arguments[i];
+
+              if ("--".equals(arg))
+              {
+                  eatTheRest = true;
+                  tokens.add("--");
+              }
+              else if ("-".equals(arg))
+              {
+                  tokens.add("-");
+              }
+              else if (arg.startsWith("-"))
+              {
+                  String opt = Util.stripLeadingHyphens(arg);
+
+                  if (options.hasOption(opt))
+                  {
+                      tokens.add(arg);
+                  }
+                  else
+                  {
+                      if (opt.indexOf('=') != -1 && options.hasOption(opt.substring(0, opt.indexOf('='))))
+                      {
+                          // the format is --foo=value or -foo=value
+                          tokens.add(arg.substring(0, arg.indexOf('='))); // --foo
+                          tokens.add(arg.substring(arg.indexOf('=') + 1)); // value
+                      }
+                      else if (options.hasOption(arg.substring(0, 2)))
+                      {
+                          // the format is a special properties option (-Dproperty=value)
+                          tokens.add(arg.substring(0, 2)); // -D
+                          tokens.add(arg.substring(2)); // property=value
+                      }
+                      else
+                      {
+                          eatTheRest = stopAtNonOption;
+                          tokens.add(arg);
+                      }
+                  }
+              }
+              else
+              {
+                  tokens.add(arg);
+              }
+
+              if (eatTheRest)
+              {
+                  for (i++; i < arguments.length; i++)
+                  {
+                      tokens.add(arguments[i]);
+                  }
+              }
+          } [2190,3976]
+  replace for (int i = 0; i < arguments.length; i++)
+          {
+              String arg = arguments[i];
+
+              if ("--".equals(arg))
+              {
+                  eatTheRest = true;
+                  tokens.add("--");
+              }
+              else if ("-".equals(arg))
+              {
+                  tokens.add("-");
+              }
+              else if (arg.startsWith("-"))
+              {
+                  String opt = Util.stripLeadingHyphens(arg);
+
+                  if (options.hasOption(opt))
+                  {
+                      tokens.add(arg);
+                  }
+                  else
+                  {
+                      if (opt.indexOf('=') != -1 && options.hasOption(opt.substring(0, opt.indexOf('='))))
+                      {
+                          // the format is --foo=value or -foo=value
+                          tokens.add(arg.substring(0, arg.indexOf('='))); // --foo
+                          tokens.add(arg.substring(arg.indexOf('=') + 1)); // value
+                      }
+                      else if (options.hasOption(arg.substring(0, 2)))
+                      {
+                          // the format is a special properties option (-Dproperty=value)
+                          tokens.add(arg.substring(0, 2)); // -D
+                          tokens.add(arg.substring(2)); // property=value
+                      }
+                      else
+                      {
+                          eatTheRest = stopAtNonOption;
+                          tokens.add(arg);
+                      }
+                  }
+              }
+              else
+              {
+                  tokens.add(arg);
+              }
+
+              if (eatTheRest)
+              {
+                  for (i++; i < arguments.length; i++)
+                  {
+                      tokens.add(arguments[i]);
+                  }
+              }
+          } by for (int i = 0; i < arguments.length; i++)
+          {
+              String arg = arguments[i];
+
+              if ("--".equals(arg))
+              {
+                  eatTheRest = true;
+                  tokens.add("--");
+              }
+              else if ("-".equals(arg))
+              {
+                  tokens.add("-");
+              }
+              else if (arg.startsWith("-"))
+              {
+                  String opt = Util.stripLeadingHyphens(arg);
+
+                  if (options.hasOption(opt))
+                  {
+                      tokens.add(arg);
+                  }
+                  else
+                  {
+                      if (options.hasOption(arg.substring(0, 2)))
+                      {
+                          // the format is --foo=value or -foo=value
+                          // the format is a special properties option (-Dproperty=value)
+                          tokens.add(arg.substring(0, 2)); // -D
+                          tokens.add(arg.substring(2)); // property=value
+                      }
+                      else
+                      {
+                          eatTheRest = stopAtNonOption;
+                          tokens.add(arg);
+                      }
+                  }
+              }
+              else
+              {
+                  tokens.add(arg);
+              }
+
+              if (eatTheRest)
+              {
+                  for (i++; i < arguments.length; i++)
+                  {
+                      tokens.add(arguments[i]);
+                  }
+              }
+          }
+
+...

@@ -1,0 +1,79 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1,4 +1,5 @@\n-package java_programs;\n+package
+  correct_java_programs;\n+\n import java.util.*;\n \n /*\n@@ -20,13 +21,18 @@\n \n
+  \            ArrayList<ArrayList> output = new ArrayList<ArrayList>(100);\n             ArrayList
+  to_add = new ArrayList(100);\n-            to_add.add(first);\n+\n             for
+  (ArrayList subset : rest_subsets) {\n-                to_add.addAll(subset);\n+
+  \               ArrayList r = new ArrayList();\n+                r.add(first);\n+
+  \               r.addAll(subset);\n+                to_add.add(r);\n             }\n-
+  \           output.add(to_add);\n \n-            return output;\n+            output.addAll(to_add);\n+
+  \           rest_subsets.addAll(output);\n+\n+            return rest_subsets;\n
+  \        } else {\n             ArrayList empty_set = new ArrayList<ArrayList>();\n
+  \            empty_set.add(new ArrayList());\n@@ -34,3 +40,5 @@\n         }\n     }\n
+  }\n+\n+\n"
+tree_diff: |+
+  New cluster:
+  MOVE from block [295,791]
+  ------------
+  ===
+  move-tree
+  ---
+  expression_statement: to_add.add(first); [598,616]
+  to
+  block [295,791]
+  at 8
+
+  New cluster:
+  UPDATE from for (ArrayList subset : rest_subsets) {
+                  to_add.addAll(subset);
+              } to for (ArrayList subset : rest_subsets) {
+                  ArrayList r = new ArrayList();
+                  r.add(first);
+                  r.addAll(subset);
+                  to_add.add(r);
+              }
+  ------------
+  ===
+  update-node
+  ---
+  enhanced_for_statement: for (ArrayList subset : rest_subsets) {
+                  to_add.addAll(subset);
+              } [629,721]
+  replace for (ArrayList subset : rest_subsets) {
+                  to_add.addAll(subset);
+              } by for (ArrayList subset : rest_subsets) {
+                  ArrayList r = new ArrayList();
+                  r.add(first);
+                  r.addAll(subset);
+                  to_add.add(r);
+              }
+
+  New cluster:
+  UPDATE from output.add(to_add); to output.addAll(to_add);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: output.add(to_add); [734,753]
+  replace output.add(to_add); by output.addAll(to_add);
+
+  New cluster:
+  UPDATE from to_add.add(first); to rest_subsets.addAll(output);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: to_add.add(first); [598,616]
+  replace to_add.add(first); by rest_subsets.addAll(output);
+
+  New cluster:
+  UPDATE from return output; to return rest_subsets;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return output; [767,781]
+  replace return output; by return rest_subsets;
+
+...

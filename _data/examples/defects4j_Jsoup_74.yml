@@ -1,0 +1,136 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -128,10 +128,7 @@\n         // 160 is &nbsp;
+  (non-breaking space). Not in the spec but expected.\n     }\n \n-    public static
+  boolean isInvisibleChar(int c) {\n-        return Character.getType(c) == 16 &&
+  (c == 8203 || c == 8204 || c == 8205 || c == 173);\n         // zero width sp, zw
+  non join, zw join, soft hyphen\n-    }\n \n     /**\n      * Normalise the whitespace
+  within this string; multiple spaces collapse to a single, and all whitespace characters\n@@
+  -165,7 +162,7 @@\n                 accum.append(' ');\n                 lastWasWhite
+  = true;\n             }\n-            else if (!isInvisibleChar(c)) {\n+            else
+  {\n                 accum.appendCodePoint(c);\n                 lastWasWhite = false;\n
+  \                reachedNonWhite = true;\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [5154,5891]
+  to
+  class_body [250,9301]
+  at 11
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: appendNormalisedWhitespace [5173,5199]
+  to
+  method_declaration [5154,5891]
+  at 0
+  ===
+  insert-node
+  ---
+  method_declaration [5154,5891]
+  to
+  class_body [250,9301]
+  at 11
+
+  New cluster:
+  MOVE from method_declaration [5154,5891]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [5307,6069]
+      formal_parameter: StringBuilder accum [5353,5372]
+  to
+  method_declaration [5154,5891]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [5258,5891]
+      local_variable_declaration: boolean lastWasWhite = false; [5268,5297]
+      local_variable_declaration: boolean reachedNonWhite = false; [5306,5338]
+      local_variable_declaration: int len = string.length(); [5348,5374]
+      local_variable_declaration: int c; [5383,5389]
+      for_statement: for (int i = 0; i < len; i+= Character.charCount(c)) {
+              c = string.codePointAt(i);
+              if (isActuallyWhitespace(c)) {
+                  if ((stripLeading && !reachedNonWhite) || lastWasWhite)
+                      continue;
+                  accum.append(' ');
+                  lastWasWhite = true;
+              }
+              else {
+                  accum.appendCodePoint(c);
+                  lastWasWhite = false;
+                  reachedNonWhite = true;
+              }
+          } [5398,5885]
+  to
+  method_declaration [5154,5891]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [4331,4539]
+      identifier: isInvisibleChar [4353,4368]
+      method_parameters [4331,4539]
+          formal_parameter: int c [4369,4374]
+      block [4376,4539]
+          return_statement: return Character.getType(c) == 16 && (c == 8203 || c == 8204 || c == 8205 || c == 173); [4386,4473]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [5307,6069]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: appendNormalisedWhitespace [5326,5352]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [5307,6069]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [5411,6069]
+      local_variable_declaration: boolean lastWasWhite = false; [5421,5450]
+      local_variable_declaration: boolean reachedNonWhite = false; [5459,5491]
+      local_variable_declaration: int len = string.length(); [5501,5527]
+      local_variable_declaration: int c; [5536,5542]
+      for_statement: for (int i = 0; i < len; i+= Character.charCount(c)) {
+              c = string.codePointAt(i);
+              if (isActuallyWhitespace(c)) {
+                  if ((stripLeading && !reachedNonWhite) || lastWasWhite)
+                      continue;
+                  accum.append(' ');
+                  lastWasWhite = true;
+              }
+              else if (!isInvisibleChar(c)) {
+                  accum.appendCodePoint(c);
+                  lastWasWhite = false;
+                  reachedNonWhite = true;
+              }
+          } [5551,6063]
+
+...

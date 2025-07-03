@@ -1,0 +1,100 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -61,7 +61,6 @@\n      */\n     public ZipArchiveEntry(String
+  name) {\n         super(name);\n-        setName(name);\n     }\n \n     /**\n@@
+  -460,13 +459,11 @@\n             return false;\n         }\n         ZipArchiveEntry
+  other = (ZipArchiveEntry) obj;\n-        String myName = getName();\n-        String
+  otherName = other.getName();\n-        if (myName == null) {\n-            if (otherName
+  != null) {\n+        if (name == null) {\n+            if (other.name != null) {\n
+  \                return false;\n             }\n-        } else if (!myName.equals(otherName))
+  {\n+        } else if (!name.equals(other.name)) {\n             return false;\n
+  \        }\n         return true;\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from public ZipArchiveEntry(String name) {
+          super(name);
+          setName(name);
+      } to public ZipArchiveEntry(String name) {
+          super(name);
+      }
+  ------------
+  ===
+  update-node
+  ---
+  constructor_declaration: public ZipArchiveEntry(String name) {
+          super(name);
+          setName(name);
+      } [2268,2355]
+  replace public ZipArchiveEntry(String name) {
+          super(name);
+          setName(name);
+      } by public ZipArchiveEntry(String name) {
+          super(name);
+      }
+
+  New cluster:
+  UPDATE from myName to name
+  ------------
+  ===
+  update-node
+  ---
+  identifier: myName [14691,14697]
+  replace myName by name
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  field_access: other.name [14621,14631]
+  to
+  not_equals [14725,14742]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  field_access: other.name [14621,14631]
+  to
+  not_equals [14725,14742]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: String myName = getName(); [14608,14634]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: String myName = getName(); [14608,14634]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: String otherName = other.getName(); [14643,14678]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: String otherName = other.getName(); [14643,14678]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  identifier: otherName [14725,14734]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: otherName [14725,14734]
+  ===
+
+...

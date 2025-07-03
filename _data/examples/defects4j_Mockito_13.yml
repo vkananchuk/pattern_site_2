@@ -1,0 +1,54 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -74,14 +74,12 @@\n         if (verificationMode
+  != null) {\r\n             //We need to check if verification was started on the
+  correct mock \r\n             // - see VerifyingWithAnExtraCallToADifferentMockTest
+  (bug 138)\r\n-            if (((MockAwareVerificationMode) verificationMode).getMock()
+  == invocation.getMock()) {                \r\n+            if (verificationMode
+  instanceof MockAwareVerificationMode && ((MockAwareVerificationMode) verificationMode).getMock()
+  == invocation.getMock()) {                \r\n                 VerificationDataImpl
+  data = new VerificationDataImpl(invocationContainerImpl, invocationMatcher);            \r\n
+  \                verificationMode.verify(data);\r\n                 return null;\r\n-
+  \           } else {\r\n                 // this means there is an invocation on
+  a different mock. Re-adding verification mode \r\n                 // - see VerifyingWithAnExtraCallToADifferentMockTest
+  (bug 138)\r\n-                mockingProgress.verificationStarted(verificationMode);\r\n
+  \            }\r\n         }\r\n         \r\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  and [3227,3364]
+  to
+  parenthesized_expression [3226,3308]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  instanceof_expression: verificationMode instanceof MockAwareVerificationMode [3227,3280]
+  to
+  and [3227,3364]
+  at 0
+  ===
+  insert-node
+  ---
+  and [3227,3364]
+  to
+  parenthesized_expression [3226,3308]
+  at 0
+
+  New cluster:
+  MOVE from and [3227,3364]
+  ------------
+  ===
+  move-tree
+  ---
+  equals [3227,3307]
+      method_invocation: ((MockAwareVerificationMode) verificationMode).getMock() [3227,3283]
+      method_invocation: invocation.getMock() [3287,3307]
+  to
+  and [3227,3364]
+  at 1
+
+...

@@ -1,0 +1,69 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -236,8 +236,6 @@\n      * class here is a workaround,
+  see the JIRA issue LANG-626. </p>\n      */\n      static class ClassLoaderAwareObjectInputStream
+  extends ObjectInputStream {\n-        private static final Map<String, Class<?>>
+  primitiveTypes = \n-                new HashMap<String, Class<?>>();\n         private
+  ClassLoader classLoader;\n         \n         /**\n@@ -251,15 +249,6 @@\n             super(in);\n
+  \            this.classLoader = classLoader;\n \n-            primitiveTypes.put(\"byte\",
+  byte.class);\n-            primitiveTypes.put(\"short\", short.class);\n-            primitiveTypes.put(\"int\",
+  int.class);\n-            primitiveTypes.put(\"long\", long.class);\n-            primitiveTypes.put(\"float\",
+  float.class);\n-            primitiveTypes.put(\"double\", double.class);\n-            primitiveTypes.put(\"boolean\",
+  boolean.class);\n-            primitiveTypes.put(\"char\", char.class);\n-            primitiveTypes.put(\"void\",
+  void.class);\n         }\n \n         /**\n@@ -276,15 +265,7 @@\n             try
+  {\n                 return Class.forName(name, false, classLoader);\n             }
+  catch (ClassNotFoundException ex) {\n-                try {\n                     return
+  Class.forName(name, false, Thread.currentThread().getContextClassLoader());\n-                }
+  catch (ClassNotFoundException cnfe) {\n-                    Class<?> cls = primitiveTypes.get(name);\n-
+  \                   if (cls != null)\n-                        return cls;\n-                    else\n-
+  \                       throw cnfe;\n-                }\n             }\n         }\n
+  \n"
+tree_diff: "New cluster:\nUPDATE from public ClassLoaderAwareObjectInputStream(InputStream
+  in, ClassLoader classLoader) throws IOException {\n            super(in);\n            this.classLoader
+  = classLoader;\n\n            primitiveTypes.put(\"byte\", byte.class);\n            primitiveTypes.put(\"short\",
+  short.class);\n            primitiveTypes.put(\"int\", int.class);\n            primitiveTypes.put(\"long\",
+  long.class);\n            primitiveTypes.put(\"float\", float.class);\n            primitiveTypes.put(\"double\",
+  double.class);\n            primitiveTypes.put(\"boolean\", boolean.class);\n            primitiveTypes.put(\"char\",
+  char.class);\n            primitiveTypes.put(\"void\", void.class);\n        } to
+  public ClassLoaderAwareObjectInputStream(InputStream in, ClassLoader classLoader)
+  throws IOException {\n            super(in);\n            this.classLoader = classLoader;\n\n
+  \       }\n------------\n===\nupdate-node\n---\nconstructor_declaration: public
+  ClassLoaderAwareObjectInputStream(InputStream in, ClassLoader classLoader) throws
+  IOException {\n            super(in);\n            this.classLoader = classLoader;\n\n
+  \           primitiveTypes.put(\"byte\", byte.class);\n            primitiveTypes.put(\"short\",
+  short.class);\n            primitiveTypes.put(\"int\", int.class);\n            primitiveTypes.put(\"long\",
+  long.class);\n            primitiveTypes.put(\"float\", float.class);\n            primitiveTypes.put(\"double\",
+  double.class);\n            primitiveTypes.put(\"boolean\", boolean.class);\n            primitiveTypes.put(\"char\",
+  char.class);\n            primitiveTypes.put(\"void\", void.class);\n        } [9799,10459]\nreplace
+  public ClassLoaderAwareObjectInputStream(InputStream in, ClassLoader classLoader)
+  throws IOException {\n            super(in);\n            this.classLoader = classLoader;\n\n
+  \           primitiveTypes.put(\"byte\", byte.class);\n            primitiveTypes.put(\"short\",
+  short.class);\n            primitiveTypes.put(\"int\", int.class);\n            primitiveTypes.put(\"long\",
+  long.class);\n            primitiveTypes.put(\"float\", float.class);\n            primitiveTypes.put(\"double\",
+  double.class);\n            primitiveTypes.put(\"boolean\", boolean.class);\n            primitiveTypes.put(\"char\",
+  char.class);\n            primitiveTypes.put(\"void\", void.class);\n        } by
+  public ClassLoaderAwareObjectInputStream(InputStream in, ClassLoader classLoader)
+  throws IOException {\n            super(in);\n            this.classLoader = classLoader;\n\n
+  \       }\n\nNew cluster:\nUPDATE from catch (ClassNotFoundException ex) {\n                try
+  {\n                    return Class.forName(name, false, Thread.currentThread().getContextClassLoader());\n
+  \               } catch (ClassNotFoundException cnfe) {\n                    Class<?>
+  cls = primitiveTypes.get(name);\n                    if (cls != null)\n                        return
+  cls;\n                    else\n                        throw cnfe;\n                }\n
+  \           } to catch (ClassNotFoundException ex) {\n                    return
+  Class.forName(name, false, Thread.currentThread().getContextClassLoader());\n            }\n------------\n===\nupdate-node\n---\ncatch_clause:
+  catch (ClassNotFoundException ex) {\n                try {\n                    return
+  Class.forName(name, false, Thread.currentThread().getContextClassLoader());\n                }
+  catch (ClassNotFoundException cnfe) {\n                    Class<?> cls = primitiveTypes.get(name);\n
+  \                   if (cls != null)\n                        return cls;\n                    else\n
+  \                       throw cnfe;\n                }\n            } [11254,11697]\nreplace
+  catch (ClassNotFoundException ex) {\n                try {\n                    return
+  Class.forName(name, false, Thread.currentThread().getContextClassLoader());\n                }
+  catch (ClassNotFoundException cnfe) {\n                    Class<?> cls = primitiveTypes.get(name);\n
+  \                   if (cls != null)\n                        return cls;\n                    else\n
+  \                       throw cnfe;\n                }\n            } by catch (ClassNotFoundException
+  ex) {\n                    return Class.forName(name, false, Thread.currentThread().getContextClassLoader());\n
+  \           }\n\nNew cluster:\n===\ndelete-node\n---\nfield_declaration: private
+  static final Map<String, Class<?>> primitiveTypes = \n                new HashMap<String,
+  Class<?>>(); [9358,9467]\n===\n------------\n===\ndelete-node\n---\nfield_declaration:
+  private static final Map<String, Class<?>> primitiveTypes = \n                new
+  HashMap<String, Class<?>>(); [9358,9467]\n===\n\n"

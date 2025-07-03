@@ -1,0 +1,36 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -896,16 +896,9 @@\n       // scope where the
+  root object appears. This helps out people\n       // who declare \"global\" names
+  in an anonymous namespace.\n       Scope scopeToDeclareIn = scope;\n-      if (n.getType()
+  == Token.GETPROP && !scope.isGlobal() &&\n-          isQnameRootedInGlobalScope(n))
+  {\n-        Scope globalScope = scope.getGlobalScope();\n \n         // don't try
+  to declare in the global scope if there's\n         // already a symbol there with
+  this name.\n-        if (!globalScope.isDeclared(variableName, false)) {\n-          scopeToDeclareIn
+  = scope.getGlobalScope();\n-        }\n-      }\n \n       // declared in closest
+  scope?\n       if (scopeToDeclareIn.isDeclared(variableName, false)) {\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [33278,33674]
+      parenthesized_expression [33281,33375]
+          and [33282,33374]
+              and [33282,33331]
+                  equals [33282,33310]
+                      method_invocation: n.getType() [33282,33293]
+                      field_access: Token.GETPROP [33297,33310]
+                  unary_expression: !scope.isGlobal() [33314,33331]
+              method_invocation: isQnameRootedInGlobalScope(n) [33345,33374]
+      block [33376,33674]
+          local_variable_declaration: Scope globalScope = scope.getGlobalScope(); [33386,33429]
+          if_statement [33552,33666]
+              parenthesized_expression [33555,33601]
+                  unary_expression: !globalScope.isDeclared(variableName, false) [33556,33600]
+              block [33602,33666]
+                  expression_statement: scopeToDeclareIn = scope.getGlobalScope(); [33614,33656]
+
+...

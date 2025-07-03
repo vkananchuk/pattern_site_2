@@ -1,0 +1,82 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -316,7 +316,8 @@\n             accum.append('
+  ').append(key);\n \n             // collapse checked=null, checked=\"\", checked=checked;
+  write out others\n-            if (!Attribute.shouldCollapseAttribute(key, val,
+  out)) {\n+            if (!(out.syntax() == Document.OutputSettings.Syntax.html\n+
+  \               && (val == null || val.equals(key) && Attribute.isBooleanAttribute(key))))
+  {\n                 accum.append(\"=\\\"\");\n                 Entities.escape(accum,
+  val == null ? EmptyString : val, out, true, false, false);\n                 accum.append('\"');\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 0; i < sz; i++) {
+              // inlined from Attribute.html()
+              final String key = keys[i];
+              final String val = vals[i];
+              accum.append(' ').append(key);
+
+              // collapse checked=null, checked="", checked=checked; write out others
+              if (!Attribute.shouldCollapseAttribute(key, val, out)) {
+                  accum.append("=\"");
+                  Entities.escape(accum, val == null ? EmptyString : val, out, true, false, false);
+                  accum.append('"');
+              }
+          } to for (int i = 0; i < sz; i++) {
+              // inlined from Attribute.html()
+              final String key = keys[i];
+              final String val = vals[i];
+              accum.append(' ').append(key);
+
+              // collapse checked=null, checked="", checked=checked; write out others
+              if (!(out.syntax() == Document.OutputSettings.Syntax.html
+                  && (val == null || val.equals(key) && Attribute.isBooleanAttribute(key)))) {
+                  accum.append("=\"");
+                  Entities.escape(accum, val == null ? EmptyString : val, out, true, false, false);
+                  accum.append('"');
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 0; i < sz; i++) {
+              // inlined from Attribute.html()
+              final String key = keys[i];
+              final String val = vals[i];
+              accum.append(' ').append(key);
+
+              // collapse checked=null, checked="", checked=checked; write out others
+              if (!Attribute.shouldCollapseAttribute(key, val, out)) {
+                  accum.append("=\"");
+                  Entities.escape(accum, val == null ? EmptyString : val, out, true, false, false);
+                  accum.append('"');
+              }
+          } [9555,10101]
+  replace for (int i = 0; i < sz; i++) {
+              // inlined from Attribute.html()
+              final String key = keys[i];
+              final String val = vals[i];
+              accum.append(' ').append(key);
+
+              // collapse checked=null, checked="", checked=checked; write out others
+              if (!Attribute.shouldCollapseAttribute(key, val, out)) {
+                  accum.append("=\"");
+                  Entities.escape(accum, val == null ? EmptyString : val, out, true, false, false);
+                  accum.append('"');
+              }
+          } by for (int i = 0; i < sz; i++) {
+              // inlined from Attribute.html()
+              final String key = keys[i];
+              final String val = vals[i];
+              accum.append(' ').append(key);
+
+              // collapse checked=null, checked="", checked=checked; write out others
+              if (!(out.syntax() == Document.OutputSettings.Syntax.html
+                  && (val == null || val.equals(key) && Attribute.isBooleanAttribute(key)))) {
+                  accum.append("=\"");
+                  Entities.escape(accum, val == null ? EmptyString : val, out, true, false, false);
+                  accum.append('"');
+              }
+          }
+
+...

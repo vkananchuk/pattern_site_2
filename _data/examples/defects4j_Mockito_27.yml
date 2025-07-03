@@ -1,0 +1,37 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -61,7 +61,8 @@\n \r\n     public <T> void resetMock(T
+  mock) {\r\n         MockHandlerInterface<T> oldMockHandler = getMockHandler(mock);\r\n-
+  \       MethodInterceptorFilter newFilter = newMethodInterceptorFilter(oldMockHandler.getMockSettings());\r\n+
+  \       MockHandler<T> newMockHandler = new MockHandler<T>(oldMockHandler);\r\n+
+  \       MethodInterceptorFilter newFilter = new MethodInterceptorFilter(newMockHandler,
+  (MockSettingsImpl) org.mockito.Mockito.withSettings().defaultAnswer(org.mockito.Mockito.RETURNS_DEFAULTS));\r\n
+  \        ((Factory) mock).setCallback(0, newFilter);\r\n     }\r\n \r\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from MethodInterceptorFilter newFilter = newMethodInterceptorFilter(oldMockHandler.getMockSettings()); to MockHandler<T> newMockHandler = new MockHandler<T>(oldMockHandler);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: MethodInterceptorFilter newFilter = newMethodInterceptorFilter(oldMockHandler.getMockSettings()); [2375,2472]
+  replace MethodInterceptorFilter newFilter = newMethodInterceptorFilter(oldMockHandler.getMockSettings()); by MockHandler<T> newMockHandler = new MockHandler<T>(oldMockHandler);
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: MethodInterceptorFilter newFilter = new MethodInterceptorFilter(newMockHandler, (MockSettingsImpl) org.mockito.Mockito.withSettings().defaultAnswer(org.mockito.Mockito.RETURNS_DEFAULTS)); [2452,2639]
+  to
+  block [2292,2532]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: MethodInterceptorFilter newFilter = new MethodInterceptorFilter(newMockHandler, (MockSettingsImpl) org.mockito.Mockito.withSettings().defaultAnswer(org.mockito.Mockito.RETURNS_DEFAULTS)); [2452,2639]
+  to
+  block [2292,2532]
+  at 2
+
+...

@@ -1,0 +1,75 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -559,16 +559,7 @@
+        * @return the square-root of the weight matrix.
+        */
+       private RealMatrix squareRoot(RealMatrix m) {
+  -        if (m instanceof DiagonalMatrix) {
+  -            final int dim = m.getRowDimension();
+  -            final RealMatrix sqrtM = new DiagonalMatrix(dim);
+  -            for (int i = 0; i < dim; i++) {
+  -               sqrtM.setEntry(i, i, FastMath.sqrt(m.getEntry(i, i)));
+  -            }
+  -            return sqrtM;
+  -        } else {
+               final EigenDecomposition dec = new EigenDecomposition(m);
+               return dec.getSquareRoot();
+  -        }
+       }
+   }
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: final EigenDecomposition dec = new EigenDecomposition(m); [23189,23246]
+  to
+  block [23175,23627]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: final EigenDecomposition dec = new EigenDecomposition(m); [23189,23246]
+  to
+  block [23175,23627]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return dec.getSquareRoot(); [23259,23286]
+  to
+  block [23175,23627]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return dec.getSquareRoot(); [23259,23286]
+  to
+  block [23175,23627]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [23185,23621]
+      parenthesized_expression [23188,23217]
+          instanceof_expression: m instanceof DiagonalMatrix [23189,23216]
+      block [23218,23494]
+          local_variable_declaration: final int dim = m.getRowDimension(); [23232,23268]
+          local_variable_declaration: final RealMatrix sqrtM = new DiagonalMatrix(dim); [23281,23330]
+          for_statement: for (int i = 0; i < dim; i++) {
+                 sqrtM.setEntry(i, i, FastMath.sqrt(m.getEntry(i, i)));
+              } [23343,23458]
+          return_statement: return sqrtM; [23471,23484]
+
+...

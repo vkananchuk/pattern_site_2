@@ -1,0 +1,78 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1518,14 +1518,11 @@\n             || FunctionTypeBuilder.isFunctionTypeDeclaration(info));\n
+  \      }\n \n-      if (inferred && rhsValue != null && rhsValue.isFunction()) {\n+
+  \     if (inferred) {\n         // Determining declaration for #2\n-        if (info
+  != null) {\n-          inferred = false;\n-        } else if (!scope.isDeclared(qName,
+  false) &&\n-                   n.isUnscopedQualifiedName()) {\n-          inferred
+  = false;\n-        }\n+        inferred = !(rhsValue != null &&\n+            rhsValue.isFunction()
+  &&\n+            (info != null || !scope.isDeclared(qName, false)));\n       }\n
+  \n       if (!inferred) {\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  identifier: inferred [58326,58334]
+  to
+  parenthesized_expression [58325,58380]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: inferred [58326,58334]
+  to
+  parenthesized_expression [58325,58380]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: inferred = !(rhsValue != null &&
+              rhsValue.isFunction() &&
+              (info != null || !scope.isDeclared(qName, false))); [58388,58521]
+  to
+  block [58381,58630]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: inferred = !(rhsValue != null &&
+              rhsValue.isFunction() &&
+              (info != null || !scope.isDeclared(qName, false))); [58388,58521]
+  to
+  block [58381,58630]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  and [58326,58379]
+      and [58326,58354]
+          identifier: inferred [58326,58334]
+          not_equals [58338,58354]
+              identifier: rhsValue [58338,58346]
+              null_literal [58350,58354]
+      method_invocation: rhsValue.isFunction() [58358,58379]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [58433,58622]
+      parenthesized_expression [58436,58450]
+          not_equals [58437,58449]
+              identifier: info [58437,58441]
+              null_literal [58445,58449]
+      block [58451,58490]
+          expression_statement: inferred = false; [58463,58480]
+
+...

@@ -1,0 +1,39 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -40,7 +40,6 @@\n         Validate.notNull(dirtyDocument);\n
+  \n         Document clean = Document.createShell(dirtyDocument.baseUri());\n-        if
+  (dirtyDocument.body() != null) // frameset documents won't have a body. the clean
+  doc will have empty body.\n             copySafeNodes(dirtyDocument.body(), clean.body());\n
+  \n         return clean;\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: copySafeNodes(dirtyDocument.body(), clean.body()); [1648,1698]
+  to
+  block [1520,1846]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: copySafeNodes(dirtyDocument.body(), clean.body()); [1648,1698]
+  to
+  block [1520,1846]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [1644,1817]
+      parenthesized_expression [1647,1677]
+          not_equals [1648,1676]
+              method_invocation: dirtyDocument.body() [1648,1668]
+              null_literal [1672,1676]
+      expression_statement: copySafeNodes(dirtyDocument.body(), clean.body()); [1767,1817]
+
+...

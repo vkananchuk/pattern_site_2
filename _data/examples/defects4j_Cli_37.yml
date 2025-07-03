@@ -1,0 +1,63 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -299,15 +299,9 @@\n     private boolean isShortOption(String
+  token)\n     {\n         // short options (-S, -SV, -S=V, -SV1=V2, -S1S2)\n-        if
+  (!token.startsWith(\"-\") || token.length() == 1)\n-        {\n-            return
+  false;\n-        }\n+        return token.startsWith(\"-\") && token.length() >=
+  2 && options.hasShortOption(token.substring(1, 2));\n \n         // remove leading
+  \"-\" and \"=value\"\n-        int pos = token.indexOf(\"=\");\n-        String
+  optName = pos == -1 ? token.substring(1) : token.substring(1, pos);\n-        return
+  options.hasShortOption(optName);\n     }\n \n     /**\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return options.hasShortOption(optName); to return token.startsWith("-") && token.length() >= 2 && options.hasShortOption(token.substring(1, 2));
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return options.hasShortOption(optName); [9458,9497]
+  replace return options.hasShortOption(optName); by return token.startsWith("-") && token.length() >= 2 && options.hasShortOption(token.substring(1, 2));
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [9188,9284]
+      parenthesized_expression [9191,9238]
+          or [9192,9237]
+              unary_expression: !token.startsWith("-") [9192,9214]
+              equals [9218,9237]
+                  method_invocation: token.length() [9218,9232]
+                  decimal_integer_literal: 1 [9236,9237]
+      block [9247,9284]
+          return_statement: return false; [9261,9274]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int pos = token.indexOf("="); [9337,9366]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: int pos = token.indexOf("="); [9337,9366]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: String optName = pos == -1 ? token.substring(1) : token.substring(1, pos); [9375,9449]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: String optName = pos == -1 ? token.substring(1) : token.substring(1, pos); [9375,9449]
+  ===
+
+...

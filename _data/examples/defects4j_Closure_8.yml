@@ -1,0 +1,44 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -201,14 +201,10 @@\n       Var var = s.getVar(lhs.getString());\n
+  \      return var != null\n           && var.getScope() == s\n-          && !isNamedParameter(var)\n
+  \          && !blacklistedVars.contains(var);\n     }\n   }\n \n-  private boolean
+  isNamedParameter(Var v) {\n-    return v.getParentNode().isParamList();\n-  }\n
+  \n   private void applyCollapses() {\n     for (Collapse collapse : collapses) {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return var != null
+            && var.getScope() == s
+            && !isNamedParameter(var)
+            && !blacklistedVars.contains(var); to return var != null
+            && var.getScope() == s
+            && !blacklistedVars.contains(var);
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return var != null
+            && var.getScope() == s
+            && !isNamedParameter(var)
+            && !blacklistedVars.contains(var); [5610,5742]
+  replace return var != null
+            && var.getScope() == s
+            && !isNamedParameter(var)
+            && !blacklistedVars.contains(var); by return var != null
+            && var.getScope() == s
+            && !blacklistedVars.contains(var);
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [5756,5845]
+      identifier: isNamedParameter [5772,5788]
+      method_parameters [5756,5845]
+          formal_parameter: Var v [5789,5794]
+      block [5796,5845]
+          return_statement: return v.getParentNode().isParamList(); [5802,5841]
+
+...

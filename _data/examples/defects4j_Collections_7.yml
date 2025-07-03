@@ -1,0 +1,125 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -640,7 +640,7 @@\n      */\n     public Object
+  getProperty(String key) {\n         // first, try to get from the 'user value' store\n-
+  \       Object obj = super.get(key);\n+        Object obj = this.get(key);\n \n
+  \        if (obj == null) {\n             // if there isn't a value there, get it
+  from the\n@@ -706,7 +706,7 @@\n         if (!containsKey(key)) {\n             keysAsListed.add(key);\n
+  \        }\n-        super.put(key, value);\n+        put(key, value);\n     }\n
+  \n     /**\n@@ -728,7 +728,7 @@\n             List values = new Vector(2);\n             values.add(current);\n
+  \            values.add(value);\n-            super.put(key, values);\n+            put(key,
+  values);\n             \n         } else if (current instanceof List) {\n             //
+  already a list - just add the new token\n@@ -739,7 +739,7 @@\n             if (!containsKey(key))
+  {\n                 keysAsListed.add(key);\n             }\n-            super.put(key,
+  value);\n+            put(key, value);\n         }\n     }\n \n@@ -832,7 +832,7
+  @@\n                     break;\n                 }\n             }\n-            super.remove(key);\n+
+  \           remove(key);\n         }\n     }\n \n@@ -1091,7 +1091,7 @@\n         }
+  else if (value instanceof String) {\n             Vector values = new Vector(1);\n
+  \            values.add(value);\n-            super.put(key, values);\n+            put(key,
+  values);\n             return values;\n             \n         } else if (value
+  == null) {\n@@ -1143,7 +1143,7 @@\n         } else if (value instanceof String)
+  {\n             List values = new ArrayList(1);\n             values.add(value);\n-
+  \           super.put(key, values);\n+            put(key, values);\n             return
+  values;\n             \n         } else if (value == null) {\n@@ -1209,7 +1209,7
+  @@\n         } else if (value instanceof String) {\n             String s = testBoolean((String)
+  value);\n             Boolean b = new Boolean(s);\n-            super.put(key, b);\n+
+  \           put(key, b);\n             return b;\n             \n         } else
+  if (value == null) {\n@@ -1303,7 +1303,7 @@\n             \n         } else if (value
+  instanceof String) {\n             Byte b = new Byte((String) value);\n-            super.put(key,
+  b);\n+            put(key, b);\n             return b;\n             \n         }
+  else if (value == null) {\n@@ -1373,7 +1373,7 @@\n             \n         } else
+  if (value instanceof String) {\n             Short s = new Short((String) value);\n-
+  \           super.put(key, s);\n+            put(key, s);\n             return s;\n
+  \            \n         } else if (value == null) {\n@@ -1471,7 +1471,7 @@\n             \n
+  \        } else if (value instanceof String) {\n             Integer i = new Integer((String)
+  value);\n-            super.put(key, i);\n+            put(key, i);\n             return
+  i;\n             \n         } else if (value == null) {\n@@ -1541,7 +1541,7 @@\n
+  \            \n         } else if (value instanceof String) {\n             Long
+  l = new Long((String) value);\n-            super.put(key, l);\n+            put(key,
+  l);\n             return l;\n             \n         } else if (value == null) {\n@@
+  -1611,7 +1611,7 @@\n             \n         } else if (value instanceof String)
+  {\n             Float f = new Float((String) value);\n-            super.put(key,
+  f);\n+            put(key, f);\n             return f;\n             \n         }
+  else if (value == null) {\n@@ -1681,7 +1681,7 @@\n             \n         } else
+  if (value instanceof String) {\n             Double d = new Double((String) value);\n-
+  \           super.put(key, d);\n+            put(key, d);\n             return d;\n
+  \            \n         } else if (value == null) {\n@@ -1723,12 +1723,6 @@\n      *
+  @param value for the property\n      * @return old value of the property\n      */\n-
+  \   public Object put(Object key, Object value) {\n-        String strKey = String.valueOf(key);\n-
+  \       Object ret = getProperty(strKey);\n-        addProperty(strKey, value);\n-
+  \       return ret;\n-    }\n \n     /**\n      * Add a map full of key/value pairs
+  to the ExtendedProperties. \n@@ -1759,11 +1753,5 @@\n      * @param key specifying
+  the property\n      * @return old value of the property\n      */\n-    public Object
+  remove(Object key) {\n-        String strKey = String.valueOf(key);\n-        Object
+  ret = getProperty(strKey);\n-        clearProperty(strKey);\n-        return ret;\n-
+  \   }\n \n }\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from Object obj = super.get(key); to Object obj = this.get(key);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: Object obj = super.get(key); [22046,22074]
+  replace Object obj = super.get(key); by Object obj = this.get(key);
+
+  New cluster:
+  UPDATE from super.put(key, value); to put(key, value);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: super.put(key, value); [24182,24204]
+  replace super.put(key, value); by put(key, value);
+
+  New cluster:
+  UPDATE from super.put(key, values); to put(key, values);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: super.put(key, values); [24943,24966]
+  replace super.put(key, values); by put(key, values);
+
+  New cluster:
+  UPDATE from super.remove(key); to remove(key);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: super.remove(key); [28595,28613]
+  replace super.remove(key); by remove(key);
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [58905,59099]
+      identifier: put [58919,58922]
+      method_parameters [58905,59099]
+          formal_parameter: Object key [58923,58933]
+      block [58949,59099]
+          local_variable_declaration: String strKey = String.valueOf(key); [58959,58995]
+          local_variable_declaration: Object ret = getProperty(strKey); [59004,59037]
+          expression_statement: addProperty(strKey, value); [59046,59073]
+          return_statement: return ret; [59082,59093]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [60054,60232]
+      identifier: remove [60068,60074]
+      method_parameters [60054,60232]
+          formal_parameter: Object key [60075,60085]
+      block [60087,60232]
+          local_variable_declaration: String strKey = String.valueOf(key); [60097,60133]
+          local_variable_declaration: Object ret = getProperty(strKey); [60142,60175]
+          expression_statement: clearProperty(strKey); [60184,60206]
+          return_statement: return ret; [60215,60226]
+
+...

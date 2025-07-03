@@ -1,0 +1,211 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -346,9 +346,10 @@\n          * this only. Indeed,
+  if this[i] = 0d and v[i] = 0d, then\n          * this[i] / v[i] = NaN, and not 0d.\n
+  \         */\n-        final int n = getDimension();\n-        for (int i = 0; i
+  < n; i++) {\n-            res.setEntry(i, this.getEntry(i) / v.getEntry(i));\n+
+  \       Iterator iter = entries.iterator();\n+        while (iter.hasNext()) {\n+
+  \           iter.advance();\n+            res.setEntry(iter.key(), iter.value()
+  / v.getEntry(iter.key()));\n         }\n         return res;\n     }\n@@ -370,18
+  +371,6 @@\n          *\n          * These special cases are handled below.\n          */\n-
+  \       if (v.isNaN() || v.isInfinite()) {\n-            final int n = getDimension();\n-
+  \           for (int i = 0; i < n; i++) {\n-                final double y = v.getEntry(i);\n-
+  \               if (Double.isNaN(y)) {\n-                    res.setEntry(i, Double.NaN);\n-
+  \               } else if (Double.isInfinite(y)) {\n-                    final double
+  x = this.getEntry(i);\n-                    res.setEntry(i, x * y);\n-                }\n-
+  \           }\n-        }\n         return res;\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [11229,11833]
+  to
+  class_body [1402,26218]
+  at 27
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: ebeDivide [11268,11277]
+  to
+  method_declaration [11229,11833]
+  at 0
+  ===
+  insert-node
+  ---
+  method_declaration [11229,11833]
+  to
+  class_body [1402,26218]
+  at 27
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [11864,12578]
+  to
+  class_body [1402,26218]
+  at 28
+  ------------
+  ===
+  insert-node
+  ---
+  identifier: ebeMultiply [11903,11914]
+  to
+  method_declaration [11864,12578]
+  at 0
+  ===
+  insert-node
+  ---
+  method_declaration [11864,12578]
+  to
+  class_body [1402,26218]
+  at 28
+
+  New cluster:
+  MOVE from method_declaration [11229,11833]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [11229,11790]
+      formal_parameter: RealVector v [11278,11290]
+  to
+  method_declaration [11229,11833]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [11292,11833]
+      expression_statement: checkVectorDimensions(v.getDimension()); [11302,11342]
+      local_variable_declaration: OpenMapRealVector res = new OpenMapRealVector(this); [11351,11403]
+      local_variable_declaration: Iterator iter = entries.iterator(); [11624,11659]
+      while_statement: while (iter.hasNext()) {
+              iter.advance();
+              res.setEntry(iter.key(), iter.value() / v.getEntry(iter.key()));
+          } [11668,11807]
+      return_statement: return res; [11816,11827]
+  to
+  method_declaration [11229,11833]
+  at 2
+
+  New cluster:
+  MOVE from method_declaration [11864,12578]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [11821,12990]
+      formal_parameter: RealVector v [11872,11884]
+  to
+  method_declaration [11864,12578]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [11929,12578]
+      expression_statement: checkVectorDimensions(v.getDimension()); [11939,11979]
+      local_variable_declaration: OpenMapRealVector res = new OpenMapRealVector(this); [11988,12040]
+      local_variable_declaration: Iterator iter = entries.iterator(); [12049,12084]
+      while_statement: while (iter.hasNext()) {
+              iter.advance();
+              res.setEntry(iter.key(), iter.value() * v.getEntry(iter.key()));
+          } [12093,12232]
+      return_statement: return res; [12561,12572]
+  to
+  method_declaration [11864,12578]
+  at 2
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [11229,11790]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_declaration [11229,11790]
+  ===
+  ===
+  delete-node
+  ---
+  identifier: ebeDivide [11268,11277]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [11292,11790]
+      expression_statement: checkVectorDimensions(v.getDimension()); [11302,11342]
+      local_variable_declaration: OpenMapRealVector res = new OpenMapRealVector(this); [11351,11403]
+      local_variable_declaration: final int n = getDimension(); [11624,11653]
+      for_statement: for (int i = 0; i < n; i++) {
+              res.setEntry(i, this.getEntry(i) / v.getEntry(i));
+          } [11662,11764]
+      return_statement: return res; [11773,11784]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [11821,12990]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: ebeMultiply [11860,11871]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [11821,12990]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [11886,12990]
+      expression_statement: checkVectorDimensions(v.getDimension()); [11896,11936]
+      local_variable_declaration: OpenMapRealVector res = new OpenMapRealVector(this); [11945,11997]
+      local_variable_declaration: Iterator iter = entries.iterator(); [12006,12041]
+      while_statement: while (iter.hasNext()) {
+              iter.advance();
+              res.setEntry(iter.key(), iter.value() * v.getEntry(iter.key()));
+          } [12050,12189]
+      if_statement [12518,12964]
+          parenthesized_expression [12521,12550]
+              or [12522,12549]
+                  method_invocation: v.isNaN() [12522,12531]
+                  method_invocation: v.isInfinite() [12535,12549]
+          block [12551,12964]
+              local_variable_declaration: final int n = getDimension(); [12565,12594]
+              for_statement: for (int i = 0; i < n; i++) {
+                  final double y = v.getEntry(i);
+                  if (Double.isNaN(y)) {
+                      res.setEntry(i, Double.NaN);
+                  } else if (Double.isInfinite(y)) {
+                      final double x = this.getEntry(i);
+                      res.setEntry(i, x * y);
+                  }
+              } [12607,12954]
+      return_statement: return res; [12973,12984]
+
+...

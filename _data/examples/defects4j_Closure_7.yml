@@ -1,0 +1,51 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -610,13 +610,9 @@
+       public JSType caseObjectType(ObjectType type) {
+         if (value.equals("function")) {
+           JSType ctorType = getNativeType(U2U_CONSTRUCTOR_TYPE);
+  -        if (resultEqualsValue) {
+  +        return resultEqualsValue && ctorType.isSubtype(type) ? ctorType : null;
+             // Objects are restricted to "Function", subtypes are left
+  -          return ctorType.getGreatestSubtype(type);
+  -        } else {
+             // Only filter out subtypes of "function"
+  -          return type.isSubtype(ctorType) ? null : type;
+  -        }
+         }
+         return matchesExpectation("object") ? type : null;
+       }
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return resultEqualsValue && ctorType.isSubtype(type) ? ctorType : null; [17941,18012]
+  to
+  block [17868,18230]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return resultEqualsValue && ctorType.isSubtype(type) ? ctorType : null; [17941,18012]
+  to
+  block [17868,18230]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [17941,18222]
+      parenthesized_expression [17944,17963]
+          identifier: resultEqualsValue [17945,17962]
+      block [17964,18096]
+          return_statement: return ctorType.getGreatestSubtype(type); [18045,18086]
+
+...

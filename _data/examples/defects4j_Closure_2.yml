@@ -1,0 +1,52 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -1569,13 +1569,9 @@
+         ObjectType interfaceType) {
+       ObjectType implicitProto = interfaceType.getImplicitPrototype();
+       Set<String> currentPropertyNames;
+  -    if (implicitProto == null) {
+         // This can be the case if interfaceType is proxy to a non-existent
+         // object (which is a bad type annotation, but shouldn't crash).
+  -      currentPropertyNames = ImmutableSet.of();
+  -    } else {
+         currentPropertyNames = implicitProto.getOwnPropertyNames();
+  -    }
+       for (String name : currentPropertyNames) {
+         ObjectType oType = properties.get(name);
+         if (oType != null) {
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: currentPropertyNames = implicitProto.getOwnPropertyNames(); [54715,54774]
+  to
+  block [54455,55564]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: currentPropertyNames = implicitProto.getOwnPropertyNames(); [54715,54774]
+  to
+  block [54455,55564]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [54568,54874]
+      parenthesized_expression [54571,54594]
+          equals [54572,54593]
+              identifier: implicitProto [54572,54585]
+              null_literal [54589,54593]
+      block [54595,54795]
+          expression_statement: currentPropertyNames = ImmutableSet.of(); [54748,54789]
+
+...

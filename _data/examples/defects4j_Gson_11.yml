@@ -1,0 +1,117 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -368,7 +368,6 @@
+           in.nextNull();
+           return null;
+         case NUMBER:
+  -      case STRING:
+           return new LazilyParsedNumber(in.nextString());
+         default:
+           throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
+tree_diff: |+
+  New cluster:
+  UPDATE from public static final TypeAdapter<Number> NUMBER = new TypeAdapter<Number>() {
+      @Override
+      public Number read(JsonReader in) throws IOException {
+        JsonToken jsonToken = in.peek();
+        switch (jsonToken) {
+        case NULL:
+          in.nextNull();
+          return null;
+        case NUMBER:
+        case STRING:
+          return new LazilyParsedNumber(in.nextString());
+        default:
+          throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
+        }
+      }
+      @Override
+      public void write(JsonWriter out, Number value) throws IOException {
+        out.value(value);
+      }
+    }; to public static final TypeAdapter<Number> NUMBER = new TypeAdapter<Number>() {
+      @Override
+      public Number read(JsonReader in) throws IOException {
+        JsonToken jsonToken = in.peek();
+        switch (jsonToken) {
+        case NULL:
+          in.nextNull();
+          return null;
+        case NUMBER:
+          return new LazilyParsedNumber(in.nextString());
+        default:
+          throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
+        }
+      }
+      @Override
+      public void write(JsonWriter out, Number value) throws IOException {
+        out.value(value);
+      }
+    };
+  ------------
+  ===
+  update-node
+  ---
+  field_declaration: public static final TypeAdapter<Number> NUMBER = new TypeAdapter<Number>() {
+      @Override
+      public Number read(JsonReader in) throws IOException {
+        JsonToken jsonToken = in.peek();
+        switch (jsonToken) {
+        case NULL:
+          in.nextNull();
+          return null;
+        case NUMBER:
+        case STRING:
+          return new LazilyParsedNumber(in.nextString());
+        default:
+          throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
+        }
+      }
+      @Override
+      public void write(JsonWriter out, Number value) throws IOException {
+        out.value(value);
+      }
+    }; [11423,12022]
+  replace public static final TypeAdapter<Number> NUMBER = new TypeAdapter<Number>() {
+      @Override
+      public Number read(JsonReader in) throws IOException {
+        JsonToken jsonToken = in.peek();
+        switch (jsonToken) {
+        case NULL:
+          in.nextNull();
+          return null;
+        case NUMBER:
+        case STRING:
+          return new LazilyParsedNumber(in.nextString());
+        default:
+          throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
+        }
+      }
+      @Override
+      public void write(JsonWriter out, Number value) throws IOException {
+        out.value(value);
+      }
+    }; by public static final TypeAdapter<Number> NUMBER = new TypeAdapter<Number>() {
+      @Override
+      public Number read(JsonReader in) throws IOException {
+        JsonToken jsonToken = in.peek();
+        switch (jsonToken) {
+        case NULL:
+          in.nextNull();
+          return null;
+        case NUMBER:
+          return new LazilyParsedNumber(in.nextString());
+        default:
+          throw new JsonSyntaxException("Expecting number, got: " + jsonToken);
+        }
+      }
+      @Override
+      public void write(JsonWriter out, Number value) throws IOException {
+        out.value(value);
+      }
+    };
+
+...

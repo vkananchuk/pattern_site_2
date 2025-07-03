@@ -1,0 +1,65 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -272,10 +272,12 @@
+       private Integer getBasicRow(final int col) {
+           Integer row = null;
+           for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+  -            if (MathUtils.equals(getEntry(i, col), 1.0, epsilon) && (row == null)) {
+  +            if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+  +                if (row == null) {
+                   row = i;
+  -            } else if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+  +                } else {
+                   return null;
+  +                }
+               }
+           }
+           return row;
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+              if (MathUtils.equals(getEntry(i, col), 1.0, epsilon) && (row == null)) {
+                  row = i;
+              } else if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+                  return null;
+              }
+          } to for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+              if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+                  if (row == null) {
+                  row = i;
+                  } else {
+                  return null;
+                  }
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+              if (MathUtils.equals(getEntry(i, col), 1.0, epsilon) && (row == null)) {
+                  row = i;
+              } else if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+                  return null;
+              }
+          } [11042,11345]
+  replace for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+              if (MathUtils.equals(getEntry(i, col), 1.0, epsilon) && (row == null)) {
+                  row = i;
+              } else if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+                  return null;
+              }
+          } by for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+              if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+                  if (row == null) {
+                  row = i;
+                  } else {
+                  return null;
+                  }
+              }
+          }
+
+...

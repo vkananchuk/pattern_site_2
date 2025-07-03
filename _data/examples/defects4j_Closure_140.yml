@@ -1,0 +1,76 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -261,7 +261,6 @@\n     initOptions(options);\n
+  \n     checkFirstModule(modules);\n-    fillEmptyModules(modules);\n \n     this.externs
+  = makeCompilerInput(externs, true);\n     this.modules = modules;\n@@ -326,14 +325,6
+  @@\n    * Fill any empty modules with a place holder file. It makes any cross module\n
+  \   * motion easier.\n    */\n-  private void fillEmptyModules(JSModule[] modules)
+  {\n-    for (int i = 1; i < modules.length; i ++) {\n-      JSModule module = modules[i];\n-
+  \     if (module.getInputs().isEmpty()) {\n-        module.add(JSSourceFile.fromCode(\"[\"
+  + module.getName() + \"]\", \"\"));\n-      }\n-    }\n-  }\n   \n   static final
+  DiagnosticType DUPLICATE_INPUT_IN_MODULES =\n       DiagnosticType.error(\"JSC_DUPLICATE_INPUT_IN_MODULES_ERROR\",\n@@
+  -1588,6 +1579,12 @@\n     if (inputs.size() > 0) {\n       return inputs.get(0).getAstRoot(this);\n
+  \    }\n+    for (JSModule m : getModuleGraph().getTransitiveDepsDeepestFirst(module))
+  {\n+      inputs = m.getInputs();\n+      if (inputs.size() > 0) {\n+        return
+  inputs.get(0).getAstRoot(this);\n+      }\n+    }\n     throw new IllegalStateException(\"Root
+  module has no inputs\");\n   }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  enhanced_for_statement: for (JSModule m : getModuleGraph().getTransitiveDepsDeepestFirst(module)) {
+        inputs = m.getInputs();
+        if (inputs.size() > 0) {
+          return inputs.get(0).getAstRoot(this);
+        }
+      } [45503,45700]
+  to
+  block [45501,45874]
+  at 3
+  ------------
+  ===
+  insert-node
+  ---
+  enhanced_for_statement: for (JSModule m : getModuleGraph().getTransitiveDepsDeepestFirst(module)) {
+        inputs = m.getInputs();
+        if (inputs.size() > 0) {
+          return inputs.get(0).getAstRoot(this);
+        }
+      } [45503,45700]
+  to
+  block [45501,45874]
+  at 3
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: fillEmptyModules(modules); [7903,7929]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: fillEmptyModules(modules); [7903,7929]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [10036,10308]
+      identifier: fillEmptyModules [10049,10065]
+      method_parameters [10036,10308]
+          formal_parameter: JSModule[] modules [10066,10084]
+      block [10086,10308]
+          for_statement: for (int i = 1; i < modules.length; i ++) {
+        JSModule module = modules[i];
+        if (module.getInputs().isEmpty()) {
+          module.add(JSSourceFile.fromCode("[" + module.getName() + "]", ""));
+        }
+      } [10092,10304]
+
+...

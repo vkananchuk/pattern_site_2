@@ -1,0 +1,82 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -81,7 +81,7 @@\n     public EqualPredicate(T
+  object) {\n         // do not use the DefaultEquator to keep backwards compatibility\n
+  \        // the DefaultEquator returns also true if the two object references are
+  equal\n-        this(object, null);\n+        this(object, new DefaultEquator<T>());\n
+  \    }\n \n     /**\n@@ -105,11 +105,7 @@\n      * @return true if input object
+  equals stored value\n      */\n     public boolean evaluate(T object) {\n-        if
+  (equator != null) {\n             return equator.equate(iValue, object);\n-        }
+  else {\n-            return iValue.equals(object);\n-        }\n     }\n \n     /**\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from public EqualPredicate(T object) {
+          // do not use the DefaultEquator to keep backwards compatibility
+          // the DefaultEquator returns also true if the two object references are equal
+          this(object, null);
+      } to public EqualPredicate(T object) {
+          // do not use the DefaultEquator to keep backwards compatibility
+          // the DefaultEquator returns also true if the two object references are equal
+          this(object, new DefaultEquator<T>());
+      }
+  ------------
+  ===
+  update-node
+  ---
+  constructor_declaration: public EqualPredicate(T object) {
+          // do not use the DefaultEquator to keep backwards compatibility
+          // the DefaultEquator returns also true if the two object references are equal
+          this(object, null);
+      } [2709,2936]
+  replace public EqualPredicate(T object) {
+          // do not use the DefaultEquator to keep backwards compatibility
+          // the DefaultEquator returns also true if the two object references are equal
+          this(object, null);
+      } by public EqualPredicate(T object) {
+          // do not use the DefaultEquator to keep backwards compatibility
+          // the DefaultEquator returns also true if the two object references are equal
+          this(object, new DefaultEquator<T>());
+      }
+
+  New cluster:
+  MOVE from method_declaration [3532,3724]
+  ------------
+  ===
+  move-tree
+  ---
+  block [3597,3659]
+      return_statement: return equator.equate(iValue, object); [3611,3649]
+  to
+  method_declaration [3532,3724]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  parenthesized_expression [3579,3596]
+      not_equals [3580,3595]
+          identifier: equator [3580,3587]
+          null_literal [3591,3595]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  block [3566,3724]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  block [3566,3724]
+  ===
+  ===
+  delete-node
+  ---
+  if_statement [3576,3718]
+  ===
+
+...

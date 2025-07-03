@@ -1,0 +1,61 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -4,7 +4,6 @@\n import java.lang.annotation.Annotation;\n
+  \n import com.fasterxml.jackson.core.JsonParser;\n-import com.fasterxml.jackson.core.JsonToken;\n
+  import com.fasterxml.jackson.databind.*;\n import com.fasterxml.jackson.databind.deser.*;\n
+  import com.fasterxml.jackson.databind.introspect.AnnotatedMember;\n@@ -76,16 +75,16
+  @@\n     public Object deserializeSetAndReturn(JsonParser p,\n     \t\tDeserializationContext
+  ctxt, Object instance) throws IOException\n     {\n+        Object id = _valueDeserializer.deserialize(p,
+  ctxt);\n         /* 02-Apr-2015, tatu: Actually, as per [databind#742], let it be;\n
+  \         *  missing or null id is needed for some cases, such as cases where id\n
+  \         *  will be generated externally, at a later point, and is not available\n
+  \         *  quite yet. Typical use case is with DB inserts.\n          */\n         //
+  note: no null checks (unlike usually); deserializer should fail if one found\n-
+  \       if (p.hasToken(JsonToken.VALUE_NULL)) {\n+        if (id == null) {\n             return
+  null;\n         }\n-        Object id = _valueDeserializer.deserialize(p, ctxt);\n
+  \        ReadableObjectId roid = ctxt.findObjectId(id, _objectIdReader.generator,
+  _objectIdReader.resolver);\n         roid.bindItem(instance);\n         // also:
+  may need to set a property value as well\n"
+tree_diff: |+
+  New cluster:
+  MOVE from block [2407,3337]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [2812,2886]
+      parenthesized_expression [2815,2849]
+          method_invocation: p.hasToken(JsonToken.VALUE_NULL) [2816,2848]
+      block [2850,2886]
+          return_statement: return null; [2864,2876]
+  to
+  block [2407,3337]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  equals [2832,2842]
+      identifier: id [2832,2834]
+      null_literal [2838,2842]
+  to
+  parenthesized_expression [2815,2849]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_invocation: p.hasToken(JsonToken.VALUE_NULL) [2816,2848]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_invocation: p.hasToken(JsonToken.VALUE_NULL) [2816,2848]
+  ===
+
+...

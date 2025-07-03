@@ -1,0 +1,98 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -124,12 +124,10 @@\n                     ((CapturesArguments)
+  m).captureFrom(invocation.getArgumentAt(position, Object.class));\n                 }\n
+  \            }\n-            for (Matcher m : uniqueMatcherSet(indexOfVararg)) {\n+
+  \           for (int position = indexOfVararg; position < matchers.size(); position++)
+  {\n+                Matcher m = matchers.get(position);\n                 if (m
+  instanceof CapturesArguments) {\n-                    Object rawArgument = invocation.getRawArguments()[indexOfVararg];\n-
+  \                   for (int i = 0; i < Array.getLength(rawArgument); i++) {\n-
+  \                       ((CapturesArguments) m).captureFrom(Array.get(rawArgument,
+  i));\n-                    }\n+                    ((CapturesArguments) m).captureFrom(invocation.getRawArguments()[position
+  - indexOfVararg]);\n                 }\n             }\n         } else {\n@@ -142,18
+  +140,6 @@\n         }\n     }\n \n-    private Set<Matcher> uniqueMatcherSet(int
+  indexOfVararg) {\n-        HashSet<Matcher> set = new HashSet<Matcher>();\n-        for
+  (int position = indexOfVararg; position < matchers.size(); position++) {\n-            Matcher
+  matcher = matchers.get(position);\n-            if(matcher instanceof MatcherDecorator)
+  {\n-                set.add(((MatcherDecorator) matcher).getActualMatcher());\n-
+  \           } else {\n-                set.add(matcher);\n-            }\n-        }\n-
+  \       return set;\n-    }\n \n     public static List<InvocationMatcher> createFrom(List<Invocation>
+  invocations) {\n         LinkedList<InvocationMatcher> out = new LinkedList<InvocationMatcher>();\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  for_statement: for (int position = indexOfVararg; position < matchers.size(); position++) {
+                  Matcher m = matchers.get(position);
+                  if (m instanceof CapturesArguments) {
+                      ((CapturesArguments) m).captureFrom(invocation.getRawArguments()[position - indexOfVararg]);
+                  }
+              } [4466,4793]
+  to
+  block [4059,4886]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  for_statement: for (int position = indexOfVararg; position < matchers.size(); position++) {
+                  Matcher m = matchers.get(position);
+                  if (m instanceof CapturesArguments) {
+                      ((CapturesArguments) m).captureFrom(invocation.getRawArguments()[position - indexOfVararg]);
+                  }
+              } [4466,4793]
+  to
+  block [4059,4886]
+  at 2
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  enhanced_for_statement: for (Matcher m : uniqueMatcherSet(indexOfVararg)) {
+                  if (m instanceof CapturesArguments) {
+                      Object rawArgument = invocation.getRawArguments()[indexOfVararg];
+                      for (int i = 0; i < Array.getLength(rawArgument); i++) {
+                          ((CapturesArguments) m).captureFrom(Array.get(rawArgument, i));
+                      }
+                  }
+              } [4466,4876]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  enhanced_for_statement: for (Matcher m : uniqueMatcherSet(indexOfVararg)) {
+                  if (m instanceof CapturesArguments) {
+                      Object rawArgument = invocation.getRawArguments()[indexOfVararg];
+                      for (int i = 0; i < Array.getLength(rawArgument); i++) {
+                          ((CapturesArguments) m).captureFrom(Array.get(rawArgument, i));
+                      }
+                  }
+              } [4466,4876]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [5237,5722]
+      identifier: uniqueMatcherSet [5258,5274]
+      method_parameters [5237,5722]
+          formal_parameter: int indexOfVararg [5275,5292]
+      block [5294,5722]
+          local_variable_declaration: HashSet<Matcher> set = new HashSet<Matcher>(); [5304,5350]
+          for_statement: for (int position = indexOfVararg; position < matchers.size(); position++) {
+              Matcher matcher = matchers.get(position);
+              if(matcher instanceof MatcherDecorator) {
+                  set.add(((MatcherDecorator) matcher).getActualMatcher());
+              } else {
+                  set.add(matcher);
+              }
+          } [5359,5696]
+          return_statement: return set; [5705,5716]
+
+...

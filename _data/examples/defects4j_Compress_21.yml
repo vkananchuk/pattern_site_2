@@ -1,0 +1,97 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -636,13 +636,14 @@
+           int shift = 7;
+           for (int i = 0; i < length; i++) {
+               cache |= ((bits.get(i) ? 1 : 0) << shift);
+  -            if (--shift < 0) {
+  +            --shift;
+  +            if (shift == 0) {
+                   header.write(cache);
+                   shift = 7;
+                   cache = 0;
+               }
+           }
+  -        if (shift != 7) {
+  +        if (length > 0 && shift > 0) {
+               header.write(cache);
+           }
+       }
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 0; i < length; i++) {
+              cache |= ((bits.get(i) ? 1 : 0) << shift);
+              if (--shift < 0) {
+                  header.write(cache);
+                  shift = 7;
+                  cache = 0;
+              }
+          } to for (int i = 0; i < length; i++) {
+              cache |= ((bits.get(i) ? 1 : 0) << shift);
+              --shift;
+              if (shift == 0) {
+                  header.write(cache);
+                  shift = 7;
+                  cache = 0;
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 0; i < length; i++) {
+              cache |= ((bits.get(i) ? 1 : 0) << shift);
+              if (--shift < 0) {
+                  header.write(cache);
+                  shift = 7;
+                  cache = 0;
+              }
+          } [22629,22864]
+  replace for (int i = 0; i < length; i++) {
+              cache |= ((bits.get(i) ? 1 : 0) << shift);
+              if (--shift < 0) {
+                  header.write(cache);
+                  shift = 7;
+                  cache = 0;
+              }
+          } by for (int i = 0; i < length; i++) {
+              cache |= ((bits.get(i) ? 1 : 0) << shift);
+              --shift;
+              if (shift == 0) {
+                  header.write(cache);
+                  shift = 7;
+                  cache = 0;
+              }
+          }
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  and [22897,22920]
+      greater_than [22897,22907]
+          identifier: length [22897,22903]
+          decimal_integer_literal: 0 [22906,22907]
+      greater_than [22911,22920]
+          identifier: shift [22911,22916]
+          decimal_integer_literal: 0 [22919,22920]
+  to
+  parenthesized_expression [22876,22888]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  not_equals [22877,22887]
+      identifier: shift [22877,22882]
+      decimal_integer_literal: 7 [22886,22887]
+
+...

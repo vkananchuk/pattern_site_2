@@ -1,0 +1,42 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -359,7 +359,7 @@\n      * @return <code>null</code>.\r\n
+  \     */\r\n     public static <T> T isA(Class<T> clazz) {\r\n-        return reportMatcher(new
+  InstanceOf(clazz)).<T>returnFor(clazz);\r\n+        return reportMatcher(new InstanceOf(clazz)).<T>returnNull();\r\n
+  \    }\r\n \r\n     /**\r\n@@ -476,7 +476,7 @@\n      * @return <code>null</code>.\r\n
+  \     */\r\n     public static <T> T eq(T value) {\r\n-        return (T) reportMatcher(new
+  Equals(value)).<T>returnFor((Class) value.getClass());\r\n+        return reportMatcher(new
+  Equals(value)).<T>returnNull();\r\n     }  \r\n \r\n     /**\r\n@@ -513,7 +513,7
+  @@\n      * @return <code>null</code>.\r\n      */\r\n     public static <T> T same(T
+  value) {\r\n-        return (T) reportMatcher(new Same(value)).<T>returnFor((Class)
+  value.getClass());\r\n+        return reportMatcher(new Same(value)).<T>returnNull();\r\n
+  \    }\r\n \r\n     /**\r\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return reportMatcher(new InstanceOf(clazz)).<T>returnFor(clazz); to return reportMatcher(new InstanceOf(clazz)).<T>returnNull();
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return reportMatcher(new InstanceOf(clazz)).<T>returnFor(clazz); [10888,10952]
+  replace return reportMatcher(new InstanceOf(clazz)).<T>returnFor(clazz); by return reportMatcher(new InstanceOf(clazz)).<T>returnNull();
+
+  New cluster:
+  UPDATE from return (T) reportMatcher(new Equals(value)).<T>returnFor((Class) value.getClass()); to return reportMatcher(new Equals(value)).<T>returnNull();
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return (T) reportMatcher(new Equals(value)).<T>returnFor((Class) value.getClass()); [14129,14212]
+  replace return (T) reportMatcher(new Equals(value)).<T>returnFor((Class) value.getClass()); by return reportMatcher(new Equals(value)).<T>returnNull();
+
+  New cluster:
+  UPDATE from return (T) reportMatcher(new Same(value)).<T>returnFor((Class) value.getClass()); to return reportMatcher(new Same(value)).<T>returnNull();
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return (T) reportMatcher(new Same(value)).<T>returnFor((Class) value.getClass()); [15548,15629]
+  replace return (T) reportMatcher(new Same(value)).<T>returnFor((Class) value.getClass()); by return reportMatcher(new Same(value)).<T>returnNull();
+
+...

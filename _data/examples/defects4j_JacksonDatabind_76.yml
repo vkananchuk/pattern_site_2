@@ -1,0 +1,230 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -580,7 +580,27 @@
+               // creator property?
+               SettableBeanProperty creatorProp = creator.findCreatorProperty(propName);
+               if (creatorProp != null) {
+  -                buffer.assignParameter(creatorProp, creatorProp.deserialize(p, ctxt));
+  +                if (buffer.assignParameter(creatorProp, creatorProp.deserialize(p, ctxt))) {
+  +                    t = p.nextToken();
+  +                    Object bean;
+  +                    try {
+  +                        bean = creator.build(ctxt, buffer);
+  +                    } catch (Exception e) {
+  +                        wrapAndThrow(e, _beanType.getRawClass(), propName, ctxt);
+  +                        continue;
+  +                    }
+  +                    while (t == JsonToken.FIELD_NAME) {
+  +                        p.nextToken();
+  +                        tokens.copyCurrentStructure(p);
+  +                        t = p.nextToken();
+  +                    }
+  +                    tokens.writeEndObject();
+  +                    if (bean.getClass() != _beanType.getRawClass()) {
+  +                        ctxt.reportMappingException("Can not create polymorphic instances with unwrapped values");
+  +                        return null;
+  +                    }
+  +                    return _unwrappedPropertyHandler.processUnwrapped(p, ctxt, bean, tokens);
+  +                }
+                   continue;
+               }
+               // Object Id property?
+tree_diff: |+
+  New cluster:
+  UPDATE from for (; t == JsonToken.FIELD_NAME; t = p.nextToken()) {
+              String propName = p.getCurrentName();
+              p.nextToken(); // to point to value
+              // creator property?
+              SettableBeanProperty creatorProp = creator.findCreatorProperty(propName);
+              if (creatorProp != null) {
+                  buffer.assignParameter(creatorProp, creatorProp.deserialize(p, ctxt));
+                  continue;
+              }
+              // Object Id property?
+              if (buffer.readIdProperty(propName)) {
+                  continue;
+              }
+              // regular property? needs buffering
+              SettableBeanProperty prop = _beanProperties.find(propName);
+              if (prop != null) {
+                  buffer.bufferProperty(prop, prop.deserialize(p, ctxt));
+                  continue;
+              }
+              if (_ignorableProps != null && _ignorableProps.contains(propName)) {
+                  handleIgnoredProperty(p, ctxt, handledType(), propName);
+                  continue;
+              }
+              tokens.writeFieldName(propName);
+              tokens.copyCurrentStructure(p);
+              // "any property"?
+              if (_anySetter != null) {
+                  buffer.bufferAnyProperty(_anySetter, propName, _anySetter.deserialize(p, ctxt));
+              }
+          } to for (; t == JsonToken.FIELD_NAME; t = p.nextToken()) {
+              String propName = p.getCurrentName();
+              p.nextToken(); // to point to value
+              // creator property?
+              SettableBeanProperty creatorProp = creator.findCreatorProperty(propName);
+              if (creatorProp != null) {
+                  if (buffer.assignParameter(creatorProp, creatorProp.deserialize(p, ctxt))) {
+                      t = p.nextToken();
+                      Object bean;
+                      try {
+                          bean = creator.build(ctxt, buffer);
+                      } catch (Exception e) {
+                          wrapAndThrow(e, _beanType.getRawClass(), propName, ctxt);
+                          continue;
+                      }
+                      while (t == JsonToken.FIELD_NAME) {
+                          p.nextToken();
+                          tokens.copyCurrentStructure(p);
+                          t = p.nextToken();
+                      }
+                      tokens.writeEndObject();
+                      if (bean.getClass() != _beanType.getRawClass()) {
+                          ctxt.reportMappingException("Can not create polymorphic instances with unwrapped values");
+                          return null;
+                      }
+                      return _unwrappedPropertyHandler.processUnwrapped(p, ctxt, bean, tokens);
+                  }
+                  continue;
+              }
+              // Object Id property?
+              if (buffer.readIdProperty(propName)) {
+                  continue;
+              }
+              // regular property? needs buffering
+              SettableBeanProperty prop = _beanProperties.find(propName);
+              if (prop != null) {
+                  buffer.bufferProperty(prop, prop.deserialize(p, ctxt));
+                  continue;
+              }
+              if (_ignorableProps != null && _ignorableProps.contains(propName)) {
+                  handleIgnoredProperty(p, ctxt, handledType(), propName);
+                  continue;
+              }
+              tokens.writeFieldName(propName);
+              tokens.copyCurrentStructure(p);
+              // "any property"?
+              if (_anySetter != null) {
+                  buffer.bufferAnyProperty(_anySetter, propName, _anySetter.deserialize(p, ctxt));
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (; t == JsonToken.FIELD_NAME; t = p.nextToken()) {
+              String propName = p.getCurrentName();
+              p.nextToken(); // to point to value
+              // creator property?
+              SettableBeanProperty creatorProp = creator.findCreatorProperty(propName);
+              if (creatorProp != null) {
+                  buffer.assignParameter(creatorProp, creatorProp.deserialize(p, ctxt));
+                  continue;
+              }
+              // Object Id property?
+              if (buffer.readIdProperty(propName)) {
+                  continue;
+              }
+              // regular property? needs buffering
+              SettableBeanProperty prop = _beanProperties.find(propName);
+              if (prop != null) {
+                  buffer.bufferProperty(prop, prop.deserialize(p, ctxt));
+                  continue;
+              }
+              if (_ignorableProps != null && _ignorableProps.contains(propName)) {
+                  handleIgnoredProperty(p, ctxt, handledType(), propName);
+                  continue;
+              }
+              tokens.writeFieldName(propName);
+              tokens.copyCurrentStructure(p);
+              // "any property"?
+              if (_anySetter != null) {
+                  buffer.bufferAnyProperty(_anySetter, propName, _anySetter.deserialize(p, ctxt));
+              }
+          } [21829,23130]
+  replace for (; t == JsonToken.FIELD_NAME; t = p.nextToken()) {
+              String propName = p.getCurrentName();
+              p.nextToken(); // to point to value
+              // creator property?
+              SettableBeanProperty creatorProp = creator.findCreatorProperty(propName);
+              if (creatorProp != null) {
+                  buffer.assignParameter(creatorProp, creatorProp.deserialize(p, ctxt));
+                  continue;
+              }
+              // Object Id property?
+              if (buffer.readIdProperty(propName)) {
+                  continue;
+              }
+              // regular property? needs buffering
+              SettableBeanProperty prop = _beanProperties.find(propName);
+              if (prop != null) {
+                  buffer.bufferProperty(prop, prop.deserialize(p, ctxt));
+                  continue;
+              }
+              if (_ignorableProps != null && _ignorableProps.contains(propName)) {
+                  handleIgnoredProperty(p, ctxt, handledType(), propName);
+                  continue;
+              }
+              tokens.writeFieldName(propName);
+              tokens.copyCurrentStructure(p);
+              // "any property"?
+              if (_anySetter != null) {
+                  buffer.bufferAnyProperty(_anySetter, propName, _anySetter.deserialize(p, ctxt));
+              }
+          } by for (; t == JsonToken.FIELD_NAME; t = p.nextToken()) {
+              String propName = p.getCurrentName();
+              p.nextToken(); // to point to value
+              // creator property?
+              SettableBeanProperty creatorProp = creator.findCreatorProperty(propName);
+              if (creatorProp != null) {
+                  if (buffer.assignParameter(creatorProp, creatorProp.deserialize(p, ctxt))) {
+                      t = p.nextToken();
+                      Object bean;
+                      try {
+                          bean = creator.build(ctxt, buffer);
+                      } catch (Exception e) {
+                          wrapAndThrow(e, _beanType.getRawClass(), propName, ctxt);
+                          continue;
+                      }
+                      while (t == JsonToken.FIELD_NAME) {
+                          p.nextToken();
+                          tokens.copyCurrentStructure(p);
+                          t = p.nextToken();
+                      }
+                      tokens.writeEndObject();
+                      if (bean.getClass() != _beanType.getRawClass()) {
+                          ctxt.reportMappingException("Can not create polymorphic instances with unwrapped values");
+                          return null;
+                      }
+                      return _unwrappedPropertyHandler.processUnwrapped(p, ctxt, bean, tokens);
+                  }
+                  continue;
+              }
+              // Object Id property?
+              if (buffer.readIdProperty(propName)) {
+                  continue;
+              }
+              // regular property? needs buffering
+              SettableBeanProperty prop = _beanProperties.find(propName);
+              if (prop != null) {
+                  buffer.bufferProperty(prop, prop.deserialize(p, ctxt));
+                  continue;
+              }
+              if (_ignorableProps != null && _ignorableProps.contains(propName)) {
+                  handleIgnoredProperty(p, ctxt, handledType(), propName);
+                  continue;
+              }
+              tokens.writeFieldName(propName);
+              tokens.copyCurrentStructure(p);
+              // "any property"?
+              if (_anySetter != null) {
+                  buffer.bufferAnyProperty(_anySetter, propName, _anySetter.deserialize(p, ctxt));
+              }
+          }
+
+...

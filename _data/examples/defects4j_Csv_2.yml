@@ -1,0 +1,46 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -82,14 +82,7 @@\n                     \"No header
+  mapping was specified, the record values can't be accessed by name\");\n         }\n
+  \        final Integer index = mapping.get(name);\n-        try {\n             return
+  index != null ? values[index.intValue()] : null;\n-        } catch (ArrayIndexOutOfBoundsException
+  e) {\n-            throw new IllegalArgumentException(\n-                    String.format(\n-
+  \                           \"Index for header '%s' is %d but CSVRecord only has
+  %d values!\",\n-                            name, index.intValue(), values.length));\n-
+  \       }\n     }\n \n     /**\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return index != null ? values[index.intValue()] : null; [2772,2827]
+  to
+  block [2522,3155]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return index != null ? values[index.intValue()] : null; [2772,2827]
+  to
+  block [2522,3155]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  try_statement [2768,3149]
+      block [2772,2851]
+          return_statement: return index != null ? values[index.intValue()] : null; [2786,2841]
+      excepts [2768,3149]
+          catch_clause: catch (ArrayIndexOutOfBoundsException e) {
+              throw new IllegalArgumentException(
+                      String.format(
+                              "Index for header '%s' is %d but CSVRecord only has %d values!",
+                              name, index.intValue(), values.length));
+          } [2852,3149]
+
+...

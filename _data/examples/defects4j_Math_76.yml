@@ -1,0 +1,153 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -159,27 +159,24 @@\n             if (m >= n)
+  {\n                 // the tridiagonal matrix is Bt.B, where B is upper bidiagonal\n
+  \                final RealMatrix e =\n-                    eigenDecomposition.getV().getSubMatrix(0,
+  n - 1, 0, p - 1);\n+                    eigenDecomposition.getV().getSubMatrix(0,
+  p - 1, 0, p - 1);\n                 final double[][] eData = e.getData();\n                 final
+  double[][] wData = new double[m][p];\n                 double[] ei1 = eData[0];\n-
+  \               for (int i = 0; i < p; ++i) {\n+                for (int i = 0;
+  i < p - 1; ++i) {\n                     // compute W = B.E.S^(-1) where E is the
+  eigenvectors matrix\n                     final double mi = mainBidiagonal[i];\n
+  \                    final double[] ei0 = ei1;\n                     final double[]
+  wi  = wData[i];\n-                    if (i < n - 1) {\n                         ei1
+  = eData[i + 1];\n                         final double si = secondaryBidiagonal[i];\n
+  \                        for (int j = 0; j < p; ++j) {\n                             wi[j]
+  = (mi * ei0[j] + si * ei1[j]) / singularValues[j];\n                         }\n-
+  \                   } else {\n+                }\n                         for (int
+  j = 0; j < p; ++j) {\n-                            wi[j] = mi * ei0[j] / singularValues[j];\n+
+  \                           wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];\n
+  \                        }\n-                    }\n-                }\n \n                 for
+  (int i = p; i < m; ++i) {\n                     wData[i] = new double[p];\n@@ -248,26
+  +245,23 @@\n                 // the tridiagonal matrix is B.Bt, where B is lower
+  bidiagonal\n                 // compute W = Bt.E.S^(-1) where E is the eigenvectors
+  matrix\n                 final RealMatrix e =\n-                    eigenDecomposition.getV().getSubMatrix(0,
+  m - 1, 0, p - 1);\n+                    eigenDecomposition.getV().getSubMatrix(0,
+  p - 1, 0, p - 1);\n                 final double[][] eData = e.getData();\n                 final
+  double[][] wData = new double[n][p];\n                 double[] ei1 = eData[0];\n-
+  \               for (int i = 0; i < p; ++i) {\n+                for (int i = 0;
+  i < p - 1; ++i) {\n                     final double mi = mainBidiagonal[i];\n                     final
+  double[] ei0 = ei1;\n                     final double[] wi  = wData[i];\n-                    if
+  (i < m - 1) {\n                         ei1 = eData[i + 1];\n                         final
+  double si = secondaryBidiagonal[i];\n                         for (int j = 0; j
+  < p; ++j) {\n                             wi[j] = (mi * ei0[j] + si * ei1[j]) /
+  singularValues[j];\n                         }\n-                    } else {\n+
+  \               }\n                         for (int j = 0; j < p; ++j) {\n-                            wi[j]
+  = mi * ei0[j] / singularValues[j];\n+                            wData[p - 1][j]
+  = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];\n                         }\n-
+  \                   }\n-                }\n                 for (int i = p; i <
+  n; ++i) {\n                     wData[i] = new double[p];\n                 }\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from final RealMatrix e =
+                      eigenDecomposition.getV().getSubMatrix(0, n - 1, 0, p - 1); to final RealMatrix e =
+                      eigenDecomposition.getV().getSubMatrix(0, p - 1, 0, p - 1);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: final RealMatrix e =
+                      eigenDecomposition.getV().getSubMatrix(0, n - 1, 0, p - 1); [5999,6099]
+  replace final RealMatrix e =
+                      eigenDecomposition.getV().getSubMatrix(0, n - 1, 0, p - 1); by final RealMatrix e =
+                      eigenDecomposition.getV().getSubMatrix(0, p - 1, 0, p - 1);
+
+  New cluster:
+  UPDATE from for (int i = 0; i < p; ++i) {
+                      // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                      final double mi = mainBidiagonal[i];
+                      final double[] ei0 = ei1;
+                      final double[] wi  = wData[i];
+                      if (i < n - 1) {
+                          ei1 = eData[i + 1];
+                          final double si = secondaryBidiagonal[i];
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                          }
+                      } else {
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = mi * ei0[j] / singularValues[j];
+                          }
+                      }
+                  } to for (int i = 0; i < p - 1; ++i) {
+                      // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                      final double mi = mainBidiagonal[i];
+                      final double[] ei0 = ei1;
+                      final double[] wi  = wData[i];
+                          ei1 = eData[i + 1];
+                          final double si = secondaryBidiagonal[i];
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                          }
+                  }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 0; i < p; ++i) {
+                      // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                      final double mi = mainBidiagonal[i];
+                      final double[] ei0 = ei1;
+                      final double[] wi  = wData[i];
+                      if (i < n - 1) {
+                          ei1 = eData[i + 1];
+                          final double si = secondaryBidiagonal[i];
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                          }
+                      } else {
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = mi * ei0[j] / singularValues[j];
+                          }
+                      }
+                  } [6270,7064]
+  replace for (int i = 0; i < p; ++i) {
+                      // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                      final double mi = mainBidiagonal[i];
+                      final double[] ei0 = ei1;
+                      final double[] wi  = wData[i];
+                      if (i < n - 1) {
+                          ei1 = eData[i + 1];
+                          final double si = secondaryBidiagonal[i];
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                          }
+                      } else {
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = mi * ei0[j] / singularValues[j];
+                          }
+                      }
+                  } by for (int i = 0; i < p - 1; ++i) {
+                      // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                      final double mi = mainBidiagonal[i];
+                      final double[] ei0 = ei1;
+                      final double[] wi  = wData[i];
+                          ei1 = eData[i + 1];
+                          final double si = secondaryBidiagonal[i];
+                          for (int j = 0; j < p; ++j) {
+                              wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                          }
+                  }
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  for_statement: for (int j = 0; j < p; ++j) {
+                              wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
+                          } [6856,7009]
+  to
+  block [5902,7301]
+  at 5
+  ------------
+  ===
+  insert-node
+  ---
+  for_statement: for (int j = 0; j < p; ++j) {
+                              wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
+                          } [6856,7009]
+  to
+  block [5902,7301]
+  at 5
+
+...

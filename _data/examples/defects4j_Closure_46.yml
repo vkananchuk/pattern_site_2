@@ -1,0 +1,44 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -137,6 +137,22 @@\n         propertyNode);\n
+  \  }\n \n+  @Override\n+  public JSType getLeastSupertype(JSType that) {\n+    if
+  (!that.isRecordType()) {\n+      return super.getLeastSupertype(that);\n+    }\n+
+  \   RecordTypeBuilder builder = new RecordTypeBuilder(registry);\n+    for (String
+  property : properties.keySet()) {\n+      if (that.toMaybeRecordType().hasProperty(property)
+  &&\n+          that.toMaybeRecordType().getPropertyType(property).isEquivalentTo(\n+
+  \             getPropertyType(property))) {\n+        builder.addProperty(property,
+  getPropertyType(property),\n+            getPropertyNode(property));\n+      }\n+
+  \   }\n+    return builder.build();\n+  }\n   JSType getGreatestSubtypeHelper(JSType
+  that) {\n     if (that.isRecordType()) {\n       RecordType thatRecord = that.toMaybeRecordType();\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  method_declaration [4607,5194]
+      identifier: getLeastSupertype [4633,4650]
+      method_parameters [4607,5194]
+          formal_parameter: JSType that [4651,4662]
+      block [4664,5194]
+          if_statement [4670,4747]
+              parenthesized_expression [4673,4695]
+                  unary_expression: !that.isRecordType() [4674,4694]
+              block [4696,4747]
+                  return_statement: return super.getLeastSupertype(that); [4704,4741]
+          local_variable_declaration: RecordTypeBuilder builder = new RecordTypeBuilder(registry); [4752,4812]
+          enhanced_for_statement: for (String property : properties.keySet()) {
+        if (that.toMaybeRecordType().hasProperty(property) &&
+            that.toMaybeRecordType().getPropertyType(property).isEquivalentTo(
+                getPropertyType(property))) {
+          builder.addProperty(property, getPropertyType(property),
+              getPropertyNode(property));
+        }
+      } [4817,5162]
+          return_statement: return builder.build(); [5167,5190]
+  to
+  class_body [2503,9768]
+  at 7
+
+...

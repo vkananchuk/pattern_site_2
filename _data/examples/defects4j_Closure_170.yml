@@ -1,0 +1,153 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -479,30 +479,19 @@\n \n         @Override\n
+  \        public void visit(NodeTraversal t, Node n, Node parent) {\n-          if
+  (n.isName() && n.getString().equals(varName)) {\n+          if (n.isName() && n.getString().equals(varName)
+  &&\n             // We make a special exception when the entire cfgNode is a chain\n
+  \            // of assignments, since in that case the assignment statements\n             //
+  will happen after the inlining of the right hand side.\n             // TODO(blickly):
+  Make the SIDE_EFFECT_PREDICATE check more exact\n             //   and remove this
+  special case.\n-            if (parent.isAssign() && (parent.getFirstChild() ==
+  n)\n-                && isAssignChain(parent, cfgNode)) {\n+              !(parent.isAssign()
+  &&\n+               (parent.getFirstChild() == n))) {\n               // Don't count
+  lhs of top-level assignment chain\n-              return;\n-            } else {\n
+  \              numUsesWithinCfgNode++;\n-            }\n           }\n         }\n
+  \n-        private boolean isAssignChain(Node child, Node ancestor) {\n-          for
+  (Node n = child; n != ancestor; n = n.getParent()) {\n-            if (!n.isAssign())
+  {\n-              return false;\n-            }\n-          }\n-          return
+  true;\n-        }\n       };\n \n       NodeTraversal.traverse(compiler, cfgNode,
+  gatherCb);\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from AbstractCfgNodeTraversalCallback gatherCb =
+            new AbstractCfgNodeTraversalCallback() {
+
+          @Override
+          public void visit(NodeTraversal t, Node n, Node parent) {
+            if (n.isName() && n.getString().equals(varName)) {
+              // We make a special exception when the entire cfgNode is a chain
+              // of assignments, since in that case the assignment statements
+              // will happen after the inlining of the right hand side.
+              // TODO(blickly): Make the SIDE_EFFECT_PREDICATE check more exact
+              //   and remove this special case.
+              if (parent.isAssign() && (parent.getFirstChild() == n)
+                  && isAssignChain(parent, cfgNode)) {
+                // Don't count lhs of top-level assignment chain
+                return;
+              } else {
+                numUsesWithinCfgNode++;
+              }
+            }
+          }
+
+          private boolean isAssignChain(Node child, Node ancestor) {
+            for (Node n = child; n != ancestor; n = n.getParent()) {
+              if (!n.isAssign()) {
+                return false;
+              }
+            }
+            return true;
+          }
+        }; to AbstractCfgNodeTraversalCallback gatherCb =
+            new AbstractCfgNodeTraversalCallback() {
+
+          @Override
+          public void visit(NodeTraversal t, Node n, Node parent) {
+            if (n.isName() && n.getString().equals(varName) &&
+              // We make a special exception when the entire cfgNode is a chain
+              // of assignments, since in that case the assignment statements
+              // will happen after the inlining of the right hand side.
+              // TODO(blickly): Make the SIDE_EFFECT_PREDICATE check more exact
+              //   and remove this special case.
+                !(parent.isAssign() &&
+                 (parent.getFirstChild() == n))) {
+                // Don't count lhs of top-level assignment chain
+                numUsesWithinCfgNode++;
+            }
+          }
+
+        };
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: AbstractCfgNodeTraversalCallback gatherCb =
+            new AbstractCfgNodeTraversalCallback() {
+
+          @Override
+          public void visit(NodeTraversal t, Node n, Node parent) {
+            if (n.isName() && n.getString().equals(varName)) {
+              // We make a special exception when the entire cfgNode is a chain
+              // of assignments, since in that case the assignment statements
+              // will happen after the inlining of the right hand side.
+              // TODO(blickly): Make the SIDE_EFFECT_PREDICATE check more exact
+              //   and remove this special case.
+              if (parent.isAssign() && (parent.getFirstChild() == n)
+                  && isAssignChain(parent, cfgNode)) {
+                // Don't count lhs of top-level assignment chain
+                return;
+              } else {
+                numUsesWithinCfgNode++;
+              }
+            }
+          }
+
+          private boolean isAssignChain(Node child, Node ancestor) {
+            for (Node n = child; n != ancestor; n = n.getParent()) {
+              if (!n.isAssign()) {
+                return false;
+              }
+            }
+            return true;
+          }
+        }; [16509,17662]
+  replace AbstractCfgNodeTraversalCallback gatherCb =
+            new AbstractCfgNodeTraversalCallback() {
+
+          @Override
+          public void visit(NodeTraversal t, Node n, Node parent) {
+            if (n.isName() && n.getString().equals(varName)) {
+              // We make a special exception when the entire cfgNode is a chain
+              // of assignments, since in that case the assignment statements
+              // will happen after the inlining of the right hand side.
+              // TODO(blickly): Make the SIDE_EFFECT_PREDICATE check more exact
+              //   and remove this special case.
+              if (parent.isAssign() && (parent.getFirstChild() == n)
+                  && isAssignChain(parent, cfgNode)) {
+                // Don't count lhs of top-level assignment chain
+                return;
+              } else {
+                numUsesWithinCfgNode++;
+              }
+            }
+          }
+
+          private boolean isAssignChain(Node child, Node ancestor) {
+            for (Node n = child; n != ancestor; n = n.getParent()) {
+              if (!n.isAssign()) {
+                return false;
+              }
+            }
+            return true;
+          }
+        }; by AbstractCfgNodeTraversalCallback gatherCb =
+            new AbstractCfgNodeTraversalCallback() {
+
+          @Override
+          public void visit(NodeTraversal t, Node n, Node parent) {
+            if (n.isName() && n.getString().equals(varName) &&
+              // We make a special exception when the entire cfgNode is a chain
+              // of assignments, since in that case the assignment statements
+              // will happen after the inlining of the right hand side.
+              // TODO(blickly): Make the SIDE_EFFECT_PREDICATE check more exact
+              //   and remove this special case.
+                !(parent.isAssign() &&
+                 (parent.getFirstChild() == n))) {
+                // Don't count lhs of top-level assignment chain
+                numUsesWithinCfgNode++;
+            }
+          }
+
+        };
+
+...

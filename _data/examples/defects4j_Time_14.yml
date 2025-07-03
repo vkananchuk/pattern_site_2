@@ -1,0 +1,42 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -206,12 +206,7 @@
+           if (valueToAdd == 0) {
+               return values;
+           }
+  -        if (partial.size() > 0 && partial.getFieldType(0).equals(DateTimeFieldType.monthOfYear()) && fieldIndex == 0) {
+               // month is largest field and being added to, such as month-day
+  -            int curMonth0 = partial.getValue(0) - 1;
+  -            int newMonth = ((curMonth0 + (valueToAdd % 12) + 12) % 12) + 1;
+  -            return set(partial, 0, values, newMonth);
+  -        }
+           if (DateTimeUtils.isContiguous(partial)) {
+               long instant = 0L;
+               for (int i = 0, isize = partial.size(); i < isize; i++) {
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [7450,7830]
+      parenthesized_expression [7453,7559]
+          and [7454,7558]
+              and [7454,7539]
+                  greater_than [7454,7472]
+                      method_invocation: partial.size() [7454,7468]
+                      decimal_integer_literal: 0 [7471,7472]
+                  method_invocation: partial.getFieldType(0).equals(DateTimeFieldType.monthOfYear()) [7476,7539]
+              equals [7543,7558]
+                  identifier: fieldIndex [7543,7553]
+                  decimal_integer_literal: 0 [7557,7558]
+      block [7560,7830]
+          local_variable_declaration: int curMonth0 = partial.getValue(0) - 1; [7650,7690]
+          local_variable_declaration: int newMonth = ((curMonth0 + (valueToAdd % 12) + 12) % 12) + 1; [7703,7766]
+          return_statement: return set(partial, 0, values, newMonth); [7779,7820]
+
+...

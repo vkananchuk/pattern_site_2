@@ -1,0 +1,145 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -180,16 +180,6 @@\n      * @throws NullPointerException
+  if other is <code>null</code>\n      */\n     public int compareTo(Object other)
+  {\n-        if (other == this) {\n-            return 0;\n-        }\n-        if
+  (other.getClass() != this.getClass()) {\n-            if (other.getClass().getName().equals(this.getClass().getName()))
+  {\n-                return iValue - getValueInOtherClassLoader(other);\n-            }\n-
+  \           throw new ClassCastException(\n-                    \"Different enum
+  class '\" + ClassUtils.getShortClassName(other.getClass()) + \"'\");\n-        }\n
+  \        return iValue - ((ValuedEnum) other).iValue;\n     }\n \n@@ -199,20 +189,9
+  @@\n      * @param other  the object to determine the value for\n      * @return
+  the value\n      */\n-    private int getValueInOtherClassLoader(Object other) {\n-
+  \       try {\n-            Method mth = other.getClass().getMethod(\"getValue\",
+  null);\n-            Integer value = (Integer) mth.invoke(other, null);\n-            return
+  value.intValue();\n-        } catch (NoSuchMethodException e) {\n             //
+  ignore - should never happen\n-        } catch (IllegalAccessException e) {\n             //
+  ignore - should never happen\n-        } catch (InvocationTargetException e) {\n
+  \            // ignore - should never happen\n-        }\n-        throw new IllegalStateException(\"This
+  should not happen\");\n-    }\n \n     /**\n      * <p>Human readable description
+  of this <code>Enum</code> item.</p>\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [6203,6298]
+  to
+  class_body [3743,8039]
+  at 5
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [6203,6298]
+  to
+  class_body [3743,8039]
+  at 5
+  ===
+  insert-node
+  ---
+  identifier: compareTo [6214,6223]
+  to
+  method_declaration [6203,6298]
+  at 0
+
+  New cluster:
+  MOVE from method_declaration [6203,6298]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [6203,6725]
+      formal_parameter: Object other [6224,6236]
+  to
+  method_declaration [6203,6298]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [6238,6298]
+      return_statement: return iValue - ((ValuedEnum) other).iValue; [6248,6292]
+  to
+  method_declaration [6203,6298]
+  at 2
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [6203,6725]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_declaration [6203,6725]
+  ===
+  ===
+  delete-node
+  ---
+  identifier: compareTo [6214,6223]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [6238,6725]
+      if_statement [6248,6300]
+          parenthesized_expression [6251,6266]
+              equals [6252,6265]
+                  identifier: other [6252,6257]
+                  this [6261,6265]
+          block [6267,6300]
+              return_statement: return 0; [6281,6290]
+      if_statement [6309,6666]
+          parenthesized_expression [6312,6349]
+              not_equals [6313,6348]
+                  method_invocation: other.getClass() [6313,6329]
+                  method_invocation: this.getClass() [6333,6348]
+          block [6350,6666]
+              if_statement [6364,6512]
+                  parenthesized_expression [6367,6429]
+                      method_invocation: other.getClass().getName().equals(this.getClass().getName()) [6368,6428]
+                  block [6430,6512]
+                      return_statement: return iValue - getValueInOtherClassLoader(other); [6448,6498]
+              throw_statement: throw new ClassCastException(
+                      "Different enum class '" + ClassUtils.getShortClassName(other.getClass()) + "'"); [6525,6656]
+      return_statement: return iValue - ((ValuedEnum) other).iValue; [6675,6719]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [6895,7486]
+      identifier: getValueInOtherClassLoader [6907,6933]
+      method_parameters [6895,7486]
+          formal_parameter: Object other [6934,6946]
+      block [6948,7486]
+          try_statement [6958,7413]
+              block [6962,7144]
+                  local_variable_declaration: Method mth = other.getClass().getMethod("getValue", null); [6976,7034]
+                  local_variable_declaration: Integer value = (Integer) mth.invoke(other, null); [7047,7097]
+                  return_statement: return value.intValue(); [7110,7134]
+              excepts [6958,7413]
+                  catch_clause: catch (NoSuchMethodException e) {
+              // ignore - should never happen
+          } [7145,7232]
+                  catch_clause: catch (IllegalAccessException e) {
+              // ignore - should never happen
+          } [7233,7321]
+                  catch_clause: catch (InvocationTargetException e) {
+              // ignore - should never happen
+          } [7322,7413]
+          throw_statement: throw new IllegalStateException("This should not happen"); [7422,7480]
+
+...

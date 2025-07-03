@@ -1,0 +1,102 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -86,17 +86,15 @@
+               }
+           }
+           // first, sanity checks
+  -        JsonToken t = p.getCurrentToken();
+  -        if (t == JsonToken.START_OBJECT) {
+  +        if (p.getCurrentToken() != JsonToken.START_OBJECT) {
+  +            throw ctxt.wrongTokenException(p, JsonToken.START_OBJECT,
+  +                    "need JSON Object to contain As.WRAPPER_OBJECT type information for class "+baseTypeName());
+  +        }
+               // should always get field name, but just in case...
+               if (p.nextToken() != JsonToken.FIELD_NAME) {
+                   throw ctxt.wrongTokenException(p, JsonToken.FIELD_NAME,
+                           "need JSON String that contains type id (for subtype of "+baseTypeName()+")");
+               }
+  -        } else if (t != JsonToken.FIELD_NAME) {
+  -            throw ctxt.wrongTokenException(p, JsonToken.START_OBJECT,
+  -                    "need JSON Object to contain As.WRAPPER_OBJECT type information for class "+baseTypeName());
+  -        }
+           final String typeId = p.getText();
+           JsonDeserializer<Object> deser = _findDeserializer(ctxt, typeId);
+           p.nextToken();
+tree_diff: |+
+  New cluster:
+  MOVE from block [2855,4842]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [3318,3551]
+      parenthesized_expression [3321,3360]
+          not_equals [3322,3359]
+              method_invocation: p.nextToken() [3322,3335]
+              field_access: JsonToken.FIELD_NAME [3339,3359]
+      block [3361,3551]
+          throw_statement: throw ctxt.wrongTokenException(p, JsonToken.FIELD_NAME,
+                          "need JSON String that contains type id (for subtype of "+baseTypeName()+")"); [3379,3537]
+  to
+  block [2855,4842]
+  at 3
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  not_equals [3167,3212]
+      method_invocation: p.getCurrentToken() [3167,3186]
+      field_access: JsonToken.START_OBJECT [3190,3212]
+  to
+  parenthesized_expression [3209,3238]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  throw_statement: throw ctxt.wrongTokenException(p, JsonToken.START_OBJECT,
+                      "need JSON Object to contain As.WRAPPER_OBJECT type information for class "+baseTypeName()); [3228,3398]
+  to
+  block [3239,3561]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  throw_statement: throw ctxt.wrongTokenException(p, JsonToken.START_OBJECT,
+                      "need JSON Object to contain As.WRAPPER_OBJECT type information for class "+baseTypeName()); [3228,3398]
+  to
+  block [3239,3561]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: JsonToken t = p.getCurrentToken(); [3163,3197]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: JsonToken t = p.getCurrentToken(); [3163,3197]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  equals [3210,3237]
+      identifier: t [3210,3211]
+      field_access: JsonToken.START_OBJECT [3215,3237]
+
+...

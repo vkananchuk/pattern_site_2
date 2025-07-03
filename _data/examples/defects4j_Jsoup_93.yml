@@ -1,0 +1,166 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -86,7 +86,6 @@\n             if (name.length()
+  == 0) continue;\n             String type = el.attr(\"type\");\n \n-            if
+  (type.equalsIgnoreCase(\"button\")) continue; // browsers don't submit these\n \n
+  \            if (\"select\".equals(el.normalName())) {\n                 Elements
+  options = el.select(\"option[selected]\");\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from for (Element el: elements) {
+              if (!el.tag().isFormSubmittable()) continue; // contents are form listable, superset of submitable
+              if (el.hasAttr("disabled")) continue; // skip disabled form inputs
+              String name = el.attr("name");
+              if (name.length() == 0) continue;
+              String type = el.attr("type");
+
+              if (type.equalsIgnoreCase("button")) continue; // browsers don't submit these
+
+              if ("select".equals(el.normalName())) {
+                  Elements options = el.select("option[selected]");
+                  boolean set = false;
+                  for (Element option: options) {
+                      data.add(HttpConnection.KeyVal.create(name, option.val()));
+                      set = true;
+                  }
+                  if (!set) {
+                      Element option = el.select("option").first();
+                      if (option != null)
+                          data.add(HttpConnection.KeyVal.create(name, option.val()));
+                  }
+              } else if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                  // only add checkbox or radio if they have the checked attribute
+                  if (el.hasAttr("checked")) {
+                      final String val = el.val().length() >  0 ? el.val() : "on";
+                      data.add(HttpConnection.KeyVal.create(name, val));
+                  }
+              } else {
+                  data.add(HttpConnection.KeyVal.create(name, el.val()));
+              }
+          } to for (Element el: elements) {
+              if (!el.tag().isFormSubmittable()) continue; // contents are form listable, superset of submitable
+              if (el.hasAttr("disabled")) continue; // skip disabled form inputs
+              String name = el.attr("name");
+              if (name.length() == 0) continue;
+              String type = el.attr("type");
+
+
+              if ("select".equals(el.normalName())) {
+                  Elements options = el.select("option[selected]");
+                  boolean set = false;
+                  for (Element option: options) {
+                      data.add(HttpConnection.KeyVal.create(name, option.val()));
+                      set = true;
+                  }
+                  if (!set) {
+                      Element option = el.select("option").first();
+                      if (option != null)
+                          data.add(HttpConnection.KeyVal.create(name, option.val()));
+                  }
+              } else if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                  // only add checkbox or radio if they have the checked attribute
+                  if (el.hasAttr("checked")) {
+                      final String val = el.val().length() >  0 ? el.val() : "on";
+                      data.add(HttpConnection.KeyVal.create(name, val));
+                  }
+              } else {
+                  data.add(HttpConnection.KeyVal.create(name, el.val()));
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  enhanced_for_statement: for (Element el: elements) {
+              if (!el.tag().isFormSubmittable()) continue; // contents are form listable, superset of submitable
+              if (el.hasAttr("disabled")) continue; // skip disabled form inputs
+              String name = el.attr("name");
+              if (name.length() == 0) continue;
+              String type = el.attr("type");
+
+              if (type.equalsIgnoreCase("button")) continue; // browsers don't submit these
+
+              if ("select".equals(el.normalName())) {
+                  Elements options = el.select("option[selected]");
+                  boolean set = false;
+                  for (Element option: options) {
+                      data.add(HttpConnection.KeyVal.create(name, option.val()));
+                      set = true;
+                  }
+                  if (!set) {
+                      Element option = el.select("option").first();
+                      if (option != null)
+                          data.add(HttpConnection.KeyVal.create(name, option.val()));
+                  }
+              } else if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                  // only add checkbox or radio if they have the checked attribute
+                  if (el.hasAttr("checked")) {
+                      final String val = el.val().length() >  0 ? el.val() : "on";
+                      data.add(HttpConnection.KeyVal.create(name, val));
+                  }
+              } else {
+                  data.add(HttpConnection.KeyVal.create(name, el.val()));
+              }
+          } [2798,4316]
+  replace for (Element el: elements) {
+              if (!el.tag().isFormSubmittable()) continue; // contents are form listable, superset of submitable
+              if (el.hasAttr("disabled")) continue; // skip disabled form inputs
+              String name = el.attr("name");
+              if (name.length() == 0) continue;
+              String type = el.attr("type");
+
+              if (type.equalsIgnoreCase("button")) continue; // browsers don't submit these
+
+              if ("select".equals(el.normalName())) {
+                  Elements options = el.select("option[selected]");
+                  boolean set = false;
+                  for (Element option: options) {
+                      data.add(HttpConnection.KeyVal.create(name, option.val()));
+                      set = true;
+                  }
+                  if (!set) {
+                      Element option = el.select("option").first();
+                      if (option != null)
+                          data.add(HttpConnection.KeyVal.create(name, option.val()));
+                  }
+              } else if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                  // only add checkbox or radio if they have the checked attribute
+                  if (el.hasAttr("checked")) {
+                      final String val = el.val().length() >  0 ? el.val() : "on";
+                      data.add(HttpConnection.KeyVal.create(name, val));
+                  }
+              } else {
+                  data.add(HttpConnection.KeyVal.create(name, el.val()));
+              }
+          } by for (Element el: elements) {
+              if (!el.tag().isFormSubmittable()) continue; // contents are form listable, superset of submitable
+              if (el.hasAttr("disabled")) continue; // skip disabled form inputs
+              String name = el.attr("name");
+              if (name.length() == 0) continue;
+              String type = el.attr("type");
+
+
+              if ("select".equals(el.normalName())) {
+                  Elements options = el.select("option[selected]");
+                  boolean set = false;
+                  for (Element option: options) {
+                      data.add(HttpConnection.KeyVal.create(name, option.val()));
+                      set = true;
+                  }
+                  if (!set) {
+                      Element option = el.select("option").first();
+                      if (option != null)
+                          data.add(HttpConnection.KeyVal.create(name, option.val()));
+                  }
+              } else if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                  // only add checkbox or radio if they have the checked attribute
+                  if (el.hasAttr("checked")) {
+                      final String val = el.val().length() >  0 ? el.val() : "on";
+                      data.add(HttpConnection.KeyVal.create(name, val));
+                  }
+              } else {
+                  data.add(HttpConnection.KeyVal.create(name, el.val()));
+              }
+          }
+
+...

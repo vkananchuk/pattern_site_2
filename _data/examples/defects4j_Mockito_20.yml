@@ -1,0 +1,104 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -29,10 +29,9 @@\n                 settings.getTypeToMock(),\n
+  \                settings.getExtraInterfaces()\n         );\n-        Instantiator
+  instantiator = new InstantiatorProvider().getInstantiator(settings);\n         T
+  mockInstance = null;\n         try {\n-            mockInstance = instantiator.newInstance(mockedProxyType);\n+
+  \           mockInstance = classInstantiator.instantiate(mockedProxyType);\n             MockMethodInterceptor.MockAccess
+  mockAccess = (MockMethodInterceptor.MockAccess) mockInstance;\n             mockAccess.setMockitoInterceptor(new
+  MockMethodInterceptor(asInternalMockHandler(handler), settings));\n \n@@ -43,7 +42,7
+  @@\n                     \"  class to mock : \" + describeClass(mockedProxyType),\n
+  \                    \"  created class : \" + describeClass(settings.getTypeToMock()),\n
+  \                    \"  proxy instance class : \" + describeClass(mockInstance),\n-
+  \                   \"  instance creation by : \" + instantiator.getClass().getSimpleName(),\n+
+  \                   \"  instance creation by : \" + classInstantiator.getClass().getSimpleName(),\n
+  \                    \"\",\n                     \"You might experience classloading
+  issues, please ask the mockito mailing-list.\",\n                     \"\"\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from mockInstance = instantiator.newInstance(mockedProxyType); to mockInstance = classInstantiator.instantiate(mockedProxyType);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: mockInstance = instantiator.newInstance(mockedProxyType); [1520,1577]
+  replace mockInstance = instantiator.newInstance(mockedProxyType); by mockInstance = classInstantiator.instantiate(mockedProxyType);
+
+  New cluster:
+  UPDATE from catch (ClassCastException cce) {
+              throw new MockitoException(join(
+                      "ClassCastException occurred while creating the mockito mock :",
+                      "  class to mock : " + describeClass(mockedProxyType),
+                      "  created class : " + describeClass(settings.getTypeToMock()),
+                      "  proxy instance class : " + describeClass(mockInstance),
+                      "  instance creation by : " + instantiator.getClass().getSimpleName(),
+                      "",
+                      "You might experience classloading issues, please ask the mockito mailing-list.",
+                      ""
+              ),cce);
+          } to catch (ClassCastException cce) {
+              throw new MockitoException(join(
+                      "ClassCastException occurred while creating the mockito mock :",
+                      "  class to mock : " + describeClass(mockedProxyType),
+                      "  created class : " + describeClass(settings.getTypeToMock()),
+                      "  proxy instance class : " + describeClass(mockInstance),
+                      "  instance creation by : " + classInstantiator.getClass().getSimpleName(),
+                      "",
+                      "You might experience classloading issues, please ask the mockito mailing-list.",
+                      ""
+              ),cce);
+          }
+  ------------
+  ===
+  update-node
+  ---
+  catch_clause: catch (ClassCastException cce) {
+              throw new MockitoException(join(
+                      "ClassCastException occurred while creating the mockito mock :",
+                      "  class to mock : " + describeClass(mockedProxyType),
+                      "  created class : " + describeClass(settings.getTypeToMock()),
+                      "  proxy instance class : " + describeClass(mockInstance),
+                      "  instance creation by : " + instantiator.getClass().getSimpleName(),
+                      "",
+                      "You might experience classloading issues, please ask the mockito mailing-list.",
+                      ""
+              ),cce);
+          } [1890,2560]
+  replace catch (ClassCastException cce) {
+              throw new MockitoException(join(
+                      "ClassCastException occurred while creating the mockito mock :",
+                      "  class to mock : " + describeClass(mockedProxyType),
+                      "  created class : " + describeClass(settings.getTypeToMock()),
+                      "  proxy instance class : " + describeClass(mockInstance),
+                      "  instance creation by : " + instantiator.getClass().getSimpleName(),
+                      "",
+                      "You might experience classloading issues, please ask the mockito mailing-list.",
+                      ""
+              ),cce);
+          } by catch (ClassCastException cce) {
+              throw new MockitoException(join(
+                      "ClassCastException occurred while creating the mockito mock :",
+                      "  class to mock : " + describeClass(mockedProxyType),
+                      "  created class : " + describeClass(settings.getTypeToMock()),
+                      "  proxy instance class : " + describeClass(mockInstance),
+                      "  instance creation by : " + classInstantiator.getClass().getSimpleName(),
+                      "",
+                      "You might experience classloading issues, please ask the mockito mailing-list.",
+                      ""
+              ),cce);
+          }
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Instantiator instantiator = new InstantiatorProvider().getInstantiator(settings); [1381,1462]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Instantiator instantiator = new InstantiatorProvider().getInstantiator(settings); [1381,1462]
+  ===
+
+...

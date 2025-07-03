@@ -1,0 +1,50 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -335,7 +335,7 @@
+           // positive cost non-artificial variables
+           for (int i = getNumObjectiveFunctions(); i < getArtificialVariableOffset(); i++) {
+               final double entry = tableau.getEntry(0, i);
+  -            if (Precision.compareTo(entry, 0d, epsilon) > 0) {
+  +            if (Precision.compareTo(entry, 0d, maxUlps) > 0) {
+                   columnsToDrop.add(i);
+               }
+           }
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = getNumObjectiveFunctions(); i < getArtificialVariableOffset(); i++) {
+              final double entry = tableau.getEntry(0, i);
+              if (Precision.compareTo(entry, 0d, epsilon) > 0) {
+                  columnsToDrop.add(i);
+              }
+          } to for (int i = getNumObjectiveFunctions(); i < getArtificialVariableOffset(); i++) {
+              final double entry = tableau.getEntry(0, i);
+              if (Precision.compareTo(entry, 0d, maxUlps) > 0) {
+                  columnsToDrop.add(i);
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = getNumObjectiveFunctions(); i < getArtificialVariableOffset(); i++) {
+              final double entry = tableau.getEntry(0, i);
+              if (Precision.compareTo(entry, 0d, epsilon) > 0) {
+                  columnsToDrop.add(i);
+              }
+          } [13309,13573]
+  replace for (int i = getNumObjectiveFunctions(); i < getArtificialVariableOffset(); i++) {
+              final double entry = tableau.getEntry(0, i);
+              if (Precision.compareTo(entry, 0d, epsilon) > 0) {
+                  columnsToDrop.add(i);
+              }
+          } by for (int i = getNumObjectiveFunctions(); i < getArtificialVariableOffset(); i++) {
+              final double entry = tableau.getEntry(0, i);
+              if (Precision.compareTo(entry, 0d, maxUlps) > 0) {
+                  columnsToDrop.add(i);
+              }
+          }
+
+...

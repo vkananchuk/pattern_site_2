@@ -1,0 +1,41 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -25,16 +25,8 @@\n             validateDoNothing((DoesNothing)
+  answer, invocation);\r\n         }\r\n         \r\n-        if (answer instanceof
+  CallsRealMethods) {\r\n-            validateMockingConcreteClass((CallsRealMethods)
+  answer, invocation);\r\n-        }\r\n     }\r\n \r\n-    private void validateMockingConcreteClass(CallsRealMethods
+  answer, Invocation invocation) {\r\n-        if (invocation.getMethod().getDeclaringClass().isInterface())
+  {\r\n-            reporter.cannotCallRealMethodOnInterface();\r\n-        }\r\n-
+  \   }\r\n \r\n     private void validateDoNothing(DoesNothing answer, Invocation
+  invocation) {\r\n         if (!invocation.isVoid()) {\r\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [874,1008]
+      parenthesized_expression [877,913]
+          instanceof_expression: answer instanceof CallsRealMethods [878,912]
+      block [914,1008]
+          expression_statement: validateMockingConcreteClass((CallsRealMethods) answer, invocation); [929,997]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [1023,1262]
+      identifier: validateMockingConcreteClass [1036,1064]
+      method_parameters [1023,1262]
+          formal_parameter: CallsRealMethods answer [1065,1088]
+      block [1113,1262]
+          if_statement [1124,1255]
+              parenthesized_expression [1127,1185]
+                  method_invocation: invocation.getMethod().getDeclaringClass().isInterface() [1128,1184]
+              block [1186,1255]
+                  expression_statement: reporter.cannotCallRealMethodOnInterface(); [1201,1244]
+
+...

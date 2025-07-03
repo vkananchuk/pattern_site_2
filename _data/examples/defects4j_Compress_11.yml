@@ -1,0 +1,578 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -237,7 +237,6 @@
+                   return new TarArchiveInputStream(in);
+               }
+               // COMPRESS-117 - improve auto-recognition
+  -            if (signatureLength >= 512) {
+               try {
+                   TarArchiveInputStream tais = new TarArchiveInputStream(new ByteArrayInputStream(tarheader));
+                   tais.getNextEntry();
+  @@ -247,7 +246,6 @@
+                   // autodetection, simply not a TAR
+                   // ignored
+               }
+  -            }
+           } catch (IOException e) {
+               throw new ArchiveException("Could not use reset and mark operations.", e);
+           }
+tree_diff: |+
+  New cluster:
+  MOVE from method_declaration [7515,10130]
+  ------------
+  ===
+  move-tree
+  ---
+  block [7953,9920]
+      local_variable_declaration: int signatureLength = in.read(signature); [7967,8008]
+      expression_statement: in.reset(); [8021,8032]
+      if_statement [8045,8591]
+          parenthesized_expression [8048,8107]
+              method_invocation: ZipArchiveInputStream.matches(signature, signatureLength) [8049,8106]
+          block [8108,8177]
+              return_statement: return new ZipArchiveInputStream(in); [8126,8163]
+      local_variable_declaration: final byte[] dumpsig = new byte[32]; [8671,8707]
+      expression_statement: in.mark(dumpsig.length); [8720,8744]
+      expression_statement: signatureLength = in.read(dumpsig); [8757,8792]
+      expression_statement: in.reset(); [8805,8816]
+      if_statement [8829,8961]
+          parenthesized_expression [8832,8890]
+              method_invocation: DumpArchiveInputStream.matches(dumpsig, signatureLength) [8833,8889]
+          block [8891,8961]
+              return_statement: return new DumpArchiveInputStream(in); [8909,8947]
+      local_variable_declaration: final byte[] tarheader = new byte[512]; [9067,9106]
+      expression_statement: in.mark(tarheader.length); [9119,9145]
+      expression_statement: signatureLength = in.read(tarheader); [9158,9195]
+      expression_statement: in.reset(); [9208,9219]
+      if_statement [9232,9364]
+          parenthesized_expression [9235,9294]
+              method_invocation: TarArchiveInputStream.matches(tarheader, signatureLength) [9236,9293]
+          block [9295,9364]
+              return_statement: return new TarArchiveInputStream(in); [9313,9350]
+      if_statement [9432,9910]
+          parenthesized_expression [9435,9459]
+              greater_or_equals [9436,9458]
+                  identifier: signatureLength [9436,9451]
+                  decimal_integer_literal: 512 [9455,9458]
+          block [9460,9910]
+              try_statement [9474,9896]
+                  block [9478,9693]
+                      local_variable_declaration: TarArchiveInputStream tais = new TarArchiveInputStream(new ByteArrayInputStream(tarheader)); [9496,9588]
+                      expression_statement: tais.getNextEntry(); [9605,9625]
+                      return_statement: return new TarArchiveInputStream(in); [9642,9679]
+                  excepts [9474,9896]
+                      catch_clause: catch (Exception e) { // NOPMD
+                  // can generate IllegalArgumentException as well as IOException
+                  // autodetection, simply not a TAR
+                  // ignored
+              } [9694,9896]
+  to
+  method_declaration [7515,10130]
+  at 2
+
+  New cluster:
+  MOVE from block [7953,9920]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [7747,7857]
+      parenthesized_expression [7750,7771]
+          unary_expression: !in.markSupported() [7751,7770]
+      block [7772,7857]
+          throw_statement: throw new IllegalArgumentException("Mark is not supported."); [7786,7847]
+  to
+  block [7953,9920]
+  at 1
+  ===
+  move-tree
+  ---
+  if_statement [7634,7737]
+      parenthesized_expression [7637,7649]
+          equals [7638,7648]
+              identifier: in [7638,7640]
+              null_literal [7644,7648]
+      block [7650,7737]
+          throw_statement: throw new IllegalArgumentException("Stream must not be null."); [7664,7727]
+  to
+  block [7953,9920]
+  at 0
+  ===
+  move-tree
+  ---
+  try_statement [7949,10041]
+      block [7953,9920]
+          local_variable_declaration: int signatureLength = in.read(signature); [7967,8008]
+          expression_statement: in.reset(); [8021,8032]
+          if_statement [8045,8591]
+              parenthesized_expression [8048,8107]
+                  method_invocation: ZipArchiveInputStream.matches(signature, signatureLength) [8049,8106]
+              block [8108,8177]
+                  return_statement: return new ZipArchiveInputStream(in); [8126,8163]
+          local_variable_declaration: final byte[] dumpsig = new byte[32]; [8671,8707]
+          expression_statement: in.mark(dumpsig.length); [8720,8744]
+          expression_statement: signatureLength = in.read(dumpsig); [8757,8792]
+          expression_statement: in.reset(); [8805,8816]
+          if_statement [8829,8961]
+              parenthesized_expression [8832,8890]
+                  method_invocation: DumpArchiveInputStream.matches(dumpsig, signatureLength) [8833,8889]
+              block [8891,8961]
+                  return_statement: return new DumpArchiveInputStream(in); [8909,8947]
+          local_variable_declaration: final byte[] tarheader = new byte[512]; [9067,9106]
+          expression_statement: in.mark(tarheader.length); [9119,9145]
+          expression_statement: signatureLength = in.read(tarheader); [9158,9195]
+          expression_statement: in.reset(); [9208,9219]
+          if_statement [9232,9364]
+              parenthesized_expression [9235,9294]
+                  method_invocation: TarArchiveInputStream.matches(tarheader, signatureLength) [9236,9293]
+              block [9295,9364]
+                  return_statement: return new TarArchiveInputStream(in); [9313,9350]
+          if_statement [9432,9910]
+              parenthesized_expression [9435,9459]
+                  greater_or_equals [9436,9458]
+                      identifier: signatureLength [9436,9451]
+                      decimal_integer_literal: 512 [9455,9458]
+              block [9460,9910]
+                  try_statement [9474,9896]
+                      block [9478,9693]
+                          local_variable_declaration: TarArchiveInputStream tais = new TarArchiveInputStream(new ByteArrayInputStream(tarheader)); [9496,9588]
+                          expression_statement: tais.getNextEntry(); [9605,9625]
+                          return_statement: return new TarArchiveInputStream(in); [9642,9679]
+                      excepts [9474,9896]
+                          catch_clause: catch (Exception e) { // NOPMD
+                  // can generate IllegalArgumentException as well as IOException
+                  // autodetection, simply not a TAR
+                  // ignored
+              } [9694,9896]
+      excepts [7949,10041]
+          catch_clause: catch (IOException e) {
+              throw new ArchiveException("Could not use reset and mark operations.", e);
+          } [9921,10041]
+  to
+  block [7953,9920]
+  at 4
+
+  New cluster:
+  UPDATE from int signatureLength = in.read(signature); to final byte[] signature = new byte[12];
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: int signatureLength = in.read(signature); [7967,8008]
+  replace int signatureLength = in.read(signature); by final byte[] signature = new byte[12];
+
+  New cluster:
+  UPDATE from in.reset(); to in.mark(signature.length);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: in.reset(); [8021,8032]
+  replace in.reset(); by in.mark(signature.length);
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  throw_statement: throw new ArchiveException("No Archiver found for the stream signature"); [9995,10068]
+  to
+  block [7953,9920]
+  at 5
+  ------------
+  ===
+  insert-node
+  ---
+  throw_statement: throw new ArchiveException("No Archiver found for the stream signature"); [9995,10068]
+  to
+  block [7953,9920]
+  at 5
+
+  New cluster:
+  MOVE from try_statement [7949,10041]
+  ------------
+  ===
+  move-tree
+  ---
+  block [9460,9910]
+      try_statement [9474,9896]
+          block [9478,9693]
+              local_variable_declaration: TarArchiveInputStream tais = new TarArchiveInputStream(new ByteArrayInputStream(tarheader)); [9496,9588]
+              expression_statement: tais.getNextEntry(); [9605,9625]
+              return_statement: return new TarArchiveInputStream(in); [9642,9679]
+          excepts [9474,9896]
+              catch_clause: catch (Exception e) { // NOPMD
+                  // can generate IllegalArgumentException as well as IOException
+                  // autodetection, simply not a TAR
+                  // ignored
+              } [9694,9896]
+  to
+  try_statement [7949,10041]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: int signatureLength = in.read(signature); [7967,8008]
+  to
+  block [9460,9910]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: int signatureLength = in.read(signature); [7967,8008]
+  to
+  block [9460,9910]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: in.reset(); [8021,8032]
+  to
+  block [9460,9910]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: in.reset(); [8021,8032]
+  to
+  block [9460,9910]
+  at 1
+
+  New cluster:
+  MOVE from block [9460,9910]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [9232,9364]
+      parenthesized_expression [9235,9294]
+          method_invocation: TarArchiveInputStream.matches(tarheader, signatureLength) [9236,9293]
+      block [9295,9364]
+          return_statement: return new TarArchiveInputStream(in); [9313,9350]
+  to
+  block [9460,9910]
+  at 12
+  ===
+  move-tree
+  ---
+  if_statement [8045,8591]
+      parenthesized_expression [8048,8107]
+          method_invocation: ZipArchiveInputStream.matches(signature, signatureLength) [8049,8106]
+      block [8108,8177]
+          return_statement: return new ZipArchiveInputStream(in); [8126,8163]
+  to
+  block [9460,9910]
+  at 2
+  ===
+  move-tree
+  ---
+  if_statement [8829,8961]
+      parenthesized_expression [8832,8890]
+          method_invocation: DumpArchiveInputStream.matches(dumpsig, signatureLength) [8833,8889]
+      block [8891,8961]
+          return_statement: return new DumpArchiveInputStream(in); [8909,8947]
+  to
+  block [9460,9910]
+  at 7
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: final byte[] dumpsig = new byte[32]; [8671,8707]
+  to
+  block [9460,9910]
+  at 3
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: final byte[] dumpsig = new byte[32]; [8671,8707]
+  to
+  block [9460,9910]
+  at 3
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: in.mark(dumpsig.length); [8720,8744]
+  to
+  block [9460,9910]
+  at 4
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: in.mark(dumpsig.length); [8720,8744]
+  to
+  block [9460,9910]
+  at 4
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: signatureLength = in.read(dumpsig); [8757,8792]
+  to
+  block [9460,9910]
+  at 5
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: signatureLength = in.read(dumpsig); [8757,8792]
+  to
+  block [9460,9910]
+  at 5
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: in.reset(); [8805,8816]
+  to
+  block [9460,9910]
+  at 6
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: in.reset(); [8805,8816]
+  to
+  block [9460,9910]
+  at 6
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: final byte[] tarheader = new byte[512]; [9067,9106]
+  to
+  block [9460,9910]
+  at 8
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: final byte[] tarheader = new byte[512]; [9067,9106]
+  to
+  block [9460,9910]
+  at 8
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: in.mark(tarheader.length); [9119,9145]
+  to
+  block [9460,9910]
+  at 9
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: in.mark(tarheader.length); [9119,9145]
+  to
+  block [9460,9910]
+  at 9
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: signatureLength = in.read(tarheader); [9158,9195]
+  to
+  block [9460,9910]
+  at 10
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: signatureLength = in.read(tarheader); [9158,9195]
+  to
+  block [9460,9910]
+  at 10
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: in.reset(); [9208,9219]
+  to
+  block [9460,9910]
+  at 11
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: in.reset(); [9208,9219]
+  to
+  block [9460,9910]
+  at 11
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final byte[] dumpsig = new byte[32]; [8671,8707]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final byte[] dumpsig = new byte[32]; [8671,8707]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: in.mark(dumpsig.length); [8720,8744]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: in.mark(dumpsig.length); [8720,8744]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: signatureLength = in.read(dumpsig); [8757,8792]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: signatureLength = in.read(dumpsig); [8757,8792]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: in.reset(); [8805,8816]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: in.reset(); [8805,8816]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final byte[] tarheader = new byte[512]; [9067,9106]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final byte[] tarheader = new byte[512]; [9067,9106]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: in.mark(tarheader.length); [9119,9145]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: in.mark(tarheader.length); [9119,9145]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: signatureLength = in.read(tarheader); [9158,9195]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: signatureLength = in.read(tarheader); [9158,9195]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: in.reset(); [9208,9219]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: in.reset(); [9208,9219]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  parenthesized_expression [9435,9459]
+      greater_or_equals [9436,9458]
+          identifier: signatureLength [9436,9451]
+          decimal_integer_literal: 512 [9455,9458]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  if_statement [9432,9910]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  if_statement [9432,9910]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  block [7624,10130]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: in.mark(signature.length); [7914,7940]
+  ===
+  ===
+  delete-node
+  ---
+  block [7624,10130]
+  ===
+  ===
+  delete-node
+  ---
+  throw_statement: throw new ArchiveException("No Archiver found for the stream signature"); [10051,10124]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final byte[] signature = new byte[12]; [7867,7905]
+  ===
+
+...

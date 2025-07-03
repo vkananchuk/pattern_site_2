@@ -1,0 +1,80 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -120,18 +120,7 @@\n     public void captureArgumentsFrom(Invocation
+  invocation) {\n         if (invocation.getMethod().isVarArgs()) {\n             int
+  indexOfVararg = invocation.getRawArguments().length - 1;\n-            for (int
+  position = 0; position < indexOfVararg; position++) {\n-                Matcher
+  m = matchers.get(position);\n-                if (m instanceof CapturesArguments)
+  {\n-                    ((CapturesArguments) m).captureFrom(invocation.getArgumentAt(position,
+  Object.class));\n-                }\n-            }\n-            for (int position
+  = indexOfVararg; position < matchers.size(); position++) {\n-                Matcher
+  m = matchers.get(position);\n-                if (m instanceof CapturesArguments)
+  {\n-                    ((CapturesArguments) m).captureFrom(invocation.getRawArguments()[position
+  - indexOfVararg]);\n-                }\n-            }\n+            throw new UnsupportedOperationException();\n
+  \n         } else {\n             for (int position = 0; position < matchers.size();
+  position++) {\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  throw_statement: throw new UnsupportedOperationException(); [4295,4337]
+  to
+  block [4208,4953]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  throw_statement: throw new UnsupportedOperationException(); [4295,4337]
+  to
+  block [4208,4953]
+  at 1
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  for_statement: for (int position = 0; position < indexOfVararg; position++) {
+                  Matcher m = matchers.get(position);
+                  if (m instanceof CapturesArguments) {
+                      ((CapturesArguments) m).captureFrom(invocation.getArgumentAt(position, Object.class));
+                  }
+              } [4295,4602]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  for_statement: for (int position = 0; position < indexOfVararg; position++) {
+                  Matcher m = matchers.get(position);
+                  if (m instanceof CapturesArguments) {
+                      ((CapturesArguments) m).captureFrom(invocation.getArgumentAt(position, Object.class));
+                  }
+              } [4295,4602]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  for_statement: for (int position = indexOfVararg; position < matchers.size(); position++) {
+                  Matcher m = matchers.get(position);
+                  if (m instanceof CapturesArguments) {
+                      ((CapturesArguments) m).captureFrom(invocation.getRawArguments()[position - indexOfVararg]);
+                  }
+              } [4615,4942]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  for_statement: for (int position = indexOfVararg; position < matchers.size(); position++) {
+                  Matcher m = matchers.get(position);
+                  if (m instanceof CapturesArguments) {
+                      ((CapturesArguments) m).captureFrom(invocation.getRawArguments()[position - indexOfVararg]);
+                  }
+              } [4615,4942]
+  ===
+
+...

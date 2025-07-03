@@ -1,0 +1,73 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1667,13 +1667,7 @@\n \n       // Prototypes
+  of constructors and interfaces are always declared.\n       if (qName != null &&
+  qName.endsWith(\".prototype\")) {\n-        String className = qName.substring(0,
+  qName.lastIndexOf(\".prototype\"));\n-        Var slot = scope.getSlot(className);\n-
+  \       JSType classType = slot == null ? null : slot.getType();\n-        if (classType
+  != null\n-            && (classType.isConstructor() || classType.isInterface()))
+  {\n           return false;\n-        }\n       }\n \n       boolean inferred =
+  true;\n"
+tree_diff: |+
+  New cluster:
+  MOVE from if_statement [63707,64094]
+  ------------
+  ===
+  move-tree
+  ---
+  block [64051,64086]
+      return_statement: return false; [64063,64076]
+  to
+  if_statement [63707,64094]
+  at 1
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  block [63758,64094]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  block [63758,64094]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: JSType classType = slot == null ? null : slot.getType(); [63893,63949]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: String className = qName.substring(0, qName.lastIndexOf(".prototype")); [63768,63839]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Var slot = scope.getSlot(className); [63848,63884]
+  ===
+  ===
+  delete-node
+  ---
+  if_statement [63958,64086]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  parenthesized_expression [63961,64050]
+      and [63962,64049]
+          not_equals [63962,63979]
+              identifier: classType [63962,63971]
+              null_literal [63975,63979]
+          parenthesized_expression [63995,64049]
+              or [63996,64048]
+                  method_invocation: classType.isConstructor() [63996,64021]
+                  method_invocation: classType.isInterface() [64025,64048]
+
+...

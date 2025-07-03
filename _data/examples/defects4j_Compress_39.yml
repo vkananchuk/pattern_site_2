@@ -1,0 +1,67 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -28,7 +28,6 @@\n  */\n public class ArchiveUtils
+  {\n \n-    private static final int MAX_SANITIZED_NAME_LENGTH = 255;\n \n     /**
+  Private constructor to prevent instantiation of this utility class. */\n     private
+  ArchiveUtils(){\n@@ -271,13 +270,7 @@\n      * @since Compress 1.12\n      */\n
+  \    public static String sanitize(String s) {\n-        final char[] cs = s.toCharArray();\n-
+  \       final char[] chars = cs.length <= MAX_SANITIZED_NAME_LENGTH ? cs : Arrays.copyOf(cs,
+  MAX_SANITIZED_NAME_LENGTH);\n-        if (cs.length > MAX_SANITIZED_NAME_LENGTH)
+  {\n-            for (int i = MAX_SANITIZED_NAME_LENGTH - 3; i < MAX_SANITIZED_NAME_LENGTH;
+  i++) {\n-                chars[i] = '.';\n-            }\n-        }\n+        final
+  char[] chars = s.toCharArray();\n         final int len = chars.length;\n         final
+  StringBuilder sb = new StringBuilder();\n         for (int i = 0; i < len; i++)
+  {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from final char[] cs = s.toCharArray(); to final char[] chars = s.toCharArray();
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: final char[] cs = s.toCharArray(); [9718,9752]
+  replace final char[] cs = s.toCharArray(); by final char[] chars = s.toCharArray();
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  field_declaration: private static final int MAX_SANITIZED_NAME_LENGTH = 255; [1050,1107]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  field_declaration: private static final int MAX_SANITIZED_NAME_LENGTH = 255; [1050,1107]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final char[] chars = cs.length <= MAX_SANITIZED_NAME_LENGTH ? cs : Arrays.copyOf(cs, MAX_SANITIZED_NAME_LENGTH); [9761,9873]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: final char[] chars = cs.length <= MAX_SANITIZED_NAME_LENGTH ? cs : Arrays.copyOf(cs, MAX_SANITIZED_NAME_LENGTH); [9761,9873]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [9882,10076]
+      parenthesized_expression [9885,9924]
+          greater_than [9886,9923]
+              field_access: cs.length [9886,9895]
+              identifier: MAX_SANITIZED_NAME_LENGTH [9898,9923]
+      block [9925,10076]
+          for_statement: for (int i = MAX_SANITIZED_NAME_LENGTH - 3; i < MAX_SANITIZED_NAME_LENGTH; i++) {
+                  chars[i] = '.';
+              } [9939,10066]
+
+...

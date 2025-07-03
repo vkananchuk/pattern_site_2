@@ -1,0 +1,77 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -14,7 +14,6 @@\n import org.mockito.internal.util.MockUtil;\r\n
+  import org.mockito.internal.util.reflection.GenericMetadataSupport;\r\n import org.mockito.invocation.InvocationOnMock;\r\n-import
+  org.mockito.mock.MockCreationSettings;\r\n import org.mockito.stubbing.Answer;\r\n
+  \r\n import java.io.IOException;\r\n@@ -69,7 +68,7 @@\n \r\n         // record deep
+  stub answer\r\n         return recordDeepStubAnswer(\r\n-                newDeepStubMock(returnTypeGenericMetadata,
+  invocation.getMock()),\r\n+                newDeepStubMock(returnTypeGenericMetadata),\r\n
+  \                container\r\n         );\r\n     }\r\n@@ -85,26 +84,22 @@\n      *
+  @param parentMock The parent of the current deep stub mock.\r\n      * @return The
+  mock\r\n      */\r\n-    private Object newDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata,
+  Object parentMock) {\r\n-        MockCreationSettings parentMockSettings = new MockUtil().getMockSettings(parentMock);\r\n+
+  \   private Object newDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata)
+  {\r\n         return mockitoCore().mock(\r\n                 returnTypeGenericMetadata.rawType(),\r\n-
+  \               withSettingsUsing(returnTypeGenericMetadata, parentMockSettings)\r\n+
+  \               withSettingsUsing(returnTypeGenericMetadata)\r\n         );\r\n
+  \    }\r\n \r\n-    private MockSettings withSettingsUsing(GenericMetadataSupport
+  returnTypeGenericMetadata, MockCreationSettings parentMockSettings) {\r\n+    private
+  MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata)
+  {\r\n         MockSettings mockSettings = returnTypeGenericMetadata.hasRawExtraInterfaces()
+  ?\r\n                 withSettings().extraInterfaces(returnTypeGenericMetadata.rawExtraInterfaces())\r\n
+  \                : withSettings();\r\n \r\n-        return propagateSerializationSettings(mockSettings,
+  parentMockSettings)\r\n+        return mockSettings.serializable()\r\n                 .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\r\n
+  \    }\r\n \r\n-    private MockSettings propagateSerializationSettings(MockSettings
+  mockSettings, MockCreationSettings parentMockSettings) {\r\n-        return mockSettings.serializable(parentMockSettings.getSerializableMode());\r\n-
+  \   }\r\n \r\n     private ReturnsDeepStubs returnsDeepStubsAnswerUsing(final GenericMetadataSupport
+  returnTypeGenericMetadata) {\r\n         return new ReturnsDeepStubsSerializationFallback(returnTypeGenericMetadata);\r\n"
+tree_diff: "New cluster:\n===\ninsert-node\n---\nmethod_declaration [2206,3070]\nto\nclass_body
+  [1587,7187]\nat 2\n------------\n===\ninsert-node\n---\nidentifier: deepStub [2221,2229]\nto\nmethod_declaration
+  [2206,3070]\nat 0\n===\ninsert-node\n---\nmethod_declaration [2206,3070]\nto\nclass_body
+  [1587,7187]\nat 2\n\nNew cluster:\nMOVE from method_declaration [2206,3070]\n------------\n===\nmove-tree\n---\nmethod_parameters
+  [2253,3139]\n    formal_parameter: InvocationOnMock invocation [2277,2304]\nto\nmethod_declaration
+  [2206,3070]\nat 1\n\nNew cluster:\nUnknown cluster type\n------------\n===\ninsert-tree\n---\nblock
+  [2326,3070]\n    local_variable_declaration: InternalMockHandler<Object> handler
+  = new MockUtil().getMockHandler(invocation.getMock()); [2337,2427]\n    local_variable_declaration:
+  InvocationContainerImpl container = (InvocationContainerImpl) handler.getInvocationContainer();
+  [2437,2532]\n    enhanced_for_statement: for (StubbedInvocationMatcher stubbedInvocationMatcher
+  : container.getStubbedInvocations()) {\r\n            if (container.getInvocationForStubbing().matches(stubbedInvocationMatcher.getInvocation()))
+  {\r\n                return stubbedInvocationMatcher.answer(invocation);\r\n            }\r\n
+  \       } [2592,2887]\n    return_statement: return recordDeepStubAnswer(\r\n                newDeepStubMock(returnTypeGenericMetadata),\r\n
+  \               container\r\n        ); [2935,3063]\nto\nmethod_declaration [2206,3070]\nat
+  2\n\nNew cluster:\nUPDATE from return mockitoCore().mock(\r\n                returnTypeGenericMetadata.rawType(),\r\n
+  \               withSettingsUsing(returnTypeGenericMetadata, parentMockSettings)\r\n
+  \       ); to return mockitoCore().mock(\r\n                returnTypeGenericMetadata.rawType(),\r\n
+  \               withSettingsUsing(returnTypeGenericMetadata)\r\n        );\n------------\n===\nupdate-node\n---\nreturn_statement:
+  return mockitoCore().mock(\r\n                returnTypeGenericMetadata.rawType(),\r\n
+  \               withSettingsUsing(returnTypeGenericMetadata, parentMockSettings)\r\n
+  \       ); [3950,4124]\nreplace return mockitoCore().mock(\r\n                returnTypeGenericMetadata.rawType(),\r\n
+  \               withSettingsUsing(returnTypeGenericMetadata, parentMockSettings)\r\n
+  \       ); by return mockitoCore().mock(\r\n                returnTypeGenericMetadata.rawType(),\r\n
+  \               withSettingsUsing(returnTypeGenericMetadata)\r\n        );\n\nNew
+  cluster:\nUPDATE from return propagateSerializationSettings(mockSettings, parentMockSettings)\r\n
+  \               .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+  to return mockSettings.serializable()\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\n------------\n===\nupdate-node\n---\nreturn_statement:
+  return propagateSerializationSettings(mockSettings, parentMockSettings)\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+  [4502,4662]\nreplace return propagateSerializationSettings(mockSettings, parentMockSettings)\r\n
+  \               .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+  by return mockSettings.serializable()\r\n                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));\n\nNew
+  cluster:\n===\ndelete-node\n---\nmethod_declaration [2253,3139]\n===\n------------\n===\ndelete-node\n---\nmethod_declaration
+  [2253,3139]\n===\n===\ndelete-node\n---\nidentifier: deepStub [2268,2276]\n===\n\nNew
+  cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nblock [2373,3139]\n
+  \   local_variable_declaration: InternalMockHandler<Object> handler = new MockUtil().getMockHandler(invocation.getMock());
+  [2384,2474]\n    local_variable_declaration: InvocationContainerImpl container =
+  (InvocationContainerImpl) handler.getInvocationContainer(); [2484,2579]\n    enhanced_for_statement:
+  for (StubbedInvocationMatcher stubbedInvocationMatcher : container.getStubbedInvocations())
+  {\r\n            if (container.getInvocationForStubbing().matches(stubbedInvocationMatcher.getInvocation()))
+  {\r\n                return stubbedInvocationMatcher.answer(invocation);\r\n            }\r\n
+  \       } [2639,2934]\n    return_statement: return recordDeepStubAnswer(\r\n                newDeepStubMock(returnTypeGenericMetadata,
+  invocation.getMock()),\r\n                container\r\n        ); [2982,3132]\n\nNew
+  cluster:\n===\ndelete-node\n---\nlocal_variable_declaration: MockCreationSettings
+  parentMockSettings = new MockUtil().getMockSettings(parentMock); [3855,3940]\n===\n------------\n===\ndelete-node\n---\nlocal_variable_declaration:
+  MockCreationSettings parentMockSettings = new MockUtil().getMockSettings(parentMock);
+  [3855,3940]\n===\n\nNew cluster:\nUnknown cluster type\n------------\n===\ndelete-tree\n---\nmethod_declaration
+  [4677,4890]\n    identifier: propagateSerializationSettings [4698,4728]\n    method_parameters
+  [4677,4890]\n        formal_parameter: MockSettings mockSettings [4729,4754]\n    block
+  [4797,4890]\n        return_statement: return mockSettings.serializable(parentMockSettings.getSerializableMode());
+  [4808,4883]\n\n"

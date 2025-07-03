@@ -1,0 +1,191 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -98,20 +98,44 @@\n     // Do not try to remove
+  a block or an expr result. We already handle\n     // these cases when we visit
+  the child, and the peephole passes will\n     // fix up the tree in more clever
+  ways when these are removed.\n-    if (n.isExprResult() || n.isBlock()) {\n+    if
+  (parent.getType() == Token.COMMA) {\n+      Node gramps = parent.getParent();\n+
+  \     if (gramps.isCall() && parent == gramps.getFirstChild()) {\n+        if (n
+  == parent.getFirstChild() && parent.getChildCount() == 2 && n.getNext().isName()
+  && \"eval\".equals(n.getNext().getString())) {\n       return;\n+        }\n     }\n
+  \n     // This no-op statement was there so that JSDoc information could\n     //
+  be attached to the name. This check should not complain about it.\n-    if (n.isQualifiedName()
+  && n.getJSDocInfo() != null) {\n+      if (n == parent.getLastChild()) {\n+        for
+  (Node an : parent.getAncestors()) {\n+          int ancestorType = an.getType();\n+
+  \         if (ancestorType == Token.COMMA)\n+            continue;\n+          if
+  (ancestorType != Token.EXPR_RESULT && ancestorType != Token.BLOCK)\n+            return;\n+
+  \         else\n+            break;\n+        }\n+      }\n+    } else if (parent.getType()
+  != Token.EXPR_RESULT && parent.getType() != Token.BLOCK) {\n+      if (parent.getType()
+  == Token.FOR && parent.getChildCount() == 4 && (n == parent.getFirstChild() ||\n+
+  \          n == parent.getFirstChild().getNext().getNext())) {\n+      } else {\n
+  \      return;\n+      }\n     }\n \n     boolean isResultUsed = NodeUtil.isExpressionResultUsed(n);\n
+  \    boolean isSimpleOp = NodeUtil.isSimpleOperatorType(n.getType());\n     if (!isResultUsed
+  &&\n         (isSimpleOp || !NodeUtil.mayHaveSideEffects(n, t.getCompiler()))) {\n+
+  \     if (n.isQualifiedName() && n.getJSDocInfo() != null) {\n+        return;\n+
+  \     } else if (n.isExprResult()) {\n+        return;\n+      }\n       String
+  msg = \"This code lacks side-effects. Is there a bug?\";\n       if (n.isString())
+  {\n         msg = \"Is there a missing '+' on the previous line?\";\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  block [3338,4112]
+  to
+  if_statement [3301,3359]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: Node gramps = parent.getParent(); [3346,3379]
+  to
+  block [3338,4112]
+  at 0
+  ===
+  insert-node
+  ---
+  if_statement [3453,3608]
+  to
+  block [3443,3614]
+  at 0
+  ===
+  insert-node
+  ---
+  if_statement [3386,3614]
+  to
+  block [3338,4112]
+  at 1
+  ===
+  insert-node
+  ---
+  block [3443,3614]
+  to
+  if_statement [3386,3614]
+  at 1
+  ===
+  insert-node
+  ---
+  block [3338,4112]
+  to
+  if_statement [3301,3359]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  equals [3305,3336]
+      method_invocation: parent.getType() [3305,3321]
+      field_access: Token.COMMA [3325,3336]
+  to
+  parenthesized_expression [3304,3337]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [3765,4106]
+      parenthesized_expression [3768,3796]
+          equals [3769,3795]
+              identifier: n [3769,3770]
+              method_invocation: parent.getLastChild() [3774,3795]
+      block [3797,4106]
+          enhanced_for_statement: for (Node an : parent.getAncestors()) {
+            int ancestorType = an.getType();
+            if (ancestorType == Token.COMMA)
+              continue;
+            if (ancestorType != Token.EXPR_RESULT && ancestorType != Token.BLOCK)
+              return;
+            else
+              break;
+          } [3807,4098]
+  to
+  block [3338,4112]
+  at 2
+
+  New cluster:
+  MOVE from block [3815,4423]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [3508,3582]
+      parenthesized_expression [3511,3560]
+          and [3512,3559]
+              method_invocation: n.isQualifiedName() [3512,3531]
+              not_equals [3535,3559]
+                  method_invocation: n.getJSDocInfo() [3535,3551]
+                  null_literal [3555,3559]
+      block [3561,3582]
+          return_statement: return; [3569,3576]
+  to
+  block [3815,4423]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  parenthesized_expression [3389,3442]
+      and [3390,3441]
+          method_invocation: gramps.isCall() [3390,3405]
+          equals [3409,3441]
+              identifier: parent [3409,3415]
+              method_invocation: gramps.getFirstChild() [3419,3441]
+  to
+  if_statement [3386,3614]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  parenthesized_expression [3456,3582]
+      and [3457,3581]
+          and [3457,3539]
+              and [3457,3515]
+                  equals [3457,3484]
+                      identifier: n [3457,3458]
+                      method_invocation: parent.getFirstChild() [3462,3484]
+                  equals [3488,3515]
+                      method_invocation: parent.getChildCount() [3488,3510]
+                      decimal_integer_literal: 2 [3514,3515]
+              method_invocation: n.getNext().isName() [3519,3539]
+          method_invocation: "eval".equals(n.getNext().getString()) [3543,3581]
+  to
+  if_statement [3453,3608]
+  at 0
+
+  New cluster:
+  MOVE from if_statement [3453,3608]
+  ------------
+  ===
+  move-tree
+  ---
+  block [3338,3359]
+      return_statement: return; [3346,3353]
+  to
+  if_statement [3453,3608]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  or [3305,3336]
+      method_invocation: n.isExprResult() [3305,3321]
+      method_invocation: n.isBlock() [3325,3336]
+
+...

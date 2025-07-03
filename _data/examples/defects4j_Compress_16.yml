@@ -1,0 +1,64 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -241,9 +241,8 @@
+                   try {
+                       TarArchiveInputStream tais = new TarArchiveInputStream(new ByteArrayInputStream(tarheader));
+                       // COMPRESS-191 - verify the header checksum
+  -                    if (tais.getNextTarEntry().isCheckSumOK()) {
+  +                    tais.getNextEntry();
+                           return new TarArchiveInputStream(in);
+  -                    }
+                   } catch (Exception e) { // NOPMD
+                       // can generate IllegalArgumentException as well
+                       // as IOException
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: tais.getNextEntry(); [9658,9678]
+  to
+  block [9458,9804]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: tais.getNextEntry(); [9658,9678]
+  to
+  block [9458,9804]
+  at 1
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return new TarArchiveInputStream(in); [9703,9740]
+  to
+  block [9458,9804]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return new TarArchiveInputStream(in); [9703,9740]
+  to
+  block [9458,9804]
+  at 2
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [9658,9786]
+      parenthesized_expression [9661,9700]
+          method_invocation: tais.getNextTarEntry().isCheckSumOK() [9662,9699]
+      block [9701,9786]
+          return_statement: return new TarArchiveInputStream(in); [9727,9764]
+
+...

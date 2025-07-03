@@ -1,0 +1,265 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -58,25 +58,16 @@\n     protected abstract boolean
+  process(Token token);\n \n     protected boolean processStartTag(String name) {\n-
+  \       if (currentToken == start) { // don't recycle an in-use token\n-            return
+  process(new Token.StartTag().name(name));\n-        }\n         return process(start.reset().name(name));\n
+  \    }\n \n     public boolean processStartTag(String name, Attributes attrs) {\n-
+  \       if (currentToken == start) { // don't recycle an in-use token\n-            return
+  process(new Token.StartTag().nameAttr(name, attrs));\n-        }\n         start.reset();\n
+  \        start.nameAttr(name, attrs);\n         return process(start);\n     }\n
+  \n     protected boolean processEndTag(String name) {\n-        if (currentToken
+  == end) { // don't recycle an in-use token\n-            return process(new Token.EndTag().name(name));\n-
+  \       }\n         return process(end.reset().name(name));\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [1874,1978]
+  to
+  class_body [226,2816]
+  at 14
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [1874,1978]
+  to
+  class_body [226,2816]
+  at 14
+  ===
+  insert-node
+  ---
+  identifier: processStartTag [1892,1907]
+  to
+  method_declaration [1874,1978]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [1984,2144]
+  to
+  class_body [226,2816]
+  at 15
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [1984,2144]
+  to
+  class_body [226,2816]
+  at 15
+  ===
+  insert-node
+  ---
+  identifier: processStartTag [1999,2014]
+  to
+  method_declaration [1984,2144]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [2150,2250]
+  to
+  class_body [226,2816]
+  at 16
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [2150,2250]
+  to
+  class_body [226,2816]
+  at 16
+  ===
+  insert-node
+  ---
+  identifier: processEndTag [2168,2181]
+  to
+  method_declaration [2150,2250]
+  at 0
+
+  New cluster:
+  MOVE from method_declaration [1874,1978]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [1874,2119]
+      formal_parameter: String name [1908,1919]
+  to
+  method_declaration [1874,1978]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [1921,1978]
+      return_statement: return process(start.reset().name(name)); [1931,1972]
+  to
+  method_declaration [1874,1978]
+  at 2
+
+  New cluster:
+  MOVE from method_declaration [1984,2144]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [2125,2437]
+      formal_parameter: String name [2156,2167]
+  to
+  method_declaration [1984,2144]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [2046,2144]
+      expression_statement: start.reset(); [2056,2070]
+      expression_statement: start.nameAttr(name, attrs); [2079,2107]
+      return_statement: return process(start); [2116,2138]
+  to
+  method_declaration [1984,2144]
+  at 2
+
+  New cluster:
+  MOVE from method_declaration [2150,2250]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [2443,2680]
+      formal_parameter: String name [2475,2486]
+  to
+  method_declaration [2150,2250]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [2195,2250]
+      return_statement: return process(end.reset().name(name)); [2205,2244]
+  to
+  method_declaration [2150,2250]
+  at 2
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [1874,2119]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: processStartTag [1892,1907]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [1874,2119]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [1921,2119]
+      if_statement [1931,2063]
+          parenthesized_expression [1934,1957]
+              equals [1935,1956]
+                  identifier: currentToken [1935,1947]
+                  identifier: start [1951,1956]
+          block [1958,2063]
+              return_statement: return process(new Token.StartTag().name(name)); [2005,2053]
+      return_statement: return process(start.reset().name(name)); [2072,2113]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [2125,2437]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: processStartTag [2140,2155]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [2125,2437]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [2187,2437]
+      if_statement [2197,2340]
+          parenthesized_expression [2200,2223]
+              equals [2201,2222]
+                  identifier: currentToken [2201,2213]
+                  identifier: start [2217,2222]
+          block [2224,2340]
+              return_statement: return process(new Token.StartTag().nameAttr(name, attrs)); [2271,2330]
+      expression_statement: start.reset(); [2349,2363]
+      expression_statement: start.nameAttr(name, attrs); [2372,2400]
+      return_statement: return process(start); [2409,2431]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [2443,2680]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  identifier: processEndTag [2461,2474]
+  ===
+  ===
+  delete-node
+  ---
+  method_declaration [2443,2680]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [2488,2680]
+      if_statement [2498,2626]
+          parenthesized_expression [2501,2522]
+              equals [2502,2521]
+                  identifier: currentToken [2502,2514]
+                  identifier: end [2518,2521]
+          block [2523,2626]
+              return_statement: return process(new Token.EndTag().name(name)); [2570,2616]
+      return_statement: return process(end.reset().name(name)); [2635,2674]
+
+...

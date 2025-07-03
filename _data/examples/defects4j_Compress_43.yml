@@ -1,0 +1,83 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1031,7 +1031,7 @@\n \n         final long localHeaderStart
+  = streamCompressor.getTotalBytesWritten();\n         final byte[] localHeader =
+  createLocalFileHeader(ze, name, encodable, phased, localHeaderStart);\n-        metaData.put(ze,
+  new EntryMetaData(localHeaderStart, usesDataDescriptor(ze.getMethod(), phased)));\n+
+  \       metaData.put(ze, new EntryMetaData(localHeaderStart, usesDataDescriptor(ze.getMethod())));\n
+  \        entry.localDataStart = localHeaderStart + LFH_CRC_OFFSET; // At crc offset\n
+  \        writeCounted(localHeader);\n         entry.dataStart = streamCompressor.getTotalBytesWritten();\n@@
+  -1072,7 +1072,7 @@\n \n         //store method in local variable to prevent multiple
+  method calls\n         final int zipMethod = ze.getMethod();\n-        final boolean
+  dataDescriptor = usesDataDescriptor(zipMethod, phased);\n+        final boolean
+  dataDescriptor = usesDataDescriptor(zipMethod);\n \n         putShort(versionNeededToExtract(zipMethod,
+  hasZip64Extra(ze), dataDescriptor), buf, LFH_VERSION_NEEDED_OFFSET);\n \n@@ -1168,7
+  +1168,7 @@\n      * @throws IOException on error\n      */\n     protected void
+  writeDataDescriptor(final ZipArchiveEntry ze) throws IOException {\n-        if
+  (!usesDataDescriptor(ze.getMethod(), false)) {\n+        if (ze.getMethod() != DEFLATED
+  || channel != null) {\n             return;\n         }\n         writeCounted(DD_SIG);\n@@
+  -1489,8 +1489,8 @@\n         return versionNeededToExtractMethod(zipMethod);\n     }\n
+  \n-    private boolean usesDataDescriptor(final int zipMethod, boolean phased) {\n-
+  \       return !phased && zipMethod == DEFLATED && channel == null;\n+    private
+  boolean usesDataDescriptor(final int zipMethod) {\n+        return zipMethod ==
+  DEFLATED && channel == null;\n     }\n \n     private int versionNeededToExtractMethod(int
+  zipMethod) {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from metaData.put(ze, new EntryMetaData(localHeaderStart, usesDataDescriptor(ze.getMethod(), phased))); to metaData.put(ze, new EntryMetaData(localHeaderStart, usesDataDescriptor(ze.getMethod())));
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: metaData.put(ze, new EntryMetaData(localHeaderStart, usesDataDescriptor(ze.getMethod(), phased))); [38893,38991]
+  replace metaData.put(ze, new EntryMetaData(localHeaderStart, usesDataDescriptor(ze.getMethod(), phased))); by metaData.put(ze, new EntryMetaData(localHeaderStart, usesDataDescriptor(ze.getMethod())));
+
+  New cluster:
+  UPDATE from final boolean dataDescriptor = usesDataDescriptor(zipMethod, phased); to final boolean dataDescriptor = usesDataDescriptor(zipMethod);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: final boolean dataDescriptor = usesDataDescriptor(zipMethod, phased); [40925,40994]
+  replace final boolean dataDescriptor = usesDataDescriptor(zipMethod, phased); by final boolean dataDescriptor = usesDataDescriptor(zipMethod);
+
+  New cluster:
+  UPDATE from return !phased && zipMethod == DEFLATED && channel == null; to return zipMethod == DEFLATED && channel == null;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return !phased && zipMethod == DEFLATED && channel == null; [57450,57509]
+  replace return !phased && zipMethod == DEFLATED && channel == null; by return zipMethod == DEFLATED && channel == null;
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  or [45033,45078]
+      not_equals [45033,45059]
+          method_invocation: ze.getMethod() [45033,45047]
+          identifier: DEFLATED [45051,45059]
+      not_equals [45063,45078]
+          identifier: channel [45063,45070]
+          null_literal [45074,45078]
+  to
+  parenthesized_expression [45048,45092]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  unary_expression: !usesDataDescriptor(ze.getMethod(), false) [45049,45091]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  unary_expression: !usesDataDescriptor(ze.getMethod(), false) [45049,45091]
+  ===
+
+...

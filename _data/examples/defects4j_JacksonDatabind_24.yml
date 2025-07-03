@@ -1,0 +1,47 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -231,9 +231,10 @@\n         if (_dateFormat
+  == df) {\n             return this;\n         }\n+        TimeZone tz = (df == null)
+  ? _timeZone : df.getTimeZone();\n         return new BaseSettings(_classIntrospector,
+  _annotationIntrospector, _visibilityChecker, _propertyNamingStrategy, _typeFactory,\n
+  \                _typeResolverBuilder, df, _handlerInstantiator, _locale,\n-                _timeZone,
+  _defaultBase64);\n+                tz, _defaultBase64);\n     }\n \n     public
+  BaseSettings withHandlerInstantiator(HandlerInstantiator hi) {\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: TimeZone tz = (df == null) ? _timeZone : df.getTimeZone(); [9281,9339]
+  to
+  block [9203,9531]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: TimeZone tz = (df == null) ? _timeZone : df.getTimeZone(); [9281,9339]
+  to
+  block [9203,9531]
+  at 1
+
+  New cluster:
+  UPDATE from return new BaseSettings(_classIntrospector, _annotationIntrospector, _visibilityChecker, _propertyNamingStrategy, _typeFactory,
+                  _typeResolverBuilder, df, _handlerInstantiator, _locale,
+                  _timeZone, _defaultBase64); to return new BaseSettings(_classIntrospector, _annotationIntrospector, _visibilityChecker, _propertyNamingStrategy, _typeFactory,
+                  _typeResolverBuilder, df, _handlerInstantiator, _locale,
+                  tz, _defaultBase64);
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return new BaseSettings(_classIntrospector, _annotationIntrospector, _visibilityChecker, _propertyNamingStrategy, _typeFactory,
+                  _typeResolverBuilder, df, _handlerInstantiator, _locale,
+                  _timeZone, _defaultBase64); [9281,9525]
+  replace return new BaseSettings(_classIntrospector, _annotationIntrospector, _visibilityChecker, _propertyNamingStrategy, _typeFactory,
+                  _typeResolverBuilder, df, _handlerInstantiator, _locale,
+                  _timeZone, _defaultBase64); by return new BaseSettings(_classIntrospector, _annotationIntrospector, _visibilityChecker, _propertyNamingStrategy, _typeFactory,
+                  _typeResolverBuilder, df, _handlerInstantiator, _locale,
+                  tz, _defaultBase64);
+
+...

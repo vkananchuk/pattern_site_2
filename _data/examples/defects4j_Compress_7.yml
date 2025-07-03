@@ -1,0 +1,47 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -95,11 +95,10 @@\n         int          end
+  = offset + length;\n \n         for (int i = offset; i < end; ++i) {\n-            byte
+  b = buffer[i];\n-            if (b == 0) { // Trailing null\n+            if (buffer[i]
+  == 0) {\n                 break;\n             }\n-            result.append((char)
+  (b & 0xFF)); // Allow for sign-extension\n+            result.append((char) buffer[i]);\n
+  \        }\n \n         return result.toString();\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = offset; i < end; ++i) {
+              byte b = buffer[i];
+              if (b == 0) { // Trailing null
+                  break;
+              }
+              result.append((char) (b & 0xFF)); // Allow for sign-extension
+          } to for (int i = offset; i < end; ++i) {
+              if (buffer[i] == 0) {
+                  break;
+              }
+              result.append((char) buffer[i]);
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = offset; i < end; ++i) {
+              byte b = buffer[i];
+              if (b == 0) { // Trailing null
+                  break;
+              }
+              result.append((char) (b & 0xFF)); // Allow for sign-extension
+          } [3478,3710]
+  replace for (int i = offset; i < end; ++i) {
+              byte b = buffer[i];
+              if (b == 0) { // Trailing null
+                  break;
+              }
+              result.append((char) (b & 0xFF)); // Allow for sign-extension
+          } by for (int i = offset; i < end; ++i) {
+              if (buffer[i] == 0) {
+                  break;
+              }
+              result.append((char) buffer[i]);
+          }
+
+...

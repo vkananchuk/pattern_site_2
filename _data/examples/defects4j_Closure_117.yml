@@ -1,0 +1,66 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -722,20 +722,8 @@\n    *     to an Object type,
+  if possible.\n    */\n   String getReadableJSTypeName(Node n, boolean dereference)
+  {\n-    JSType type = getJSType(n);\n-    if (dereference) {\n-      ObjectType
+  dereferenced = type.dereference();\n-      if (dereferenced != null) {\n-        type
+  = dereferenced;\n-      }\n-    }\n \n     // The best type name is the actual type
+  name.\n-    if (type.isFunctionPrototypeType() ||\n-        (type.toObjectType()
+  != null &&\n-         type.toObjectType().getConstructor() != null)) {\n-      return
+  type.toString();\n-    }\n \n     // If we're analyzing a GETPROP, the property
+  may be inherited by the\n     // prototype chain. So climb the prototype chain and
+  find out where\n@@ -765,6 +753,18 @@\n       }\n     }\n \n+    JSType type = getJSType(n);\n+
+  \   if (dereference) {\n+      ObjectType dereferenced = type.dereference();\n+
+  \     if (dereferenced != null) {\n+        type = dereferenced;\n+      }\n+    }\n+
+  \   if (type.isFunctionPrototypeType() ||\n+        (type.toObjectType() != null
+  &&\n+         type.toObjectType().getConstructor() != null)) {\n+      return type.toString();\n+
+  \   }\n     String qualifiedName = n.getQualifiedName();\n     if (qualifiedName
+  != null) {\n       return qualifiedName;\n"
+tree_diff: |+
+  New cluster:
+  MOVE from block [27456,29271]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [28065,28998]
+      parenthesized_expression [28068,28083]
+          method_invocation: n.isGetProp() [28069,28082]
+      block [28084,28998]
+          local_variable_declaration: ObjectType objectType = getJSType(n.getFirstChild()).dereference(); [28092,28159]
+          if_statement [28166,28992]
+              parenthesized_expression [28169,28189]
+                  not_equals [28170,28188]
+                      identifier: objectType [28170,28180]
+                      null_literal [28184,28188]
+              block [28190,28992]
+                  local_variable_declaration: String propName = n.getLastChild().getString(); [28200,28247]
+                  if_statement [28256,28652]
+                      parenthesized_expression [28259,28353]
+                          and [28260,28352]
+                              not_equals [28260,28295]
+                                  method_invocation: objectType.getConstructor() [28260,28287]
+                                  null_literal [28291,28295]
+                              method_invocation: objectType.getConstructor().isInterface() [28311,28352]
+                      block [28354,28463]
+                          expression_statement: objectType = FunctionType.getTopDefiningInterface(
+                objectType, propName); [28366,28453]
+                  if_statement [28786,28984]
+                      parenthesized_expression [28789,28915]
+                          and [28790,28914]
+                              not_equals [28790,28808]
+                                  identifier: objectType [28790,28800]
+                                  null_literal [28804,28808]
+                              parenthesized_expression [28824,28914]
+                                  or [28825,28913]
+                                      not_equals [28825,28860]
+                                          method_invocation: objectType.getConstructor() [28825,28852]
+                                          null_literal [28856,28860]
+                                      method_invocation: objectType.isFunctionPrototypeType() [28877,28913]
+                      block [28916,28984]
+                          return_statement: return objectType.toString() + "." + propName; [28928,28974]
+  to
+  block [27456,29271]
+  at 0
+
+...

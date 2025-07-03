@@ -1,0 +1,63 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -158,17 +158,7 @@
+       {
+           try
+           {
+  -            if( str != null )
+  -            {
+  -                if( str.indexOf('.') != -1 )
+  -                {
+  -                    return Double.valueOf(str);
+  -                }
+  -                else
+  -                {
+  -                    return Long.valueOf(str);
+  -                }
+  -            }
+  +            return org.apache.commons.lang.math.NumberUtils.createNumber(str);
+           }
+           catch (NumberFormatException nfe)
+           {
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return org.apache.commons.lang.math.NumberUtils.createNumber(str); [4518,4584]
+  to
+  block [4504,4805]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return org.apache.commons.lang.math.NumberUtils.createNumber(str); [4518,4584]
+  to
+  block [4504,4805]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [4518,4795]
+      parenthesized_expression [4520,4535]
+          not_equals [4522,4533]
+              identifier: str [4522,4525]
+              null_literal [4529,4533]
+      block [4548,4795]
+          if_statement [4566,4781]
+              parenthesized_expression [4568,4594]
+                  not_equals [4570,4592]
+                      method_invocation: str.indexOf('.') [4570,4586]
+                      unary_expression: -1 [4590,4592]
+              block [4611,4678]
+                  return_statement: return Double.valueOf(str); [4633,4660]
+
+...

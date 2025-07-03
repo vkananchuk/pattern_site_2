@@ -1,0 +1,58 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -727,7 +727,7 @@\n     {\n         StringBuffer
+  sb = new StringBuffer(text.length());\n \n-        renderWrappedTextBlock(sb, width,
+  nextLineTabStop, text);\n+        renderWrappedText(sb, width, nextLineTabStop,
+  text);\n         pw.println(sb.toString());\n     }\n \n@@ -897,25 +897,8 @@\n      *
+  @param nextLineTabStop The position on the next line for the first tab.\n      *
+  @param text The text to be rendered.\n      */\n-    private StringBuffer renderWrappedTextBlock(StringBuffer
+  sb, int width, int nextLineTabStop, String text) {\n-        try {\n-            BufferedReader
+  in = new BufferedReader(new StringReader(text));\n-            String line;\n-            boolean
+  firstLine = true;\n-            while ((line = in.readLine()) != null) {\n-                if
+  (!firstLine) {\n-                    sb.append(getNewLine());\n-                }
+  else {\n-                    firstLine = false;\n-                }\n-                renderWrappedText(sb,
+  width, nextLineTabStop, line);\n-            }\n-        } catch (IOException e)
+  {\n             // cannot happen\n-        }\n \n-        return sb;\n-    }\n \n
+  \    /**\n      * Finds the next text wrap position after <code>startPos</code>
+  for the\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from renderWrappedTextBlock(sb, width, nextLineTabStop, text); to renderWrappedText(sb, width, nextLineTabStop, text);
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: renderWrappedTextBlock(sb, width, nextLineTabStop, text); [22436,22493]
+  replace renderWrappedTextBlock(sb, width, nextLineTabStop, text); by renderWrappedText(sb, width, nextLineTabStop, text);
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [27992,28648]
+      identifier: renderWrappedTextBlock [28013,28035]
+      method_parameters [27992,28648]
+          formal_parameter: StringBuffer sb [28036,28051]
+      block [28098,28648]
+          try_statement [28108,28622]
+              block [28112,28559]
+                  local_variable_declaration: BufferedReader in = new BufferedReader(new StringReader(text)); [28126,28189]
+                  local_variable_declaration: String line; [28202,28214]
+                  local_variable_declaration: boolean firstLine = true; [28227,28252]
+                  while_statement: while ((line = in.readLine()) != null) {
+                  if (!firstLine) {
+                      sb.append(getNewLine());
+                  } else {
+                      firstLine = false;
+                  }
+                  renderWrappedText(sb, width, nextLineTabStop, line);
+              } [28265,28549]
+              excepts [28108,28622]
+                  catch_clause: catch (IOException e) {
+              // cannot happen
+          } [28560,28622]
+          return_statement: return sb; [28632,28642]
+
+...

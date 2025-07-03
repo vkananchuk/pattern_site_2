@@ -1,0 +1,55 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -703,8 +703,7 @@\n     // other types\n     switch
+  (this.testForEquality(that)) {\n       case TRUE:\n-        JSType noType = getNativeType(JSTypeNative.NO_TYPE);\n-
+  \       return new TypePair(noType, noType);\n+        return new TypePair(null,
+  null);\n \n       case FALSE:\n       case UNKNOWN:\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from {
+        case TRUE:
+          JSType noType = getNativeType(JSTypeNative.NO_TYPE);
+          return new TypePair(noType, noType);
+
+        case FALSE:
+        case UNKNOWN:
+          return new TypePair(this, that);
+      } to {
+        case TRUE:
+          return new TypePair(null, null);
+
+        case FALSE:
+        case UNKNOWN:
+          return new TypePair(this, that);
+      }
+  ------------
+  ===
+  update-node
+  ---
+  switch_block: {
+        case TRUE:
+          JSType noType = getNativeType(JSTypeNative.NO_TYPE);
+          return new TypePair(noType, noType);
+
+        case FALSE:
+        case UNKNOWN:
+          return new TypePair(this, that);
+      } [21483,21693]
+  replace {
+        case TRUE:
+          JSType noType = getNativeType(JSTypeNative.NO_TYPE);
+          return new TypePair(noType, noType);
+
+        case FALSE:
+        case UNKNOWN:
+          return new TypePair(this, that);
+      } by {
+        case TRUE:
+          return new TypePair(null, null);
+
+        case FALSE:
+        case UNKNOWN:
+          return new TypePair(this, that);
+      }
+
+...

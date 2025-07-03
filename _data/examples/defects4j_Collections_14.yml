@@ -1,0 +1,59 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -118,11 +118,7 @@
+        */
+       protected Object convertKey(Object key) {
+           if (key != null) {
+  -            char[] chars = key.toString().toCharArray();
+  -            for (int i = chars.length - 1; i >= 0; i--) {
+  -                chars[i] = Character.toLowerCase(Character.toUpperCase(chars[i]));
+  -            }
+  -            return new String(chars);
+  +            return key.toString().toLowerCase();
+           } else {
+               return AbstractHashedMap.NULL;
+           }
+tree_diff: |+
+  New cluster:
+  UPDATE from return new String(chars); to return key.toString().toLowerCase();
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return new String(chars); [4665,4690]
+  replace return new String(chars); by return key.toString().toLowerCase();
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: char[] chars = key.toString().toCharArray(); [4453,4497]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: char[] chars = key.toString().toCharArray(); [4453,4497]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  for_statement: for (int i = chars.length - 1; i >= 0; i--) {
+                  chars[i] = Character.toLowerCase(Character.toUpperCase(chars[i]));
+              } [4510,4652]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  for_statement: for (int i = chars.length - 1; i >= 0; i--) {
+                  chars[i] = Character.toLowerCase(Character.toUpperCase(chars[i]));
+              } [4510,4652]
+  ===
+
+...

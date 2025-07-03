@@ -1,0 +1,109 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1118,8 +1118,21 @@\n \n     ObjectType constraintObj
+  =\n         ObjectType.cast(constraint.restrictByNotNullOrUndefined());\n-    if
+  (constraintObj != null) {\n-      type.matchConstraint(constraintObj);\n+    if
+  (constraintObj != null && constraintObj.isRecordType()) {\n+      ObjectType objType
+  = ObjectType.cast(type.restrictByNotNullOrUndefined());\n+      if (objType != null)
+  {\n+        for (String prop : constraintObj.getOwnPropertyNames()) {\n+          JSType
+  propType = constraintObj.getPropertyType(prop);\n+          if (!objType.isPropertyTypeDeclared(prop))
+  {\n+            JSType typeToInfer = propType;\n+            if (!objType.hasProperty(prop))
+  {\n+              typeToInfer =\n+                  getNativeType(VOID_TYPE).getLeastSupertype(propType);\n+
+  \           }\n+            objType.defineInferredProperty(prop, typeToInfer, null);\n+
+  \         }\n+        }\n+      }\n     }\n   }\n \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  and [39854,39907]
+  to
+  parenthesized_expression [39853,39876]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  and [39854,39907]
+  to
+  parenthesized_expression [39853,39876]
+  at 0
+  ===
+  insert-node
+  ---
+  method_invocation: constraintObj.isRecordType() [39879,39907]
+  to
+  and [39854,39907]
+  at 1
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: ObjectType objType = ObjectType.cast(type.restrictByNotNullOrUndefined()); [39917,39991]
+  to
+  block [39877,39927]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: ObjectType objType = ObjectType.cast(type.restrictByNotNullOrUndefined()); [39917,39991]
+  to
+  block [39877,39927]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [39998,40508]
+      parenthesized_expression [40001,40018]
+          not_equals [40002,40017]
+              identifier: objType [40002,40009]
+              null_literal [40013,40017]
+      block [40019,40508]
+          enhanced_for_statement: for (String prop : constraintObj.getOwnPropertyNames()) {
+            JSType propType = constraintObj.getPropertyType(prop);
+            if (!objType.isPropertyTypeDeclared(prop)) {
+              JSType typeToInfer = propType;
+              if (!objType.hasProperty(prop)) {
+                typeToInfer =
+                    getNativeType(VOID_TYPE).getLeastSupertype(propType);
+              }
+              objType.defineInferredProperty(prop, typeToInfer, null);
+            }
+          } [40029,40500]
+  to
+  block [39877,39927]
+  at 1
+
+  New cluster:
+  MOVE from and [39854,39907]
+  ------------
+  ===
+  move-tree
+  ---
+  not_equals [39854,39875]
+      identifier: constraintObj [39854,39867]
+      null_literal [39871,39875]
+  to
+  and [39854,39907]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: type.matchConstraint(constraintObj); [39885,39921]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: type.matchConstraint(constraintObj); [39885,39921]
+  ===
+
+...

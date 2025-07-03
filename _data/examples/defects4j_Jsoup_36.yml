@@ -1,0 +1,289 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -7,7 +7,6 @@\n import java.io.*;\n import java.nio.ByteBuffer;\n
+  import java.nio.charset.Charset;\n-import java.nio.charset.IllegalCharsetNameException;\n
+  import java.util.regex.Matcher;\n import java.util.regex.Pattern;\n import java.util.Locale;\n@@
+  -17,7 +16,7 @@\n  *\n  */\n public class DataUtil {\n-    private static final Pattern
+  charsetPattern = Pattern.compile(\"(?i)\\\\bcharset=\\\\s*(?:\\\"|')?([^\\\\s,;\\\"']*)\");\n+
+  \   private static final Pattern charsetPattern = Pattern.compile(\"(?i)\\\\bcharset=\\\\s*\\\"?([^\\\\s;\\\"]*)\");\n
+  \    static final String defaultCharset = \"UTF-8\"; // used if not found in header
+  or meta charset\n     private static final int bufferSize = 0x20000; // ~130K.\n
+  \n@@ -85,21 +84,11 @@\n                 String foundCharset;\n                 if
+  (meta.hasAttr(\"http-equiv\")) {\n                     foundCharset = getCharsetFromContentType(meta.attr(\"content\"));\n-
+  \                   if (foundCharset == null && meta.hasAttr(\"charset\")) {\n-
+  \                       try {\n-                            if (Charset.isSupported(meta.attr(\"charset\")))
+  {\n-                                foundCharset = meta.attr(\"charset\");\n-                            }\n-
+  \                       } catch (IllegalCharsetNameException e) {\n-                            foundCharset
+  = null;\n-                        }\n-                    }\n                 }
+  else {\n                     foundCharset = meta.attr(\"charset\");\n                 }\n
+  \n                 if (foundCharset != null && foundCharset.length() != 0 && !foundCharset.equals(defaultCharset))
+  { // need to re-decode\n-                    foundCharset = foundCharset.trim().replaceAll(\"[\\\"']\",
+  \"\");\n                     charsetName = foundCharset;\n                     byteData.rewind();\n
+  \                    docData = Charset.forName(foundCharset).decode(byteData).toString();\n@@
+  -169,16 +158,10 @@\n         Matcher m = charsetPattern.matcher(contentType);\n
+  \        if (m.find()) {\n             String charset = m.group(1).trim();\n-            charset
+  = charset.replace(\"charset=\", \"\");\n-            if (charset.isEmpty()) return
+  null;\n-            try {\n                 if (Charset.isSupported(charset)) return
+  charset;\n                 charset = charset.toUpperCase(Locale.ENGLISH);\n                 if
+  (Charset.isSupported(charset)) return charset;\n-            } catch (IllegalCharsetNameException
+  e) {\n                 // if our advanced charset matching fails.... we just take
+  the default\n-                return null;\n-            }\n         }\n         return
+  null;\n     }\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:\"|')?([^\\s,;\"']*)"); to private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
+  ------------
+  ===
+  update-node
+  ---
+  field_declaration: private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:\"|')?([^\\s,;\"']*)"); [434,542]
+  replace private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:\"|')?([^\\s,;\"']*)"); by private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
+
+  New cluster:
+  MOVE from if_statement [7570,7605]
+  ------------
+  ===
+  move-tree
+  ---
+  parenthesized_expression [7442,7452]
+      method_invocation: m.find() [7443,7451]
+  to
+  if_statement [7570,7605]
+  at 0
+  ===
+  move-tree
+  ---
+  block [7453,8012]
+      local_variable_declaration: String charset = m.group(1).trim(); [7467,7502]
+      expression_statement: charset = charset.replace("charset=", ""); [7515,7557]
+      if_statement [7570,7605]
+          parenthesized_expression [7573,7592]
+              method_invocation: charset.isEmpty() [7574,7591]
+          return_statement: return null; [7593,7605]
+      try_statement [7618,8002]
+          block [7622,7832]
+              if_statement [7640,7689]
+                  parenthesized_expression [7643,7673]
+                      method_invocation: Charset.isSupported(charset) [7644,7672]
+                  return_statement: return charset; [7674,7689]
+              expression_statement: charset = charset.toUpperCase(Locale.ENGLISH); [7706,7752]
+              if_statement [7769,7818]
+                  parenthesized_expression [7772,7802]
+                      method_invocation: Charset.isSupported(charset) [7773,7801]
+                  return_statement: return charset; [7803,7818]
+          excepts [7618,8002]
+              catch_clause: catch (IllegalCharsetNameException e) {
+                  // if our advanced charset matching fails.... we just take the default
+                  return null;
+              } [7833,8002]
+  to
+  method_declaration [7266,8039]
+  at 2
+
+  New cluster:
+  MOVE from block [7453,8012]
+  ------------
+  ===
+  move-tree
+  ---
+  if_statement [7336,7373]
+      parenthesized_expression [7339,7360]
+          equals [7340,7359]
+              identifier: contentType [7340,7351]
+              null_literal [7355,7359]
+      return_statement: return null; [7361,7373]
+  to
+  block [7453,8012]
+  at 0
+
+  New cluster:
+  UPDATE from String charset = m.group(1).trim(); to Matcher m = charsetPattern.matcher(contentType);
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: String charset = m.group(1).trim(); [7467,7502]
+  replace String charset = m.group(1).trim(); by Matcher m = charsetPattern.matcher(contentType);
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return null; [7218,7230]
+  to
+  block [7453,8012]
+  at 4
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return null; [7218,7230]
+  to
+  block [7453,8012]
+  at 4
+
+  New cluster:
+  MOVE from if_statement [7570,7605]
+  ------------
+  ===
+  move-tree
+  ---
+  block [7622,7832]
+      if_statement [7640,7689]
+          parenthesized_expression [7643,7673]
+              method_invocation: Charset.isSupported(charset) [7644,7672]
+          return_statement: return charset; [7674,7689]
+      expression_statement: charset = charset.toUpperCase(Locale.ENGLISH); [7706,7752]
+      if_statement [7769,7818]
+          parenthesized_expression [7772,7802]
+              method_invocation: Charset.isSupported(charset) [7773,7801]
+          return_statement: return charset; [7803,7818]
+  to
+  if_statement [7570,7605]
+  at 1
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: String charset = m.group(1).trim(); [6882,6917]
+  to
+  block [7622,7832]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: String charset = m.group(1).trim(); [6882,6917]
+  to
+  block [7622,7832]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [3756,4179]
+      parenthesized_expression [3759,3808]
+          and [3760,3807]
+              equals [3760,3780]
+                  identifier: foundCharset [3760,3772]
+                  null_literal [3776,3780]
+              method_invocation: meta.hasAttr("charset") [3784,3807]
+      block [3809,4179]
+          try_statement [3835,4157]
+              block [3839,4042]
+                  if_statement [3869,4016]
+                      parenthesized_expression [3872,3915]
+                          method_invocation: Charset.isSupported(meta.attr("charset")) [3873,3914]
+                      block [3916,4016]
+                          expression_statement: foundCharset = meta.attr("charset"); [3950,3986]
+              excepts [3835,4157]
+                  catch_clause: catch (IllegalCharsetNameException e) {
+                              foundCharset = null;
+                          } [4043,4157]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: foundCharset = foundCharset.trim().replaceAll("[\"']", ""); [4436,4495]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: foundCharset = foundCharset.trim().replaceAll("[\"']", ""); [4436,4495]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: charset = charset.replace("charset=", ""); [7515,7557]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: charset = charset.replace("charset=", ""); [7515,7557]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  parenthesized_expression [7573,7592]
+      method_invocation: charset.isEmpty() [7574,7591]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  return_statement: return null; [7593,7605]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  return_statement: return null; [7593,7605]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  excepts [7618,8002]
+      catch_clause: catch (IllegalCharsetNameException e) {
+                  // if our advanced charset matching fails.... we just take the default
+                  return null;
+              } [7833,8002]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  try_statement [7618,8002]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  try_statement [7618,8002]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  block [7326,8039]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  block [7326,8039]
+  ===
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Matcher m = charsetPattern.matcher(contentType); [7382,7430]
+  ===
+  ===
+  delete-node
+  ---
+  return_statement: return null; [8021,8033]
+  ===
+  ===
+  delete-node
+  ---
+  if_statement [7439,8012]
+  ===
+
+...

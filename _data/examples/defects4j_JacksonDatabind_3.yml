@@ -1,0 +1,148 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -63,7 +63,7 @@\n             if (t == JsonToken.VALUE_STRING)
+  {\n                 value = jp.getText();\n             } else if (t == JsonToken.VALUE_NULL)
+  {\n-                value = null; // since we have established that '_elementDeserializer
+  == null' earlier\n+                value = _elementDeserializer.getNullValue();\n
+  \            } else {\n                 value = _parseString(jp, ctxt);\n             }\n@@
+  -92,7 +92,7 @@\n         \n         while ((t = jp.nextToken()) != JsonToken.END_ARRAY)
+  {\n             // Ok: no need to convert Strings, but must recognize nulls\n-            String
+  value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp,
+  ctxt);\n+            String value = (t == JsonToken.VALUE_NULL) ? null : deser.deserialize(jp,
+  ctxt);\n             if (ix >= chunk.length) {\n                 chunk = buffer.appendCompletedChunk(chunk);\n
+  \                ix = 0;\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value;
+              if (t == JsonToken.VALUE_STRING) {
+                  value = jp.getText();
+              } else if (t == JsonToken.VALUE_NULL) {
+                  value = null; // since we have established that '_elementDeserializer == null' earlier
+              } else {
+                  value = _parseString(jp, ctxt);
+              }
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          } to while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value;
+              if (t == JsonToken.VALUE_STRING) {
+                  value = jp.getText();
+              } else if (t == JsonToken.VALUE_NULL) {
+                  value = _elementDeserializer.getNullValue();
+              } else {
+                  value = _parseString(jp, ctxt);
+              }
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value;
+              if (t == JsonToken.VALUE_STRING) {
+                  value = jp.getText();
+              } else if (t == JsonToken.VALUE_NULL) {
+                  value = null; // since we have established that '_elementDeserializer == null' earlier
+              } else {
+                  value = _parseString(jp, ctxt);
+              }
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          } [1935,2588]
+  replace while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value;
+              if (t == JsonToken.VALUE_STRING) {
+                  value = jp.getText();
+              } else if (t == JsonToken.VALUE_NULL) {
+                  value = null; // since we have established that '_elementDeserializer == null' earlier
+              } else {
+                  value = _parseString(jp, ctxt);
+              }
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          } by while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value;
+              if (t == JsonToken.VALUE_STRING) {
+                  value = jp.getText();
+              } else if (t == JsonToken.VALUE_NULL) {
+                  value = _elementDeserializer.getNullValue();
+              } else {
+                  value = _parseString(jp, ctxt);
+              }
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          }
+
+  New cluster:
+  UPDATE from while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          } to while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value = (t == JsonToken.VALUE_NULL) ? null : deser.deserialize(jp, ctxt);
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          } [3206,3619]
+  replace while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          } by while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+              // Ok: no need to convert Strings, but must recognize nulls
+              String value = (t == JsonToken.VALUE_NULL) ? null : deser.deserialize(jp, ctxt);
+              if (ix >= chunk.length) {
+                  chunk = buffer.appendCompletedChunk(chunk);
+                  ix = 0;
+              }
+              chunk[ix++] = value;
+          }
+
+...

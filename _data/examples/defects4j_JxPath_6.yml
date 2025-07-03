@@ -1,0 +1,89 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -54,19 +54,11 @@\n //            (l == null
+  ? \"null\" : l.getClass().getName()) + \" \" +\n //            (r == null ? \"null\"
+  : r.getClass().getName()));\n \n-        if (l instanceof InitialContext) {\n-            ((EvalContext)
+  l).reset();\n-        }\n-\n-        if (l instanceof SelfContext) {\n+        if
+  (l instanceof InitialContext || l instanceof SelfContext) {\n             l = ((EvalContext)
+  l).getSingleNodePointer();\n         }\n \n-        if (r instanceof InitialContext)
+  {\n-            ((EvalContext) r).reset();\n-        }\n-\n-        if (r instanceof
+  SelfContext) {\n+        if (r instanceof InitialContext || r instanceof SelfContext)
+  {\n             r = ((EvalContext) r).getSingleNodePointer();\n         }\n \n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  or [1973,2028]
+      instanceof_expression: l instanceof InitialContext [1973,2000]
+      instanceof_expression: l instanceof SelfContext [2004,2028]
+  to
+  parenthesized_expression [2065,2091]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  or [2113,2168]
+      instanceof_expression: r instanceof InitialContext [2113,2140]
+      instanceof_expression: r instanceof SelfContext [2144,2168]
+  to
+  parenthesized_expression [2267,2293]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [1969,2052]
+      parenthesized_expression [1972,2001]
+          instanceof_expression: l instanceof InitialContext [1973,2000]
+      block [2002,2052]
+          expression_statement: ((EvalContext) l).reset(); [2016,2042]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  instanceof_expression: l instanceof SelfContext [2066,2090]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  instanceof_expression: l instanceof SelfContext [2066,2090]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [2171,2254]
+      parenthesized_expression [2174,2203]
+          instanceof_expression: r instanceof InitialContext [2175,2202]
+      block [2204,2254]
+          expression_statement: ((EvalContext) r).reset(); [2218,2244]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  instanceof_expression: r instanceof SelfContext [2268,2292]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  instanceof_expression: r instanceof SelfContext [2268,2292]
+  ===
+
+...

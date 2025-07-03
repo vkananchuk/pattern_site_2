@@ -1,0 +1,181 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -114,26 +114,17 @@\n         List valueList
+  = (List) values.get(option);\n \n         // grab the correct default values\n-
+  \       if (defaultValues == null || defaultValues.isEmpty()) {\n-            defaultValues
+  = (List) this.defaultValues.get(option);\n+        if ((valueList == null) || valueList.isEmpty())
+  {\n+            valueList = defaultValues;\n         }\n \n         // augment the
+  list with the default values\n-        if (defaultValues != null && !defaultValues.isEmpty())
+  {\n-            if (valueList == null || valueList.isEmpty()) {\n-                valueList
+  = defaultValues;\n-            } else {\n+        if ((valueList == null) || valueList.isEmpty())
+  {\n+            valueList = (List) this.defaultValues.get(option);\n+        }\n
+  \                // if there are more default values as specified, add them to\n
+  \                // the list.\n-                if (defaultValues.size() > valueList.size())
+  {\n                     // copy the list first\n-                    valueList =
+  new ArrayList(valueList);\n-                    for (int i=valueList.size(); i<defaultValues.size();
+  i++) {\n-                        valueList.add(defaultValues.get(i));\n-                    }\n-
+  \               }\n-            }\n-        }\n         \n         return valueList
+  == null ? Collections.EMPTY_LIST : valueList;\n     }\n"
+tree_diff: |+
+  New cluster:
+  MOVE from method_declaration [3878,5047]
+  ------------
+  ===
+  move-tree
+  ---
+  block [4360,4961]
+      if_statement [4374,4951]
+          parenthesized_expression [4377,4419]
+              or [4378,4418]
+                  equals [4378,4395]
+                      identifier: valueList [4378,4387]
+                      null_literal [4391,4395]
+                  method_invocation: valueList.isEmpty() [4399,4418]
+          block [4420,4478]
+              expression_statement: valueList = defaultValues; [4438,4464]
+  to
+  method_declaration [3878,5047]
+  at 2
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  local_variable_declaration: List valueList = (List) values.get(option); [4015,4058]
+  to
+  block [4360,4961]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  local_variable_declaration: List valueList = (List) values.get(option); [4015,4058]
+  to
+  block [4360,4961]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [4271,4393]
+      parenthesized_expression [4274,4318]
+          or [4275,4317]
+              parenthesized_expression [4275,4294]
+                  equals [4276,4293]
+                      identifier: valueList [4276,4285]
+                      null_literal [4289,4293]
+              method_invocation: valueList.isEmpty() [4298,4317]
+      block [4319,4393]
+          expression_statement: valueList = (List) this.defaultValues.get(option); [4333,4383]
+  to
+  block [4360,4961]
+  at 2
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return valueList == null ? Collections.EMPTY_LIST : valueList; [4561,4623]
+  to
+  block [4360,4961]
+  at 3
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return valueList == null ? Collections.EMPTY_LIST : valueList; [4561,4623]
+  to
+  block [4360,4961]
+  at 3
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  parenthesized_expression [4115,4134]
+  to
+  or [4378,4418]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  parenthesized_expression [4115,4134]
+  to
+  or [4378,4418]
+  at 0
+
+  New cluster:
+  MOVE from parenthesized_expression [4115,4134]
+  ------------
+  ===
+  move-tree
+  ---
+  equals [4378,4395]
+      identifier: valueList [4378,4387]
+      null_literal [4391,4395]
+  to
+  parenthesized_expression [4115,4134]
+  at 0
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  block [3967,5047]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: List valueList = (List) values.get(option); [4015,4058]
+  ===
+  ===
+  delete-node
+  ---
+  if_statement [4305,4961]
+  ===
+  ===
+  delete-node
+  ---
+  return_statement: return valueList == null ? Collections.EMPTY_LIST : valueList; [4979,5041]
+  ===
+  ===
+  delete-node
+  ---
+  block [3967,5047]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [4111,4243]
+      parenthesized_expression [4114,4164]
+          or [4115,4163]
+              equals [4115,4136]
+                  identifier: defaultValues [4115,4128]
+                  null_literal [4132,4136]
+              method_invocation: defaultValues.isEmpty() [4140,4163]
+      block [4165,4243]
+          expression_statement: defaultValues = (List) this.defaultValues.get(option); [4179,4233]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  parenthesized_expression [4308,4359]
+      and [4309,4358]
+          not_equals [4309,4330]
+              identifier: defaultValues [4309,4322]
+              null_literal [4326,4330]
+          unary_expression: !defaultValues.isEmpty() [4334,4358]
+
+...

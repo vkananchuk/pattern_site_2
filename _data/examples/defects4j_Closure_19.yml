@@ -1,0 +1,118 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -169,9 +169,7 @@\n         scope.inferQualifiedSlot(node,
+  qualifiedName, origType, type);\n         break;\n \n-      case Token.THIS:\n         //
+  \"this\" references aren't currently modeled in the CFG.\n-        break;\n \n       default:\n
+  \        throw new IllegalArgumentException(\"Node cannot be refined. \\n\" +\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from {
+        case Token.NAME:
+          scope.inferSlotType(node.getString(), type);
+          break;
+
+        case Token.GETPROP:
+          String qualifiedName = node.getQualifiedName();
+          Preconditions.checkNotNull(qualifiedName);
+
+          JSType origType = node.getJSType();
+          origType = origType == null ? getNativeType(UNKNOWN_TYPE) : origType;
+          scope.inferQualifiedSlot(node, qualifiedName, origType, type);
+          break;
+
+        case Token.THIS:
+          // "this" references aren't currently modeled in the CFG.
+          break;
+
+        default:
+          throw new IllegalArgumentException("Node cannot be refined. \n" +
+              node.toStringTree());
+      } to {
+        case Token.NAME:
+          scope.inferSlotType(node.getString(), type);
+          break;
+
+        case Token.GETPROP:
+          String qualifiedName = node.getQualifiedName();
+          Preconditions.checkNotNull(qualifiedName);
+
+          JSType origType = node.getJSType();
+          origType = origType == null ? getNativeType(UNKNOWN_TYPE) : origType;
+          scope.inferQualifiedSlot(node, qualifiedName, origType, type);
+          break;
+
+          // "this" references aren't currently modeled in the CFG.
+
+        default:
+          throw new IllegalArgumentException("Node cannot be refined. \n" +
+              node.toStringTree());
+      }
+  ------------
+  ===
+  update-node
+  ---
+  switch_block: {
+        case Token.NAME:
+          scope.inferSlotType(node.getString(), type);
+          break;
+
+        case Token.GETPROP:
+          String qualifiedName = node.getQualifiedName();
+          Preconditions.checkNotNull(qualifiedName);
+
+          JSType origType = node.getJSType();
+          origType = origType == null ? getNativeType(UNKNOWN_TYPE) : origType;
+          scope.inferQualifiedSlot(node, qualifiedName, origType, type);
+          break;
+
+        case Token.THIS:
+          // "this" references aren't currently modeled in the CFG.
+          break;
+
+        default:
+          throw new IllegalArgumentException("Node cannot be refined. \n" +
+              node.toStringTree());
+      } [6071,6741]
+  replace {
+        case Token.NAME:
+          scope.inferSlotType(node.getString(), type);
+          break;
+
+        case Token.GETPROP:
+          String qualifiedName = node.getQualifiedName();
+          Preconditions.checkNotNull(qualifiedName);
+
+          JSType origType = node.getJSType();
+          origType = origType == null ? getNativeType(UNKNOWN_TYPE) : origType;
+          scope.inferQualifiedSlot(node, qualifiedName, origType, type);
+          break;
+
+        case Token.THIS:
+          // "this" references aren't currently modeled in the CFG.
+          break;
+
+        default:
+          throw new IllegalArgumentException("Node cannot be refined. \n" +
+              node.toStringTree());
+      } by {
+        case Token.NAME:
+          scope.inferSlotType(node.getString(), type);
+          break;
+
+        case Token.GETPROP:
+          String qualifiedName = node.getQualifiedName();
+          Preconditions.checkNotNull(qualifiedName);
+
+          JSType origType = node.getJSType();
+          origType = origType == null ? getNativeType(UNKNOWN_TYPE) : origType;
+          scope.inferQualifiedSlot(node, qualifiedName, origType, type);
+          break;
+
+          // "this" references aren't currently modeled in the CFG.
+
+        default:
+          throw new IllegalArgumentException("Node cannot be refined. \n" +
+              node.toStringTree());
+      }
+
+...

@@ -1,0 +1,80 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -90,16 +90,8 @@\n         int indexOfActualTypeArgument
+  = getIndex(classTypeVariables, fieldTypeVariable);\n         Type[] actualTypeArguments
+  = objParameterizedType.getActualTypeArguments();\n         return actualTypeArguments[indexOfActualTypeArgument];\n-
+  \     } else if (typeToEvaluate instanceof TypeVariable<?>) {\n-        Type theSearchedType
+  = null;\n \n-        do {\n-          theSearchedType = extractTypeForHierarchy(parentType,
+  (TypeVariable<?>) typeToEvaluate);\n-        } while ((theSearchedType != null)
+  && (theSearchedType instanceof TypeVariable<?>));\n-\n-        if (theSearchedType
+  != null) {\n-          return theSearchedType;\n-        }\n+\n       }\n \n       throw
+  new UnsupportedOperationException(\"Expecting parameterized type, got \" + parentType\n@@
+  -114,43 +106,11 @@\n     }\n   }\n \n-  private static Type extractTypeForHierarchy(Type
+  parentType, TypeVariable<?> typeToEvaluate) {\n-    Class<?> rawParentType = null;\n-
+  \   if (parentType instanceof Class<?>) {\n-      rawParentType = (Class<?>) parentType;\n-
+  \   } else if (parentType instanceof ParameterizedType) {\n-      ParameterizedType
+  parentTypeAsPT = (ParameterizedType) parentType;\n-      rawParentType = (Class<?>)
+  parentTypeAsPT.getRawType();\n-    } else {\n-      return null;\n-    }\n \n-    Type
+  superClass = rawParentType.getGenericSuperclass();\n-    if (superClass instanceof
+  ParameterizedType\n-        && ((ParameterizedType) superClass).getRawType() ==
+  typeToEvaluate.getGenericDeclaration()) {\n       // Evaluate type on this type\n-
+  \     TypeVariable<?>[] classTypeVariables =\n-          ((Class<?>) ((ParameterizedType)
+  superClass).getRawType()).getTypeParameters();\n-      int indexOfActualTypeArgument
+  = getIndex(classTypeVariables, typeToEvaluate);\n-\n-      Type[] actualTypeArguments
+  = null;\n-      if (parentType instanceof Class<?>) {\n-        actualTypeArguments
+  = ((ParameterizedType) superClass).getActualTypeArguments();\n-      } else if (parentType
+  instanceof ParameterizedType) {\n-        actualTypeArguments = ((ParameterizedType)
+  parentType).getActualTypeArguments();\n-      } else {\n-        return null;\n-
+  \     }\n \n-      return actualTypeArguments[indexOfActualTypeArgument];\n-    }\n
+  \n-    Type searchedType = null;\n-    if (superClass != null) {\n-      searchedType
+  = extractTypeForHierarchy(superClass, typeToEvaluate);\n-    }\n-    return searchedType;\n-
+  \ }\n+\n \n   private static Type[] extractRealTypes(\n       Type[] actualTypeArguments,
+  Type parentType, Class<?> rawParentClass) {\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [5152,6671]
+      identifier: extractTypeForHierarchy [5172,5195]
+      method_parameters [5152,6671]
+          formal_parameter: Type parentType [5196,5211]
+      block [5245,6671]
+          local_variable_declaration: Class<?> rawParentType = null; [5251,5281]
+          if_statement [5286,5599]
+              parenthesized_expression [5289,5321]
+                  instanceof_expression: parentType instanceof Class<?> [5290,5320]
+              block [5322,5374]
+                  expression_statement: rawParentType = (Class<?>) parentType; [5330,5368]
+          local_variable_declaration: Type superClass = rawParentType.getGenericSuperclass(); [5605,5660]
+          if_statement [5665,6501]
+              parenthesized_expression [5668,5808]
+                  and [5669,5807]
+                      instanceof_expression: superClass instanceof ParameterizedType [5669,5708]
+                      equals [5720,5807]
+                          method_invocation: ((ParameterizedType) superClass).getRawType() [5720,5765]
+                          method_invocation: typeToEvaluate.getGenericDeclaration() [5769,5807]
+              block [5809,6501]
+                  local_variable_declaration: TypeVariable<?>[] classTypeVariables =
+            ((Class<?>) ((ParameterizedType) superClass).getRawType()).getTypeParameters(); [5853,5981]
+                  local_variable_declaration: int indexOfActualTypeArgument = getIndex(classTypeVariables, typeToEvaluate); [5988,6065]
+                  local_variable_declaration: Type[] actualTypeArguments = null; [6073,6107]
+                  if_statement [6114,6433]
+                      parenthesized_expression [6117,6149]
+                          instanceof_expression: parentType instanceof Class<?> [6118,6148]
+                      block [6150,6248]
+                          expression_statement: actualTypeArguments = ((ParameterizedType) superClass).getActualTypeArguments(); [6160,6240]
+                  return_statement: return actualTypeArguments[indexOfActualTypeArgument]; [6441,6495]
+          local_variable_declaration: Type searchedType = null; [6507,6532]
+          if_statement [6537,6642]
+              parenthesized_expression [6540,6560]
+                  not_equals [6541,6559]
+                      identifier: superClass [6541,6551]
+                      null_literal [6555,6559]
+              block [6561,6642]
+                  expression_statement: searchedType = extractTypeForHierarchy(superClass, typeToEvaluate); [6569,6636]
+          return_statement: return searchedType; [6647,6667]
+
+...

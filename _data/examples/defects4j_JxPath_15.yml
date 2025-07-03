@@ -1,0 +1,107 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -17,10 +17,8 @@\n package org.apache.commons.jxpath.ri.axes;\n
+  \n import java.util.ArrayList;\n-import java.util.Iterator;\n \n import org.apache.commons.jxpath.BasicNodeSet;\n-import
+  org.apache.commons.jxpath.Pointer;\n import org.apache.commons.jxpath.ri.EvalContext;\n
+  import org.apache.commons.jxpath.ri.model.NodePointer;\n \n@@ -55,17 +53,13 @@\n
+  \                    while (ctx.nextNode()) {\n                         NodePointer
+  ptr = ctx.getCurrentNodePointer();\n                         if (!pointers.contains(ptr))
+  {\n+                            nodeSet.add(ptr);\n                             pointers.add(ptr);\n
+  \                        }\n                     }\n                 }\n             }\n-
+  \           sortPointers(pointers);\n-\n-            for (Iterator it = pointers.iterator();
+  it.hasNext();) {\n-                nodeSet.add((Pointer) it.next());\n-            }\n
+  \        }\n         return super.setPosition(position);\n     }\n-}\n\\ No newline
+  at end of file\n+}\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 0; i < contexts.length; i++) {
+                  EvalContext ctx = (EvalContext) contexts[i];
+                  while (ctx.nextSet()) {
+                      while (ctx.nextNode()) {
+                          NodePointer ptr = ctx.getCurrentNodePointer();
+                          if (!pointers.contains(ptr)) {
+                              pointers.add(ptr);
+                          }
+                      }
+                  }
+              } to for (int i = 0; i < contexts.length; i++) {
+                  EvalContext ctx = (EvalContext) contexts[i];
+                  while (ctx.nextSet()) {
+                      while (ctx.nextNode()) {
+                          NodePointer ptr = ctx.getCurrentNodePointer();
+                          if (!pointers.contains(ptr)) {
+                              nodeSet.add(ptr);
+                              pointers.add(ptr);
+                          }
+                      }
+                  }
+              }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 0; i < contexts.length; i++) {
+                  EvalContext ctx = (EvalContext) contexts[i];
+                  while (ctx.nextSet()) {
+                      while (ctx.nextNode()) {
+                          NodePointer ptr = ctx.getCurrentNodePointer();
+                          if (!pointers.contains(ptr)) {
+                              pointers.add(ptr);
+                          }
+                      }
+                  }
+              } [1896,2338]
+  replace for (int i = 0; i < contexts.length; i++) {
+                  EvalContext ctx = (EvalContext) contexts[i];
+                  while (ctx.nextSet()) {
+                      while (ctx.nextNode()) {
+                          NodePointer ptr = ctx.getCurrentNodePointer();
+                          if (!pointers.contains(ptr)) {
+                              pointers.add(ptr);
+                          }
+                      }
+                  }
+              } by for (int i = 0; i < contexts.length; i++) {
+                  EvalContext ctx = (EvalContext) contexts[i];
+                  while (ctx.nextSet()) {
+                      while (ctx.nextNode()) {
+                          NodePointer ptr = ctx.getCurrentNodePointer();
+                          if (!pointers.contains(ptr)) {
+                              nodeSet.add(ptr);
+                              pointers.add(ptr);
+                          }
+                      }
+                  }
+              }
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: sortPointers(pointers); [2351,2374]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: sortPointers(pointers); [2351,2374]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  for_statement: for (Iterator it = pointers.iterator(); it.hasNext();) {
+                  nodeSet.add((Pointer) it.next());
+              } [2388,2508]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  for_statement: for (Iterator it = pointers.iterator(); it.hasNext();) {
+                  nodeSet.add((Pointer) it.next());
+              } [2388,2508]
+  ===
+
+...

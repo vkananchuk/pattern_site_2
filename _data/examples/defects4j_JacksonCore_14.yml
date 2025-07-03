@@ -1,0 +1,72 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -271,16 +271,16 @@\n \n     protected final
+  void _verifyRelease(byte[] toRelease, byte[] src) {\n         // 07-Mar-2016, tatu:
+  As per [core#255], only prevent shrinking of buffer\n-        if ((toRelease !=
+  src) && (toRelease.length < src.length)) { throw wrongBuf(); }\n+        if ((toRelease
+  != src) && (toRelease.length <= src.length)) { throw wrongBuf(); }\n     }\n \n
+  \    protected final void _verifyRelease(char[] toRelease, char[] src) {\n         //
+  07-Mar-2016, tatu: As per [core#255], only prevent shrinking of buffer\n-        if
+  ((toRelease != src) && (toRelease.length < src.length)) { throw wrongBuf(); }\n+
+  \       if ((toRelease != src) && (toRelease.length <= src.length)) { throw wrongBuf();
+  }\n     }\n \n     private IllegalArgumentException wrongBuf() {\n         // sanity
+  check failed; trying to return different, smaller buffer.\n-        return new IllegalArgumentException(\"Trying
+  to release buffer smaller than original\");\n+return new IllegalArgumentException(\"Trying
+  to release buffer not owned by the context\"); \n     }\n }\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return new IllegalArgumentException("Trying to release buffer smaller than original"); to return new IllegalArgumentException("Trying to release buffer not owned by the context");
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return new IllegalArgumentException("Trying to release buffer smaller than original"); [9595,9681]
+  replace return new IllegalArgumentException("Trying to release buffer smaller than original"); by return new IllegalArgumentException("Trying to release buffer not owned by the context");
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  less_or_equals [9150,9180]
+      field_access: toRelease.length [9150,9166]
+      field_access: src.length [9170,9180]
+  to
+  parenthesized_expression [9149,9180]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  less_or_equals [9401,9431]
+      field_access: toRelease.length [9401,9417]
+      field_access: src.length [9421,9431]
+  to
+  parenthesized_expression [9399,9430]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  less_than [9150,9179]
+      field_access: toRelease.length [9150,9166]
+      field_access: src.length [9169,9179]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  less_than [9400,9429]
+      field_access: toRelease.length [9400,9416]
+      field_access: src.length [9419,9429]
+
+...

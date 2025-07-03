@@ -1,0 +1,143 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -108,11 +108,8 @@\n             throw new IOException(\"EOF
+  whilst processing escape sequence\");\n         default:\n             // Now check
+  for meta-characters\n-            if (isDelimiter(c) || isEscape(c) || isQuoteChar(c)
+  || isCommentStart(c)) {\n                 return c;\n-            }\n             //
+  indicate unexpected char - available from in.getLastChar()\n-            return
+  END_OF_STREAM;\n         }\n     }\n \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from {
+          case 'r':
+              return CR;
+          case 'n':
+              return LF;
+          case 't':
+              return TAB;
+          case 'b':
+              return BACKSPACE;
+          case 'f':
+              return FF;
+          case CR:
+          case LF:
+          case FF: // TODO is this correct?
+          case TAB: // TODO is this correct? Do tabs need to be escaped?
+          case BACKSPACE: // TODO is this correct?
+              return c;
+          case END_OF_STREAM:
+              throw new IOException("EOF whilst processing escape sequence");
+          default:
+              // Now check for meta-characters
+              if (isDelimiter(c) || isEscape(c) || isQuoteChar(c) || isCommentStart(c)) {
+                  return c;
+              }
+              // indicate unexpected char - available from in.getLastChar()
+              return END_OF_STREAM;
+          } to {
+          case 'r':
+              return CR;
+          case 'n':
+              return LF;
+          case 't':
+              return TAB;
+          case 'b':
+              return BACKSPACE;
+          case 'f':
+              return FF;
+          case CR:
+          case LF:
+          case FF: // TODO is this correct?
+          case TAB: // TODO is this correct? Do tabs need to be escaped?
+          case BACKSPACE: // TODO is this correct?
+              return c;
+          case END_OF_STREAM:
+              throw new IOException("EOF whilst processing escape sequence");
+          default:
+              // Now check for meta-characters
+                  return c;
+              // indicate unexpected char - available from in.getLastChar()
+          }
+  ------------
+  ===
+  update-node
+  ---
+  switch_block: {
+          case 'r':
+              return CR;
+          case 'n':
+              return LF;
+          case 't':
+              return TAB;
+          case 'b':
+              return BACKSPACE;
+          case 'f':
+              return FF;
+          case CR:
+          case LF:
+          case FF: // TODO is this correct?
+          case TAB: // TODO is this correct? Do tabs need to be escaped?
+          case BACKSPACE: // TODO is this correct?
+              return c;
+          case END_OF_STREAM:
+              throw new IOException("EOF whilst processing escape sequence");
+          default:
+              // Now check for meta-characters
+              if (isDelimiter(c) || isEscape(c) || isQuoteChar(c) || isCommentStart(c)) {
+                  return c;
+              }
+              // indicate unexpected char - available from in.getLastChar()
+              return END_OF_STREAM;
+          } [3529,4373]
+  replace {
+          case 'r':
+              return CR;
+          case 'n':
+              return LF;
+          case 't':
+              return TAB;
+          case 'b':
+              return BACKSPACE;
+          case 'f':
+              return FF;
+          case CR:
+          case LF:
+          case FF: // TODO is this correct?
+          case TAB: // TODO is this correct? Do tabs need to be escaped?
+          case BACKSPACE: // TODO is this correct?
+              return c;
+          case END_OF_STREAM:
+              throw new IOException("EOF whilst processing escape sequence");
+          default:
+              // Now check for meta-characters
+              if (isDelimiter(c) || isEscape(c) || isQuoteChar(c) || isCommentStart(c)) {
+                  return c;
+              }
+              // indicate unexpected char - available from in.getLastChar()
+              return END_OF_STREAM;
+          } by {
+          case 'r':
+              return CR;
+          case 'n':
+              return LF;
+          case 't':
+              return TAB;
+          case 'b':
+              return BACKSPACE;
+          case 'f':
+              return FF;
+          case CR:
+          case LF:
+          case FF: // TODO is this correct?
+          case TAB: // TODO is this correct? Do tabs need to be escaped?
+          case BACKSPACE: // TODO is this correct?
+              return c;
+          case END_OF_STREAM:
+              throw new IOException("EOF whilst processing escape sequence");
+          default:
+              // Now check for meta-characters
+                  return c;
+              // indicate unexpected char - available from in.getLastChar()
+          }
+
+...

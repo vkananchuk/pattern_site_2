@@ -1,0 +1,105 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -437,7 +437,7 @@
+               if (!found) {
+                   // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                   //   as only former is lower-case in case-insensitive case
+  -                found = key.equals(_hashArea[i-1]);
+  +                found = key.equals(prop.getName());
+                   if (found) {
+                       // need to leave a hole here
+                       _propsInOrder[_findFromOrdered(prop)] = null;
+tree_diff: |+
+  New cluster:
+  UPDATE from for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+              SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+              if (prop == null) {
+                  continue;
+              }
+              if (!found) {
+                  // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                  //   as only former is lower-case in case-insensitive case
+                  found = key.equals(_hashArea[i-1]);
+                  if (found) {
+                      // need to leave a hole here
+                      _propsInOrder[_findFromOrdered(prop)] = null;
+                      continue;
+                  }
+              }
+              props.add(prop);
+          } to for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+              SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+              if (prop == null) {
+                  continue;
+              }
+              if (!found) {
+                  // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                  //   as only former is lower-case in case-insensitive case
+                  found = key.equals(prop.getName());
+                  if (found) {
+                      // need to leave a hole here
+                      _propsInOrder[_findFromOrdered(prop)] = null;
+                      continue;
+                  }
+              }
+              props.add(prop);
+          }
+  ------------
+  ===
+  update-node
+  ---
+  for_statement: for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+              SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+              if (prop == null) {
+                  continue;
+              }
+              if (!found) {
+                  // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                  //   as only former is lower-case in case-insensitive case
+                  found = key.equals(_hashArea[i-1]);
+                  if (found) {
+                      // need to leave a hole here
+                      _propsInOrder[_findFromOrdered(prop)] = null;
+                      continue;
+                  }
+              }
+              props.add(prop);
+          } [14476,15174]
+  replace for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+              SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+              if (prop == null) {
+                  continue;
+              }
+              if (!found) {
+                  // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                  //   as only former is lower-case in case-insensitive case
+                  found = key.equals(_hashArea[i-1]);
+                  if (found) {
+                      // need to leave a hole here
+                      _propsInOrder[_findFromOrdered(prop)] = null;
+                      continue;
+                  }
+              }
+              props.add(prop);
+          } by for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+              SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+              if (prop == null) {
+                  continue;
+              }
+              if (!found) {
+                  // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                  //   as only former is lower-case in case-insensitive case
+                  found = key.equals(prop.getName());
+                  if (found) {
+                      // need to leave a hole here
+                      _propsInOrder[_findFromOrdered(prop)] = null;
+                      continue;
+                  }
+              }
+              props.add(prop);
+          }
+
+...

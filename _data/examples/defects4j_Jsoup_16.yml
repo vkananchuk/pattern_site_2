@@ -1,0 +1,77 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1,7 +1,6 @@\n package org.jsoup.nodes;\n \n
+  import org.jsoup.helper.StringUtil;\n-import org.jsoup.helper.Validate;\n \n /**\n
+  \ * A {@code <!DOCTPYE>} node.\n@@ -19,7 +18,6 @@\n     public DocumentType(String
+  name, String publicId, String systemId, String baseUri) {\n         super(baseUri);\n
+  \n-        Validate.notEmpty(name);\n         attr(\"name\", name);\n         attr(\"publicId\",
+  publicId);\n         attr(\"systemId\", systemId);\n@@ -32,11 +30,11 @@\n \n     @Override\n
+  \    void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings
+  out) {\n-        accum.append(\"<!DOCTYPE \").append(attr(\"name\"));\n+        accum.append(\"<!DOCTYPE
+  html\");\n         if (!StringUtil.isBlank(attr(\"publicId\")))\n             accum.append(\"
+  PUBLIC \\\"\").append(attr(\"publicId\")).append(\"\\\"\");\n         if (!StringUtil.isBlank(attr(\"systemId\")))\n-
+  \           accum.append(\" \\\"\").append(attr(\"systemId\")).append(\"\\\"\");\n+
+  \           accum.append(' ').append(attr(\"systemId\")).append(\"\\\"\");\n         accum.append('>');\n
+  \    }\n \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from public DocumentType(String name, String publicId, String systemId, String baseUri) {
+          super(baseUri);
+
+          Validate.notEmpty(name);
+          attr("name", name);
+          attr("publicId", publicId);
+          attr("systemId", systemId);
+      } to public DocumentType(String name, String publicId, String systemId, String baseUri) {
+          super(baseUri);
+
+          attr("name", name);
+          attr("publicId", publicId);
+          attr("systemId", systemId);
+      }
+  ------------
+  ===
+  update-node
+  ---
+  constructor_declaration: public DocumentType(String name, String publicId, String systemId, String baseUri) {
+          super(baseUri);
+
+          Validate.notEmpty(name);
+          attr("name", name);
+          attr("publicId", publicId);
+          attr("systemId", systemId);
+      } [462,710]
+  replace public DocumentType(String name, String publicId, String systemId, String baseUri) {
+          super(baseUri);
+
+          Validate.notEmpty(name);
+          attr("name", name);
+          attr("publicId", publicId);
+          attr("systemId", systemId);
+      } by public DocumentType(String name, String publicId, String systemId, String baseUri) {
+          super(baseUri);
+
+          attr("name", name);
+          attr("publicId", publicId);
+          attr("systemId", systemId);
+      }
+
+  New cluster:
+  UPDATE from accum.append("<!DOCTYPE ").append(attr("name")); to accum.append("<!DOCTYPE html");
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: accum.append("<!DOCTYPE ").append(attr("name")); [899,947]
+  replace accum.append("<!DOCTYPE ").append(attr("name")); by accum.append("<!DOCTYPE html");
+
+  New cluster:
+  UPDATE from accum.append(" \"").append(attr("systemId")).append("\""); to accum.append(' ').append(attr("systemId")).append("\"");
+  ------------
+  ===
+  update-node
+  ---
+  expression_statement: accum.append(" \"").append(attr("systemId")).append("\""); [1140,1198]
+  replace accum.append(" \"").append(attr("systemId")).append("\""); by accum.append(' ').append(attr("systemId")).append("\"");
+
+...

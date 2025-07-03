@@ -1,0 +1,381 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -16,11 +16,11 @@\n package org.apache.commons.cli;\n
+  \n import java.util.Collection;\n+import java.util.HashMap;\n import java.util.Iterator;\n
+  import java.util.LinkedList;\n import java.util.List;\n-import java.util.Set;\n-import
+  java.util.HashSet;\n+import java.util.Map;\n \n /** \n  * <p>Represents list of
+  arguments parsed against\n@@ -43,10 +43,12 @@\n     private List args = new LinkedList();\n
+  \n     /** the processed options */\n-    private Set options = new HashSet();\n+
+  \   private Map options = new HashMap();\n+    private Map names = new HashMap();\n
+  \n     /** Map of unique options for ease to get complete list of options */\n //
+  \   private Set allOptions = new HashSet();\n+    private Map hashcodeMap = new
+  HashMap();\n \n     /**\n      * Creates a command line.\n@@ -64,7 +66,7 @@\n      */\n
+  \    public boolean hasOption(String opt)\n     {\n-        return options.contains(
+  resolveOption(opt));\n+        return options.containsKey(opt);\n     }\n \n     /**
+  \n@@ -88,13 +90,12 @@\n     {\n         String res = getOptionValue(opt);\n \n-
+  \       Option option = resolveOption(opt);\n-        if (option == null)\n+        if
+  (!options.containsKey(opt))\n         {\n             return null;\n         }\n
+  \n-        Object type = option.getType();\n+        Object type = ((Option) options.get(opt)).getType();\n
+  \n         return (res == null)        ? null : TypeHandler.createValue(res, type);\n
+  \    }\n@@ -145,11 +146,16 @@\n      */\n     public String[] getOptionValues(String
+  opt)\n     {\n-        Option key = resolveOption( opt );\n+        opt = Util.stripLeadingHyphens(opt);\n
+  \n-        if (options.contains(key))\n+        String key = opt;\n+        if (names.containsKey(opt))\n+
+  \       {\n+            key = (String) names.get(opt);\n+        }\n+        if
+  (options.containsKey(key))\n         {\n-            return key.getValues();\n+
+  \           return ((Option) options.get(key)).getValues();\n         }\n \n         return
+  null;\n@@ -160,24 +166,7 @@\n      * @param opt short or long name of the option\n
+  \     * @return Canonicalized option\n      */\n-    private Option resolveOption(
+  String opt )\n-    {\n-        opt = Util.stripLeadingHyphens(opt);\n-        for
+  ( Iterator it = options.iterator(); it.hasNext(); )\n-        {\n-            Option
+  option = (Option) it.next();\n-            if (opt.equals(option.getOpt()))\n-            {\n-
+  \               return option;\n-            }\n-            if (opt.equals( option.getLongOpt()))\n-
+  \           {\n-                return option;\n-        }\n \n-        }\n-        return
+  null;\n-    }\n \n     /** \n      * Retrieves the array of values, if any, of an
+  option.\n@@ -285,7 +274,17 @@\n      */\n     void addOption(Option opt)\n     {\n-
+  \       options.add(opt);\n+        hashcodeMap.put(new Integer(opt.hashCode()),
+  opt);\n+        String key = opt.getKey();\n+        if (key == null)\n+        {\n+
+  \           key = opt.getLongOpt();\n+        }\n+        else\n+        {\n+            names.put(opt.getLongOpt(),
+  key);\n+        }\n+        options.put(key, opt);\n     }\n \n     /**\n@@ -296,7
+  +295,7 @@\n      */\n     public Iterator iterator()\n     {\n-        return options.iterator();\n+
+  \       return hashcodeMap.values().iterator();\n     }\n \n     /**\n@@ -306,7
+  +305,7 @@\n      */\n     public Option[] getOptions()\n     {\n-        Collection
+  processed = options;\n+        Collection processed = options.values();\n \n         //
+  reinitialise array\n         Option[] optionsArray = new Option[processed.size()];\n@@
+  -314,4 +313,4 @@\n         // return the array\n         return (Option[]) processed.toArray(optionsArray);\n
+  \    }\n-}\n\\ No newline at end of file\n+}\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from private Set options = new HashSet(); to private Map options = new HashMap();
+  ------------
+  ===
+  update-node
+  ---
+  field_declaration: private Set options = new HashSet(); [1522,1558]
+  replace private Set options = new HashSet(); by private Map options = new HashMap();
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  field_declaration: private Map names = new HashMap(); [1563,1597]
+  to
+  class_body [1368,8462]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  field_declaration: private Map names = new HashMap(); [1563,1597]
+  to
+  class_body [1368,8462]
+  at 2
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  field_declaration: private Map hashcodeMap = new HashMap(); [1723,1763]
+  to
+  class_body [1368,8462]
+  at 3
+  ------------
+  ===
+  insert-node
+  ---
+  field_declaration: private Map hashcodeMap = new HashMap(); [1723,1763]
+  to
+  class_body [1368,8462]
+  at 3
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [4116,4486]
+  to
+  class_body [1368,8462]
+  at 11
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [4116,4486]
+  to
+  class_body [1368,8462]
+  at 11
+  ===
+  insert-node
+  ---
+  identifier: getOptionValues [4132,4147]
+  to
+  method_declaration [4116,4486]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_declaration [7450,7773]
+  to
+  class_body [1368,8462]
+  at 20
+  ------------
+  ===
+  insert-node
+  ---
+  method_declaration [7450,7773]
+  to
+  class_body [1368,8462]
+  at 20
+  ===
+  insert-node
+  ---
+  identifier: addOption [7455,7464]
+  to
+  method_declaration [7450,7773]
+  at 0
+
+  New cluster:
+  MOVE from block [2543,2833]
+  ------------
+  ===
+  move-tree
+  ---
+  local_variable_declaration: Option option = resolveOption(opt); [2596,2631]
+  to
+  block [2543,2833]
+  at 2
+
+  New cluster:
+  MOVE from method_declaration [4116,4486]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [4467,4929]
+      formal_parameter: String opt [4497,4507]
+  to
+  method_declaration [4116,4486]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [4164,4486]
+      expression_statement: opt = Util.stripLeadingHyphens(opt); [4174,4210]
+      local_variable_declaration: String key = opt; [4220,4237]
+      if_statement [4246,4336]
+          parenthesized_expression [4249,4273]
+              method_invocation: names.containsKey(opt) [4250,4272]
+          block [4282,4336]
+              expression_statement: key = (String) names.get(opt); [4296,4326]
+      if_statement [4345,4454]
+          parenthesized_expression [4348,4374]
+              method_invocation: options.containsKey(key) [4349,4373]
+          block [4383,4454]
+              return_statement: return ((Option) options.get(key)).getValues(); [4397,4444]
+      return_statement: return null; [4464,4476]
+  to
+  method_declaration [4116,4486]
+  at 2
+
+  New cluster:
+  MOVE from method_declaration [7450,7773]
+  ------------
+  ===
+  move-tree
+  ---
+  method_parameters [7703,7767]
+      formal_parameter: Option opt [7718,7728]
+  to
+  method_declaration [7450,7773]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  block [7481,7773]
+      expression_statement: hashcodeMap.put(new Integer(opt.hashCode()), opt); [7491,7541]
+      local_variable_declaration: String key = opt.getKey(); [7550,7576]
+      if_statement [7585,7736]
+          parenthesized_expression [7588,7601]
+              equals [7589,7600]
+                  identifier: key [7589,7592]
+                  null_literal [7596,7600]
+          block [7610,7657]
+              expression_statement: key = opt.getLongOpt(); [7624,7647]
+      expression_statement: options.put(key, opt); [7745,7767]
+  to
+  method_declaration [7450,7773]
+  at 2
+
+  New cluster:
+  UPDATE from return options.contains( resolveOption(opt)); to return options.containsKey(opt);
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return options.contains( resolveOption(opt)); [1994,2039]
+  replace return options.contains( resolveOption(opt)); by return options.containsKey(opt);
+
+  New cluster:
+  UPDATE from Option option = resolveOption(opt); to Object type = ((Option) options.get(opt)).getType();
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: Option option = resolveOption(opt); [2596,2631]
+  replace Option option = resolveOption(opt); by Object type = ((Option) options.get(opt)).getType();
+
+  New cluster:
+  UPDATE from return options.iterator(); to return hashcodeMap.values().iterator();
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return options.iterator(); [8022,8048]
+  replace return options.iterator(); by return hashcodeMap.values().iterator();
+
+  New cluster:
+  UPDATE from Collection processed = options; to Collection processed = options.values();
+  ------------
+  ===
+  update-node
+  ---
+  local_variable_declaration: Collection processed = options; [8242,8273]
+  replace Collection processed = options; by Collection processed = options.values();
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  unary_expression: !options.containsKey(opt) [2671,2696]
+  to
+  parenthesized_expression [2643,2659]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  unary_expression: !options.containsKey(opt) [2671,2696]
+  to
+  parenthesized_expression [2643,2659]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  equals [2644,2658]
+      identifier: option [2644,2650]
+      null_literal [2654,2658]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Object type = option.getType(); [2714,2745]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Object type = option.getType(); [2714,2745]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [4057,4273]
+      identifier: getOptionValues [4073,4088]
+      method_parameters [4057,4273]
+          formal_parameter: String opt [4089,4099]
+      block [4105,4273]
+          local_variable_declaration: Option key = resolveOption( opt ); [4115,4149]
+          if_statement [4159,4241]
+              parenthesized_expression [4162,4185]
+                  method_invocation: options.contains(key) [4163,4184]
+              block [4194,4241]
+                  return_statement: return key.getValues(); [4208,4231]
+          return_statement: return null; [4251,4263]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [4467,4929]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_declaration [4467,4929]
+  ===
+  ===
+  delete-node
+  ---
+  identifier: resolveOption [4482,4495]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [4514,4929]
+      expression_statement: opt = Util.stripLeadingHyphens(opt); [4524,4560]
+      for_statement: for ( Iterator it = options.iterator(); it.hasNext(); )
+          {
+              Option option = (Option) it.next();
+              if (opt.equals(option.getOpt()))
+              {
+                  return option;
+              }
+              if (opt.equals( option.getLongOpt()))
+              {
+                  return option;
+          }
+
+          } [4569,4902]
+      return_statement: return null; [4911,4923]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  method_declaration [7703,7767]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  method_declaration [7703,7767]
+  ===
+  ===
+  delete-node
+  ---
+  identifier: addOption [7708,7717]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  block [7734,7767]
+      expression_statement: options.add(opt); [7744,7761]
+
+...

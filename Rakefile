@@ -23,15 +23,31 @@ namespace :examples do
     Tempfile.create do |xml_before|
       Tempfile.create do |xml_after|
         out, err, status = Open3.capture3("bundle exec rake translate:#{language}[#{before}] > #{xml_before.path}")
+        if err.include?("TranslationError")
+          puts "Skipping: #{err}"
+          next
+        end
         unless status.success?
           puts "ERROR translating #{before}"
-          next
+          puts "STDOUT:"
+          puts out
+          puts "STDERR:"
+          puts err
+          raise "Error"
         end
 
         out, err, status = Open3.capture3("bundle exec rake translate:#{language}[#{after}] > #{xml_after.path}")
-        unless status.success?
-          puts "ERROR translating #{after}"
+        if err.include?("TranslationError")
+          puts "Skipping: #{err}"
           next
+        end
+        unless status.success?
+          raise "ERROR translating #{after}"
+          puts "STDOUT:"
+          puts out
+          puts "STDERR:"
+          puts err
+          raise "Error"
         end
 
         tree_diff = `gumtree cluster -g xml #{xml_before.path} #{xml_after.path}`
@@ -97,19 +113,42 @@ namespace :examples do
   end
 end
 
-namespace :translate do
+namespace :grammars do
+  desc 'Compile all tree-sitter grammars'
+  task all: [:translation, :java, :python]
+
   desc 'Compile the translation grammar'
-  task :compile do
-    `cd tree-sitter-bugfix/bugfix-translation && tree-sitter generate && make all`
+  task :translation do
+    `cd tree-sitter-parsers/bugfix-translation && tree-sitter generate && make all`
   end
 
+  desc 'Compile the java grammar'
+  task :java do
+    `cd tree-sitter-parsers/tree-sitter-java && tree-sitter generate && make all`
+  end
+
+  desc 'Compile the python grammar'
+  task :python do
+    `cd tree-sitter-parsers/tree-sitter-python && tree-sitter generate && make all`
+  end
+end
+
+namespace :translate do
   desc 'Print the Gumtree XML for the given Java file'
   task :java, [:name] do |t, args|
-    puts Translator.new.translate(:java, args[:name]).to_xml
+    begin
+      puts Translator.new.translate(:java, args[:name]).to_xml
+    rescue Translator::TranslationError => e
+      STDERR.puts "SKIP TranslationError #{e}"
+    end
   end
 
   desc 'Print the Gumtree XML for given Python file'
   task :python, [:name] do |t, args|
-    puts Translator.new.translate(:python, args[:name]).to_xml
+    begin
+      puts Translator.new.translate(:python, args[:name]).to_xml
+    rescue Translator::TranslationError => e
+      STDERR.puts "SKIP TranslationError #{e}"
+    end
   end
 end

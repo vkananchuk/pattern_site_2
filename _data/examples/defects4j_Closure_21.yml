@@ -1,0 +1,113 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -98,7 +98,7 @@\n     // Do not try to remove
+  a block or an expr result. We already handle\n     // these cases when we visit
+  the child, and the peephole passes will\n     // fix up the tree in more clever
+  ways when these are removed.\n-    if (n.isExprResult() || n.isBlock()) {\n+    if
+  (n.isExprResult()) {\n       return;\n     }\n \n@@ -110,7 +110,24 @@\n \n     boolean
+  isResultUsed = NodeUtil.isExpressionResultUsed(n);\n     boolean isSimpleOp = NodeUtil.isSimpleOperatorType(n.getType());\n-
+  \   if (!isResultUsed &&\n+    if (parent.getType() == Token.COMMA) {\n+      if
+  (isResultUsed) {\n+        return;\n+      }\n+      if (n == parent.getLastChild())
+  {\n+        for (Node an : parent.getAncestors()) {\n+          int ancestorType
+  = an.getType();\n+          if (ancestorType == Token.COMMA) continue;\n+          if
+  (ancestorType != Token.EXPR_RESULT && ancestorType != Token.BLOCK) return;\n+          else
+  break;\n+        }\n+      }\n+    } else if (parent.getType() != Token.EXPR_RESULT
+  && parent.getType() != Token.BLOCK) {\n+      if (! (parent.getType() == Token.FOR
+  && parent.getChildCount() == 4 && (n == parent.getFirstChild() || n == parent.getFirstChild().getNext().getNext())))
+  {\n+        return;\n+      }\n+    }\n+    if (\n         (isSimpleOp || !NodeUtil.mayHaveSideEffects(n,
+  t.getCompiler()))) {\n       String msg = \"This code lacks side-effects. Is there
+  a bug?\";\n       if (n.isString()) {\n"
+tree_diff: |+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  if_statement [3705,4388]
+      parenthesized_expression [3708,3741]
+          equals [3709,3740]
+              method_invocation: parent.getType() [3709,3725]
+              field_access: Token.COMMA [3729,3740]
+      block [3742,4111]
+          if_statement [3750,3793]
+              parenthesized_expression [3753,3767]
+                  identifier: isResultUsed [3754,3766]
+              block [3768,3793]
+                  return_statement: return; [3778,3785]
+          if_statement [3800,4105]
+              parenthesized_expression [3803,3831]
+                  equals [3804,3830]
+                      identifier: n [3804,3805]
+                      method_invocation: parent.getLastChild() [3809,3830]
+              block [3832,4105]
+                  enhanced_for_statement: for (Node an : parent.getAncestors()) {
+            int ancestorType = an.getType();
+            if (ancestorType == Token.COMMA) continue;
+            if (ancestorType != Token.EXPR_RESULT && ancestorType != Token.BLOCK) return;
+            else break;
+          } [3842,4097]
+  to
+  block [2719,4427]
+  at 6
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  method_invocation: n.isExprResult() [3305,3321]
+  to
+  parenthesized_expression [3304,3337]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  method_invocation: n.isExprResult() [3305,3321]
+  to
+  parenthesized_expression [3304,3337]
+  at 0
+
+  New cluster:
+  MOVE from parenthesized_expression [3723,3814]
+  ------------
+  ===
+  move-tree
+  ---
+  parenthesized_expression [3749,3813]
+      or [3750,3812]
+          identifier: isSimpleOp [3750,3760]
+          unary_expression: !NodeUtil.mayHaveSideEffects(n, t.getCompiler()) [3764,3812]
+  to
+  parenthesized_expression [3723,3814]
+  at 0
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  or [3305,3336]
+      method_invocation: n.isExprResult() [3305,3321]
+      method_invocation: n.isBlock() [3325,3336]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  and [3724,3813]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  and [3724,3813]
+  ===
+  ===
+  delete-node
+  ---
+  unary_expression: !isResultUsed [3724,3737]
+  ===
+
+...

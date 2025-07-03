@@ -1,0 +1,306 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -277,6 +277,7 @@\n \n             double previousT
+  = interpolator.getGlobalPreviousTime();\n             final double currentT = interpolator.getGlobalCurrentTime();\n+
+  \           resetOccurred = false;\n \n             // initialize the events states
+  if needed\n             if (! statesInitialized) {\n@@ -330,9 +331,6 @@\n                 if
+  (isLastStep) {\n                     // the event asked to stop integration\n                     System.arraycopy(eventY,
+  0, y, 0, y.length);\n-                    for (final EventState remaining : occuringEvents)
+  {\n-                        remaining.stepAccepted(eventT, eventY);\n-                    }\n
+  \                    return eventT;\n                 }\n \n@@ -342,9 +340,6 @@\n
+  \                    System.arraycopy(eventY, 0, y, 0, y.length);\n                     computeDerivatives(eventT,
+  y, yDot);\n                     resetOccurred = true;\n-                    for
+  (final EventState remaining : occuringEvents) {\n-                        remaining.stepAccepted(eventT,
+  eventY);\n-                    }\n                     return eventT;\n                 }\n
+  \n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: resetOccurred = false; [10663,10685]
+  to
+  block [10506,14868]
+  at 2
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: resetOccurred = false; [10663,10685]
+  to
+  block [10506,14868]
+  at 2
+
+  New cluster:
+  UPDATE from while (!occuringEvents.isEmpty()) {
+
+                  // handle the chronologically first event
+                  final Iterator<EventState> iterator = occuringEvents.iterator();
+                  final EventState currentEvent = iterator.next();
+                  iterator.remove();
+
+                  // restrict the interpolator to the first part of the step, up to the event
+                  final double eventT = currentEvent.getEventTime();
+                  interpolator.setSoftPreviousTime(previousT);
+                  interpolator.setSoftCurrentTime(eventT);
+
+                  // trigger the event
+                  interpolator.setInterpolatedTime(eventT);
+                  final double[] eventY = interpolator.getInterpolatedState();
+                  currentEvent.stepAccepted(eventT, eventY);
+                  isLastStep = currentEvent.stop();
+
+                  // handle the first part of the step, up to the event
+                  for (final StepHandler handler : stepHandlers) {
+                      handler.handleStep(interpolator, isLastStep);
+                  }
+
+                  if (isLastStep) {
+                      // the event asked to stop integration
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      for (final EventState remaining : occuringEvents) {
+                          remaining.stepAccepted(eventT, eventY);
+                      }
+                      return eventT;
+                  }
+
+                  if (currentEvent.reset(eventT, eventY)) {
+                      // some event handler has triggered changes that
+                      // invalidate the derivatives, we need to recompute them
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      computeDerivatives(eventT, y, yDot);
+                      resetOccurred = true;
+                      for (final EventState remaining : occuringEvents) {
+                          remaining.stepAccepted(eventT, eventY);
+                      }
+                      return eventT;
+                  }
+
+                  // prepare handling of the remaining part of the step
+                  previousT = eventT;
+                  interpolator.setSoftPreviousTime(eventT);
+                  interpolator.setSoftCurrentTime(currentT);
+
+                  // check if the same event occurs again in the remaining part of the step
+                  if (currentEvent.evaluateStep(interpolator)) {
+                      // the event occurs during the current step
+                      occuringEvents.add(currentEvent);
+                  }
+
+              } to while (!occuringEvents.isEmpty()) {
+
+                  // handle the chronologically first event
+                  final Iterator<EventState> iterator = occuringEvents.iterator();
+                  final EventState currentEvent = iterator.next();
+                  iterator.remove();
+
+                  // restrict the interpolator to the first part of the step, up to the event
+                  final double eventT = currentEvent.getEventTime();
+                  interpolator.setSoftPreviousTime(previousT);
+                  interpolator.setSoftCurrentTime(eventT);
+
+                  // trigger the event
+                  interpolator.setInterpolatedTime(eventT);
+                  final double[] eventY = interpolator.getInterpolatedState();
+                  currentEvent.stepAccepted(eventT, eventY);
+                  isLastStep = currentEvent.stop();
+
+                  // handle the first part of the step, up to the event
+                  for (final StepHandler handler : stepHandlers) {
+                      handler.handleStep(interpolator, isLastStep);
+                  }
+
+                  if (isLastStep) {
+                      // the event asked to stop integration
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      return eventT;
+                  }
+
+                  if (currentEvent.reset(eventT, eventY)) {
+                      // some event handler has triggered changes that
+                      // invalidate the derivatives, we need to recompute them
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      computeDerivatives(eventT, y, yDot);
+                      resetOccurred = true;
+                      return eventT;
+                  }
+
+                  // prepare handling of the remaining part of the step
+                  previousT = eventT;
+                  interpolator.setSoftPreviousTime(eventT);
+                  interpolator.setSoftCurrentTime(currentT);
+
+                  // check if the same event occurs again in the remaining part of the step
+                  if (currentEvent.evaluateStep(interpolator)) {
+                      // the event occurs during the current step
+                      occuringEvents.add(currentEvent);
+                  }
+
+              }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while (!occuringEvents.isEmpty()) {
+
+                  // handle the chronologically first event
+                  final Iterator<EventState> iterator = occuringEvents.iterator();
+                  final EventState currentEvent = iterator.next();
+                  iterator.remove();
+
+                  // restrict the interpolator to the first part of the step, up to the event
+                  final double eventT = currentEvent.getEventTime();
+                  interpolator.setSoftPreviousTime(previousT);
+                  interpolator.setSoftCurrentTime(eventT);
+
+                  // trigger the event
+                  interpolator.setInterpolatedTime(eventT);
+                  final double[] eventY = interpolator.getInterpolatedState();
+                  currentEvent.stepAccepted(eventT, eventY);
+                  isLastStep = currentEvent.stop();
+
+                  // handle the first part of the step, up to the event
+                  for (final StepHandler handler : stepHandlers) {
+                      handler.handleStep(interpolator, isLastStep);
+                  }
+
+                  if (isLastStep) {
+                      // the event asked to stop integration
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      for (final EventState remaining : occuringEvents) {
+                          remaining.stepAccepted(eventT, eventY);
+                      }
+                      return eventT;
+                  }
+
+                  if (currentEvent.reset(eventT, eventY)) {
+                      // some event handler has triggered changes that
+                      // invalidate the derivatives, we need to recompute them
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      computeDerivatives(eventT, y, yDot);
+                      resetOccurred = true;
+                      for (final EventState remaining : occuringEvents) {
+                          remaining.stepAccepted(eventT, eventY);
+                      }
+                      return eventT;
+                  }
+
+                  // prepare handling of the remaining part of the step
+                  previousT = eventT;
+                  interpolator.setSoftPreviousTime(eventT);
+                  interpolator.setSoftCurrentTime(currentT);
+
+                  // check if the same event occurs again in the remaining part of the step
+                  if (currentEvent.evaluateStep(interpolator)) {
+                      // the event occurs during the current step
+                      occuringEvents.add(currentEvent);
+                  }
+
+              } [11694,14228]
+  replace while (!occuringEvents.isEmpty()) {
+
+                  // handle the chronologically first event
+                  final Iterator<EventState> iterator = occuringEvents.iterator();
+                  final EventState currentEvent = iterator.next();
+                  iterator.remove();
+
+                  // restrict the interpolator to the first part of the step, up to the event
+                  final double eventT = currentEvent.getEventTime();
+                  interpolator.setSoftPreviousTime(previousT);
+                  interpolator.setSoftCurrentTime(eventT);
+
+                  // trigger the event
+                  interpolator.setInterpolatedTime(eventT);
+                  final double[] eventY = interpolator.getInterpolatedState();
+                  currentEvent.stepAccepted(eventT, eventY);
+                  isLastStep = currentEvent.stop();
+
+                  // handle the first part of the step, up to the event
+                  for (final StepHandler handler : stepHandlers) {
+                      handler.handleStep(interpolator, isLastStep);
+                  }
+
+                  if (isLastStep) {
+                      // the event asked to stop integration
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      for (final EventState remaining : occuringEvents) {
+                          remaining.stepAccepted(eventT, eventY);
+                      }
+                      return eventT;
+                  }
+
+                  if (currentEvent.reset(eventT, eventY)) {
+                      // some event handler has triggered changes that
+                      // invalidate the derivatives, we need to recompute them
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      computeDerivatives(eventT, y, yDot);
+                      resetOccurred = true;
+                      for (final EventState remaining : occuringEvents) {
+                          remaining.stepAccepted(eventT, eventY);
+                      }
+                      return eventT;
+                  }
+
+                  // prepare handling of the remaining part of the step
+                  previousT = eventT;
+                  interpolator.setSoftPreviousTime(eventT);
+                  interpolator.setSoftCurrentTime(currentT);
+
+                  // check if the same event occurs again in the remaining part of the step
+                  if (currentEvent.evaluateStep(interpolator)) {
+                      // the event occurs during the current step
+                      occuringEvents.add(currentEvent);
+                  }
+
+              } by while (!occuringEvents.isEmpty()) {
+
+                  // handle the chronologically first event
+                  final Iterator<EventState> iterator = occuringEvents.iterator();
+                  final EventState currentEvent = iterator.next();
+                  iterator.remove();
+
+                  // restrict the interpolator to the first part of the step, up to the event
+                  final double eventT = currentEvent.getEventTime();
+                  interpolator.setSoftPreviousTime(previousT);
+                  interpolator.setSoftCurrentTime(eventT);
+
+                  // trigger the event
+                  interpolator.setInterpolatedTime(eventT);
+                  final double[] eventY = interpolator.getInterpolatedState();
+                  currentEvent.stepAccepted(eventT, eventY);
+                  isLastStep = currentEvent.stop();
+
+                  // handle the first part of the step, up to the event
+                  for (final StepHandler handler : stepHandlers) {
+                      handler.handleStep(interpolator, isLastStep);
+                  }
+
+                  if (isLastStep) {
+                      // the event asked to stop integration
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      return eventT;
+                  }
+
+                  if (currentEvent.reset(eventT, eventY)) {
+                      // some event handler has triggered changes that
+                      // invalidate the derivatives, we need to recompute them
+                      System.arraycopy(eventY, 0, y, 0, y.length);
+                      computeDerivatives(eventT, y, yDot);
+                      resetOccurred = true;
+                      return eventT;
+                  }
+
+                  // prepare handling of the remaining part of the step
+                  previousT = eventT;
+                  interpolator.setSoftPreviousTime(eventT);
+                  interpolator.setSoftCurrentTime(currentT);
+
+                  // check if the same event occurs again in the remaining part of the step
+                  if (currentEvent.evaluateStep(interpolator)) {
+                      // the event occurs during the current step
+                      occuringEvents.add(currentEvent);
+                  }
+
+              }
+
+...

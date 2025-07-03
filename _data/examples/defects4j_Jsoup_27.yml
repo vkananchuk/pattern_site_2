@@ -1,0 +1,57 @@
+---
+language: java
+text_diff: |
+  --- before
+  +++ after
+  @@ -129,9 +129,8 @@
+           Matcher m = charsetPattern.matcher(contentType);
+           if (m.find()) {
+               String charset = m.group(1).trim();
+  -            if (Charset.isSupported(charset)) return charset;
+               charset = charset.toUpperCase(Locale.ENGLISH);
+  -            if (Charset.isSupported(charset)) return charset;
+  +            return charset;
+           }
+           return null;
+       }
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return charset; [5961,5976]
+  to
+  block [5840,6082]
+  at 3
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return charset; [5961,5976]
+  to
+  block [5840,6082]
+  at 3
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [5902,5951]
+      parenthesized_expression [5905,5935]
+          method_invocation: Charset.isSupported(charset) [5906,5934]
+      return_statement: return charset; [5936,5951]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [6023,6072]
+      parenthesized_expression [6026,6056]
+          method_invocation: Charset.isSupported(charset) [6027,6055]
+      return_statement: return charset; [6057,6072]
+
+...

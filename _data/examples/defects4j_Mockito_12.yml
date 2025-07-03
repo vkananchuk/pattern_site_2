@@ -1,0 +1,41 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -17,12 +17,8 @@\n         Type generic = field.getGenericType();\r\n
+  \        if (generic != null && generic instanceof ParameterizedType) {\r\n             Type
+  actual = ((ParameterizedType) generic).getActualTypeArguments()[0];\r\n-            if
+  (actual instanceof Class) {\r\n                 return (Class) actual;\r\n-            }
+  else if (actual instanceof ParameterizedType) {\r\n                 //in case of
+  nested generics we don't go deep\r\n-                return (Class) ((ParameterizedType)
+  actual).getRawType();\r\n-            }\r\n         }\r\n         \r\n         return
+  Object.class;\r\n"
+tree_diff: |+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return (Class) actual; [686,708]
+  to
+  block [581,979]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return (Class) actual; [686,708]
+  to
+  block [581,979]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [682,968]
+      parenthesized_expression [685,710]
+          instanceof_expression: actual instanceof Class [686,709]
+      block [711,767]
+          return_statement: return (Class) actual; [730,752]
+
+...

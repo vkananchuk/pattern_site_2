@@ -1,0 +1,125 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -830,20 +830,8 @@\n         if (!clazz.isAssignableFrom(requestedType))
+  {\n           return null;\n         }\n-        return (TypeAdapter<T2>) new TypeAdapter<T1>()
+  {\n-          @Override public void write(JsonWriter out, T1 value) throws IOException
+  {\n-            typeAdapter.write(out, value);\n-          }\n+        return (TypeAdapter<T2>)
+  typeAdapter;\n \n-          @Override public T1 read(JsonReader in) throws IOException
+  {\n-            T1 result = typeAdapter.read(in);\n-            if (result != null
+  && !requestedType.isInstance(result)) {\n-              throw new JsonSyntaxException(\"Expected
+  a \" + requestedType.getName()\n-                  + \" but was \" + result.getClass().getName());\n-
+  \           }\n-            return result;\n-          }\n-        };\n       }\n
+  \      @Override public String toString() {\n         return \"Factory[typeHierarchy=\"
+  + clazz.getName() + \",adapter=\" + typeAdapter + \"]\";\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return new TypeAdapterFactory() {
+        @SuppressWarnings("unchecked")
+        public <T2> TypeAdapter<T2> create(Gson gson, TypeToken<T2> typeToken) {
+          final Class<? super T2> requestedType = typeToken.getRawType();
+          if (!clazz.isAssignableFrom(requestedType)) {
+            return null;
+          }
+          return (TypeAdapter<T2>) new TypeAdapter<T1>() {
+            @Override public void write(JsonWriter out, T1 value) throws IOException {
+              typeAdapter.write(out, value);
+            }
+
+            @Override public T1 read(JsonReader in) throws IOException {
+              T1 result = typeAdapter.read(in);
+              if (result != null && !requestedType.isInstance(result)) {
+                throw new JsonSyntaxException("Expected a " + requestedType.getName()
+                    + " but was " + result.getClass().getName());
+              }
+              return result;
+            }
+          };
+        }
+        @Override public String toString() {
+          return "Factory[typeHierarchy=" + clazz.getName() + ",adapter=" + typeAdapter + "]";
+        }
+      }; to return new TypeAdapterFactory() {
+        @SuppressWarnings("unchecked")
+        public <T2> TypeAdapter<T2> create(Gson gson, TypeToken<T2> typeToken) {
+          final Class<? super T2> requestedType = typeToken.getRawType();
+          if (!clazz.isAssignableFrom(requestedType)) {
+            return null;
+          }
+          return (TypeAdapter<T2>) typeAdapter;
+
+        }
+        @Override public String toString() {
+          return "Factory[typeHierarchy=" + clazz.getName() + ",adapter=" + typeAdapter + "]";
+        }
+      };
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return new TypeAdapterFactory() {
+        @SuppressWarnings("unchecked")
+        public <T2> TypeAdapter<T2> create(Gson gson, TypeToken<T2> typeToken) {
+          final Class<? super T2> requestedType = typeToken.getRawType();
+          if (!clazz.isAssignableFrom(requestedType)) {
+            return null;
+          }
+          return (TypeAdapter<T2>) new TypeAdapter<T1>() {
+            @Override public void write(JsonWriter out, T1 value) throws IOException {
+              typeAdapter.write(out, value);
+            }
+
+            @Override public T1 read(JsonReader in) throws IOException {
+              T1 result = typeAdapter.read(in);
+              if (result != null && !requestedType.isInstance(result)) {
+                throw new JsonSyntaxException("Expected a " + requestedType.getName()
+                    + " but was " + result.getClass().getName());
+              }
+              return result;
+            }
+          };
+        }
+        @Override public String toString() {
+          return "Factory[typeHierarchy=" + clazz.getName() + ",adapter=" + typeAdapter + "]";
+        }
+      }; [27000,28065]
+  replace return new TypeAdapterFactory() {
+        @SuppressWarnings("unchecked")
+        public <T2> TypeAdapter<T2> create(Gson gson, TypeToken<T2> typeToken) {
+          final Class<? super T2> requestedType = typeToken.getRawType();
+          if (!clazz.isAssignableFrom(requestedType)) {
+            return null;
+          }
+          return (TypeAdapter<T2>) new TypeAdapter<T1>() {
+            @Override public void write(JsonWriter out, T1 value) throws IOException {
+              typeAdapter.write(out, value);
+            }
+
+            @Override public T1 read(JsonReader in) throws IOException {
+              T1 result = typeAdapter.read(in);
+              if (result != null && !requestedType.isInstance(result)) {
+                throw new JsonSyntaxException("Expected a " + requestedType.getName()
+                    + " but was " + result.getClass().getName());
+              }
+              return result;
+            }
+          };
+        }
+        @Override public String toString() {
+          return "Factory[typeHierarchy=" + clazz.getName() + ",adapter=" + typeAdapter + "]";
+        }
+      }; by return new TypeAdapterFactory() {
+        @SuppressWarnings("unchecked")
+        public <T2> TypeAdapter<T2> create(Gson gson, TypeToken<T2> typeToken) {
+          final Class<? super T2> requestedType = typeToken.getRawType();
+          if (!clazz.isAssignableFrom(requestedType)) {
+            return null;
+          }
+          return (TypeAdapter<T2>) typeAdapter;
+
+        }
+        @Override public String toString() {
+          return "Factory[typeHierarchy=" + clazz.getName() + ",adapter=" + typeAdapter + "]";
+        }
+      };
+
+...

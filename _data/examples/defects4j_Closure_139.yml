@@ -1,0 +1,251 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -278,9 +278,6 @@\n           }\n           break;\n
+  \n-        case Token.FUNCTION:\n-          normalizeFunctionDeclaration(n);\n-
+  \         break;\n       }\n     }\n \n@@ -292,13 +289,6 @@\n      * to:\n      *
+  \   var f = function () {};\n      */\n-    private void normalizeFunctionDeclaration(Node
+  n) {\n-      Preconditions.checkState(n.getType() == Token.FUNCTION);\n-      if
+  (!NodeUtil.isFunctionAnonymous(n)\n-          && !NodeUtil.isHoistedFunctionDeclaration(n))
+  {\n-        rewriteFunctionDeclaration(n);\n-      }\n-    }\n \n     /**\n      *
+  Rewrite the function declaration from:\n@@ -316,23 +306,12 @@\n      *         LP\n
+  \     *         BLOCK\n      */\n-    private void rewriteFunctionDeclaration(Node
+  n) {\n       // Prepare a spot for the function.\n-      Node oldNameNode = n.getFirstChild();\n-
+  \     Node fnNameNode = oldNameNode.cloneNode();\n-      Node var = new Node(Token.VAR,
+  fnNameNode, n.getLineno(), n.getCharno());\n-      var.copyInformationFrom(n);\n
+  \n       // Prepare the function\n-      oldNameNode.setString(\"\");\n \n       //
+  Move the function\n-      Node parent = n.getParent();\n-      parent.replaceChild(n,
+  var);\n-      fnNameNode.addChildToFront(n);\n \n-      reportCodeChange(\"Function
+  declaration\");\n-    }\n \n     /**\n      * Do normalizations that introduce new
+  siblings or parents.\n@@ -539,18 +518,8 @@\n         Scope s, String name, Node
+  n, Node parent, Node gramps,\n         Node nodeWithLineNumber) {\n       Preconditions.checkState(n.getType()
+  == Token.NAME);\n-      Var v = s.getVar(name);\n+      if (parent.getType() ==
+  Token.VAR) {\n       // If name is \"arguments\", Var maybe null.\n-      Preconditions.checkState(\n-
+  \         v == null || v.getParentNode().getType() != Token.CATCH);\n-      if (v
+  != null && parent.getType() == Token.FUNCTION) {\n-        if (v.getParentNode().getType()
+  == Token.VAR) {\n-          s.undeclare(v);\n-          s.declare(name, n, n.getJSType(),
+  v.input);\n-          replaceVarWithAssignment(v.getNameNode(), v.getParentNode(),\n-
+  \             v.getParentNode().getParent());\n-        }\n-      } else if (parent.getType()
+  == Token.VAR) {\n         Preconditions.checkState(parent.hasOneChild());\n \n         replaceVarWithAssignment(n,
+  parent, gramps);\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from {
+          case Token.WHILE:
+            if (CONVERT_WHILE_TO_FOR) {
+              Node expr = n.getFirstChild();
+              n.setType(Token.FOR);
+              n.addChildBefore(new Node(Token.EMPTY), expr);
+              n.addChildAfter(new Node(Token.EMPTY), expr);
+              reportCodeChange("WHILE node");
+            }
+            break;
+
+          case Token.FUNCTION:
+            normalizeFunctionDeclaration(n);
+            break;
+        } to {
+          case Token.WHILE:
+            if (CONVERT_WHILE_TO_FOR) {
+              Node expr = n.getFirstChild();
+              n.setType(Token.FOR);
+              n.addChildBefore(new Node(Token.EMPTY), expr);
+              n.addChildAfter(new Node(Token.EMPTY), expr);
+              reportCodeChange("WHILE node");
+            }
+            break;
+
+        }
+  ------------
+  ===
+  update-node
+  ---
+  switch_block: {
+          case Token.WHILE:
+            if (CONVERT_WHILE_TO_FOR) {
+              Node expr = n.getFirstChild();
+              n.setType(Token.FOR);
+              n.addChildBefore(new Node(Token.EMPTY), expr);
+              n.addChildAfter(new Node(Token.EMPTY), expr);
+              reportCodeChange("WHILE node");
+            }
+            break;
+
+          case Token.FUNCTION:
+            normalizeFunctionDeclaration(n);
+            break;
+        } [9471,9901]
+  replace {
+          case Token.WHILE:
+            if (CONVERT_WHILE_TO_FOR) {
+              Node expr = n.getFirstChild();
+              n.setType(Token.FOR);
+              n.addChildBefore(new Node(Token.EMPTY), expr);
+              n.addChildAfter(new Node(Token.EMPTY), expr);
+              reportCodeChange("WHILE node");
+            }
+            break;
+
+          case Token.FUNCTION:
+            normalizeFunctionDeclaration(n);
+            break;
+        } by {
+          case Token.WHILE:
+            if (CONVERT_WHILE_TO_FOR) {
+              Node expr = n.getFirstChild();
+              n.setType(Token.FOR);
+              n.addChildBefore(new Node(Token.EMPTY), expr);
+              n.addChildAfter(new Node(Token.EMPTY), expr);
+              reportCodeChange("WHILE node");
+            }
+            break;
+
+        }
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  insert-tree
+  ---
+  equals [17624,17653]
+      method_invocation: parent.getType() [17624,17640]
+      field_access: Token.VAR [17644,17653]
+  to
+  parenthesized_expression [18619,18668]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: Preconditions.checkState(parent.hasOneChild()); [17714,17761]
+  to
+  block [18669,18941]
+  at 0
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: Preconditions.checkState(parent.hasOneChild()); [17714,17761]
+  to
+  block [18669,18941]
+  at 0
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  expression_statement: replaceVarWithAssignment(n, parent, gramps); [17771,17815]
+  to
+  block [18669,18941]
+  at 1
+  ------------
+  ===
+  insert-node
+  ---
+  expression_statement: replaceVarWithAssignment(n, parent, gramps); [17771,17815]
+  to
+  block [18669,18941]
+  at 1
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [10161,10429]
+      identifier: normalizeFunctionDeclaration [10174,10202]
+      method_parameters [10161,10429]
+          formal_parameter: Node n [10203,10209]
+      block [10211,10429]
+          expression_statement: Preconditions.checkState(n.getType() == Token.FUNCTION); [10219,10275]
+          if_statement [10282,10423]
+              parenthesized_expression [10285,10374]
+                  and [10286,10373]
+                      unary_expression: !NodeUtil.isFunctionAnonymous(n) [10286,10318]
+                      unary_expression: !NodeUtil.isHoistedFunctionDeclaration(n) [10332,10373]
+              block [10375,10423]
+                  expression_statement: rewriteFunctionDeclaration(n); [10385,10415]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  method_declaration [10758,11310]
+      identifier: rewriteFunctionDeclaration [10771,10797]
+      method_parameters [10758,11310]
+          formal_parameter: Node n [10798,10804]
+      block [10806,11310]
+          local_variable_declaration: Node oldNameNode = n.getFirstChild(); [10856,10893]
+          local_variable_declaration: Node fnNameNode = oldNameNode.cloneNode(); [10900,10942]
+          local_variable_declaration: Node var = new Node(Token.VAR, fnNameNode, n.getLineno(), n.getCharno()); [10949,11022]
+          expression_statement: var.copyInformationFrom(n); [11029,11056]
+          expression_statement: oldNameNode.setString(""); [11094,11120]
+          local_variable_declaration: Node parent = n.getParent(); [11155,11183]
+          expression_statement: parent.replaceChild(n, var); [11190,11218]
+          expression_statement: fnNameNode.addChildToFront(n); [11225,11255]
+          expression_statement: reportCodeChange("Function declaration"); [11263,11304]
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Var v = s.getVar(name); [18437,18460]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  local_variable_declaration: Var v = s.getVar(name); [18437,18460]
+  ===
+
+  New cluster:
+  ===
+  delete-node
+  ---
+  expression_statement: Preconditions.checkState(
+            v == null || v.getParentNode().getType() != Token.CATCH); [18516,18609]
+  ===
+  ------------
+  ===
+  delete-node
+  ---
+  expression_statement: Preconditions.checkState(
+            v == null || v.getParentNode().getType() != Token.CATCH); [18516,18609]
+  ===
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  and [18620,18667]
+      not_equals [18620,18629]
+          identifier: v [18620,18621]
+          null_literal [18625,18629]
+      equals [18633,18667]
+          method_invocation: parent.getType() [18633,18649]
+          field_access: Token.FUNCTION [18653,18667]
+
+  New cluster:
+  Unknown cluster type
+  ------------
+  ===
+  delete-tree
+  ---
+  if_statement [18679,18933]
+      parenthesized_expression [18682,18724]
+          equals [18683,18723]
+              method_invocation: v.getParentNode().getType() [18683,18710]
+              field_access: Token.VAR [18714,18723]
+      block [18725,18933]
+          expression_statement: s.undeclare(v); [18737,18752]
+          expression_statement: s.declare(name, n, n.getJSType(), v.input); [18763,18806]
+          expression_statement: replaceVarWithAssignment(v.getNameNode(), v.getParentNode(),
+                v.getParentNode().getParent()); [18817,18923]
+
+...

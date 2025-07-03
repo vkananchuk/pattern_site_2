@@ -1,0 +1,130 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -1,6 +1,8 @@\n-package java_programs;\n+package
+  correct_java_programs;\n import java.util.*;\n \n+import java_programs.Node;\n+\n
+  /**\n  *\n  * @author Angela Chen\n@@ -35,7 +37,7 @@\n                 }\n \n                 unvisitedNodes.put(nextnode,
+  Math.min(unvisitedNodes.get(nextnode),\n-                        unvisitedNodes.get(nextnode)
+  + length_by_edge.get(Arrays.asList(node, nextnode))));\n+                        distance
+  + length_by_edge.get(Arrays.asList(node, nextnode))));\n             }\n         }\n
+  \n"
+tree_diff: |+
+  New cluster:
+  UPDATE from while (!unvisitedNodes.isEmpty()) {
+              Node node = getNodeWithMinDistance(unvisitedNodes);
+              int distance = unvisitedNodes.get(node);
+              unvisitedNodes.remove(node);
+
+              if (node.getValue() == goalnode.getValue()) {
+                  return distance;
+              }
+              visitedNodes.add(node);
+
+              for (Node nextnode : node.getSuccessors()) {
+                  if (visitedNodes.contains(nextnode)) {
+                      continue;
+                  }
+
+                  if (unvisitedNodes.get(nextnode) == null) {
+                      unvisitedNodes.put(nextnode, Integer.MAX_VALUE);
+                  }
+
+                  unvisitedNodes.put(nextnode, Math.min(unvisitedNodes.get(nextnode),
+                          unvisitedNodes.get(nextnode) + length_by_edge.get(Arrays.asList(node, nextnode))));
+              }
+          } to while (!unvisitedNodes.isEmpty()) {
+              Node node = getNodeWithMinDistance(unvisitedNodes);
+              int distance = unvisitedNodes.get(node);
+              unvisitedNodes.remove(node);
+
+              if (node.getValue() == goalnode.getValue()) {
+                  return distance;
+              }
+              visitedNodes.add(node);
+
+              for (Node nextnode : node.getSuccessors()) {
+                  if (visitedNodes.contains(nextnode)) {
+                      continue;
+                  }
+
+                  if (unvisitedNodes.get(nextnode) == null) {
+                      unvisitedNodes.put(nextnode, Integer.MAX_VALUE);
+                  }
+
+                  unvisitedNodes.put(nextnode, Math.min(unvisitedNodes.get(nextnode),
+                          distance + length_by_edge.get(Arrays.asList(node, nextnode))));
+              }
+          }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while (!unvisitedNodes.isEmpty()) {
+              Node node = getNodeWithMinDistance(unvisitedNodes);
+              int distance = unvisitedNodes.get(node);
+              unvisitedNodes.remove(node);
+
+              if (node.getValue() == goalnode.getValue()) {
+                  return distance;
+              }
+              visitedNodes.add(node);
+
+              for (Node nextnode : node.getSuccessors()) {
+                  if (visitedNodes.contains(nextnode)) {
+                      continue;
+                  }
+
+                  if (unvisitedNodes.get(nextnode) == null) {
+                      unvisitedNodes.put(nextnode, Integer.MAX_VALUE);
+                  }
+
+                  unvisitedNodes.put(nextnode, Math.min(unvisitedNodes.get(nextnode),
+                          unvisitedNodes.get(nextnode) + length_by_edge.get(Arrays.asList(node, nextnode))));
+              }
+          } [492,1353]
+  replace while (!unvisitedNodes.isEmpty()) {
+              Node node = getNodeWithMinDistance(unvisitedNodes);
+              int distance = unvisitedNodes.get(node);
+              unvisitedNodes.remove(node);
+
+              if (node.getValue() == goalnode.getValue()) {
+                  return distance;
+              }
+              visitedNodes.add(node);
+
+              for (Node nextnode : node.getSuccessors()) {
+                  if (visitedNodes.contains(nextnode)) {
+                      continue;
+                  }
+
+                  if (unvisitedNodes.get(nextnode) == null) {
+                      unvisitedNodes.put(nextnode, Integer.MAX_VALUE);
+                  }
+
+                  unvisitedNodes.put(nextnode, Math.min(unvisitedNodes.get(nextnode),
+                          unvisitedNodes.get(nextnode) + length_by_edge.get(Arrays.asList(node, nextnode))));
+              }
+          } by while (!unvisitedNodes.isEmpty()) {
+              Node node = getNodeWithMinDistance(unvisitedNodes);
+              int distance = unvisitedNodes.get(node);
+              unvisitedNodes.remove(node);
+
+              if (node.getValue() == goalnode.getValue()) {
+                  return distance;
+              }
+              visitedNodes.add(node);
+
+              for (Node nextnode : node.getSuccessors()) {
+                  if (visitedNodes.contains(nextnode)) {
+                      continue;
+                  }
+
+                  if (unvisitedNodes.get(nextnode) == null) {
+                      unvisitedNodes.put(nextnode, Integer.MAX_VALUE);
+                  }
+
+                  unvisitedNodes.put(nextnode, Math.min(unvisitedNodes.get(nextnode),
+                          distance + length_by_edge.get(Arrays.asList(node, nextnode))));
+              }
+          }
+
+...

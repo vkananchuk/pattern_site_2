@@ -1,0 +1,89 @@
+---
+language: java
+text_diff: "--- before\n+++ after\n@@ -686,14 +686,14 @@\n                 if (aNode.getNodeType()
+  == Node.ELEMENT_NODE) {\n                     Attr attr = ((Element) aNode).getAttributeNode(qname);\n
+  \                    if (attr != null) {\n-                        uri = attr.getValue();\n-
+  \                       break;\n+                        return attr.getValue();\n
+  \                    }\n                 }\n                 aNode = aNode.getParentNode();\n
+  \            }\n+            return null;\n         }\n-        return \"\".equals(uri)
+  ? null : uri;\n+        return uri;\n     }\n \n     public Object getValue() {\n"
+tree_diff: |+
+  New cluster:
+  UPDATE from return "".equals(uri) ? null : uri; to return uri;
+  ------------
+  ===
+  update-node
+  ---
+  return_statement: return "".equals(uri) ? null : uri; [23310,23345]
+  replace return "".equals(uri) ? null : uri; by return uri;
+
+  New cluster:
+  UPDATE from while (aNode != null) {
+                  if (aNode.getNodeType() == Node.ELEMENT_NODE) {
+                      Attr attr = ((Element) aNode).getAttributeNode(qname);
+                      if (attr != null) {
+                          uri = attr.getValue();
+                          break;
+                      }
+                  }
+                  aNode = aNode.getParentNode();
+              } to while (aNode != null) {
+                  if (aNode.getNodeType() == Node.ELEMENT_NODE) {
+                      Attr attr = ((Element) aNode).getAttributeNode(qname);
+                      if (attr != null) {
+                          return attr.getValue();
+                      }
+                  }
+                  aNode = aNode.getParentNode();
+              }
+  ------------
+  ===
+  update-node
+  ---
+  while_statement: while (aNode != null) {
+                  if (aNode.getNodeType() == Node.ELEMENT_NODE) {
+                      Attr attr = ((Element) aNode).getAttributeNode(qname);
+                      if (attr != null) {
+                          uri = attr.getValue();
+                          break;
+                      }
+                  }
+                  aNode = aNode.getParentNode();
+              } [22910,23291]
+  replace while (aNode != null) {
+                  if (aNode.getNodeType() == Node.ELEMENT_NODE) {
+                      Attr attr = ((Element) aNode).getAttributeNode(qname);
+                      if (attr != null) {
+                          uri = attr.getValue();
+                          break;
+                      }
+                  }
+                  aNode = aNode.getParentNode();
+              } by while (aNode != null) {
+                  if (aNode.getNodeType() == Node.ELEMENT_NODE) {
+                      Attr attr = ((Element) aNode).getAttributeNode(qname);
+                      if (attr != null) {
+                          return attr.getValue();
+                      }
+                  }
+                  aNode = aNode.getParentNode();
+              }
+
+  New cluster:
+  ===
+  insert-node
+  ---
+  return_statement: return null; [23274,23286]
+  to
+  block [22742,23301]
+  at 4
+  ------------
+  ===
+  insert-node
+  ---
+  return_statement: return null; [23274,23286]
+  to
+  block [22742,23301]
+  at 4
+
+...
