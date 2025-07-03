@@ -11,10 +11,6 @@ Minitest::TestTask.create
 task :default => :test
 
 namespace :examples do
-
-  directory 'inputs'
-  CLOBBER.include('inputs')
-
   directory '_data/examples'
   CLEAN.include('_data/examples')
 
@@ -63,9 +59,9 @@ namespace :examples do
       dir = "inputs/" + t.name.pathmap('%n').gsub('_', '/')
       before = Dir.glob("#{dir}/*.before")
       if before.count != 1
-        puts "SKIP: Multiple .before files #{before}"
-        next
+        raise "Multiple .before files in #{before.first.pathmap('%d')}"
       end
+
       before = before.first
 
       after = before.sub(/\.before$/, '.after')
