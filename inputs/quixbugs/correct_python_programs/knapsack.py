@@ -1,4 +1,3 @@
-
 def knapsack(capacity, items):
     from collections import defaultdict
     memo = defaultdict(int)

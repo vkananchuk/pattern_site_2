@@ -1,4 +1,3 @@
-
 def shortest_paths(source, weight_by_edge):
     weight_by_node = {
         v: float('inf') for u, v in weight_by_edge

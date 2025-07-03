@@ -1,4 +1,3 @@
-
 def flatten(arr):
     for x in arr:
         if isinstance(x, list):

@@ -1,4 +1,3 @@
-
 def levenshtein(source, target):
     if source == '' or target == '':
         return len(source) or len(target)

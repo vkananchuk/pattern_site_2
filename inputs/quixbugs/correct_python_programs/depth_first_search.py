@@ -1,4 +1,3 @@
-
 def depth_first_search(startnode, goalnode):
     nodesvisited = set()
 

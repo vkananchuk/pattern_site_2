@@ -1,4 +1,3 @@
-
 def wrap(text, cols):
     lines = []
     while len(text) > cols:
@@ -10,4 +9,3 @@ def wrap(text, cols):
 
     lines.append(text)
     return lines
-

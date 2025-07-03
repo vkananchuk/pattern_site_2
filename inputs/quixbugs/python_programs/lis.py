@@ -1,4 +1,3 @@
-
 def lis(arr):
     ends = {}
     longest = 0
@@ -14,24 +13,3 @@ def lis(arr):
             longest = length + 1
 
     return longest
-
-
-
-"""
-Longest Increasing Subsequence
-longest-increasing-subsequence
-
-
-Input:
-    arr: A sequence of ints
-
-Precondition:
-    The ints in arr are unique
-
-Output:
-    The length of the longest monotonically increasing subsequence of arr
-
-Example:
-    >>> lis([4, 1, 5, 3, 7, 6, 2])
-    3
-"""

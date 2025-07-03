@@ -1,4 +1,3 @@
-
 def shunting_yard(tokens):
     precedence = {
         '+': 1,

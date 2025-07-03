@@ -1,4 +1,3 @@
-
 from collections import defaultdict
 
 def shortest_path_lengths(n, length_by_edge):

@@ -1,4 +1,3 @@
-
 from collections import deque as Queue
 
 def breadth_first_search(startnode, goalnode):
@@ -18,17 +17,3 @@ def breadth_first_search(startnode, goalnode):
             nodesseen.update(node.successors)
 
     return False
-
-
-
-"""
-Breadth-First Search
-
-
-Input:
-    startnode: A digraph node
-    goalnode: A digraph node
-
-Output:
-    Whether goalnode is reachable from startnode
-"""
