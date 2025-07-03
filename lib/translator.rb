@@ -3,6 +3,9 @@ require 'nokogiri'
 require 'yaml'
 
 class Translator
+  class TranslationError < StandardError
+  end
+
   def initialize
     @java = TreeStand::Parser.new('java')
     @python = TreeStand::Parser.new('python')
@@ -69,18 +72,18 @@ class Translator
       matches = match[key]
       return nil unless matches # there was no match and it was optional
 
-      raise "Multiple matches for #{key}" if matches.size != 1
+      raise TranslationError, "Multiple matches for #{key}" if matches.size != 1
 
       return translate_tree(lang, matches.first)
     when :variable_text
       key = node.each_named.to_a.last.text
       matches = match[key]
-      raise "Multiple matches for #{key}" if matches.size != 1
+      raise TranslationError, "Multiple matches for #{key}" if matches.size != 1
 
       return matches.first.text
     end
 
-    raise "Unknown type #{node.type}" unless node.type == :node
+    raise TranslationError, "Unknown type #{node.type}" unless node.type == :node
 
     range = match['ROOT'].first.range
     result = {
@@ -111,7 +114,7 @@ class Translator
     type = node.type
     rules = @rules[lang][type]
 
-    raise "No rules for type #{type} #{node.sexpr}" unless rules
+    raise TranslationError, "No rules for type #{type} #{node.sexpr}" unless rules
 
     rules.each do |rule|
       captures = find_match(node, rule[:source] + ' @ROOT')
@@ -125,7 +128,7 @@ class Translator
       return build_node(lang, captures, construct_tree.root_node)
     end
 
-    raise "No #{lang} rule matched #{node.sexpr}"
+    raise TranslationError, "No #{lang} rule matched #{node.sexpr}"
   end
 
   def find_match(n, q)
@@ -143,7 +146,7 @@ class Translator
       .each do |match|
       if one_consumed
         pp n
-        raise "Multiple matches for #{q} #{match}"
+        raise TranslationError, "Multiple matches for #{q} #{match}"
       end
 
       match.captures.each do |capture|
