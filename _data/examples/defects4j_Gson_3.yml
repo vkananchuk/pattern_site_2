@@ -1,5 +1,1277 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ConstructorConstructor
+        children: []
+        pos: 1566
+        length: 22
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final Map<Type, InstanceCreator<?>> instanceCreators;
+          children: []
+          pos: 1593
+          length: 61
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ConstructorConstructor(Map<Type, InstanceCreator<?>> instanceCreators) {
+                  this.instanceCreators = instanceCreators;
+                }
+          children: []
+          pos: 1658
+          length: 129
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: get
+              children: []
+              pos: 1823
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: TypeToken<T> typeToken
+                children: []
+                pos: 1827
+                length: 22
+              pos: 1791
+              length: 1370
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Type type = typeToken.getType();
+                children: []
+                pos: 1857
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: final Class<? super T> rawType = typeToken.getRawType();
+                children: []
+                pos: 1900
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    @SuppressWarnings("unchecked") // types must agree
+                        final InstanceCreator<T> typeCreator = (InstanceCreator<T>) instanceCreators.get(type);
+                children: []
+                pos: 2000
+                length: 142
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: typeCreator
+                            children: []
+                            pos: 2151
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2166
+                            length: 4
+                        children: []
+                        pos: 2151
+                        length: 19
+                    children: []
+                    pos: 2150
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return new ObjectConstructor<T>() {
+                                @Override public T construct() {
+                                  return typeCreator.createInstance(type);
+                                }
+                              };
+                    children: []
+                    pos: 2180
+                    length: 146
+                  pos: 2172
+                  length: 160
+                pos: 2147
+                length: 185
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    @SuppressWarnings("unchecked") // types must agree
+                        final InstanceCreator<T> rawTypeCreator =
+                            (InstanceCreator<T>) instanceCreators.get(rawType);
+                children: []
+                pos: 2391
+                length: 156
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: rawTypeCreator
+                            children: []
+                            pos: 2556
+                            length: 14
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2574
+                            length: 4
+                        children: []
+                        pos: 2556
+                        length: 22
+                    children: []
+                    pos: 2555
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return new ObjectConstructor<T>() {
+                                @Override public T construct() {
+                                  return rawTypeCreator.createInstance(type);
+                                }
+                              };
+                    children: []
+                    pos: 2588
+                    length: 149
+                  pos: 2580
+                  length: 163
+                pos: 2552
+                length: 191
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectConstructor<T> defaultConstructor = newDefaultConstructor(rawType);
+                children: []
+                pos: 2749
+                length: 73
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: defaultConstructor
+                            children: []
+                            pos: 2831
+                            length: 18
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2853
+                            length: 4
+                        children: []
+                        pos: 2831
+                        length: 26
+                    children: []
+                    pos: 2830
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return defaultConstructor;
+                    children: []
+                    pos: 2867
+                    length: 26
+                  pos: 2859
+                  length: 40
+                pos: 2827
+                length: 72
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectConstructor<T> defaultImplementation = newDefaultImplementationConstructor(type,
+                    rawType);
+                children: []
+                pos: 2905
+                length: 96
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: defaultImplementation
+                            children: []
+                            pos: 3010
+                            length: 21
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 3035
+                            length: 4
+                        children: []
+                        pos: 3010
+                        length: 29
+                    children: []
+                    pos: 3009
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return defaultImplementation;
+                    children: []
+                    pos: 3049
+                    length: 29
+                  pos: 3041
+                  length: 43
+                pos: 3006
+                length: 78
+              - type: return_statement
+                fields:
+                  text: return newUnsafeAllocator(type, rawType);
+                children: []
+                pos: 3116
+                length: 41
+              pos: 1851
+              length: 1310
+          children: []
+          pos: 1791
+          length: 1370
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newDefaultConstructor
+              children: []
+              pos: 3198
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Class<? super T> rawType
+                children: []
+                pos: 3220
+                length: 24
+              pos: 3165
+              length: 1186
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: final Constructor<? super T> constructor = rawType.getDeclaredConstructor();
+                      children: []
+                      pos: 3264
+                      length: 76
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!constructor.isAccessible()"
+                              children: []
+                              pos: 3351
+                              length: 27
+                          children: []
+                          pos: 3350
+                          length: 29
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: constructor.setAccessible(true);
+                          children: []
+                          pos: 3390
+                          length: 32
+                        pos: 3380
+                        length: 50
+                      pos: 3347
+                      length: 83
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return new ObjectConstructor<T>() {
+                                  @SuppressWarnings("unchecked") // T is the same raw type as is requested
+                                  @Override public T construct() {
+                                    try {
+                                      Object[] args = null;
+                                      return (T) constructor.newInstance(args);
+                                    } catch (InstantiationException e) {
+                                      // TODO: JsonParseException ?
+                                      throw new RuntimeException("Failed to invoke " + constructor + " with no args", e);
+                                    } catch (InvocationTargetException e) {
+                                      // TODO: don't wrap if cause is unchecked!
+                                      // TODO: JsonParseException ?
+                                      throw new RuntimeException("Failed to invoke " + constructor + " with no args",
+                                          e.getTargetException());
+                                    } catch (IllegalAccessException e) {
+                                      throw new AssertionError(e);
+                                    }
+                                  }
+                                };
+                      children: []
+                      pos: 3437
+                      length: 845
+                    pos: 3256
+                    length: 1032
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (NoSuchMethodException e) {
+                                return null;
+                              }
+                      children: []
+                      pos: 4289
+                      length: 58
+                    pos: 3252
+                    length: 1095
+                children: []
+                pos: 3252
+                length: 1095
+              pos: 3246
+              length: 1105
+          children: []
+          pos: 3165
+          length: 1186
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newDefaultImplementationConstructor
+              children: []
+              pos: 4579
+              length: 35
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Type type
+                children: []
+                pos: 4622
+                length: 15
+              pos: 4455
+              length: 3145
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: Collection.class.isAssignableFrom(rawType)
+                        children: []
+                        pos: 4675
+                        length: 42
+                    children: []
+                    pos: 4674
+                    length: 44
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: SortedSet.class.isAssignableFrom(rawType)
+                            children: []
+                            pos: 4731
+                            length: 41
+                        children: []
+                        pos: 4730
+                        length: 43
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: |-
+                            return new ObjectConstructor<T>() {
+                                      @Override public T construct() {
+                                        return (T) new TreeSet<Object>();
+                                      }
+                                    };
+                        children: []
+                        pos: 4784
+                        length: 147
+                      pos: 4774
+                      length: 165
+                    pos: 4727
+                    length: 1531
+                  pos: 4719
+                  length: 1545
+                pos: 4671
+                length: 1593
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: Map.class.isAssignableFrom(rawType)
+                        children: []
+                        pos: 6274
+                        length: 35
+                    children: []
+                    pos: 6273
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: ConcurrentNavigableMap.class.isAssignableFrom(rawType)
+                            children: []
+                            pos: 6323
+                            length: 54
+                        children: []
+                        pos: 6322
+                        length: 56
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: |-
+                            return new ObjectConstructor<T>() {
+                                      @Override public T construct() {
+                                        return (T) new ConcurrentSkipListMap<Object, Object>();
+                                      }
+                                    };
+                        children: []
+                        pos: 6389
+                        length: 169
+                      pos: 6379
+                      length: 187
+                    pos: 6319
+                    length: 1253
+                  pos: 6311
+                  length: 1267
+                pos: 6270
+                length: 1308
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 7584
+                length: 12
+              pos: 4665
+              length: 2935
+          children: []
+          pos: 4455
+          length: 3145
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newUnsafeAllocator
+              children: []
+              pos: 7637
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Type type
+                children: []
+                pos: 7663
+                length: 15
+              pos: 7604
+              length: 677
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new ObjectConstructor<T>() {
+                          private final UnsafeAllocator unsafeAllocator = UnsafeAllocator.create();
+                          @SuppressWarnings("unchecked")
+                          @Override public T construct() {
+                            try {
+                              Object newInstance = unsafeAllocator.newInstance(rawType);
+                              return (T) newInstance;
+                            } catch (Exception e) {
+                              throw new RuntimeException(("Unable to invoke no-args constructor for " + type + ". "
+                                  + "Register an InstanceCreator with Gson for this type may fix this problem."), e);
+                            }
+                          }
+                        };
+                children: []
+                pos: 7718
+                length: 559
+              pos: 7712
+              length: 569
+          children: []
+          pos: 7604
+          length: 677
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 8309
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8285
+              length: 80
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return instanceCreators.toString();
+                children: []
+                pos: 8326
+                length: 35
+              pos: 8320
+              length: 45
+          children: []
+          pos: 8285
+          length: 80
+        pos: 1547
+        length: 6820
+    children: []
+    pos: 1547
+    length: 6820
+  pos: 0
+  length: 8368
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ConstructorConstructor
+        children: []
+        pos: 1373
+        length: 22
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final Map<Type, InstanceCreator<?>> instanceCreators;
+          children: []
+          pos: 1400
+          length: 61
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ConstructorConstructor(Map<Type, InstanceCreator<?>> instanceCreators) {
+                  this.instanceCreators = instanceCreators;
+                }
+          children: []
+          pos: 1465
+          length: 129
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: get
+              children: []
+              pos: 1630
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: TypeToken<T> typeToken
+                children: []
+                pos: 1634
+                length: 22
+              pos: 1598
+              length: 1370
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Type type = typeToken.getType();
+                children: []
+                pos: 1664
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: final Class<? super T> rawType = typeToken.getRawType();
+                children: []
+                pos: 1707
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    @SuppressWarnings("unchecked") // types must agree
+                        final InstanceCreator<T> typeCreator = (InstanceCreator<T>) instanceCreators.get(type);
+                children: []
+                pos: 1807
+                length: 142
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: typeCreator
+                            children: []
+                            pos: 1958
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 1973
+                            length: 4
+                        children: []
+                        pos: 1958
+                        length: 19
+                    children: []
+                    pos: 1957
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return new ObjectConstructor<T>() {
+                                @Override public T construct() {
+                                  return typeCreator.createInstance(type);
+                                }
+                              };
+                    children: []
+                    pos: 1987
+                    length: 146
+                  pos: 1979
+                  length: 160
+                pos: 1954
+                length: 185
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    @SuppressWarnings("unchecked") // types must agree
+                        final InstanceCreator<T> rawTypeCreator =
+                            (InstanceCreator<T>) instanceCreators.get(rawType);
+                children: []
+                pos: 2198
+                length: 156
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: rawTypeCreator
+                            children: []
+                            pos: 2363
+                            length: 14
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2381
+                            length: 4
+                        children: []
+                        pos: 2363
+                        length: 22
+                    children: []
+                    pos: 2362
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return new ObjectConstructor<T>() {
+                                @Override public T construct() {
+                                  return rawTypeCreator.createInstance(type);
+                                }
+                              };
+                    children: []
+                    pos: 2395
+                    length: 149
+                  pos: 2387
+                  length: 163
+                pos: 2359
+                length: 191
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectConstructor<T> defaultConstructor = newDefaultConstructor(rawType);
+                children: []
+                pos: 2556
+                length: 73
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: defaultConstructor
+                            children: []
+                            pos: 2638
+                            length: 18
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2660
+                            length: 4
+                        children: []
+                        pos: 2638
+                        length: 26
+                    children: []
+                    pos: 2637
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return defaultConstructor;
+                    children: []
+                    pos: 2674
+                    length: 26
+                  pos: 2666
+                  length: 40
+                pos: 2634
+                length: 72
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectConstructor<T> defaultImplementation = newDefaultImplementationConstructor(type,
+                    rawType);
+                children: []
+                pos: 2712
+                length: 96
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: defaultImplementation
+                            children: []
+                            pos: 2817
+                            length: 21
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2842
+                            length: 4
+                        children: []
+                        pos: 2817
+                        length: 29
+                    children: []
+                    pos: 2816
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return defaultImplementation;
+                    children: []
+                    pos: 2856
+                    length: 29
+                  pos: 2848
+                  length: 43
+                pos: 2813
+                length: 78
+              - type: return_statement
+                fields:
+                  text: return newUnsafeAllocator(type, rawType);
+                children: []
+                pos: 2923
+                length: 41
+              pos: 1658
+              length: 1310
+          children: []
+          pos: 1598
+          length: 1370
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newDefaultConstructor
+              children: []
+              pos: 3005
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Class<? super T> rawType
+                children: []
+                pos: 3027
+                length: 24
+              pos: 2972
+              length: 1186
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: final Constructor<? super T> constructor = rawType.getDeclaredConstructor();
+                      children: []
+                      pos: 3071
+                      length: 76
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!constructor.isAccessible()"
+                              children: []
+                              pos: 3158
+                              length: 27
+                          children: []
+                          pos: 3157
+                          length: 29
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: constructor.setAccessible(true);
+                          children: []
+                          pos: 3197
+                          length: 32
+                        pos: 3187
+                        length: 50
+                      pos: 3154
+                      length: 83
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return new ObjectConstructor<T>() {
+                                  @SuppressWarnings("unchecked") // T is the same raw type as is requested
+                                  @Override public T construct() {
+                                    try {
+                                      Object[] args = null;
+                                      return (T) constructor.newInstance(args);
+                                    } catch (InstantiationException e) {
+                                      // TODO: JsonParseException ?
+                                      throw new RuntimeException("Failed to invoke " + constructor + " with no args", e);
+                                    } catch (InvocationTargetException e) {
+                                      // TODO: don't wrap if cause is unchecked!
+                                      // TODO: JsonParseException ?
+                                      throw new RuntimeException("Failed to invoke " + constructor + " with no args",
+                                          e.getTargetException());
+                                    } catch (IllegalAccessException e) {
+                                      throw new AssertionError(e);
+                                    }
+                                  }
+                                };
+                      children: []
+                      pos: 3244
+                      length: 845
+                    pos: 3063
+                    length: 1032
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (NoSuchMethodException e) {
+                                return null;
+                              }
+                      children: []
+                      pos: 4096
+                      length: 58
+                    pos: 3059
+                    length: 1095
+                children: []
+                pos: 3059
+                length: 1095
+              pos: 3053
+              length: 1105
+          children: []
+          pos: 2972
+          length: 1186
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newDefaultImplementationConstructor
+              children: []
+              pos: 4386
+              length: 35
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Type type
+                children: []
+                pos: 4429
+                length: 15
+              pos: 4262
+              length: 2652
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: Collection.class.isAssignableFrom(rawType)
+                        children: []
+                        pos: 4482
+                        length: 42
+                    children: []
+                    pos: 4481
+                    length: 44
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: SortedSet.class.isAssignableFrom(rawType)
+                            children: []
+                            pos: 4538
+                            length: 41
+                        children: []
+                        pos: 4537
+                        length: 43
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: |-
+                            return new ObjectConstructor<T>() {
+                                      @Override public T construct() {
+                                        return (T) new TreeSet<Object>();
+                                      }
+                                    };
+                        children: []
+                        pos: 4591
+                        length: 147
+                      pos: 4581
+                      length: 165
+                    pos: 4534
+                    length: 1531
+                  pos: 4526
+                  length: 1545
+                pos: 4478
+                length: 1593
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: Map.class.isAssignableFrom(rawType)
+                        children: []
+                        pos: 6081
+                        length: 35
+                    children: []
+                    pos: 6080
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: SortedMap.class.isAssignableFrom(rawType)
+                            children: []
+                            pos: 6130
+                            length: 41
+                        children: []
+                        pos: 6129
+                        length: 43
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: |-
+                            return new ObjectConstructor<T>() {
+                                      @Override public T construct() {
+                                        return (T) new TreeMap<Object, Object>();
+                                      }
+                                    };
+                        children: []
+                        pos: 6183
+                        length: 155
+                      pos: 6173
+                      length: 173
+                    pos: 6126
+                    length: 760
+                  pos: 6118
+                  length: 774
+                pos: 6077
+                length: 815
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 6898
+                length: 12
+              pos: 4472
+              length: 2442
+          children: []
+          pos: 4262
+          length: 2652
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newUnsafeAllocator
+              children: []
+              pos: 6951
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Type type
+                children: []
+                pos: 6977
+                length: 15
+              pos: 6918
+              length: 677
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new ObjectConstructor<T>() {
+                          private final UnsafeAllocator unsafeAllocator = UnsafeAllocator.create();
+                          @SuppressWarnings("unchecked")
+                          @Override public T construct() {
+                            try {
+                              Object newInstance = unsafeAllocator.newInstance(rawType);
+                              return (T) newInstance;
+                            } catch (Exception e) {
+                              throw new RuntimeException(("Unable to invoke no-args constructor for " + type + ". "
+                                  + "Register an InstanceCreator with Gson for this type may fix this problem."), e);
+                            }
+                          }
+                        };
+                children: []
+                pos: 7032
+                length: 559
+              pos: 7026
+              length: 569
+          children: []
+          pos: 6918
+          length: 677
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 7623
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7599
+              length: 80
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return instanceCreators.toString();
+                children: []
+                pos: 7640
+                length: 35
+              pos: 7634
+              length: 45
+          children: []
+          pos: 7599
+          length: 80
+        pos: 1354
+        length: 6327
+    children: []
+    pos: 1354
+    length: 6327
+  pos: 0
+  length: 7682
 text_diff: "--- before\n+++ after\n@@ -33,10 +33,6 @@\n import java.util.SortedSet;\n
   import java.util.TreeMap;\n import java.util.TreeSet;\n-import java.util.concurrent.ConcurrentHashMap;\n-import
   java.util.concurrent.ConcurrentMap;\n-import java.util.concurrent.ConcurrentNavigableMap;\n-import

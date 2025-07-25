@@ -1,5 +1,3897 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Normalize
+        children: []
+        pos: 2434
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 2483
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final boolean assertOnChange;
+          children: []
+          pos: 2526
+          length: 37
+        - type: field_declaration
+          fields:
+            text: private static final boolean CONVERT_WHILE_TO_FOR = true;
+          children: []
+          pos: 2566
+          length: 57
+        - type: field_declaration
+          fields:
+            text: static final boolean MAKE_LOCAL_NAMES_UNIQUE = true;
+          children: []
+          pos: 2626
+          length: 52
+        - type: constructor_declaration
+          fields:
+            text: |-
+              Normalize(AbstractCompiler compiler, boolean assertOnChange) {
+                  this.compiler = compiler;
+                  this.assertOnChange = assertOnChange;
+                }
+          children: []
+          pos: 2682
+          length: 138
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reportCodeChange
+              children: []
+              pos: 2837
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String changeDescription
+                children: []
+                pos: 2854
+                length: 24
+              pos: 2824
+              length: 233
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: assertOnChange
+                        children: []
+                        pos: 2890
+                        length: 14
+                    children: []
+                    pos: 2889
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new IllegalStateException(
+                                  "Normalize constraints violated:\n" + changeDescription);
+                    children: []
+                    pos: 2914
+                    length: 100
+                  pos: 2906
+                  length: 114
+                pos: 2886
+                length: 134
+              - type: expression_statement
+                fields:
+                  text: compiler.reportCodeChange();
+                children: []
+                pos: 3025
+                length: 28
+              pos: 2880
+              length: 177
+          children: []
+          pos: 2824
+          length: 233
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 3085
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 3093
+                length: 12
+              pos: 3061
+              length: 459
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: NodeTraversal.traverse(compiler, root, this);
+                children: []
+                pos: 3124
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: removeDuplicateDeclarations(root);
+                children: []
+                pos: 3174
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: MAKE_LOCAL_NAMES_UNIQUE
+                        children: []
+                        pos: 3217
+                        length: 23
+                    children: []
+                    pos: 3216
+                    length: 25
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: MakeDeclaredNamesUnique renamer = new MakeDeclaredNamesUnique();
+                    children: []
+                    pos: 3250
+                    length: 64
+                  - type: local_variable_declaration
+                    fields:
+                      text: NodeTraversal t = new NodeTraversal(compiler, renamer);
+                    children: []
+                    pos: 3321
+                    length: 55
+                  - type: expression_statement
+                    fields:
+                      text: t.traverseRoots(externs, root);
+                    children: []
+                    pos: 3383
+                    length: 31
+                  pos: 3242
+                  length: 178
+                pos: 3213
+                length: 207
+              - type: expression_statement
+                fields:
+                  text: |-
+                    new PropogateConstantAnnotations(compiler, assertOnChange)
+                            .process(externs, root);
+                children: []
+                pos: 3425
+                length: 91
+              pos: 3118
+              length: 402
+          children: []
+          pos: 3061
+          length: 459
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: shouldTraverse
+              children: []
+              pos: 3551
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 3566
+                length: 15
+              pos: 3524
+              length: 148
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: doStatementNormalizations(t, n, parent);
+                children: []
+                pos: 3610
+                length: 40
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 3656
+                length: 12
+              pos: 3604
+              length: 68
+          children: []
+          pos: 3524
+          length: 148
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: PropogateConstantAnnotations
+              children: []
+              pos: 3696
+              length: 28
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final AbstractCompiler compiler;
+                children: []
+                pos: 3801
+                length: 40
+              - type: field_declaration
+                fields:
+                  text: private final boolean assertOnChange;
+                children: []
+                pos: 3846
+                length: 37
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public PropogateConstantAnnotations(
+                            AbstractCompiler compiler, boolean forbidChanges) {
+                          this.compiler = compiler;
+                          this.assertOnChange = forbidChanges;
+                        }
+                children: []
+                pos: 3889
+                length: 177
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: process
+                    children: []
+                    pos: 4098
+                    length: 7
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node externs
+                      children: []
+                      pos: 4106
+                      length: 12
+                    pos: 4072
+                    length: 136
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: new NodeTraversal(compiler, this).traverseRoots(externs,
+                          root);
+                      children: []
+                      pos: 4139
+                      length: 63
+                    pos: 4131
+                    length: 77
+                children: []
+                pos: 4072
+                length: 136
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 4240
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 4246
+                      length: 15
+                    pos: 4214
+                    length: 1141
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getType()
+                                  children: []
+                                  pos: 4363
+                                  length: 11
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: Token.NAME
+                                  children: []
+                                  pos: 4378
+                                  length: 10
+                              children: []
+                              pos: 4363
+                              length: 25
+                          children: []
+                          pos: 4362
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getString().isEmpty()
+                                  children: []
+                                  pos: 4404
+                                  length: 23
+                              children: []
+                              pos: 4403
+                              length: 25
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return;
+                              children: []
+                              pos: 4441
+                              length: 7
+                            pos: 4429
+                            length: 29
+                          pos: 4400
+                          length: 58
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSDocInfo info = null;
+                          children: []
+                          pos: 4468
+                          length: 22
+                        - type: local_variable_declaration
+                          fields:
+                            text: Var var = t.getScope().getVar(n.getString());
+                          children: []
+                          pos: 4555
+                          length: 45
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: var
+                                      children: []
+                                      pos: 4613
+                                      length: 3
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 4620
+                                      length: 4
+                                  children: []
+                                  pos: 4613
+                                  length: 11
+                              children: []
+                              pos: 4612
+                              length: 13
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: info = var.getJSDocInfo();
+                              children: []
+                              pos: 4638
+                              length: 26
+                            pos: 4626
+                            length: 48
+                          pos: 4609
+                          length: 65
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: and
+                                  fields:
+                                    left:
+                                      type: parenthesized_expression
+                                      fields:
+                                        expression:
+                                          type: and
+                                          fields:
+                                            left:
+                                              type: not_equals
+                                              fields:
+                                                left:
+                                                  type: identifier
+                                                  fields:
+                                                    text: info
+                                                  children: []
+                                                  pos: 4689
+                                                  length: 4
+                                                right:
+                                                  type: null_literal
+                                                  fields: {}
+                                                  children: []
+                                                  pos: 4697
+                                                  length: 4
+                                              children: []
+                                              pos: 4689
+                                              length: 12
+                                            right:
+                                              type: method_invocation
+                                              fields:
+                                                text: info.isConstant()
+                                              children: []
+                                              pos: 4705
+                                              length: 17
+                                          children: []
+                                          pos: 4689
+                                          length: 33
+                                      children: []
+                                      pos: 4688
+                                      length: 35
+                                    right:
+                                      type: unary_expression
+                                      fields:
+                                        text: "!n.getBooleanProp(Node.IS_CONSTANT_NAME)"
+                                      children: []
+                                      pos: 4739
+                                      length: 40
+                                  children: []
+                                  pos: 4688
+                                  length: 91
+                              children: []
+                              pos: 4687
+                              length: 93
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: n.putBooleanProp(Node.IS_CONSTANT_NAME, true);
+                              children: []
+                              pos: 4793
+                              length: 46
+                            - type: if_statement
+                              fields:
+                                condition:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: identifier
+                                      fields:
+                                        text: assertOnChange
+                                      children: []
+                                      pos: 4854
+                                      length: 14
+                                  children: []
+                                  pos: 4853
+                                  length: 16
+                              children:
+                              - type: block
+                                fields: {}
+                                children:
+                                - type: local_variable_declaration
+                                  fields:
+                                    text: String name = n.getString();
+                                  children: []
+                                  pos: 4884
+                                  length: 28
+                                - type: throw_statement
+                                  fields:
+                                    text: |-
+                                      throw new IllegalStateException(
+                                                      "Unexpected const change.\n" +
+                                                      "  name: "+ name + "\n" +
+                                                      "  gramps:" + n.getParent().getParent().toStringTree());
+                                  children: []
+                                  pos: 4925
+                                  length: 194
+                                pos: 4870
+                                length: 261
+                              pos: 4850
+                              length: 281
+                            pos: 4781
+                            length: 560
+                          pos: 4684
+                          length: 657
+                        pos: 4390
+                        length: 959
+                      pos: 4359
+                      length: 990
+                    pos: 4284
+                    length: 1071
+                children: []
+                pos: 4214
+                length: 1141
+              pos: 3676
+              length: 1683
+          children: []
+          pos: 3676
+          length: 1683
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: VerifyConstants
+              children: []
+              pos: 5465
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final private AbstractCompiler compiler;
+                children: []
+                pos: 5552
+                length: 40
+              - type: field_declaration
+                fields:
+                  text: final private boolean checkUserDeclarations;
+                children: []
+                pos: 5597
+                length: 44
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    VerifyConstants(AbstractCompiler compiler, boolean checkUserDeclarations) {
+                          this.compiler = compiler;
+                          this.checkUserDeclarations = checkUserDeclarations;
+                        }
+                children: []
+                pos: 5647
+                length: 171
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: process
+                    children: []
+                    pos: 5850
+                    length: 7
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node externs
+                      children: []
+                      pos: 5858
+                      length: 12
+                    pos: 5824
+                    length: 326
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node externsAndJs = root.getParent();
+                      children: []
+                      pos: 5891
+                      length: 37
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(externsAndJs != null);
+                      children: []
+                      pos: 5935
+                      length: 47
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(externsAndJs.hasChild(externs));
+                      children: []
+                      pos: 5989
+                      length: 57
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          NodeTraversal.traverseRoots(
+                                    compiler, Lists.newArrayList(externs, root), this);
+                      children: []
+                      pos: 6054
+                      length: 90
+                    pos: 5883
+                    length: 267
+                children: []
+                pos: 5824
+                length: 326
+              - type: field_declaration
+                fields:
+                  text: private Map<String,Boolean> constantMap = Maps.newHashMap();
+                children: []
+                pos: 6156
+                length: 60
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 6248
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 6254
+                      length: 15
+                    pos: 6222
+                    length: 1600
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getType()
+                                  children: []
+                                  pos: 6304
+                                  length: 11
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: Token.NAME
+                                  children: []
+                                  pos: 6319
+                                  length: 10
+                              children: []
+                              pos: 6304
+                              length: 25
+                          children: []
+                          pos: 6303
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: String name = n.getString();
+                          children: []
+                          pos: 6341
+                          length: 28
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getString().isEmpty()
+                                  children: []
+                                  pos: 6382
+                                  length: 23
+                              children: []
+                              pos: 6381
+                              length: 25
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return;
+                              children: []
+                              pos: 6419
+                              length: 7
+                            pos: 6407
+                            length: 29
+                          pos: 6378
+                          length: 58
+                        - type: local_variable_declaration
+                          fields:
+                            text: boolean isConst = n.getBooleanProp(Node.IS_CONSTANT_NAME);
+                          children: []
+                          pos: 6446
+                          length: 58
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: identifier
+                                  fields:
+                                    text: checkUserDeclarations
+                                  children: []
+                                  pos: 6517
+                                  length: 21
+                              children: []
+                              pos: 6516
+                              length: 23
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: local_variable_declaration
+                              fields:
+                                text: boolean expectedConst = false;
+                              children: []
+                              pos: 6552
+                              length: 30
+                            - type: if_statement
+                              fields:
+                                condition:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: or
+                                      fields:
+                                        left:
+                                          type: method_invocation
+                                          fields:
+                                            text: NodeUtil.isConstantName(n)
+                                          children: []
+                                          pos: 6597
+                                          length: 26
+                                        right:
+                                          type: method_invocation
+                                          fields:
+                                            text: compiler.getCodingConvention().isConstant(n.getString())
+                                          children: []
+                                          pos: 6641
+                                          length: 56
+                                      children: []
+                                      pos: 6597
+                                      length: 100
+                                  children: []
+                                  pos: 6596
+                                  length: 102
+                              children:
+                              - type: block
+                                fields: {}
+                                children:
+                                - type: expression_statement
+                                  fields:
+                                    text: expectedConst = true;
+                                  children: []
+                                  pos: 6713
+                                  length: 21
+                                pos: 6699
+                                length: 47
+                              pos: 6593
+                              length: 549
+                            - type: if_statement
+                              fields:
+                                condition:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: identifier
+                                      fields:
+                                        text: expectedConst
+                                      children: []
+                                      pos: 7158
+                                      length: 13
+                                  children: []
+                                  pos: 7157
+                                  length: 15
+                              children:
+                              - type: block
+                                fields: {}
+                                children:
+                                - type: expression_statement
+                                  fields:
+                                    text: |-
+                                      Preconditions.checkState(expectedConst == isConst,
+                                                      "The name " + name + " is not annotated as constant.");
+                                  children: []
+                                  pos: 7187
+                                  length: 122
+                                pos: 7173
+                                length: 148
+                              pos: 7154
+                              length: 328
+                            pos: 6540
+                            length: 952
+                          pos: 6513
+                          length: 979
+                        - type: local_variable_declaration
+                          fields:
+                            text: Boolean value = constantMap.get(name);
+                          children: []
+                          pos: 7502
+                          length: 38
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: value
+                                      children: []
+                                      pos: 7553
+                                      length: 5
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 7562
+                                      length: 4
+                                  children: []
+                                  pos: 7553
+                                  length: 13
+                              children: []
+                              pos: 7552
+                              length: 15
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: constantMap.put(name, isConst);
+                              children: []
+                              pos: 7580
+                              length: 31
+                            pos: 7568
+                            length: 53
+                          pos: 7549
+                          length: 259
+                        pos: 6331
+                        length: 1485
+                      pos: 6300
+                      length: 1516
+                    pos: 6292
+                    length: 1530
+                children: []
+                pos: 6222
+                length: 1600
+              pos: 5452
+              length: 2374
+          children: []
+          pos: 5452
+          length: 2374
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 7854
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 7860
+                length: 15
+              pos: 7830
+              length: 419
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.getType()
+                        children: []
+                        pos: 7912
+                        length: 11
+                    children: []
+                    pos: 7911
+                    length: 13
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.WHILE:
+                                if (CONVERT_WHILE_TO_FOR) {
+                                  Node expr = n.getFirstChild();
+                                  n.setType(Token.FOR);
+                                  n.addChildBefore(new Node(Token.EMPTY), expr);
+                                  n.addChildAfter(new Node(Token.EMPTY), expr);
+                                  reportCodeChange("WHILE node");
+                                }
+                                break;
+                            }
+                    children: []
+                    pos: 7925
+                    length: 320
+                children: []
+                pos: 7904
+                length: 341
+              pos: 7898
+              length: 351
+          children: []
+          pos: 7830
+          length: 419
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doStatementNormalizations
+              children: []
+              pos: 8341
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 8367
+                length: 15
+              pos: 8328
+              length: 689
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: n.getType()
+                            children: []
+                            pos: 8415
+                            length: 11
+                          right:
+                            type: field_access
+                            fields:
+                              text: Token.LABEL
+                            children: []
+                            pos: 8430
+                            length: 11
+                        children: []
+                        pos: 8415
+                        length: 26
+                    children: []
+                    pos: 8414
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: normalizeLabels(n);
+                    children: []
+                    pos: 8451
+                    length: 19
+                  pos: 8443
+                  length: 33
+                pos: 8411
+                length: 65
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: NodeUtil.isStatementBlock(n)
+                            children: []
+                            pos: 8624
+                            length: 28
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: n.getType()
+                                children: []
+                                pos: 8656
+                                length: 11
+                              right:
+                                type: field_access
+                                fields:
+                                  text: Token.LABEL
+                                children: []
+                                pos: 8671
+                                length: 11
+                            children: []
+                            pos: 8656
+                            length: 26
+                        children: []
+                        pos: 8624
+                        length: 58
+                    children: []
+                    pos: 8623
+                    length: 60
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: extractForInitializer(n, null, null);
+                    children: []
+                    pos: 8692
+                    length: 37
+                  pos: 8684
+                  length: 51
+                pos: 8620
+                length: 115
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: NodeUtil.isStatementBlock(n)
+                        children: []
+                        pos: 8853
+                        length: 28
+                    children: []
+                    pos: 8852
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: splitVarDeclarations(n);
+                    children: []
+                    pos: 8891
+                    length: 24
+                  pos: 8883
+                  length: 38
+                pos: 8849
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: n.getType()
+                            children: []
+                            pos: 8931
+                            length: 11
+                          right:
+                            type: field_access
+                            fields:
+                              text: Token.FUNCTION
+                            children: []
+                            pos: 8946
+                            length: 14
+                        children: []
+                        pos: 8931
+                        length: 29
+                    children: []
+                    pos: 8930
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: moveNamedFunctions(n.getLastChild());
+                    children: []
+                    pos: 8970
+                    length: 37
+                  pos: 8962
+                  length: 51
+                pos: 8927
+                length: 86
+              pos: 8405
+              length: 612
+          children: []
+          pos: 8328
+          length: 689
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeLabels
+              children: []
+              pos: 9358
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 9374
+                length: 6
+              pos: 9345
+              length: 503
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(n.getType() == Token.LABEL);
+                children: []
+                pos: 9388
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: Node last = n.getLastChild();
+                children: []
+                pos: 9450
+                length: 29
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: last.getType()
+                        children: []
+                        pos: 9492
+                        length: 14
+                    children: []
+                    pos: 9491
+                    length: 16
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.LABEL:
+                              case Token.BLOCK:
+                              case Token.FOR:
+                              case Token.WHILE:
+                              case Token.DO:
+                                return;
+                              default:
+                                Node block = new Node(Token.BLOCK);
+                                n.replaceChild(last, block);
+                                block.addChildToFront(last);
+                                reportCodeChange("LABEL normalization");
+                                return;
+                            }
+                    children: []
+                    pos: 9508
+                    length: 336
+                children: []
+                pos: 9484
+                length: 360
+              pos: 9382
+              length: 466
+          children: []
+          pos: 9345
+          length: 503
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: extractForInitializer
+              children: []
+              pos: 10322
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 10351
+                length: 6
+              pos: 10309
+              length: 1149
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node next, c = n.getFirstChild(); c != null; c = next) {
+                          next = c.getNext();
+                          Node insertBefore = (before == null) ? c : before;
+                          Node insertBeforeParent = (before == null) ? n : beforeParent;
+                          switch (c.getType()) {
+                            case Token.LABEL:
+                              extractForInitializer(c, insertBefore, insertBeforeParent);
+                              break;
+                            case Token.FOR:
+                              if (!NodeUtil.isForIn(c)
+                                  && c.getFirstChild().getType() != Token.EMPTY) {
+                                Node init = c.getFirstChild();
+                                c.replaceChild(init, new Node(Token.EMPTY));
+
+                                Node newStatement;
+                                // Only VAR statements, and expressions are allowed,
+                                // but are handled differently.
+                                if (init.getType() == Token.VAR) {
+                                  newStatement = init;
+                                } else {
+                                  newStatement = NodeUtil.newExpr(init);
+                                }
+
+                                insertBeforeParent.addChildBefore(newStatement, insertBefore);
+                                reportCodeChange("FOR initializer");
+                              }
+                              break;
+                          }
+                        }
+                children: []
+                pos: 10398
+                length: 1056
+              pos: 10391
+              length: 1067
+          children: []
+          pos: 10309
+          length: 1149
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: splitVarDeclarations
+              children: []
+              pos: 11649
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 11670
+                length: 6
+              pos: 11636
+              length: 630
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node next, c = n.getFirstChild(); c != null; c = next) {
+                          next = c.getNext();
+                          if (c.getType() == Token.VAR) {
+                            if (assertOnChange && !c.hasChildren()) {
+                              throw new IllegalStateException("Empty VAR node.");
+                            }
+
+                            while (c.getFirstChild() != c.getLastChild()) {
+                              Node name = c.getFirstChild();
+                              c.removeChild(name);
+                              Node newVar = new Node(Token.VAR, name, n.getLineno(), n.getCharno());
+                              n.addChildBefore(newVar, c);
+                              reportCodeChange("VAR with multiple children");
+                            }
+                          }
+                        }
+                children: []
+                pos: 11684
+                length: 578
+              pos: 11678
+              length: 588
+          children: []
+          pos: 11636
+          length: 630
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: moveNamedFunctions
+              children: []
+              pos: 12444
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node functionBody
+                children: []
+                pos: 12463
+                length: 17
+              pos: 12431
+              length: 1265
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    Preconditions.checkState(
+                            functionBody.getParent().getType() == Token.FUNCTION);
+                children: []
+                pos: 12488
+                length: 88
+              - type: local_variable_declaration
+                fields:
+                  text: Node previous = null;
+                children: []
+                pos: 12581
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: Node current = functionBody.getFirstChild();
+                children: []
+                pos: 12607
+                length: 44
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (current != null && NodeUtil.isFunctionDeclaration(current)) {
+                          previous = current;
+                          current = current.getNext();
+                        }
+                children: []
+                pos: 12768
+                length: 135
+              - type: local_variable_declaration
+                fields:
+                  text: Node insertAfter = previous;
+                children: []
+                pos: 12963
+                length: 28
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (current != null) {
+                          // Save off the next node as the current node maybe removed.
+                          Node next = current.getNext();
+                          if (NodeUtil.isFunctionDeclaration(current)) {
+                            // Remove the declaration from the body.
+                            Preconditions.checkNotNull(previous);
+                            functionBody.removeChildAfter(previous);
+
+                            // Readd the function at the top of the function body (after any
+                            // previous declarations).
+                            insertAfter = addToFront(functionBody, current, insertAfter);
+                            compiler.reportCodeChange();
+                          } else {
+                            // Update the previous only if the current node hasn't been moved.
+                            previous = current;
+                          }
+                          current = next;
+                        }
+                children: []
+                pos: 12996
+                length: 696
+              pos: 12482
+              length: 1214
+          children: []
+          pos: 12431
+          length: 1265
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addToFront
+              children: []
+              pos: 13908
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node parent
+                children: []
+                pos: 13919
+                length: 11
+              pos: 13895
+              length: 219
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: after
+                            children: []
+                            pos: 13969
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13978
+                            length: 4
+                        children: []
+                        pos: 13969
+                        length: 13
+                    children: []
+                    pos: 13968
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: parent.addChildToFront(newChild);
+                    children: []
+                    pos: 13992
+                    length: 33
+                  pos: 13984
+                  length: 47
+                pos: 13965
+                length: 124
+              - type: return_statement
+                fields:
+                  text: return newChild;
+                children: []
+                pos: 14094
+                length: 16
+              pos: 13959
+              length: 155
+          children: []
+          pos: 13895
+          length: 219
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeDuplicateDeclarations
+              children: []
+              pos: 14183
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node root
+                children: []
+                pos: 14211
+                length: 9
+              pos: 14170
+              length: 319
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Callback tickler = new ScopeTicklingCallback();
+                children: []
+                pos: 14228
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    ScopeCreator scopeCreator =  new SyntacticScopeCreator(
+                            compiler, new DuplicateDeclarationHandler());
+                children: []
+                pos: 14280
+                length: 109
+              - type: local_variable_declaration
+                fields:
+                  text: NodeTraversal t = new NodeTraversal(compiler, tickler, scopeCreator);
+                children: []
+                pos: 14394
+                length: 69
+              - type: expression_statement
+                fields:
+                  text: t.traverse(root);
+                children: []
+                pos: 14468
+                length: 17
+              pos: 14222
+              length: 267
+          children: []
+          pos: 14170
+          length: 319
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: DuplicateDeclarationHandler
+              children: []
+              pos: 14574
+              length: 27
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: onRedeclaration
+                    children: []
+                    pos: 14805
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Scope s
+                      children: []
+                      pos: 14830
+                      length: 7
+                    pos: 14779
+                    length: 2441
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(n.getType() == Token.NAME);
+                      children: []
+                      pos: 14927
+                      length: 52
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: parent.getType()
+                                  children: []
+                                  pos: 14990
+                                  length: 16
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: Token.VAR
+                                  children: []
+                                  pos: 15010
+                                  length: 9
+                              children: []
+                              pos: 14990
+                              length: 29
+                          children: []
+                          pos: 14989
+                          length: 31
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: Preconditions.checkState(parent.hasOneChild());
+                          children: []
+                          pos: 15031
+                          length: 47
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.hasChildren()
+                                  children: []
+                                  pos: 16082
+                                  length: 15
+                              children: []
+                              pos: 16081
+                              length: 17
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: parent.removeChild(n);
+                              children: []
+                              pos: 16177
+                              length: 22
+                            - type: local_variable_declaration
+                              fields:
+                                text: Node value = n.getFirstChild();
+                              children: []
+                              pos: 16268
+                              length: 31
+                            - type: expression_statement
+                              fields:
+                                text: n.removeChild(value);
+                              children: []
+                              pos: 16310
+                              length: 21
+                            - type: local_variable_declaration
+                              fields:
+                                text: Node replacement = new Node(Token.ASSIGN, n,
+                                  value);
+                              children: []
+                              pos: 16342
+                              length: 52
+                            - type: expression_statement
+                              fields:
+                                text: gramps.replaceChild(parent, new Node(Token.EXPR_RESULT,
+                                  replacement));
+                              children: []
+                              pos: 16405
+                              length: 70
+                            pos: 16099
+                            length: 386
+                          pos: 16078
+                          length: 1073
+                        - type: expression_statement
+                          fields:
+                            text: reportCodeChange("Duplicate VAR declaration");
+                          children: []
+                          pos: 17160
+                          length: 46
+                        pos: 15021
+                        length: 2193
+                      pos: 14986
+                      length: 2228
+                    pos: 14919
+                    length: 2301
+                children: []
+                pos: 14779
+                length: 2441
+              pos: 14554
+              length: 2671
+          children: []
+          pos: 14554
+          length: 2671
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ScopeTicklingCallback
+              children: []
+              pos: 17314
+              length: 21
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: enterScope
+                    children: []
+                    pos: 17414
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 17425
+                      length: 15
+                    pos: 17388
+                    length: 170
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: t.getScope();
+                      children: []
+                      pos: 17539
+                      length: 13
+                    pos: 17442
+                    length: 116
+                children: []
+                pos: 17388
+                length: 170
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: exitScope
+                    children: []
+                    pos: 17590
+                    length: 9
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 17600
+                      length: 15
+                    pos: 17564
+                    length: 84
+                  body:
+                    type: block
+                    fields: {}
+                    children: []
+                    pos: 17617
+                    length: 31
+                children: []
+                pos: 17564
+                length: 84
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: shouldTraverse
+                    children: []
+                    pos: 17683
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal nodeTraversal
+                      children: []
+                      pos: 17707
+                      length: 27
+                    pos: 17654
+                    length: 129
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 17765
+                      length: 12
+                    pos: 17757
+                    length: 26
+                children: []
+                pos: 17654
+                length: 129
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 17815
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 17821
+                      length: 15
+                    pos: 17789
+                    length: 101
+                  body:
+                    type: block
+                    fields: {}
+                    children: []
+                    pos: 17859
+                    length: 31
+                children: []
+                pos: 17789
+                length: 101
+              pos: 17294
+              length: 600
+          children: []
+          pos: 17294
+          length: 600
+        pos: 2428
+        length: 15469
+    children: []
+    pos: 2428
+    length: 15469
+  pos: 0
+  length: 17898
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Normalize
+        children: []
+        pos: 2434
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 2483
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final boolean assertOnChange;
+          children: []
+          pos: 2526
+          length: 37
+        - type: field_declaration
+          fields:
+            text: private static final boolean CONVERT_WHILE_TO_FOR = true;
+          children: []
+          pos: 2566
+          length: 57
+        - type: field_declaration
+          fields:
+            text: static final boolean MAKE_LOCAL_NAMES_UNIQUE = true;
+          children: []
+          pos: 2626
+          length: 52
+        - type: constructor_declaration
+          fields:
+            text: |-
+              Normalize(AbstractCompiler compiler, boolean assertOnChange) {
+                  this.compiler = compiler;
+                  this.assertOnChange = assertOnChange;
+                }
+          children: []
+          pos: 2682
+          length: 138
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reportCodeChange
+              children: []
+              pos: 2837
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String changeDescription
+                children: []
+                pos: 2854
+                length: 24
+              pos: 2824
+              length: 233
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: assertOnChange
+                        children: []
+                        pos: 2890
+                        length: 14
+                    children: []
+                    pos: 2889
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new IllegalStateException(
+                                  "Normalize constraints violated:\n" + changeDescription);
+                    children: []
+                    pos: 2914
+                    length: 100
+                  pos: 2906
+                  length: 114
+                pos: 2886
+                length: 134
+              - type: expression_statement
+                fields:
+                  text: compiler.reportCodeChange();
+                children: []
+                pos: 3025
+                length: 28
+              pos: 2880
+              length: 177
+          children: []
+          pos: 2824
+          length: 233
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 3085
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 3093
+                length: 12
+              pos: 3061
+              length: 459
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: NodeTraversal.traverse(compiler, root, this);
+                children: []
+                pos: 3124
+                length: 45
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: MAKE_LOCAL_NAMES_UNIQUE
+                        children: []
+                        pos: 3178
+                        length: 23
+                    children: []
+                    pos: 3177
+                    length: 25
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: MakeDeclaredNamesUnique renamer = new MakeDeclaredNamesUnique();
+                    children: []
+                    pos: 3211
+                    length: 64
+                  - type: local_variable_declaration
+                    fields:
+                      text: NodeTraversal t = new NodeTraversal(compiler, renamer);
+                    children: []
+                    pos: 3282
+                    length: 55
+                  - type: expression_statement
+                    fields:
+                      text: t.traverseRoots(externs, root);
+                    children: []
+                    pos: 3344
+                    length: 31
+                  pos: 3203
+                  length: 178
+                pos: 3174
+                length: 207
+              - type: expression_statement
+                fields:
+                  text: removeDuplicateDeclarations(root);
+                children: []
+                pos: 3386
+                length: 34
+              - type: expression_statement
+                fields:
+                  text: |-
+                    new PropogateConstantAnnotations(compiler, assertOnChange)
+                            .process(externs, root);
+                children: []
+                pos: 3425
+                length: 91
+              pos: 3118
+              length: 402
+          children: []
+          pos: 3061
+          length: 459
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: shouldTraverse
+              children: []
+              pos: 3551
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 3566
+                length: 15
+              pos: 3524
+              length: 148
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: doStatementNormalizations(t, n, parent);
+                children: []
+                pos: 3610
+                length: 40
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 3656
+                length: 12
+              pos: 3604
+              length: 68
+          children: []
+          pos: 3524
+          length: 148
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: PropogateConstantAnnotations
+              children: []
+              pos: 3696
+              length: 28
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final AbstractCompiler compiler;
+                children: []
+                pos: 3801
+                length: 40
+              - type: field_declaration
+                fields:
+                  text: private final boolean assertOnChange;
+                children: []
+                pos: 3846
+                length: 37
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public PropogateConstantAnnotations(
+                            AbstractCompiler compiler, boolean forbidChanges) {
+                          this.compiler = compiler;
+                          this.assertOnChange = forbidChanges;
+                        }
+                children: []
+                pos: 3889
+                length: 177
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: process
+                    children: []
+                    pos: 4098
+                    length: 7
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node externs
+                      children: []
+                      pos: 4106
+                      length: 12
+                    pos: 4072
+                    length: 136
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: new NodeTraversal(compiler, this).traverseRoots(externs,
+                          root);
+                      children: []
+                      pos: 4139
+                      length: 63
+                    pos: 4131
+                    length: 77
+                children: []
+                pos: 4072
+                length: 136
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 4240
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 4246
+                      length: 15
+                    pos: 4214
+                    length: 1141
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getType()
+                                  children: []
+                                  pos: 4363
+                                  length: 11
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: Token.NAME
+                                  children: []
+                                  pos: 4378
+                                  length: 10
+                              children: []
+                              pos: 4363
+                              length: 25
+                          children: []
+                          pos: 4362
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getString().isEmpty()
+                                  children: []
+                                  pos: 4404
+                                  length: 23
+                              children: []
+                              pos: 4403
+                              length: 25
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return;
+                              children: []
+                              pos: 4441
+                              length: 7
+                            pos: 4429
+                            length: 29
+                          pos: 4400
+                          length: 58
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSDocInfo info = null;
+                          children: []
+                          pos: 4468
+                          length: 22
+                        - type: local_variable_declaration
+                          fields:
+                            text: Var var = t.getScope().getVar(n.getString());
+                          children: []
+                          pos: 4555
+                          length: 45
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: var
+                                      children: []
+                                      pos: 4613
+                                      length: 3
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 4620
+                                      length: 4
+                                  children: []
+                                  pos: 4613
+                                  length: 11
+                              children: []
+                              pos: 4612
+                              length: 13
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: info = var.getJSDocInfo();
+                              children: []
+                              pos: 4638
+                              length: 26
+                            pos: 4626
+                            length: 48
+                          pos: 4609
+                          length: 65
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: and
+                                  fields:
+                                    left:
+                                      type: parenthesized_expression
+                                      fields:
+                                        expression:
+                                          type: and
+                                          fields:
+                                            left:
+                                              type: not_equals
+                                              fields:
+                                                left:
+                                                  type: identifier
+                                                  fields:
+                                                    text: info
+                                                  children: []
+                                                  pos: 4689
+                                                  length: 4
+                                                right:
+                                                  type: null_literal
+                                                  fields: {}
+                                                  children: []
+                                                  pos: 4697
+                                                  length: 4
+                                              children: []
+                                              pos: 4689
+                                              length: 12
+                                            right:
+                                              type: method_invocation
+                                              fields:
+                                                text: info.isConstant()
+                                              children: []
+                                              pos: 4705
+                                              length: 17
+                                          children: []
+                                          pos: 4689
+                                          length: 33
+                                      children: []
+                                      pos: 4688
+                                      length: 35
+                                    right:
+                                      type: unary_expression
+                                      fields:
+                                        text: "!n.getBooleanProp(Node.IS_CONSTANT_NAME)"
+                                      children: []
+                                      pos: 4739
+                                      length: 40
+                                  children: []
+                                  pos: 4688
+                                  length: 91
+                              children: []
+                              pos: 4687
+                              length: 93
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: n.putBooleanProp(Node.IS_CONSTANT_NAME, true);
+                              children: []
+                              pos: 4793
+                              length: 46
+                            - type: if_statement
+                              fields:
+                                condition:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: identifier
+                                      fields:
+                                        text: assertOnChange
+                                      children: []
+                                      pos: 4854
+                                      length: 14
+                                  children: []
+                                  pos: 4853
+                                  length: 16
+                              children:
+                              - type: block
+                                fields: {}
+                                children:
+                                - type: local_variable_declaration
+                                  fields:
+                                    text: String name = n.getString();
+                                  children: []
+                                  pos: 4884
+                                  length: 28
+                                - type: throw_statement
+                                  fields:
+                                    text: |-
+                                      throw new IllegalStateException(
+                                                      "Unexpected const change.\n" +
+                                                      "  name: "+ name + "\n" +
+                                                      "  gramps:" + n.getParent().getParent().toStringTree());
+                                  children: []
+                                  pos: 4925
+                                  length: 194
+                                pos: 4870
+                                length: 261
+                              pos: 4850
+                              length: 281
+                            pos: 4781
+                            length: 560
+                          pos: 4684
+                          length: 657
+                        pos: 4390
+                        length: 959
+                      pos: 4359
+                      length: 990
+                    pos: 4284
+                    length: 1071
+                children: []
+                pos: 4214
+                length: 1141
+              pos: 3676
+              length: 1683
+          children: []
+          pos: 3676
+          length: 1683
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: VerifyConstants
+              children: []
+              pos: 5465
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final private AbstractCompiler compiler;
+                children: []
+                pos: 5552
+                length: 40
+              - type: field_declaration
+                fields:
+                  text: final private boolean checkUserDeclarations;
+                children: []
+                pos: 5597
+                length: 44
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    VerifyConstants(AbstractCompiler compiler, boolean checkUserDeclarations) {
+                          this.compiler = compiler;
+                          this.checkUserDeclarations = checkUserDeclarations;
+                        }
+                children: []
+                pos: 5647
+                length: 171
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: process
+                    children: []
+                    pos: 5850
+                    length: 7
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node externs
+                      children: []
+                      pos: 5858
+                      length: 12
+                    pos: 5824
+                    length: 326
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node externsAndJs = root.getParent();
+                      children: []
+                      pos: 5891
+                      length: 37
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(externsAndJs != null);
+                      children: []
+                      pos: 5935
+                      length: 47
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(externsAndJs.hasChild(externs));
+                      children: []
+                      pos: 5989
+                      length: 57
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          NodeTraversal.traverseRoots(
+                                    compiler, Lists.newArrayList(externs, root), this);
+                      children: []
+                      pos: 6054
+                      length: 90
+                    pos: 5883
+                    length: 267
+                children: []
+                pos: 5824
+                length: 326
+              - type: field_declaration
+                fields:
+                  text: private Map<String,Boolean> constantMap = Maps.newHashMap();
+                children: []
+                pos: 6156
+                length: 60
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 6248
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 6254
+                      length: 15
+                    pos: 6222
+                    length: 1600
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getType()
+                                  children: []
+                                  pos: 6304
+                                  length: 11
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: Token.NAME
+                                  children: []
+                                  pos: 6319
+                                  length: 10
+                              children: []
+                              pos: 6304
+                              length: 25
+                          children: []
+                          pos: 6303
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: String name = n.getString();
+                          children: []
+                          pos: 6341
+                          length: 28
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getString().isEmpty()
+                                  children: []
+                                  pos: 6382
+                                  length: 23
+                              children: []
+                              pos: 6381
+                              length: 25
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return;
+                              children: []
+                              pos: 6419
+                              length: 7
+                            pos: 6407
+                            length: 29
+                          pos: 6378
+                          length: 58
+                        - type: local_variable_declaration
+                          fields:
+                            text: boolean isConst = n.getBooleanProp(Node.IS_CONSTANT_NAME);
+                          children: []
+                          pos: 6446
+                          length: 58
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: identifier
+                                  fields:
+                                    text: checkUserDeclarations
+                                  children: []
+                                  pos: 6517
+                                  length: 21
+                              children: []
+                              pos: 6516
+                              length: 23
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: local_variable_declaration
+                              fields:
+                                text: boolean expectedConst = false;
+                              children: []
+                              pos: 6552
+                              length: 30
+                            - type: if_statement
+                              fields:
+                                condition:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: or
+                                      fields:
+                                        left:
+                                          type: method_invocation
+                                          fields:
+                                            text: NodeUtil.isConstantName(n)
+                                          children: []
+                                          pos: 6597
+                                          length: 26
+                                        right:
+                                          type: method_invocation
+                                          fields:
+                                            text: compiler.getCodingConvention().isConstant(n.getString())
+                                          children: []
+                                          pos: 6641
+                                          length: 56
+                                      children: []
+                                      pos: 6597
+                                      length: 100
+                                  children: []
+                                  pos: 6596
+                                  length: 102
+                              children:
+                              - type: block
+                                fields: {}
+                                children:
+                                - type: expression_statement
+                                  fields:
+                                    text: expectedConst = true;
+                                  children: []
+                                  pos: 6713
+                                  length: 21
+                                pos: 6699
+                                length: 47
+                              pos: 6593
+                              length: 549
+                            - type: if_statement
+                              fields:
+                                condition:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: identifier
+                                      fields:
+                                        text: expectedConst
+                                      children: []
+                                      pos: 7158
+                                      length: 13
+                                  children: []
+                                  pos: 7157
+                                  length: 15
+                              children:
+                              - type: block
+                                fields: {}
+                                children:
+                                - type: expression_statement
+                                  fields:
+                                    text: |-
+                                      Preconditions.checkState(expectedConst == isConst,
+                                                      "The name " + name + " is not annotated as constant.");
+                                  children: []
+                                  pos: 7187
+                                  length: 122
+                                pos: 7173
+                                length: 148
+                              pos: 7154
+                              length: 328
+                            pos: 6540
+                            length: 952
+                          pos: 6513
+                          length: 979
+                        - type: local_variable_declaration
+                          fields:
+                            text: Boolean value = constantMap.get(name);
+                          children: []
+                          pos: 7502
+                          length: 38
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: value
+                                      children: []
+                                      pos: 7553
+                                      length: 5
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 7562
+                                      length: 4
+                                  children: []
+                                  pos: 7553
+                                  length: 13
+                              children: []
+                              pos: 7552
+                              length: 15
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: constantMap.put(name, isConst);
+                              children: []
+                              pos: 7580
+                              length: 31
+                            pos: 7568
+                            length: 53
+                          pos: 7549
+                          length: 259
+                        pos: 6331
+                        length: 1485
+                      pos: 6300
+                      length: 1516
+                    pos: 6292
+                    length: 1530
+                children: []
+                pos: 6222
+                length: 1600
+              pos: 5452
+              length: 2374
+          children: []
+          pos: 5452
+          length: 2374
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 7854
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 7860
+                length: 15
+              pos: 7830
+              length: 419
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.getType()
+                        children: []
+                        pos: 7912
+                        length: 11
+                    children: []
+                    pos: 7911
+                    length: 13
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.WHILE:
+                                if (CONVERT_WHILE_TO_FOR) {
+                                  Node expr = n.getFirstChild();
+                                  n.setType(Token.FOR);
+                                  n.addChildBefore(new Node(Token.EMPTY), expr);
+                                  n.addChildAfter(new Node(Token.EMPTY), expr);
+                                  reportCodeChange("WHILE node");
+                                }
+                                break;
+                            }
+                    children: []
+                    pos: 7925
+                    length: 320
+                children: []
+                pos: 7904
+                length: 341
+              pos: 7898
+              length: 351
+          children: []
+          pos: 7830
+          length: 419
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doStatementNormalizations
+              children: []
+              pos: 8341
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 8367
+                length: 15
+              pos: 8328
+              length: 689
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: n.getType()
+                            children: []
+                            pos: 8415
+                            length: 11
+                          right:
+                            type: field_access
+                            fields:
+                              text: Token.LABEL
+                            children: []
+                            pos: 8430
+                            length: 11
+                        children: []
+                        pos: 8415
+                        length: 26
+                    children: []
+                    pos: 8414
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: normalizeLabels(n);
+                    children: []
+                    pos: 8451
+                    length: 19
+                  pos: 8443
+                  length: 33
+                pos: 8411
+                length: 65
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: NodeUtil.isStatementBlock(n)
+                            children: []
+                            pos: 8624
+                            length: 28
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: n.getType()
+                                children: []
+                                pos: 8656
+                                length: 11
+                              right:
+                                type: field_access
+                                fields:
+                                  text: Token.LABEL
+                                children: []
+                                pos: 8671
+                                length: 11
+                            children: []
+                            pos: 8656
+                            length: 26
+                        children: []
+                        pos: 8624
+                        length: 58
+                    children: []
+                    pos: 8623
+                    length: 60
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: extractForInitializer(n, null, null);
+                    children: []
+                    pos: 8692
+                    length: 37
+                  pos: 8684
+                  length: 51
+                pos: 8620
+                length: 115
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: NodeUtil.isStatementBlock(n)
+                        children: []
+                        pos: 8853
+                        length: 28
+                    children: []
+                    pos: 8852
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: splitVarDeclarations(n);
+                    children: []
+                    pos: 8891
+                    length: 24
+                  pos: 8883
+                  length: 38
+                pos: 8849
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: n.getType()
+                            children: []
+                            pos: 8931
+                            length: 11
+                          right:
+                            type: field_access
+                            fields:
+                              text: Token.FUNCTION
+                            children: []
+                            pos: 8946
+                            length: 14
+                        children: []
+                        pos: 8931
+                        length: 29
+                    children: []
+                    pos: 8930
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: moveNamedFunctions(n.getLastChild());
+                    children: []
+                    pos: 8970
+                    length: 37
+                  pos: 8962
+                  length: 51
+                pos: 8927
+                length: 86
+              pos: 8405
+              length: 612
+          children: []
+          pos: 8328
+          length: 689
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeLabels
+              children: []
+              pos: 9358
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 9374
+                length: 6
+              pos: 9345
+              length: 503
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(n.getType() == Token.LABEL);
+                children: []
+                pos: 9388
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: Node last = n.getLastChild();
+                children: []
+                pos: 9450
+                length: 29
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: last.getType()
+                        children: []
+                        pos: 9492
+                        length: 14
+                    children: []
+                    pos: 9491
+                    length: 16
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.LABEL:
+                              case Token.BLOCK:
+                              case Token.FOR:
+                              case Token.WHILE:
+                              case Token.DO:
+                                return;
+                              default:
+                                Node block = new Node(Token.BLOCK);
+                                n.replaceChild(last, block);
+                                block.addChildToFront(last);
+                                reportCodeChange("LABEL normalization");
+                                return;
+                            }
+                    children: []
+                    pos: 9508
+                    length: 336
+                children: []
+                pos: 9484
+                length: 360
+              pos: 9382
+              length: 466
+          children: []
+          pos: 9345
+          length: 503
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: extractForInitializer
+              children: []
+              pos: 10322
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 10351
+                length: 6
+              pos: 10309
+              length: 1149
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node next, c = n.getFirstChild(); c != null; c = next) {
+                          next = c.getNext();
+                          Node insertBefore = (before == null) ? c : before;
+                          Node insertBeforeParent = (before == null) ? n : beforeParent;
+                          switch (c.getType()) {
+                            case Token.LABEL:
+                              extractForInitializer(c, insertBefore, insertBeforeParent);
+                              break;
+                            case Token.FOR:
+                              if (!NodeUtil.isForIn(c)
+                                  && c.getFirstChild().getType() != Token.EMPTY) {
+                                Node init = c.getFirstChild();
+                                c.replaceChild(init, new Node(Token.EMPTY));
+
+                                Node newStatement;
+                                // Only VAR statements, and expressions are allowed,
+                                // but are handled differently.
+                                if (init.getType() == Token.VAR) {
+                                  newStatement = init;
+                                } else {
+                                  newStatement = NodeUtil.newExpr(init);
+                                }
+
+                                insertBeforeParent.addChildBefore(newStatement, insertBefore);
+                                reportCodeChange("FOR initializer");
+                              }
+                              break;
+                          }
+                        }
+                children: []
+                pos: 10398
+                length: 1056
+              pos: 10391
+              length: 1067
+          children: []
+          pos: 10309
+          length: 1149
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: splitVarDeclarations
+              children: []
+              pos: 11649
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 11670
+                length: 6
+              pos: 11636
+              length: 630
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node next, c = n.getFirstChild(); c != null; c = next) {
+                          next = c.getNext();
+                          if (c.getType() == Token.VAR) {
+                            if (assertOnChange && !c.hasChildren()) {
+                              throw new IllegalStateException("Empty VAR node.");
+                            }
+
+                            while (c.getFirstChild() != c.getLastChild()) {
+                              Node name = c.getFirstChild();
+                              c.removeChild(name);
+                              Node newVar = new Node(Token.VAR, name, n.getLineno(), n.getCharno());
+                              n.addChildBefore(newVar, c);
+                              reportCodeChange("VAR with multiple children");
+                            }
+                          }
+                        }
+                children: []
+                pos: 11684
+                length: 578
+              pos: 11678
+              length: 588
+          children: []
+          pos: 11636
+          length: 630
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: moveNamedFunctions
+              children: []
+              pos: 12444
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node functionBody
+                children: []
+                pos: 12463
+                length: 17
+              pos: 12431
+              length: 1265
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    Preconditions.checkState(
+                            functionBody.getParent().getType() == Token.FUNCTION);
+                children: []
+                pos: 12488
+                length: 88
+              - type: local_variable_declaration
+                fields:
+                  text: Node previous = null;
+                children: []
+                pos: 12581
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: Node current = functionBody.getFirstChild();
+                children: []
+                pos: 12607
+                length: 44
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (current != null && NodeUtil.isFunctionDeclaration(current)) {
+                          previous = current;
+                          current = current.getNext();
+                        }
+                children: []
+                pos: 12768
+                length: 135
+              - type: local_variable_declaration
+                fields:
+                  text: Node insertAfter = previous;
+                children: []
+                pos: 12963
+                length: 28
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (current != null) {
+                          // Save off the next node as the current node maybe removed.
+                          Node next = current.getNext();
+                          if (NodeUtil.isFunctionDeclaration(current)) {
+                            // Remove the declaration from the body.
+                            Preconditions.checkNotNull(previous);
+                            functionBody.removeChildAfter(previous);
+
+                            // Readd the function at the top of the function body (after any
+                            // previous declarations).
+                            insertAfter = addToFront(functionBody, current, insertAfter);
+                            compiler.reportCodeChange();
+                          } else {
+                            // Update the previous only if the current node hasn't been moved.
+                            previous = current;
+                          }
+                          current = next;
+                        }
+                children: []
+                pos: 12996
+                length: 696
+              pos: 12482
+              length: 1214
+          children: []
+          pos: 12431
+          length: 1265
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addToFront
+              children: []
+              pos: 13908
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node parent
+                children: []
+                pos: 13919
+                length: 11
+              pos: 13895
+              length: 219
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: after
+                            children: []
+                            pos: 13969
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13978
+                            length: 4
+                        children: []
+                        pos: 13969
+                        length: 13
+                    children: []
+                    pos: 13968
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: parent.addChildToFront(newChild);
+                    children: []
+                    pos: 13992
+                    length: 33
+                  pos: 13984
+                  length: 47
+                pos: 13965
+                length: 124
+              - type: return_statement
+                fields:
+                  text: return newChild;
+                children: []
+                pos: 14094
+                length: 16
+              pos: 13959
+              length: 155
+          children: []
+          pos: 13895
+          length: 219
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeDuplicateDeclarations
+              children: []
+              pos: 14183
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node root
+                children: []
+                pos: 14211
+                length: 9
+              pos: 14170
+              length: 319
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Callback tickler = new ScopeTicklingCallback();
+                children: []
+                pos: 14228
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    ScopeCreator scopeCreator =  new SyntacticScopeCreator(
+                            compiler, new DuplicateDeclarationHandler());
+                children: []
+                pos: 14280
+                length: 109
+              - type: local_variable_declaration
+                fields:
+                  text: NodeTraversal t = new NodeTraversal(compiler, tickler, scopeCreator);
+                children: []
+                pos: 14394
+                length: 69
+              - type: expression_statement
+                fields:
+                  text: t.traverse(root);
+                children: []
+                pos: 14468
+                length: 17
+              pos: 14222
+              length: 267
+          children: []
+          pos: 14170
+          length: 319
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: DuplicateDeclarationHandler
+              children: []
+              pos: 14574
+              length: 27
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: onRedeclaration
+                    children: []
+                    pos: 14805
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Scope s
+                      children: []
+                      pos: 14830
+                      length: 7
+                    pos: 14779
+                    length: 2441
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(n.getType() == Token.NAME);
+                      children: []
+                      pos: 14927
+                      length: 52
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: parent.getType()
+                                  children: []
+                                  pos: 14990
+                                  length: 16
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: Token.VAR
+                                  children: []
+                                  pos: 15010
+                                  length: 9
+                              children: []
+                              pos: 14990
+                              length: 29
+                          children: []
+                          pos: 14989
+                          length: 31
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: Preconditions.checkState(parent.hasOneChild());
+                          children: []
+                          pos: 15031
+                          length: 47
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.hasChildren()
+                                  children: []
+                                  pos: 16082
+                                  length: 15
+                              children: []
+                              pos: 16081
+                              length: 17
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: parent.removeChild(n);
+                              children: []
+                              pos: 16177
+                              length: 22
+                            - type: local_variable_declaration
+                              fields:
+                                text: Node value = n.getFirstChild();
+                              children: []
+                              pos: 16268
+                              length: 31
+                            - type: expression_statement
+                              fields:
+                                text: n.removeChild(value);
+                              children: []
+                              pos: 16310
+                              length: 21
+                            - type: local_variable_declaration
+                              fields:
+                                text: Node replacement = new Node(Token.ASSIGN, n,
+                                  value);
+                              children: []
+                              pos: 16342
+                              length: 52
+                            - type: expression_statement
+                              fields:
+                                text: gramps.replaceChild(parent, new Node(Token.EXPR_RESULT,
+                                  replacement));
+                              children: []
+                              pos: 16405
+                              length: 70
+                            pos: 16099
+                            length: 386
+                          pos: 16078
+                          length: 1073
+                        - type: expression_statement
+                          fields:
+                            text: reportCodeChange("Duplicate VAR declaration");
+                          children: []
+                          pos: 17160
+                          length: 46
+                        pos: 15021
+                        length: 2193
+                      pos: 14986
+                      length: 2228
+                    pos: 14919
+                    length: 2301
+                children: []
+                pos: 14779
+                length: 2441
+              pos: 14554
+              length: 2671
+          children: []
+          pos: 14554
+          length: 2671
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ScopeTicklingCallback
+              children: []
+              pos: 17314
+              length: 21
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: enterScope
+                    children: []
+                    pos: 17414
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 17425
+                      length: 15
+                    pos: 17388
+                    length: 170
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: t.getScope();
+                      children: []
+                      pos: 17539
+                      length: 13
+                    pos: 17442
+                    length: 116
+                children: []
+                pos: 17388
+                length: 170
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: exitScope
+                    children: []
+                    pos: 17590
+                    length: 9
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 17600
+                      length: 15
+                    pos: 17564
+                    length: 84
+                  body:
+                    type: block
+                    fields: {}
+                    children: []
+                    pos: 17617
+                    length: 31
+                children: []
+                pos: 17564
+                length: 84
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: shouldTraverse
+                    children: []
+                    pos: 17683
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal nodeTraversal
+                      children: []
+                      pos: 17707
+                      length: 27
+                    pos: 17654
+                    length: 129
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 17765
+                      length: 12
+                    pos: 17757
+                    length: 26
+                children: []
+                pos: 17654
+                length: 129
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 17815
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 17821
+                      length: 15
+                    pos: 17789
+                    length: 101
+                  body:
+                    type: block
+                    fields: {}
+                    children: []
+                    pos: 17859
+                    length: 31
+                children: []
+                pos: 17789
+                length: 101
+              pos: 17294
+              length: 600
+          children: []
+          pos: 17294
+          length: 600
+        pos: 2428
+        length: 15469
+    children: []
+    pos: 2428
+    length: 15469
+  pos: 0
+  length: 17898
 text_diff: |
   --- before
   +++ after

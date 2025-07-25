@@ -1,13 +1,132 @@
 ---
 language: python
-text_diff: "--- before\n+++ after\n@@ -3,7 +3,7 @@\n     rows = [[1]]\n     for r
-  in range(1, n):\n         row = []\n-        for c in range(0, r):\n+        for
+before_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: pascal
+        children: []
+        pos: 4
+        length: 6
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: "n"
+          children: []
+          pos: 11
+          length: 1
+        pos: 0
+        length: 296
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: rows = [[1]]
+          children: []
+          pos: 19
+          length: 12
+        - type: for_statement
+          fields:
+            text: |-
+              for r in range(1, n):
+                      row = []
+                      for c in range(0, r):
+                          upleft = rows[r - 1][c - 1] if c > 0 else 0
+                          upright = rows[r - 1][c] if c < r else 0
+                          row.append(upleft + upright)
+                      rows.append(row)
+          children: []
+          pos: 36
+          length: 243
+        - type: return_statement
+          fields:
+            text: return rows
+          children: []
+          pos: 285
+          length: 11
+        pos: 19
+        length: 277
+    children: []
+    pos: 0
+    length: 296
+  pos: 0
+  length: 297
+after_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: pascal
+        children: []
+        pos: 4
+        length: 6
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: "n"
+          children: []
+          pos: 11
+          length: 1
+        pos: 0
+        length: 300
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: rows = [[1]]
+          children: []
+          pos: 19
+          length: 12
+        - type: for_statement
+          fields:
+            text: |-
+              for r in range(1, n):
+                      row = []
+                      for c in range(0, r + 1):
+                          upleft = rows[r - 1][c - 1] if c > 0 else 0
+                          upright = rows[r - 1][c] if c < r else 0
+                          row.append(upleft + upright)
+                      rows.append(row)
+          children: []
+          pos: 36
+          length: 247
+        - type: return_statement
+          fields:
+            text: return rows
+          children: []
+          pos: 289
+          length: 11
+        pos: 19
+        length: 281
+    children: []
+    pos: 0
+    length: 300
+  pos: 0
+  length: 302
+text_diff: "--- before\n+++ after\n@@ -2,10 +2,11 @@\n     rows = [[1]]\n     for
+  r in range(1, n):\n         row = []\n-        for c in range(0, r):\n+        for
   c in range(0, r + 1):\n             upleft = rows[r - 1][c - 1] if c > 0 else 0\n
   \            upright = rows[r - 1][c] if c < r else 0\n             row.append(upleft
-  + upright)\n@@ -11,23 +11,3 @@\n \n     return rows\n \n-\n-\"\"\"\n-Pascal's Triangle\n-pascal\n-\n-\n-\n-Input:\n-
-  \   n: The number of rows to return\n-\n-Precondition:\n-    n >= 1\n-\n-Output:\n-
-  \   The first n rows of Pascal's triangle as a list of n lists\n-\n-Example:\n-
-  \   >>> pascal(5)\n-    [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]\n-\"\"\"\n"
+  + upright)\n         rows.append(row)\n \n     return rows\n+\n"
 tree_diff: |+
   New cluster:
   UPDATE from for r in range(1, n):
@@ -33,7 +152,7 @@ tree_diff: |+
               upleft = rows[r - 1][c - 1] if c > 0 else 0
               upright = rows[r - 1][c] if c < r else 0
               row.append(upleft + upright)
-          rows.append(row) [37,280]
+          rows.append(row) [36,279]
   replace for r in range(1, n):
           row = []
           for c in range(0, r):
@@ -47,54 +166,5 @@ tree_diff: |+
               upright = rows[r - 1][c] if c < r else 0
               row.append(upleft + upright)
           rows.append(row)
-
-  New cluster:
-  ===
-  delete-node
-  ---
-  expression_statement: """
-  Pascal's Triangle
-  pascal
-
-
-
-  Input:
-      n: The number of rows to return
-
-  Precondition:
-      n >= 1
-
-  Output:
-      The first n rows of Pascal's triangle as a list of n lists
-
-  Example:
-      >>> pascal(5)
-      [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]
-  """ [300,564]
-  ===
-  ------------
-  ===
-  delete-node
-  ---
-  expression_statement: """
-  Pascal's Triangle
-  pascal
-
-
-
-  Input:
-      n: The number of rows to return
-
-  Precondition:
-      n >= 1
-
-  Output:
-      The first n rows of Pascal's triangle as a list of n lists
-
-  Example:
-      >>> pascal(5)
-      [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]
-  """ [300,564]
-  ===
 
 ...

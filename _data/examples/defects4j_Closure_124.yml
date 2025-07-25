@@ -1,5 +1,1294 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ExploitAssigns
+        children: []
+        pos: 931
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: optimizeSubtree
+              children: []
+              pos: 1005
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node subtree
+                children: []
+                pos: 1021
+                length: 12
+              pos: 988
+              length: 311
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node child = subtree.getFirstChild(); child != null;) {
+                          Node next = child.getNext();
+                          if (NodeUtil.isExprAssign(child)) {
+                            collapseAssign(child.getFirstChild(), child, subtree);
+                          }
+                          child = next;
+                        }
+                children: []
+                pos: 1041
+                length: 234
+              - type: return_statement
+                fields:
+                  text: return subtree;
+                children: []
+                pos: 1280
+                length: 15
+              pos: 1035
+              length: 264
+          children: []
+          pos: 988
+          length: 311
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: collapseAssign
+              children: []
+              pos: 1395
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node assign
+                children: []
+                pos: 1410
+                length: 11
+              pos: 1382
+              length: 593
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Node leftValue = assign.getFirstChild();
+                children: []
+                pos: 1463
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: Node rightValue = leftValue.getNext();
+                children: []
+                pos: 1508
+                length: 38
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: isCollapsibleValue(leftValue, true)
+                            children: []
+                            pos: 1555
+                            length: 35
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: collapseAssignEqualTo(expr, exprParent, leftValue)
+                            children: []
+                            pos: 1602
+                            length: 50
+                        children: []
+                        pos: 1555
+                        length: 97
+                    children: []
+                    pos: 1554
+                    length: 99
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: reportCodeChange();
+                    children: []
+                    pos: 1662
+                    length: 19
+                  pos: 1654
+                  length: 33
+                pos: 1551
+                length: 420
+              pos: 1457
+              length: 518
+          children: []
+          pos: 1382
+          length: 593
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isCollapsibleValue
+              children: []
+              pos: 2464
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node value
+                children: []
+                pos: 2483
+                length: 10
+              pos: 2441
+              length: 582
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: value.getType()
+                        children: []
+                        pos: 2527
+                        length: 15
+                    children: []
+                    pos: 2526
+                    length: 17
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.GETPROP:
+                                // Do not collapse GETPROPs on arbitrary objects, because
+                                // they may be implemented setter functions, and oftentimes
+                                // setter functions fail on native objects. This is OK for "THIS"
+                                // objects, because we assume that they are non-native.
+                                return !isLValue || value.getFirstChild().isThis();
+
+                              case Token.NAME:
+                                return true;
+
+                              default:
+                                return NodeUtil.isImmutableValue(value);
+                            }
+                    children: []
+                    pos: 2544
+                    length: 475
+                children: []
+                pos: 2519
+                length: 500
+              pos: 2513
+              length: 510
+          children: []
+          pos: 2441
+          length: 582
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: collapseAssignEqualTo
+              children: []
+              pos: 3652
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node expr
+                children: []
+                pos: 3674
+                length: 9
+              pos: 3636
+              length: 3160
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Node assign = expr.getFirstChild();
+                children: []
+                pos: 3726
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: Node parent = exprParent;
+                children: []
+                pos: 3766
+                length: 25
+              - type: local_variable_declaration
+                fields:
+                  text: Node next = expr.getNext();
+                children: []
+                pos: 3796
+                length: 27
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (next != null) {
+                          switch (next.getType()) {
+                            case Token.AND:
+                            case Token.OR:
+                            case Token.HOOK:
+                            case Token.IF:
+                            case Token.RETURN:
+                            case Token.EXPR_RESULT:
+                              // Dive down the left side
+                              parent = next;
+                              next = next.getFirstChild();
+                              break;
+
+                            case Token.VAR:
+                              if (next.getFirstChild().hasChildren()) {
+                                parent = next.getFirstChild();
+                                next = parent.getFirstChild();
+                                break;
+                              }
+                              return false;
+
+                            case Token.GETPROP:
+                            case Token.NAME:
+                              if (next.isQualifiedName()) {
+                                String nextName = next.getQualifiedName();
+                                if (value.isQualifiedName() &&
+                                    nextName.equals(value.getQualifiedName())) {
+                                  // If the previous expression evaluates to value of a
+                                  // qualified name, and that qualified name is used again
+                                  // shortly, then we can exploit the assign here.
+
+                                  // Verify the assignment doesn't change its own value.
+                                  if (!isSafeReplacement(next, assign)) {
+                                    return false;
+                                  }
+
+                                  exprParent.removeChild(expr);
+                                  expr.removeChild(assign);
+                                  parent.replaceChild(next, assign);
+                                  return true;
+                                }
+                              }
+                              return false;
+
+                            case Token.ASSIGN:
+                              // Assigns are really tricky. In lots of cases, we want to inline
+                              // into the right side of the assign. But the left side of the
+                              // assign is evaluated first, and it may have convoluted logic:
+                              //   a = null;
+                              //   (a = b).c = null;
+                              // We don't want to exploit the first assign. Similarly:
+                              //   a.b = null;
+                              //   a.b.c = null;
+                              // We don't want to exploit the first assign either.
+                              //
+                              // To protect against this, we simply only inline when the left side
+                              // is guaranteed to evaluate to the same L-value no matter what.
+                              Node leftSide = next.getFirstChild();
+                              if (leftSide.isName() ||
+                                  leftSide.isGetProp() &&
+                                  leftSide.getFirstChild().isThis()) {
+                                // Dive down the right side of the assign.
+                                parent = next;
+                                next = leftSide.getNext();
+                                break;
+                              } else {
+                                return false;
+                              }
+
+                            default:
+                              if (NodeUtil.isImmutableValue(next)
+                                  && next.isEquivalentTo(value)) {
+                                // If the r-value of the expr assign is an immutable value,
+                                // and the value is used again shortly, then we can exploit
+                                // the assign here.
+                                exprParent.removeChild(expr);
+                                expr.removeChild(assign);
+                                parent.replaceChild(next, assign);
+                                return true;
+                              }
+                              // Return without inlining a thing
+                              return false;
+                          }
+                        }
+                children: []
+                pos: 3828
+                length: 2945
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 6779
+                length: 13
+              pos: 3720
+              length: 3076
+          children: []
+          pos: 3636
+          length: 3160
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSafeReplacement
+              children: []
+              pos: 6958
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node node
+                children: []
+                pos: 6976
+                length: 9
+              pos: 6942
+              length: 416
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.isName()
+                        children: []
+                        pos: 7061
+                        length: 13
+                    children: []
+                    pos: 7060
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 7084
+                    length: 12
+                  pos: 7076
+                  length: 26
+                pos: 7057
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(node.isGetProp());
+                children: []
+                pos: 7107
+                length: 46
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (node.isGetProp()) {
+                          node = node.getFirstChild();
+                        }
+                children: []
+                pos: 7159
+                length: 67
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: node.isName()
+                            children: []
+                            pos: 7235
+                            length: 13
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: isNameAssignedTo(node.getString(), replacement)
+                            children: []
+                            pos: 7260
+                            length: 47
+                        children: []
+                        pos: 7235
+                        length: 72
+                    children: []
+                    pos: 7234
+                    length: 74
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 7317
+                    length: 13
+                  pos: 7309
+                  length: 27
+                pos: 7231
+                length: 105
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 7342
+                length: 12
+              pos: 7005
+              length: 353
+          children: []
+          pos: 6942
+          length: 416
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isNameAssignedTo
+              children: []
+              pos: 7463
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 7480
+                length: 11
+              pos: 7447
+              length: 446
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node c = node.getFirstChild(); c != null; c = c.getNext()) {
+                          if (isNameAssignedTo(name, c)) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 7510
+                length: 139
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.isName()
+                        children: []
+                        pos: 7659
+                        length: 13
+                    children: []
+                    pos: 7658
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node parent = node.getParent();
+                    children: []
+                    pos: 7682
+                    length: 31
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: parent.isAssign()
+                                children: []
+                                pos: 7724
+                                length: 17
+                              right:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: method_invocation
+                                    fields:
+                                      text: parent.getFirstChild()
+                                    children: []
+                                    pos: 7745
+                                    length: 22
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: node
+                                    children: []
+                                    pos: 7771
+                                    length: 4
+                                children: []
+                                pos: 7745
+                                length: 30
+                            children: []
+                            pos: 7724
+                            length: 51
+                        children: []
+                        pos: 7723
+                        length: 53
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: method_invocation
+                                fields:
+                                  text: name.equals(node.getString())
+                                children: []
+                                pos: 7791
+                                length: 29
+                            children: []
+                            pos: 7790
+                            length: 31
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return true;
+                            children: []
+                            pos: 7834
+                            length: 12
+                          pos: 7822
+                          length: 34
+                        pos: 7787
+                        length: 69
+                      pos: 7777
+                      length: 87
+                    pos: 7720
+                    length: 144
+                  pos: 7674
+                  length: 196
+                pos: 7655
+                length: 215
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7876
+                length: 13
+              pos: 7504
+              length: 389
+          children: []
+          pos: 7447
+          length: 446
+        pos: 925
+        length: 6970
+    children: []
+    pos: 925
+    length: 6970
+  pos: 0
+  length: 7895
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ExploitAssigns
+        children: []
+        pos: 931
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: optimizeSubtree
+              children: []
+              pos: 1005
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node subtree
+                children: []
+                pos: 1021
+                length: 12
+              pos: 988
+              length: 311
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node child = subtree.getFirstChild(); child != null;) {
+                          Node next = child.getNext();
+                          if (NodeUtil.isExprAssign(child)) {
+                            collapseAssign(child.getFirstChild(), child, subtree);
+                          }
+                          child = next;
+                        }
+                children: []
+                pos: 1041
+                length: 234
+              - type: return_statement
+                fields:
+                  text: return subtree;
+                children: []
+                pos: 1280
+                length: 15
+              pos: 1035
+              length: 264
+          children: []
+          pos: 988
+          length: 311
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: collapseAssign
+              children: []
+              pos: 1395
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node assign
+                children: []
+                pos: 1410
+                length: 11
+              pos: 1382
+              length: 593
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Node leftValue = assign.getFirstChild();
+                children: []
+                pos: 1463
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: Node rightValue = leftValue.getNext();
+                children: []
+                pos: 1508
+                length: 38
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: isCollapsibleValue(leftValue, true)
+                            children: []
+                            pos: 1555
+                            length: 35
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: collapseAssignEqualTo(expr, exprParent, leftValue)
+                            children: []
+                            pos: 1602
+                            length: 50
+                        children: []
+                        pos: 1555
+                        length: 97
+                    children: []
+                    pos: 1554
+                    length: 99
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: reportCodeChange();
+                    children: []
+                    pos: 1662
+                    length: 19
+                  pos: 1654
+                  length: 33
+                pos: 1551
+                length: 420
+              pos: 1457
+              length: 518
+          children: []
+          pos: 1382
+          length: 593
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isCollapsibleValue
+              children: []
+              pos: 2464
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node value
+                children: []
+                pos: 2483
+                length: 10
+              pos: 2441
+              length: 582
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: value.getType()
+                        children: []
+                        pos: 2527
+                        length: 15
+                    children: []
+                    pos: 2526
+                    length: 17
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.GETPROP:
+                                // Do not collapse GETPROPs on arbitrary objects, because
+                                // they may be implemented setter functions, and oftentimes
+                                // setter functions fail on native objects. This is OK for "THIS"
+                                // objects, because we assume that they are non-native.
+                                return !isLValue || value.getFirstChild().isThis();
+
+                              case Token.NAME:
+                                return true;
+
+                              default:
+                                return NodeUtil.isImmutableValue(value);
+                            }
+                    children: []
+                    pos: 2544
+                    length: 475
+                children: []
+                pos: 2519
+                length: 500
+              pos: 2513
+              length: 510
+          children: []
+          pos: 2441
+          length: 582
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: collapseAssignEqualTo
+              children: []
+              pos: 3652
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node expr
+                children: []
+                pos: 3674
+                length: 9
+              pos: 3636
+              length: 3160
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Node assign = expr.getFirstChild();
+                children: []
+                pos: 3726
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: Node parent = exprParent;
+                children: []
+                pos: 3766
+                length: 25
+              - type: local_variable_declaration
+                fields:
+                  text: Node next = expr.getNext();
+                children: []
+                pos: 3796
+                length: 27
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (next != null) {
+                          switch (next.getType()) {
+                            case Token.AND:
+                            case Token.OR:
+                            case Token.HOOK:
+                            case Token.IF:
+                            case Token.RETURN:
+                            case Token.EXPR_RESULT:
+                              // Dive down the left side
+                              parent = next;
+                              next = next.getFirstChild();
+                              break;
+
+                            case Token.VAR:
+                              if (next.getFirstChild().hasChildren()) {
+                                parent = next.getFirstChild();
+                                next = parent.getFirstChild();
+                                break;
+                              }
+                              return false;
+
+                            case Token.GETPROP:
+                            case Token.NAME:
+                              if (next.isQualifiedName()) {
+                                String nextName = next.getQualifiedName();
+                                if (value.isQualifiedName() &&
+                                    nextName.equals(value.getQualifiedName())) {
+                                  // If the previous expression evaluates to value of a
+                                  // qualified name, and that qualified name is used again
+                                  // shortly, then we can exploit the assign here.
+
+                                  // Verify the assignment doesn't change its own value.
+                                  if (!isSafeReplacement(next, assign)) {
+                                    return false;
+                                  }
+
+                                  exprParent.removeChild(expr);
+                                  expr.removeChild(assign);
+                                  parent.replaceChild(next, assign);
+                                  return true;
+                                }
+                              }
+                              return false;
+
+                            case Token.ASSIGN:
+                              // Assigns are really tricky. In lots of cases, we want to inline
+                              // into the right side of the assign. But the left side of the
+                              // assign is evaluated first, and it may have convoluted logic:
+                              //   a = null;
+                              //   (a = b).c = null;
+                              // We don't want to exploit the first assign. Similarly:
+                              //   a.b = null;
+                              //   a.b.c = null;
+                              // We don't want to exploit the first assign either.
+                              //
+                              // To protect against this, we simply only inline when the left side
+                              // is guaranteed to evaluate to the same L-value no matter what.
+                              Node leftSide = next.getFirstChild();
+                              if (leftSide.isName() ||
+                                  leftSide.isGetProp() &&
+                                  leftSide.getFirstChild().isThis()) {
+                                // Dive down the right side of the assign.
+                                parent = next;
+                                next = leftSide.getNext();
+                                break;
+                              } else {
+                                return false;
+                              }
+
+                            default:
+                              if (NodeUtil.isImmutableValue(next)
+                                  && next.isEquivalentTo(value)) {
+                                // If the r-value of the expr assign is an immutable value,
+                                // and the value is used again shortly, then we can exploit
+                                // the assign here.
+                                exprParent.removeChild(expr);
+                                expr.removeChild(assign);
+                                parent.replaceChild(next, assign);
+                                return true;
+                              }
+                              // Return without inlining a thing
+                              return false;
+                          }
+                        }
+                children: []
+                pos: 3828
+                length: 2945
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 6779
+                length: 13
+              pos: 3720
+              length: 3076
+          children: []
+          pos: 3636
+          length: 3160
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSafeReplacement
+              children: []
+              pos: 6958
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node node
+                children: []
+                pos: 6976
+                length: 9
+              pos: 6942
+              length: 379
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.isName()
+                        children: []
+                        pos: 7061
+                        length: 13
+                    children: []
+                    pos: 7060
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 7084
+                    length: 12
+                  pos: 7076
+                  length: 26
+                pos: 7057
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(node.isGetProp());
+                children: []
+                pos: 7107
+                length: 46
+              - type: expression_statement
+                fields:
+                  text: node = node.getFirstChild();
+                children: []
+                pos: 7161
+                length: 28
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: node.isName()
+                            children: []
+                            pos: 7198
+                            length: 13
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: isNameAssignedTo(node.getString(), replacement)
+                            children: []
+                            pos: 7223
+                            length: 47
+                        children: []
+                        pos: 7198
+                        length: 72
+                    children: []
+                    pos: 7197
+                    length: 74
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 7280
+                    length: 13
+                  pos: 7272
+                  length: 27
+                pos: 7194
+                length: 105
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 7305
+                length: 12
+              pos: 7005
+              length: 316
+          children: []
+          pos: 6942
+          length: 379
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isNameAssignedTo
+              children: []
+              pos: 7426
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 7443
+                length: 11
+              pos: 7410
+              length: 446
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node c = node.getFirstChild(); c != null; c = c.getNext()) {
+                          if (isNameAssignedTo(name, c)) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 7473
+                length: 139
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.isName()
+                        children: []
+                        pos: 7622
+                        length: 13
+                    children: []
+                    pos: 7621
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node parent = node.getParent();
+                    children: []
+                    pos: 7645
+                    length: 31
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: parent.isAssign()
+                                children: []
+                                pos: 7687
+                                length: 17
+                              right:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: method_invocation
+                                    fields:
+                                      text: parent.getFirstChild()
+                                    children: []
+                                    pos: 7708
+                                    length: 22
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: node
+                                    children: []
+                                    pos: 7734
+                                    length: 4
+                                children: []
+                                pos: 7708
+                                length: 30
+                            children: []
+                            pos: 7687
+                            length: 51
+                        children: []
+                        pos: 7686
+                        length: 53
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: method_invocation
+                                fields:
+                                  text: name.equals(node.getString())
+                                children: []
+                                pos: 7754
+                                length: 29
+                            children: []
+                            pos: 7753
+                            length: 31
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return true;
+                            children: []
+                            pos: 7797
+                            length: 12
+                          pos: 7785
+                          length: 34
+                        pos: 7750
+                        length: 69
+                      pos: 7740
+                      length: 87
+                    pos: 7683
+                    length: 144
+                  pos: 7637
+                  length: 196
+                pos: 7618
+                length: 215
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7839
+                length: 13
+              pos: 7467
+              length: 389
+          children: []
+          pos: 7410
+          length: 446
+        pos: 925
+        length: 6933
+    children: []
+    pos: 925
+    length: 6933
+  pos: 0
+  length: 7858
 text_diff: "--- before\n+++ after\n@@ -210,9 +210,7 @@\n     }\n     Preconditions.checkArgument(node.isGetProp());\n
   \n-    while (node.isGetProp()) {\n       node = node.getFirstChild();\n-    }\n
   \    if (node.isName()\n         && isNameAssignedTo(node.getString(), replacement))

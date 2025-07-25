@@ -37,13 +37,17 @@ class Translator
     end
   end
 
+  # Returns translation tree
   def translate(lang, filename)
     parser = lang == :java ? java : python
 
     code = File.read(filename)
     tree = parser.parse_string(code)
-    tree = translate_tree(lang, tree.root_node)
 
+    translate_tree(lang, tree.root_node)
+  end
+
+  def tree_to_xml_doc(tree)
     make_xml(tree)
   end
 
@@ -55,7 +59,7 @@ class Translator
       pos: t[:pos],
       length: t[:length]
     }
-    attrs[:label] = t[:fields]['text'] if t[:fields].keys == ['text']
+    attrs[:label] = t[:fields][:text] if t[:fields].keys == [:text]
     xml.tree(**attrs) do
       if !attrs.key?(:label)
         t[:fields].each do |k, v|

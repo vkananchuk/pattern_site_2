@@ -1,17 +1,155 @@
 ---
 language: python
-text_diff: "--- before\n+++ after\n@@ -1,3 +1,4 @@\n+\n from collections import defaultdict\n
-  \n def shortest_path_lengths(n, length_by_edge):\n@@ -10,29 +11,8 @@\n             for
-  j in range(n):\n                 length_by_path[i, j] = min(\n                     length_by_path[i,
+before_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: shortest_path_lengths
+        children: []
+        pos: 41
+        length: 21
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: "n"
+          children: []
+          pos: 63
+          length: 1
+        pos: 37
+        length: 476
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: 'length_by_path = defaultdict(lambda: float(''inf''))'
+          children: []
+          pos: 87
+          length: 50
+        - type: expression_statement
+          fields:
+            text: 'length_by_path.update({(i, i): 0 for i in range(n)})'
+          children: []
+          pos: 142
+          length: 52
+        - type: expression_statement
+          fields:
+            text: length_by_path.update(length_by_edge)
+          children: []
+          pos: 199
+          length: 37
+        - type: for_statement
+          fields:
+            text: |-
+              for k in range(n):
+                      for i in range(n):
+                          for j in range(n):
+                              length_by_path[i, j] = min(
+                                  length_by_path[i, j],
+                                  length_by_path[i, k] + length_by_path[j, k]
+                              )
+          children: []
+          pos: 242
+          length: 244
+        - type: return_statement
+          fields:
+            text: return length_by_path
+          children: []
+          pos: 492
+          length: 21
+        pos: 87
+        length: 426
+    children: []
+    pos: 37
+    length: 476
+  pos: 0
+  length: 514
+after_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: shortest_path_lengths
+        children: []
+        pos: 41
+        length: 21
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: "n"
+          children: []
+          pos: 63
+          length: 1
+        pos: 37
+        length: 476
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: 'length_by_path = defaultdict(lambda: float(''inf''))'
+          children: []
+          pos: 87
+          length: 50
+        - type: expression_statement
+          fields:
+            text: 'length_by_path.update({(i, i): 0 for i in range(n)})'
+          children: []
+          pos: 142
+          length: 52
+        - type: expression_statement
+          fields:
+            text: length_by_path.update(length_by_edge)
+          children: []
+          pos: 199
+          length: 37
+        - type: for_statement
+          fields:
+            text: |-
+              for k in range(n):
+                      for i in range(n):
+                          for j in range(n):
+                              length_by_path[i, j] = min(
+                                  length_by_path[i, j],
+                                  length_by_path[i, k] + length_by_path[k, j]
+                              )
+          children: []
+          pos: 242
+          length: 244
+        - type: return_statement
+          fields:
+            text: return length_by_path
+          children: []
+          pos: 492
+          length: 21
+        pos: 87
+        length: 426
+    children: []
+    pos: 37
+    length: 476
+  pos: 0
+  length: 515
+text_diff: "--- before\n+++ after\n@@ -10,7 +10,8 @@\n             for j in range(n):\n
+  \                length_by_path[i, j] = min(\n                     length_by_path[i,
   j],\n-                    length_by_path[i, k] + length_by_path[j, k]\n+                    length_by_path[i,
-  k] + length_by_path[k, j]\n                 )\n \n     return length_by_path\n \n-\n-\"\"\"\n-All
-  Shortest Paths\n-floyd-warshall\n-\n-Floyd-Warshall algorithm implementation.\n-\n-Calculates
-  the length of the shortest path connecting every ordered pair of nodes in a directed
-  graph.\n-\n-\n-\n-Input:\n-    n: The number of nodes in the graph. The nodes are
-  assumed to have ids 0..n-1\n-    length_by_edge: A dict containing edge length keyed
-  by an ordered pair of node ids\n-\n-Precondition:\n-    There are no negative-length
-  cycles in the input graph\n-\n-Output:\n-    A dict containing shortest path length
-  keyed by an ordered pair of node ids\n-\"\"\"\n"
+  k] + length_by_path[k, j]\n                 )\n \n     return length_by_path\n+\n"
 tree_diff: |+
   New cluster:
   UPDATE from for k in range(n):
@@ -51,56 +189,5 @@ tree_diff: |+
                       length_by_path[i, j],
                       length_by_path[i, k] + length_by_path[k, j]
                   )
-
-  New cluster:
-  ===
-  delete-node
-  ---
-  expression_statement: """
-  All Shortest Paths
-  floyd-warshall
-
-  Floyd-Warshall algorithm implementation.
-
-  Calculates the length of the shortest path connecting every ordered pair of nodes in a directed graph.
-
-
-
-  Input:
-      n: The number of nodes in the graph. The nodes are assumed to have ids 0..n-1
-      length_by_edge: A dict containing edge length keyed by an ordered pair of node ids
-
-  Precondition:
-      There are no negative-length cycles in the input graph
-
-  Output:
-      A dict containing shortest path length keyed by an ordered pair of node ids
-  """ [516,1045]
-  ===
-  ------------
-  ===
-  delete-node
-  ---
-  expression_statement: """
-  All Shortest Paths
-  floyd-warshall
-
-  Floyd-Warshall algorithm implementation.
-
-  Calculates the length of the shortest path connecting every ordered pair of nodes in a directed graph.
-
-
-
-  Input:
-      n: The number of nodes in the graph. The nodes are assumed to have ids 0..n-1
-      length_by_edge: A dict containing edge length keyed by an ordered pair of node ids
-
-  Precondition:
-      There are no negative-length cycles in the input graph
-
-  Output:
-      A dict containing shortest path length keyed by an ordered pair of node ids
-  """ [516,1045]
-  ===
 
 ...

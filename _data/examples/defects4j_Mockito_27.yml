@@ -1,5 +1,1252 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MockUtil
+        children: []
+        pos: 778
+        length: 8
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final MockCreationValidator creationValidator;
+          children: []
+          pos: 800
+          length: 54
+        - type: constructor_declaration
+          fields:
+            text: "public MockUtil(MockCreationValidator creationValidator) {\r\n
+              \       this.creationValidator = creationValidator;\r\n    }"
+          children: []
+          pos: 862
+          length: 118
+        - type: constructor_declaration
+          fields:
+            text: "public MockUtil() {\r\n        this(new MockCreationValidator());\r\n
+              \   }"
+          children: []
+          pos: 992
+          length: 70
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createMock
+              children: []
+              pos: 1083
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Class<T> classToMock
+                children: []
+                pos: 1094
+                length: 20
+              pos: 1070
+              length: 1180
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: creationValidator.validateType(classToMock);
+                children: []
+                pos: 1154
+                length: 44
+              - type: expression_statement
+                fields:
+                  text: creationValidator.validateExtraInterfaces(classToMock, settings.getExtraInterfaces());
+                children: []
+                pos: 1208
+                length: 86
+              - type: expression_statement
+                fields:
+                  text: creationValidator.validateMockedType(classToMock, settings.getSpiedInstance());
+                children: []
+                pos: 1304
+                length: 79
+              - type: expression_statement
+                fields:
+                  text: settings.initiateMockName(classToMock);
+                children: []
+                pos: 1395
+                length: 39
+              - type: local_variable_declaration
+                fields:
+                  text: MethodInterceptorFilter filter = newMethodInterceptorFilter(settings);
+                children: []
+                pos: 1446
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: Class<?>[] interfaces = settings.getExtraInterfaces();
+                children: []
+                pos: 1526
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: Class<?>[] ancillaryTypes;
+                children: []
+                pos: 1592
+                length: 26
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: settings.isSerializable()
+                        children: []
+                        pos: 1632
+                        length: 25
+                    children: []
+                    pos: 1631
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: 'ancillaryTypes = interfaces == null ? new Class<?>[]
+                        {Serializable.class} : new ArrayUtils().concat(interfaces,
+                        Serializable.class);'
+                    children: []
+                    pos: 1674
+                    length: 132
+                  pos: 1659
+                  length: 158
+                pos: 1628
+                length: 288
+              - type: local_variable_declaration
+                fields:
+                  text: Object spiedInstance = settings.getSpiedInstance();
+                children: []
+                pos: 1928
+                length: 51
+              - type: local_variable_declaration
+                fields:
+                  text: T mock = ClassImposterizer.INSTANCE.imposterise(filter, classToMock,
+                    ancillaryTypes);
+                children: []
+                pos: 1999
+                length: 85
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: spiedInstance
+                            children: []
+                            pos: 2108
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2125
+                            length: 4
+                        children: []
+                        pos: 2108
+                        length: 21
+                    children: []
+                    pos: 2107
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: new LenientCopyTool().copyToMock(spiedInstance, mock);
+                    children: []
+                    pos: 2146
+                    length: 54
+                  pos: 2131
+                  length: 80
+                pos: 2104
+                length: 107
+              - type: return_statement
+                fields:
+                  text: return mock;
+                children: []
+                pos: 2231
+                length: 12
+              pos: 1143
+              length: 1107
+          children: []
+          pos: 1070
+          length: 1180
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: resetMock
+              children: []
+              pos: 2274
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 2284
+                length: 6
+              pos: 2258
+              length: 274
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: MockHandlerInterface<T> oldMockHandler = getMockHandler(mock);
+                children: []
+                pos: 2303
+                length: 62
+              - type: local_variable_declaration
+                fields:
+                  text: MethodInterceptorFilter newFilter = newMethodInterceptorFilter(oldMockHandler.getMockSettings());
+                children: []
+                pos: 2375
+                length: 97
+              - type: expression_statement
+                fields:
+                  text: "((Factory) mock).setCallback(0, newFilter);"
+                children: []
+                pos: 2482
+                length: 43
+              pos: 2292
+              length: 240
+          children: []
+          pos: 2258
+          length: 274
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newMethodInterceptorFilter
+              children: []
+              pos: 2576
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: MockSettingsImpl settings
+                children: []
+                pos: 2603
+                length: 25
+              pos: 2540
+              length: 371
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: MockHandler<T> mockHandler = new MockHandler<T>(settings);
+                children: []
+                pos: 2641
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: InvocationNotifierHandler<T> invocationNotifierHandler = new
+                    InvocationNotifierHandler<T>(mockHandler, settings);
+                children: []
+                pos: 2709
+                length: 113
+              - type: return_statement
+                fields:
+                  text: return new MethodInterceptorFilter(invocationNotifierHandler,
+                    settings);
+                children: []
+                pos: 2832
+                length: 72
+              pos: 2630
+              length: 281
+          children: []
+          pos: 2540
+          length: 371
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMockHandler
+              children: []
+              pos: 2954
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 2969
+                length: 6
+              pos: 2919
+              length: 435
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: mock
+                            children: []
+                            pos: 2992
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 3000
+                            length: 4
+                        children: []
+                        pos: 2992
+                        length: 12
+                    children: []
+                    pos: 2991
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new NotAMockException("Argument should be a mock,
+                        but is null!");
+                    children: []
+                    pos: 3021
+                    length: 71
+                  pos: 3006
+                  length: 97
+                pos: 2988
+                length: 115
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: isMockitoMock(mock)
+                        children: []
+                        pos: 3119
+                        length: 19
+                    children: []
+                    pos: 3118
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (MockHandlerInterface) getInterceptor(mock).getHandler();
+                    children: []
+                    pos: 3155
+                    length: 64
+                  pos: 3140
+                  length: 90
+                pos: 3115
+                length: 232
+              pos: 2977
+              length: 377
+          children: []
+          pos: 2919
+          length: 435
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isMockitoMock
+              children: []
+              pos: 3382
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 3396
+                length: 6
+              pos: 3362
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getInterceptor(mock) != null;
+                children: []
+                pos: 3415
+                length: 36
+              pos: 3404
+              length: 54
+          children: []
+          pos: 3362
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isMock
+              children: []
+              pos: 3481
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object mock
+                children: []
+                pos: 3488
+                length: 11
+              pos: 3466
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return mock != null && isMockitoMock(mock);
+                children: []
+                pos: 3512
+                length: 43
+              pos: 3501
+              length: 61
+          children: []
+          pos: 3466
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInterceptor
+              children: []
+              pos: 3606
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 3621
+                length: 6
+              pos: 3570
+              length: 392
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(mock instanceof Factory)"
+                        children: []
+                        pos: 3644
+                        length: 26
+                    children: []
+                    pos: 3643
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 3687
+                    length: 12
+                  pos: 3672
+                  length: 38
+                pos: 3640
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: Factory factory = (Factory) mock;
+                children: []
+                pos: 3720
+                length: 33
+              - type: local_variable_declaration
+                fields:
+                  text: Callback callback = factory.getCallback(0);
+                children: []
+                pos: 3763
+                length: 43
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: callback instanceof MethodInterceptorFilter
+                        children: []
+                        pos: 3820
+                        length: 43
+                    children: []
+                    pos: 3819
+                    length: 45
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (MethodInterceptorFilter) callback;
+                    children: []
+                    pos: 3880
+                    length: 42
+                  pos: 3865
+                  length: 68
+                pos: 3816
+                length: 117
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 3943
+                length: 12
+              pos: 3629
+              length: 333
+          children: []
+          pos: 3570
+          length: 392
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMockName
+              children: []
+              pos: 3986
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object mock
+                children: []
+                pos: 3998
+                length: 11
+              pos: 3970
+              length: 119
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getMockHandler(mock).getMockSettings().getMockName();
+                children: []
+                pos: 4022
+                length: 60
+              pos: 4011
+              length: 78
+          children: []
+          pos: 3970
+          length: 119
+        pos: 733
+        length: 3359
+    children: []
+    pos: 733
+    length: 3359
+  pos: 0
+  length: 4094
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MockUtil
+        children: []
+        pos: 778
+        length: 8
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final MockCreationValidator creationValidator;
+          children: []
+          pos: 800
+          length: 54
+        - type: constructor_declaration
+          fields:
+            text: "public MockUtil(MockCreationValidator creationValidator) {\r\n
+              \       this.creationValidator = creationValidator;\r\n    }"
+          children: []
+          pos: 862
+          length: 118
+        - type: constructor_declaration
+          fields:
+            text: "public MockUtil() {\r\n        this(new MockCreationValidator());\r\n
+              \   }"
+          children: []
+          pos: 992
+          length: 70
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createMock
+              children: []
+              pos: 1083
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Class<T> classToMock
+                children: []
+                pos: 1094
+                length: 20
+              pos: 1070
+              length: 1180
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: creationValidator.validateType(classToMock);
+                children: []
+                pos: 1154
+                length: 44
+              - type: expression_statement
+                fields:
+                  text: creationValidator.validateExtraInterfaces(classToMock, settings.getExtraInterfaces());
+                children: []
+                pos: 1208
+                length: 86
+              - type: expression_statement
+                fields:
+                  text: creationValidator.validateMockedType(classToMock, settings.getSpiedInstance());
+                children: []
+                pos: 1304
+                length: 79
+              - type: expression_statement
+                fields:
+                  text: settings.initiateMockName(classToMock);
+                children: []
+                pos: 1395
+                length: 39
+              - type: local_variable_declaration
+                fields:
+                  text: MethodInterceptorFilter filter = newMethodInterceptorFilter(settings);
+                children: []
+                pos: 1446
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: Class<?>[] interfaces = settings.getExtraInterfaces();
+                children: []
+                pos: 1526
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: Class<?>[] ancillaryTypes;
+                children: []
+                pos: 1592
+                length: 26
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: settings.isSerializable()
+                        children: []
+                        pos: 1632
+                        length: 25
+                    children: []
+                    pos: 1631
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: 'ancillaryTypes = interfaces == null ? new Class<?>[]
+                        {Serializable.class} : new ArrayUtils().concat(interfaces,
+                        Serializable.class);'
+                    children: []
+                    pos: 1674
+                    length: 132
+                  pos: 1659
+                  length: 158
+                pos: 1628
+                length: 288
+              - type: local_variable_declaration
+                fields:
+                  text: Object spiedInstance = settings.getSpiedInstance();
+                children: []
+                pos: 1928
+                length: 51
+              - type: local_variable_declaration
+                fields:
+                  text: T mock = ClassImposterizer.INSTANCE.imposterise(filter, classToMock,
+                    ancillaryTypes);
+                children: []
+                pos: 1999
+                length: 85
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: spiedInstance
+                            children: []
+                            pos: 2108
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2125
+                            length: 4
+                        children: []
+                        pos: 2108
+                        length: 21
+                    children: []
+                    pos: 2107
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: new LenientCopyTool().copyToMock(spiedInstance, mock);
+                    children: []
+                    pos: 2146
+                    length: 54
+                  pos: 2131
+                  length: 80
+                pos: 2104
+                length: 107
+              - type: return_statement
+                fields:
+                  text: return mock;
+                children: []
+                pos: 2231
+                length: 12
+              pos: 1143
+              length: 1107
+          children: []
+          pos: 1070
+          length: 1180
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: resetMock
+              children: []
+              pos: 2274
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 2284
+                length: 6
+              pos: 2258
+              length: 441
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: MockHandlerInterface<T> oldMockHandler = getMockHandler(mock);
+                children: []
+                pos: 2303
+                length: 62
+              - type: local_variable_declaration
+                fields:
+                  text: MockHandler<T> newMockHandler = new MockHandler<T>(oldMockHandler);
+                children: []
+                pos: 2375
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: MethodInterceptorFilter newFilter = new MethodInterceptorFilter(newMockHandler,
+                    (MockSettingsImpl) org.mockito.Mockito.withSettings().defaultAnswer(org.mockito.Mockito.RETURNS_DEFAULTS));
+                children: []
+                pos: 2452
+                length: 187
+              - type: expression_statement
+                fields:
+                  text: "((Factory) mock).setCallback(0, newFilter);"
+                children: []
+                pos: 2649
+                length: 43
+              pos: 2292
+              length: 407
+          children: []
+          pos: 2258
+          length: 441
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: newMethodInterceptorFilter
+              children: []
+              pos: 2743
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: MockSettingsImpl settings
+                children: []
+                pos: 2770
+                length: 25
+              pos: 2707
+              length: 371
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: MockHandler<T> mockHandler = new MockHandler<T>(settings);
+                children: []
+                pos: 2808
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: InvocationNotifierHandler<T> invocationNotifierHandler = new
+                    InvocationNotifierHandler<T>(mockHandler, settings);
+                children: []
+                pos: 2876
+                length: 113
+              - type: return_statement
+                fields:
+                  text: return new MethodInterceptorFilter(invocationNotifierHandler,
+                    settings);
+                children: []
+                pos: 2999
+                length: 72
+              pos: 2797
+              length: 281
+          children: []
+          pos: 2707
+          length: 371
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMockHandler
+              children: []
+              pos: 3121
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 3136
+                length: 6
+              pos: 3086
+              length: 435
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: mock
+                            children: []
+                            pos: 3159
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 3167
+                            length: 4
+                        children: []
+                        pos: 3159
+                        length: 12
+                    children: []
+                    pos: 3158
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new NotAMockException("Argument should be a mock,
+                        but is null!");
+                    children: []
+                    pos: 3188
+                    length: 71
+                  pos: 3173
+                  length: 97
+                pos: 3155
+                length: 115
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: isMockitoMock(mock)
+                        children: []
+                        pos: 3286
+                        length: 19
+                    children: []
+                    pos: 3285
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (MockHandlerInterface) getInterceptor(mock).getHandler();
+                    children: []
+                    pos: 3322
+                    length: 64
+                  pos: 3307
+                  length: 90
+                pos: 3282
+                length: 232
+              pos: 3144
+              length: 377
+          children: []
+          pos: 3086
+          length: 435
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isMockitoMock
+              children: []
+              pos: 3549
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 3563
+                length: 6
+              pos: 3529
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getInterceptor(mock) != null;
+                children: []
+                pos: 3582
+                length: 36
+              pos: 3571
+              length: 54
+          children: []
+          pos: 3529
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isMock
+              children: []
+              pos: 3648
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object mock
+                children: []
+                pos: 3655
+                length: 11
+              pos: 3633
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return mock != null && isMockitoMock(mock);
+                children: []
+                pos: 3679
+                length: 43
+              pos: 3668
+              length: 61
+          children: []
+          pos: 3633
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInterceptor
+              children: []
+              pos: 3773
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T mock
+                children: []
+                pos: 3788
+                length: 6
+              pos: 3737
+              length: 392
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(mock instanceof Factory)"
+                        children: []
+                        pos: 3811
+                        length: 26
+                    children: []
+                    pos: 3810
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 3854
+                    length: 12
+                  pos: 3839
+                  length: 38
+                pos: 3807
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: Factory factory = (Factory) mock;
+                children: []
+                pos: 3887
+                length: 33
+              - type: local_variable_declaration
+                fields:
+                  text: Callback callback = factory.getCallback(0);
+                children: []
+                pos: 3930
+                length: 43
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: callback instanceof MethodInterceptorFilter
+                        children: []
+                        pos: 3987
+                        length: 43
+                    children: []
+                    pos: 3986
+                    length: 45
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (MethodInterceptorFilter) callback;
+                    children: []
+                    pos: 4047
+                    length: 42
+                  pos: 4032
+                  length: 68
+                pos: 3983
+                length: 117
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 4110
+                length: 12
+              pos: 3796
+              length: 333
+          children: []
+          pos: 3737
+          length: 392
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMockName
+              children: []
+              pos: 4153
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object mock
+                children: []
+                pos: 4165
+                length: 11
+              pos: 4137
+              length: 119
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getMockHandler(mock).getMockSettings().getMockName();
+                children: []
+                pos: 4189
+                length: 60
+              pos: 4178
+              length: 78
+          children: []
+          pos: 4137
+          length: 119
+        pos: 733
+        length: 3526
+    children: []
+    pos: 733
+    length: 3526
+  pos: 0
+  length: 4261
 text_diff: "--- before\n+++ after\n@@ -61,7 +61,8 @@\n \r\n     public <T> void resetMock(T
   mock) {\r\n         MockHandlerInterface<T> oldMockHandler = getMockHandler(mock);\r\n-
   \       MethodInterceptorFilter newFilter = newMethodInterceptorFilter(oldMockHandler.getMockSettings());\r\n+

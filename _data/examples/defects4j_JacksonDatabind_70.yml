@@ -1,5 +1,5045 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: BeanPropertyMap
+        children: []
+        pos: 1203
+        length: 15
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 2L;
+          children: []
+          pos: 1301
+          length: 48
+        - type: field_declaration
+          fields:
+            text: protected final boolean _caseInsensitive;
+          children: []
+          pos: 1389
+          length: 41
+        - type: field_declaration
+          fields:
+            text: private int _hashMask;
+          children: []
+          pos: 1436
+          length: 22
+        - type: field_declaration
+          fields:
+            text: private int _size;
+          children: []
+          pos: 1530
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private int _spillCount;
+          children: []
+          pos: 1558
+          length: 24
+        - type: field_declaration
+          fields:
+            text: private Object[] _hashArea;
+          children: []
+          pos: 1676
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private SettableBeanProperty[] _propsInOrder;
+          children: []
+          pos: 1856
+          length: 45
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public BeanPropertyMap(boolean caseInsensitive, Collection<SettableBeanProperty> props)
+                  {
+                      _caseInsensitive = caseInsensitive;
+                      _propsInOrder = props.toArray(new SettableBeanProperty[props.size()]);
+                      init(props);
+                  }
+          children: []
+          pos: 1907
+          length: 243
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BeanPropertyMap(BeanPropertyMap base, boolean caseInsensitive)
+                  {
+                      _caseInsensitive = caseInsensitive;
+
+                      // 16-May-2016, tatu: Alas, not enough to just change flag, need to re-init
+                      //    as well.
+                      _propsInOrder = Arrays.copyOf(base._propsInOrder, base._propsInOrder.length);
+                      init(Arrays.asList(_propsInOrder));
+                  }
+          children: []
+          pos: 2190
+          length: 366
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withCaseInsensitivity
+              children: []
+              pos: 2828
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean state
+                children: []
+                pos: 2850
+                length: 13
+              pos: 2805
+              length: 192
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _caseInsensitive
+                            children: []
+                            pos: 2879
+                            length: 16
+                          right:
+                            type: identifier
+                            fields:
+                              text: state
+                            children: []
+                            pos: 2899
+                            length: 5
+                        children: []
+                        pos: 2879
+                        length: 25
+                    children: []
+                    pos: 2878
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 2920
+                    length: 12
+                  pos: 2906
+                  length: 36
+                pos: 2875
+                length: 67
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(this, state);
+                children: []
+                pos: 2951
+                length: 40
+              pos: 2865
+              length: 132
+          children: []
+          pos: 2805
+          length: 192
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: init
+              children: []
+              pos: 3018
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Collection<SettableBeanProperty> props
+                children: []
+                pos: 3023
+                length: 38
+              pos: 3003
+              length: 1690
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: _size = props.size();
+                children: []
+                pos: 3077
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: final int hashSize = findSize(_size);
+                children: []
+                pos: 3162
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: _hashMask = hashSize-1;
+                children: []
+                pos: 3208
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: int alloc = (hashSize + (hashSize>>1)) * 2;
+                children: []
+                pos: 3335
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: Object[] hashed = new Object[alloc];
+                children: []
+                pos: 3387
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: int spillCount = 0;
+                children: []
+                pos: 3432
+                length: 19
+              - type: enhanced_for_statement
+                fields:
+                  text: "for (SettableBeanProperty prop : props) {\n            //
+                    Due to removal, renaming, theoretically possible we'll have \"holes\"
+                    so:\n            if (prop == null) {\n                continue;\n
+                    \           }\n            \n            String key = getPropertyName(prop);\n
+                    \           int slot = _hashCode(key);\n            int ix = (slot<<1);\n\n
+                    \           // primary slot not free?\n            if (hashed[ix]
+                    != null) {\n                // secondary?\n                ix
+                    = (hashSize + (slot >> 1)) << 1;\n                if (hashed[ix]
+                    != null) {\n                    // ok, spill over.\n                    ix
+                    = ((hashSize + (hashSize >> 1) ) << 1) + spillCount;\n                    spillCount
+                    += 2;\n                    if (ix >= hashed.length) {\n                        hashed
+                    = Arrays.copyOf(hashed, hashed.length + 4);\n                    }\n
+                    \               }\n            }\n//System.err.println(\" add
+                    '\"+key+\" at #\"+(ix>>1)+\"/\"+size+\" (hashed at \"+slot+\")\");
+                    \            \n            hashed[ix] = key;\n            hashed[ix+1]
+                    = prop;\n        }"
+                children: []
+                pos: 3461
+                length: 1032
+              - type: expression_statement
+                fields:
+                  text: _hashArea = hashed;
+                children: []
+                pos: 4634
+                length: 19
+              - type: expression_statement
+                fields:
+                  text: _spillCount = spillCount;
+                children: []
+                pos: 4662
+                length: 25
+              pos: 3067
+              length: 1626
+          children: []
+          pos: 3003
+          length: 1690
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findSize
+              children: []
+              pos: 4728
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int size
+                children: []
+                pos: 4737
+                length: 8
+              pos: 4703
+              length: 354
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: size
+                            children: []
+                            pos: 4765
+                            length: 4
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '5'
+                            children: []
+                            pos: 4773
+                            length: 1
+                        children: []
+                        pos: 4765
+                        length: 9
+                    children: []
+                    pos: 4764
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 8;
+                    children: []
+                    pos: 4790
+                    length: 9
+                  pos: 4776
+                  length: 33
+                pos: 4761
+                length: 48
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: size
+                            children: []
+                            pos: 4822
+                            length: 4
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '12'
+                            children: []
+                            pos: 4830
+                            length: 2
+                        children: []
+                        pos: 4822
+                        length: 10
+                    children: []
+                    pos: 4821
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 16;
+                    children: []
+                    pos: 4848
+                    length: 10
+                  pos: 4834
+                  length: 34
+                pos: 4818
+                length: 50
+              - type: local_variable_declaration
+                fields:
+                  text: int needed = size + (size >> 2);
+                children: []
+                pos: 4877
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: int result = 32;
+                children: []
+                pos: 4938
+                length: 16
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (result < needed) {
+                                result += result;
+                            }
+                children: []
+                pos: 4963
+                length: 65
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 5037
+                length: 14
+              pos: 4751
+              length: 306
+          children: []
+          pos: 4703
+          length: 354
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: construct
+              children: []
+              pos: 5131
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Collection<SettableBeanProperty> props
+                children: []
+                pos: 5141
+                length: 38
+              pos: 5101
+              length: 172
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(caseInsensitive, props);
+                children: []
+                pos: 5216
+                length: 51
+              pos: 5206
+              length: 67
+          children: []
+          pos: 5101
+          length: 172
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withProperty
+              children: []
+              pos: 5588
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty newProp
+                children: []
+                pos: 5601
+                length: 28
+              pos: 5565
+              length: 1795
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String key = getPropertyName(newProp);
+                children: []
+                pos: 5692
+                length: 38
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if ((prop != null) && prop.getName().equals(key)) {
+                                    _hashArea[i] = newProp;
+                                    _propsInOrder[_findFromOrdered(prop)] = newProp;
+                                    return this;
+                                }
+                            }
+                children: []
+                pos: 5740
+                length: 357
+              - type: local_variable_declaration
+                fields:
+                  text: final int slot = _hashCode(key);
+                children: []
+                pos: 6132
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: final int hashSize = _hashMask+1;
+                children: []
+                pos: 6173
+                length: 33
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = (slot<<1);
+                children: []
+                pos: 6215
+                length: 19
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: array_access
+                            fields:
+                              array:
+                                type: identifier
+                                fields:
+                                  text: _hashArea
+                                children: []
+                                pos: 6290
+                                length: 9
+                              index:
+                                type: identifier
+                                fields:
+                                  text: ix
+                                children: []
+                                pos: 6300
+                                length: 2
+                            children: []
+                            pos: 6290
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6307
+                            length: 4
+                        children: []
+                        pos: 6290
+                        length: 21
+                    children: []
+                    pos: 6289
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ix = (hashSize + (slot >> 1)) << 1;
+                    children: []
+                    pos: 6353
+                    length: 35
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: array_access
+                                fields:
+                                  array:
+                                    type: identifier
+                                    fields:
+                                      text: _hashArea
+                                    children: []
+                                    pos: 6405
+                                    length: 9
+                                  index:
+                                    type: identifier
+                                    fields:
+                                      text: ix
+                                    children: []
+                                    pos: 6415
+                                    length: 2
+                                children: []
+                                pos: 6405
+                                length: 13
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6422
+                                length: 4
+                            children: []
+                            pos: 6405
+                            length: 21
+                        children: []
+                        pos: 6404
+                        length: 23
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: ix = ((hashSize + (hashSize >> 1) ) << 1) + _spillCount;
+                        children: []
+                        pos: 6481
+                        length: 56
+                      - type: expression_statement
+                        fields:
+                          text: _spillCount += 2;
+                        children: []
+                        pos: 6554
+                        length: 17
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: ix
+                                    children: []
+                                    pos: 6592
+                                    length: 2
+                                  right:
+                                    type: field_access
+                                    fields:
+                                      text: _hashArea.length
+                                    children: []
+                                    pos: 6598
+                                    length: 16
+                                children: []
+                                pos: 6592
+                                length: 22
+                            children: []
+                            pos: 6591
+                            length: 24
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: _hashArea = Arrays.copyOf(_hashArea, _hashArea.length
+                                + 4);
+                            children: []
+                            pos: 6638
+                            length: 59
+                          pos: 6616
+                          length: 412
+                        pos: 6588
+                        length: 440
+                      pos: 6428
+                      length: 614
+                    pos: 6401
+                    length: 641
+                  pos: 6313
+                  length: 739
+                pos: 6286
+                length: 766
+              - type: expression_statement
+                fields:
+                  text: _hashArea[ix] = key;
+                children: []
+                pos: 7061
+                length: 20
+              - type: expression_statement
+                fields:
+                  text: _hashArea[ix+1] = newProp;
+                children: []
+                pos: 7090
+                length: 26
+              - type: local_variable_declaration
+                fields:
+                  text: int last = _propsInOrder.length;
+                children: []
+                pos: 7126
+                length: 32
+              - type: expression_statement
+                fields:
+                  text: _propsInOrder = Arrays.copyOf(_propsInOrder, last+1);
+                children: []
+                pos: 7167
+                length: 53
+              - type: expression_statement
+                fields:
+                  text: _propsInOrder[last] = newProp;
+                children: []
+                pos: 7229
+                length: 30
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 7342
+                length: 12
+              pos: 5635
+              length: 1725
+          children: []
+          pos: 5565
+          length: 1795
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: assignIndexes
+              children: []
+              pos: 7389
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7366
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = 0;
+                children: []
+                pos: 7462
+                length: 14
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if (prop != null) {
+                                    prop.assignIndex(index++);
+                                }
+                            }
+                children: []
+                pos: 7485
+                length: 234
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 7728
+                length: 12
+              pos: 7409
+              length: 337
+          children: []
+          pos: 7366
+          length: 380
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: renameAll
+              children: []
+              pos: 7885
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NameTransformer transformer
+                children: []
+                pos: 7895
+                length: 27
+              pos: 7862
+              length: 884
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: transformer
+                                children: []
+                                pos: 7942
+                                length: 11
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7957
+                                length: 4
+                            children: []
+                            pos: 7942
+                            length: 19
+                          right:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: transformer
+                                    children: []
+                                    pos: 7966
+                                    length: 11
+                                  right:
+                                    type: field_access
+                                    fields:
+                                      text: NameTransformer.NOP
+                                    children: []
+                                    pos: 7981
+                                    length: 19
+                                children: []
+                                pos: 7966
+                                length: 34
+                            children: []
+                            pos: 7965
+                            length: 36
+                        children: []
+                        pos: 7942
+                        length: 59
+                    children: []
+                    pos: 7941
+                    length: 61
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 8017
+                    length: 12
+                  pos: 8003
+                  length: 36
+                pos: 7938
+                length: 101
+              - type: local_variable_declaration
+                fields:
+                  text: final int len = _propsInOrder.length;
+                children: []
+                pos: 8100
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> newProps = new ArrayList<SettableBeanProperty>(len);
+                children: []
+                pos: 8146
+                length: 84
+              - type: for_statement
+                fields:
+                  text: "for (int i = 0; i < len; ++i) {\n            SettableBeanProperty
+                    prop = _propsInOrder[i];\n            \n            // What to
+                    do with holes? For now, retain\n            if (prop == null)
+                    {\n                newProps.add(prop);\n                continue;\n
+                    \           }\n            newProps.add(_rename(prop, transformer));\n
+                    \       }"
+                children: []
+                pos: 8240
+                length: 328
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(_caseInsensitive, newProps);
+                children: []
+                pos: 8685
+                length: 55
+              pos: 7928
+              length: 818
+          children: []
+          pos: 7862
+          length: 884
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withoutProperties
+              children: []
+              pos: 9003
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Collection<String> toExclude
+                children: []
+                pos: 9021
+                length: 28
+              pos: 8980
+              length: 922
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: toExclude.isEmpty()
+                        children: []
+                        pos: 9069
+                        length: 19
+                    children: []
+                    pos: 9068
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 9104
+                    length: 12
+                  pos: 9090
+                  length: 36
+                pos: 9065
+                length: 61
+              - type: local_variable_declaration
+                fields:
+                  text: final int len = _propsInOrder.length;
+                children: []
+                pos: 9135
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> newProps = new ArrayList<SettableBeanProperty>(len);
+                children: []
+                pos: 9181
+                length: 84
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < len; ++i) {
+                                SettableBeanProperty prop = _propsInOrder[i];
+                                // 01-May-2015, tatu: Not 100% sure if existing `null`s should be retained;
+                                //   or, if entries to ignore should be retained as nulls. For now just
+                                //   prune them out
+                                if (prop != null) { // may contain holes, too, check.
+                                    if (!toExclude.contains(prop.getName())) {
+                                        newProps.add(prop);
+                                    }
+                                }
+                            }
+                children: []
+                pos: 9275
+                length: 500
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(_caseInsensitive, newProps);
+                children: []
+                pos: 9841
+                length: 55
+              pos: 9055
+              length: 847
+          children: []
+          pos: 8980
+          length: 922
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: replace
+              children: []
+              pos: 10110
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty newProp
+                children: []
+                pos: 10118
+                length: 28
+              pos: 10098
+              length: 521
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String key = getPropertyName(newProp);
+                children: []
+                pos: 10162
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = _findIndexInHash(key);
+                children: []
+                pos: 10209
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: ix
+                            children: []
+                            pos: 10262
+                            length: 2
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 10268
+                            length: 1
+                        children: []
+                        pos: 10262
+                        length: 7
+                    children: []
+                    pos: 10261
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: SettableBeanProperty prop = (SettableBeanProperty) _hashArea[ix];
+                    children: []
+                    pos: 10285
+                    length: 65
+                  - type: expression_statement
+                    fields:
+                      text: _hashArea[ix] = newProp;
+                    children: []
+                    pos: 10363
+                    length: 24
+                  - type: expression_statement
+                    fields:
+                      text: _propsInOrder[_findFromOrdered(prop)] = newProp;
+                    children: []
+                    pos: 10441
+                    length: 48
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 10502
+                    length: 7
+                  pos: 10271
+                  length: 248
+                pos: 10258
+                length: 261
+              - type: throw_statement
+                fields:
+                  text: throw new NoSuchElementException("No entry '"+key+"' found,
+                    can't replace");
+                children: []
+                pos: 10537
+                length: 76
+              pos: 10152
+              length: 467
+          children: []
+          pos: 10098
+          length: 521
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: properties
+              children: []
+              pos: 10660
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10625
+              length: 390
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> p = new ArrayList<SettableBeanProperty>(_size);
+                children: []
+                pos: 10683
+                length: 79
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if (prop != null) {
+                                    p.add(prop);
+                                }
+                            }
+                children: []
+                pos: 10771
+                length: 220
+              - type: return_statement
+                fields:
+                  text: return p;
+                children: []
+                pos: 11000
+                length: 9
+              pos: 10673
+              length: 342
+          children: []
+          pos: 10625
+          length: 390
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: iterator
+              children: []
+              pos: 11151
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11099
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties().iterator();
+                children: []
+                pos: 11172
+                length: 31
+              pos: 11162
+              length: 47
+          children: []
+          pos: 11099
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertiesInInsertionOrder
+              children: []
+              pos: 11510
+              length: 29
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11480
+              length: 99
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return _propsInOrder;
+                children: []
+                pos: 11552
+                length: 21
+              pos: 11542
+              length: 37
+          children: []
+          pos: 11480
+          length: 99
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertyName
+              children: []
+              pos: 11797
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty prop
+                children: []
+                pos: 11813
+                length: 25
+              pos: 11774
+              length: 154
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return _caseInsensitive ? prop.getName().toLowerCase() :
+                    prop.getName();'
+                children: []
+                pos: 11850
+                length: 72
+              pos: 11840
+              length: 88
+          children: []
+          pos: 11774
+          length: 154
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: find
+              children: []
+              pos: 11996
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 12001
+                length: 9
+              pos: 11968
+              length: 452
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if ((prop != null) && (index == prop.getPropertyIndex())) {
+                                    return prop;
+                                }
+                            }
+                children: []
+                pos: 12133
+                length: 260
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 12402
+                length: 12
+              pos: 12016
+              length: 404
+          children: []
+          pos: 11968
+          length: 452
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: find
+              children: []
+              pos: 12454
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 12459
+                length: 10
+              pos: 12426
+              length: 663
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: key
+                            children: []
+                            pos: 12489
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12496
+                            length: 4
+                        children: []
+                        pos: 12489
+                        length: 11
+                    children: []
+                    pos: 12488
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("Can not pass null
+                        property name");
+                    children: []
+                    pos: 12516
+                    length: 70
+                  pos: 12502
+                  length: 94
+                pos: 12485
+                length: 111
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: _caseInsensitive
+                        children: []
+                        pos: 12609
+                        length: 16
+                    children: []
+                    pos: 12608
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: key = key.toLowerCase();
+                    children: []
+                    pos: 12641
+                    length: 24
+                  pos: 12627
+                  length: 48
+                pos: 12605
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: int slot = key.hashCode() & _hashMask;
+                children: []
+                pos: 12733
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = (slot<<1);
+                children: []
+                pos: 12865
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: Object match = _hashArea[ix];
+                children: []
+                pos: 12893
+                length: 29
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: match
+                                    children: []
+                                    pos: 12936
+                                    length: 5
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: key
+                                    children: []
+                                    pos: 12945
+                                    length: 3
+                                children: []
+                                pos: 12936
+                                length: 12
+                            children: []
+                            pos: 12935
+                            length: 14
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: key.equals(match)
+                            children: []
+                            pos: 12953
+                            length: 17
+                        children: []
+                        pos: 12935
+                        length: 35
+                    children: []
+                    pos: 12934
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (SettableBeanProperty) _hashArea[ix+1];
+                    children: []
+                    pos: 12986
+                    length: 46
+                  pos: 12972
+                  length: 70
+                pos: 12931
+                length: 111
+              - type: return_statement
+                fields:
+                  text: return _find2(key, slot, match);
+                children: []
+                pos: 13051
+                length: 32
+              pos: 12475
+              length: 614
+          children: []
+          pos: 12426
+          length: 663
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _find2
+              children: []
+              pos: 13130
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 13137
+                length: 10
+              pos: 13095
+              length: 786
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: match
+                            children: []
+                            pos: 13191
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13200
+                            length: 4
+                        children: []
+                        pos: 13191
+                        length: 13
+                    children: []
+                    pos: 13190
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 13220
+                    length: 12
+                  pos: 13206
+                  length: 36
+                pos: 13187
+                length: 55
+              - type: local_variable_declaration
+                fields:
+                  text: int hashSize = _hashMask+1;
+                children: []
+                pos: 13277
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = hashSize + (slot>>1) << 1;
+                children: []
+                pos: 13313
+                length: 35
+              - type: expression_statement
+                fields:
+                  text: match = _hashArea[ix];
+                children: []
+                pos: 13357
+                length: 22
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: key.equals(match)
+                        children: []
+                        pos: 13392
+                        length: 17
+                    children: []
+                    pos: 13391
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (SettableBeanProperty) _hashArea[ix+1];
+                    children: []
+                    pos: 13425
+                    length: 46
+                  pos: 13411
+                  length: 70
+                pos: 13388
+                length: 93
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: match
+                            children: []
+                            pos: 13494
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13503
+                            length: 4
+                        children: []
+                        pos: 13494
+                        length: 13
+                    children: []
+                    pos: 13493
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: int i = (hashSize + (hashSize>>1)) << 1;
+                    children: []
+                    pos: 13546
+                    length: 40
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (int end = i + _spillCount; i < end; i += 2) {
+                                        match = _hashArea[i];
+                                        if ((match == key) || key.equals(match)) {
+                                            return (SettableBeanProperty) _hashArea[i+1];
+                                        }
+                                    }
+                    children: []
+                    pos: 13599
+                    length: 245
+                  pos: 13509
+                  length: 345
+                pos: 13490
+                length: 364
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 13863
+                length: 12
+              pos: 13177
+              length: 704
+          children: []
+          pos: 13095
+          length: 786
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: size
+              children: []
+              pos: 14064
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14053
+              length: 35
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return _size;
+                children: []
+                pos: 14073
+                length: 13
+              pos: 14071
+              length: 17
+          children: []
+          pos: 14053
+          length: 35
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: remove
+              children: []
+              pos: 14252
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty propToRm
+                children: []
+                pos: 14259
+                length: 29
+              pos: 14240
+              length: 1096
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> props = new ArrayList<SettableBeanProperty>(_size);
+                children: []
+                pos: 14304
+                length: 83
+              - type: local_variable_declaration
+                fields:
+                  text: String key = getPropertyName(propToRm);
+                children: []
+                pos: 14396
+                length: 39
+              - type: local_variable_declaration
+                fields:
+                  text: boolean found = false;
+                children: []
+                pos: 14444
+                length: 22
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if (prop == null) {
+                                    continue;
+                                }
+                                if (!found) {
+                                    // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                                    //   as only former is lower-case in case-insensitive case
+                                    found = key.equals(_hashArea[i-1]);
+                                    if (found) {
+                                        // need to leave a hole here
+                                        _propsInOrder[_findFromOrdered(prop)] = null;
+                                        continue;
+                                    }
+                                }
+                                props.add(prop);
+                            }
+                children: []
+                pos: 14476
+                length: 698
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!found"
+                        children: []
+                        pos: 15187
+                        length: 6
+                    children: []
+                    pos: 15186
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new NoSuchElementException("No entry '"+propToRm.getName()+"'
+                        found, can't remove");
+                    children: []
+                    pos: 15209
+                    length: 90
+                  pos: 15195
+                  length: 114
+                pos: 15183
+                length: 126
+              - type: expression_statement
+                fields:
+                  text: init(props);
+                children: []
+                pos: 15318
+                length: 12
+              pos: 14294
+              length: 1042
+          children: []
+          pos: 14240
+          length: 1096
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findDeserializeAndSet
+              children: []
+              pos: 15761
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser p
+                children: []
+                pos: 15783
+                length: 12
+              pos: 15746
+              length: 438
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final SettableBeanProperty prop = find(key);
+                children: []
+                pos: 15896
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: prop
+                            children: []
+                            pos: 15953
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 15961
+                            length: 4
+                        children: []
+                        pos: 15953
+                        length: 12
+                    children: []
+                    pos: 15952
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 15981
+                    length: 13
+                  pos: 15967
+                  length: 37
+                pos: 15949
+                length: 55
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: prop.deserializeAndSet(p, ctxt, bean);
+                      children: []
+                      pos: 16031
+                      length: 38
+                    pos: 16017
+                    length: 62
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Exception e) {
+                                      wrapAndThrow(e, bean, key, ctxt);
+                                  }
+                      children: []
+                      pos: 16080
+                      length: 77
+                    pos: 16013
+                    length: 144
+                children: []
+                pos: 16013
+                length: 144
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 16166
+                length: 12
+              pos: 15886
+              length: 298
+          children: []
+          pos: 15746
+          length: 438
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 16218
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16190
+              length: 571
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuilder sb = new StringBuilder();
+                children: []
+                pos: 16243
+                length: 39
+              - type: expression_statement
+                fields:
+                  text: sb.append("Properties=[");
+                children: []
+                pos: 16291
+                length: 26
+              - type: local_variable_declaration
+                fields:
+                  text: int count = 0;
+                children: []
+                pos: 16326
+                length: 14
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<SettableBeanProperty> it = iterator();
+                children: []
+                pos: 16350
+                length: 47
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (it.hasNext()) {
+                                SettableBeanProperty prop = it.next();
+                                if (count++ > 0) {
+                                    sb.append(", ");
+                                }
+                                sb.append(prop.getName());
+                                sb.append('(');
+                                sb.append(prop.getType());
+                                sb.append(')');
+                            }
+                children: []
+                pos: 16406
+                length: 295
+              - type: expression_statement
+                fields:
+                  text: sb.append(']');
+                children: []
+                pos: 16710
+                length: 15
+              - type: return_statement
+                fields:
+                  text: return sb.toString();
+                children: []
+                pos: 16734
+                length: 21
+              pos: 16233
+              length: 528
+          children: []
+          pos: 16190
+          length: 571
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _rename
+              children: []
+              pos: 16968
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty prop
+                children: []
+                pos: 16976
+                length: 25
+              pos: 16937
+              length: 665
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: prop
+                            children: []
+                            pos: 17041
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 17049
+                            length: 4
+                        children: []
+                        pos: 17041
+                        length: 12
+                    children: []
+                    pos: 17040
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return prop;
+                    children: []
+                    pos: 17069
+                    length: 12
+                  pos: 17055
+                  length: 36
+                pos: 17037
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: String newName = xf.transform(prop.getName());
+                children: []
+                pos: 17100
+                length: 46
+              - type: expression_statement
+                fields:
+                  text: prop = prop.withSimpleName(newName);
+                children: []
+                pos: 17155
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: JsonDeserializer<?> deser = prop.getValueDeserializer();
+                children: []
+                pos: 17200
+                length: 56
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: deser
+                            children: []
+                            pos: 17269
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 17278
+                            length: 4
+                        children: []
+                        pos: 17269
+                        length: 13
+                    children: []
+                    pos: 17268
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: |-
+                        @SuppressWarnings("unchecked")
+                                    JsonDeserializer<Object> newDeser = (JsonDeserializer<Object>)
+                                        deser.unwrappingDeserializer(xf);
+                    children: []
+                    pos: 17298
+                    length: 155
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: newDeser
+                                children: []
+                                pos: 17470
+                                length: 8
+                              right:
+                                type: identifier
+                                fields:
+                                  text: deser
+                                children: []
+                                pos: 17482
+                                length: 5
+                            children: []
+                            pos: 17470
+                            length: 17
+                        children: []
+                        pos: 17469
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: prop = prop.withValueDeserializer(newDeser);
+                        children: []
+                        pos: 17507
+                        length: 44
+                      pos: 17489
+                      length: 76
+                    pos: 17466
+                    length: 99
+                  pos: 17284
+                  length: 291
+                pos: 17265
+                length: 310
+              - type: return_statement
+                fields:
+                  text: return prop;
+                children: []
+                pos: 17584
+                length: 12
+              pos: 17027
+              length: 575
+          children: []
+          pos: 16937
+          length: 665
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: wrapAndThrow
+              children: []
+              pos: 17623
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Throwable t
+                children: []
+                pos: 17636
+                length: 11
+              pos: 17608
+              length: 1087
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (t instanceof InvocationTargetException && t.getCause() != null) {
+                                t = t.getCause();
+                            }
+                children: []
+                pos: 17794
+                length: 112
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: t instanceof Error
+                        children: []
+                        pos: 17956
+                        length: 18
+                    children: []
+                    pos: 17955
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw (Error) t;
+                    children: []
+                    pos: 17990
+                    length: 16
+                  pos: 17976
+                  length: 40
+                pos: 17952
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: boolean wrap = (ctxt == null) || ctxt.isEnabled(DeserializationFeature.WRAP_EXCEPTIONS);
+                children: []
+                pos: 18095
+                length: 88
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: t instanceof IOException
+                        children: []
+                        pos: 18274
+                        length: 24
+                    children: []
+                    pos: 18273
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: unary_expression
+                                fields:
+                                  text: "!wrap"
+                                children: []
+                                pos: 18318
+                                length: 5
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!(t instanceof JsonProcessingException)"
+                                children: []
+                                pos: 18327
+                                length: 39
+                            children: []
+                            pos: 18318
+                            length: 48
+                        children: []
+                        pos: 18317
+                        length: 50
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: throw (IOException) t;
+                        children: []
+                        pos: 18386
+                        length: 22
+                      pos: 18368
+                      length: 54
+                    pos: 18314
+                    length: 108
+                  pos: 18300
+                  length: 132
+                pos: 18270
+                length: 350
+              - type: throw_statement
+                fields:
+                  text: throw JsonMappingException.wrapWithPath(t, bean, fieldName);
+                children: []
+                pos: 18629
+                length: 60
+              pos: 17740
+              length: 955
+          children: []
+          pos: 17608
+          length: 1087
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _findIndexInHash
+              children: []
+              pos: 18997
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 19014
+                length: 10
+              pos: 18979
+              length: 669
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int slot = _hashCode(key);
+                children: []
+                pos: 19040
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = (slot<<1);
+                children: []
+                pos: 19081
+                length: 19
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: key.equals(_hashArea[ix])
+                        children: []
+                        pos: 19148
+                        length: 25
+                    children: []
+                    pos: 19147
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return ix+1;
+                    children: []
+                    pos: 19189
+                    length: 12
+                  pos: 19175
+                  length: 36
+                pos: 19144
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: int hashSize = _hashMask+1;
+                children: []
+                pos: 19246
+                length: 27
+              - type: expression_statement
+                fields:
+                  text: ix = hashSize + (slot>>1) << 1;
+                children: []
+                pos: 19282
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: key.equals(_hashArea[ix])
+                        children: []
+                        pos: 19326
+                        length: 25
+                    children: []
+                    pos: 19325
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return ix+1;
+                    children: []
+                    pos: 19367
+                    length: 12
+                  pos: 19353
+                  length: 36
+                pos: 19322
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: int i = (hashSize + (hashSize>>1)) << 1;
+                children: []
+                pos: 19428
+                length: 40
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int end = i + _spillCount; i < end; i += 2) {
+                                if (key.equals(_hashArea[i])) {
+                                    return i+1;
+                                }
+                            }
+                children: []
+                pos: 19477
+                length: 146
+              - type: return_statement
+                fields:
+                  text: return -1;
+                children: []
+                pos: 19632
+                length: 10
+              pos: 19030
+              length: 618
+          children: []
+          pos: 18979
+          length: 669
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _findFromOrdered
+              children: []
+              pos: 19676
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty prop
+                children: []
+                pos: 19693
+                length: 25
+              pos: 19658
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, end = _propsInOrder.length; i < end; ++i) {
+                                if (_propsInOrder[i] == prop) {
+                                    return i;
+                                }
+                            }
+                children: []
+                pos: 19730
+                length: 153
+              - type: throw_statement
+                fields:
+                  text: 'throw new IllegalStateException("Illegal state: property
+                    ''"+prop.getName()+"'' missing from _propsInOrder");'
+                children: []
+                pos: 19892
+                length: 107
+              pos: 19720
+              length: 285
+          children: []
+          pos: 19658
+          length: 347
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _hashCode
+              children: []
+              pos: 20105
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 20115
+                length: 10
+              pos: 20087
+              length: 383
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return key.hashCode() & _hashMask;
+                children: []
+                pos: 20430
+                length: 34
+              pos: 20127
+              length: 343
+          children: []
+          pos: 20087
+          length: 383
+        pos: 1190
+        length: 19282
+    children: []
+    pos: 1190
+    length: 19282
+  pos: 0
+  length: 20473
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: BeanPropertyMap
+        children: []
+        pos: 1203
+        length: 15
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 2L;
+          children: []
+          pos: 1301
+          length: 48
+        - type: field_declaration
+          fields:
+            text: protected final boolean _caseInsensitive;
+          children: []
+          pos: 1389
+          length: 41
+        - type: field_declaration
+          fields:
+            text: private int _hashMask;
+          children: []
+          pos: 1436
+          length: 22
+        - type: field_declaration
+          fields:
+            text: private int _size;
+          children: []
+          pos: 1530
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private int _spillCount;
+          children: []
+          pos: 1558
+          length: 24
+        - type: field_declaration
+          fields:
+            text: private Object[] _hashArea;
+          children: []
+          pos: 1676
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private SettableBeanProperty[] _propsInOrder;
+          children: []
+          pos: 1856
+          length: 45
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public BeanPropertyMap(boolean caseInsensitive, Collection<SettableBeanProperty> props)
+                  {
+                      _caseInsensitive = caseInsensitive;
+                      _propsInOrder = props.toArray(new SettableBeanProperty[props.size()]);
+                      init(props);
+                  }
+          children: []
+          pos: 1907
+          length: 243
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BeanPropertyMap(BeanPropertyMap base, boolean caseInsensitive)
+                  {
+                      _caseInsensitive = caseInsensitive;
+
+                      // 16-May-2016, tatu: Alas, not enough to just change flag, need to re-init
+                      //    as well.
+                      _propsInOrder = Arrays.copyOf(base._propsInOrder, base._propsInOrder.length);
+                      init(Arrays.asList(_propsInOrder));
+                  }
+          children: []
+          pos: 2190
+          length: 366
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withCaseInsensitivity
+              children: []
+              pos: 2828
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean state
+                children: []
+                pos: 2850
+                length: 13
+              pos: 2805
+              length: 192
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _caseInsensitive
+                            children: []
+                            pos: 2879
+                            length: 16
+                          right:
+                            type: identifier
+                            fields:
+                              text: state
+                            children: []
+                            pos: 2899
+                            length: 5
+                        children: []
+                        pos: 2879
+                        length: 25
+                    children: []
+                    pos: 2878
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 2920
+                    length: 12
+                  pos: 2906
+                  length: 36
+                pos: 2875
+                length: 67
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(this, state);
+                children: []
+                pos: 2951
+                length: 40
+              pos: 2865
+              length: 132
+          children: []
+          pos: 2805
+          length: 192
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: init
+              children: []
+              pos: 3018
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Collection<SettableBeanProperty> props
+                children: []
+                pos: 3023
+                length: 38
+              pos: 3003
+              length: 1690
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: _size = props.size();
+                children: []
+                pos: 3077
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: final int hashSize = findSize(_size);
+                children: []
+                pos: 3162
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: _hashMask = hashSize-1;
+                children: []
+                pos: 3208
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: int alloc = (hashSize + (hashSize>>1)) * 2;
+                children: []
+                pos: 3335
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: Object[] hashed = new Object[alloc];
+                children: []
+                pos: 3387
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: int spillCount = 0;
+                children: []
+                pos: 3432
+                length: 19
+              - type: enhanced_for_statement
+                fields:
+                  text: "for (SettableBeanProperty prop : props) {\n            //
+                    Due to removal, renaming, theoretically possible we'll have \"holes\"
+                    so:\n            if (prop == null) {\n                continue;\n
+                    \           }\n            \n            String key = getPropertyName(prop);\n
+                    \           int slot = _hashCode(key);\n            int ix = (slot<<1);\n\n
+                    \           // primary slot not free?\n            if (hashed[ix]
+                    != null) {\n                // secondary?\n                ix
+                    = (hashSize + (slot >> 1)) << 1;\n                if (hashed[ix]
+                    != null) {\n                    // ok, spill over.\n                    ix
+                    = ((hashSize + (hashSize >> 1) ) << 1) + spillCount;\n                    spillCount
+                    += 2;\n                    if (ix >= hashed.length) {\n                        hashed
+                    = Arrays.copyOf(hashed, hashed.length + 4);\n                    }\n
+                    \               }\n            }\n//System.err.println(\" add
+                    '\"+key+\" at #\"+(ix>>1)+\"/\"+size+\" (hashed at \"+slot+\")\");
+                    \            \n            hashed[ix] = key;\n            hashed[ix+1]
+                    = prop;\n        }"
+                children: []
+                pos: 3461
+                length: 1032
+              - type: expression_statement
+                fields:
+                  text: _hashArea = hashed;
+                children: []
+                pos: 4634
+                length: 19
+              - type: expression_statement
+                fields:
+                  text: _spillCount = spillCount;
+                children: []
+                pos: 4662
+                length: 25
+              pos: 3067
+              length: 1626
+          children: []
+          pos: 3003
+          length: 1690
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findSize
+              children: []
+              pos: 4728
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int size
+                children: []
+                pos: 4737
+                length: 8
+              pos: 4703
+              length: 354
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: size
+                            children: []
+                            pos: 4765
+                            length: 4
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '5'
+                            children: []
+                            pos: 4773
+                            length: 1
+                        children: []
+                        pos: 4765
+                        length: 9
+                    children: []
+                    pos: 4764
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 8;
+                    children: []
+                    pos: 4790
+                    length: 9
+                  pos: 4776
+                  length: 33
+                pos: 4761
+                length: 48
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: size
+                            children: []
+                            pos: 4822
+                            length: 4
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '12'
+                            children: []
+                            pos: 4830
+                            length: 2
+                        children: []
+                        pos: 4822
+                        length: 10
+                    children: []
+                    pos: 4821
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 16;
+                    children: []
+                    pos: 4848
+                    length: 10
+                  pos: 4834
+                  length: 34
+                pos: 4818
+                length: 50
+              - type: local_variable_declaration
+                fields:
+                  text: int needed = size + (size >> 2);
+                children: []
+                pos: 4877
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: int result = 32;
+                children: []
+                pos: 4938
+                length: 16
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (result < needed) {
+                                result += result;
+                            }
+                children: []
+                pos: 4963
+                length: 65
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 5037
+                length: 14
+              pos: 4751
+              length: 306
+          children: []
+          pos: 4703
+          length: 354
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: construct
+              children: []
+              pos: 5131
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Collection<SettableBeanProperty> props
+                children: []
+                pos: 5141
+                length: 38
+              pos: 5101
+              length: 172
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(caseInsensitive, props);
+                children: []
+                pos: 5216
+                length: 51
+              pos: 5206
+              length: 67
+          children: []
+          pos: 5101
+          length: 172
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withProperty
+              children: []
+              pos: 5588
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty newProp
+                children: []
+                pos: 5601
+                length: 28
+              pos: 5565
+              length: 1795
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String key = getPropertyName(newProp);
+                children: []
+                pos: 5692
+                length: 38
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if ((prop != null) && prop.getName().equals(key)) {
+                                    _hashArea[i] = newProp;
+                                    _propsInOrder[_findFromOrdered(prop)] = newProp;
+                                    return this;
+                                }
+                            }
+                children: []
+                pos: 5740
+                length: 357
+              - type: local_variable_declaration
+                fields:
+                  text: final int slot = _hashCode(key);
+                children: []
+                pos: 6132
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: final int hashSize = _hashMask+1;
+                children: []
+                pos: 6173
+                length: 33
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = (slot<<1);
+                children: []
+                pos: 6215
+                length: 19
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: array_access
+                            fields:
+                              array:
+                                type: identifier
+                                fields:
+                                  text: _hashArea
+                                children: []
+                                pos: 6290
+                                length: 9
+                              index:
+                                type: identifier
+                                fields:
+                                  text: ix
+                                children: []
+                                pos: 6300
+                                length: 2
+                            children: []
+                            pos: 6290
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6307
+                            length: 4
+                        children: []
+                        pos: 6290
+                        length: 21
+                    children: []
+                    pos: 6289
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ix = (hashSize + (slot >> 1)) << 1;
+                    children: []
+                    pos: 6353
+                    length: 35
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: array_access
+                                fields:
+                                  array:
+                                    type: identifier
+                                    fields:
+                                      text: _hashArea
+                                    children: []
+                                    pos: 6405
+                                    length: 9
+                                  index:
+                                    type: identifier
+                                    fields:
+                                      text: ix
+                                    children: []
+                                    pos: 6415
+                                    length: 2
+                                children: []
+                                pos: 6405
+                                length: 13
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6422
+                                length: 4
+                            children: []
+                            pos: 6405
+                            length: 21
+                        children: []
+                        pos: 6404
+                        length: 23
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: ix = ((hashSize + (hashSize >> 1) ) << 1) + _spillCount;
+                        children: []
+                        pos: 6481
+                        length: 56
+                      - type: expression_statement
+                        fields:
+                          text: _spillCount += 2;
+                        children: []
+                        pos: 6554
+                        length: 17
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: ix
+                                    children: []
+                                    pos: 6592
+                                    length: 2
+                                  right:
+                                    type: field_access
+                                    fields:
+                                      text: _hashArea.length
+                                    children: []
+                                    pos: 6598
+                                    length: 16
+                                children: []
+                                pos: 6592
+                                length: 22
+                            children: []
+                            pos: 6591
+                            length: 24
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: _hashArea = Arrays.copyOf(_hashArea, _hashArea.length
+                                + 4);
+                            children: []
+                            pos: 6638
+                            length: 59
+                          pos: 6616
+                          length: 412
+                        pos: 6588
+                        length: 440
+                      pos: 6428
+                      length: 614
+                    pos: 6401
+                    length: 641
+                  pos: 6313
+                  length: 739
+                pos: 6286
+                length: 766
+              - type: expression_statement
+                fields:
+                  text: _hashArea[ix] = key;
+                children: []
+                pos: 7061
+                length: 20
+              - type: expression_statement
+                fields:
+                  text: _hashArea[ix+1] = newProp;
+                children: []
+                pos: 7090
+                length: 26
+              - type: local_variable_declaration
+                fields:
+                  text: int last = _propsInOrder.length;
+                children: []
+                pos: 7126
+                length: 32
+              - type: expression_statement
+                fields:
+                  text: _propsInOrder = Arrays.copyOf(_propsInOrder, last+1);
+                children: []
+                pos: 7167
+                length: 53
+              - type: expression_statement
+                fields:
+                  text: _propsInOrder[last] = newProp;
+                children: []
+                pos: 7229
+                length: 30
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 7342
+                length: 12
+              pos: 5635
+              length: 1725
+          children: []
+          pos: 5565
+          length: 1795
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: assignIndexes
+              children: []
+              pos: 7389
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7366
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = 0;
+                children: []
+                pos: 7462
+                length: 14
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if (prop != null) {
+                                    prop.assignIndex(index++);
+                                }
+                            }
+                children: []
+                pos: 7485
+                length: 234
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 7728
+                length: 12
+              pos: 7409
+              length: 337
+          children: []
+          pos: 7366
+          length: 380
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: renameAll
+              children: []
+              pos: 7885
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NameTransformer transformer
+                children: []
+                pos: 7895
+                length: 27
+              pos: 7862
+              length: 884
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: transformer
+                                children: []
+                                pos: 7942
+                                length: 11
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7957
+                                length: 4
+                            children: []
+                            pos: 7942
+                            length: 19
+                          right:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: transformer
+                                    children: []
+                                    pos: 7966
+                                    length: 11
+                                  right:
+                                    type: field_access
+                                    fields:
+                                      text: NameTransformer.NOP
+                                    children: []
+                                    pos: 7981
+                                    length: 19
+                                children: []
+                                pos: 7966
+                                length: 34
+                            children: []
+                            pos: 7965
+                            length: 36
+                        children: []
+                        pos: 7942
+                        length: 59
+                    children: []
+                    pos: 7941
+                    length: 61
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 8017
+                    length: 12
+                  pos: 8003
+                  length: 36
+                pos: 7938
+                length: 101
+              - type: local_variable_declaration
+                fields:
+                  text: final int len = _propsInOrder.length;
+                children: []
+                pos: 8100
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> newProps = new ArrayList<SettableBeanProperty>(len);
+                children: []
+                pos: 8146
+                length: 84
+              - type: for_statement
+                fields:
+                  text: "for (int i = 0; i < len; ++i) {\n            SettableBeanProperty
+                    prop = _propsInOrder[i];\n            \n            // What to
+                    do with holes? For now, retain\n            if (prop == null)
+                    {\n                newProps.add(prop);\n                continue;\n
+                    \           }\n            newProps.add(_rename(prop, transformer));\n
+                    \       }"
+                children: []
+                pos: 8240
+                length: 328
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(_caseInsensitive, newProps);
+                children: []
+                pos: 8685
+                length: 55
+              pos: 7928
+              length: 818
+          children: []
+          pos: 7862
+          length: 884
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withoutProperties
+              children: []
+              pos: 9003
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Collection<String> toExclude
+                children: []
+                pos: 9021
+                length: 28
+              pos: 8980
+              length: 922
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: toExclude.isEmpty()
+                        children: []
+                        pos: 9069
+                        length: 19
+                    children: []
+                    pos: 9068
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 9104
+                    length: 12
+                  pos: 9090
+                  length: 36
+                pos: 9065
+                length: 61
+              - type: local_variable_declaration
+                fields:
+                  text: final int len = _propsInOrder.length;
+                children: []
+                pos: 9135
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> newProps = new ArrayList<SettableBeanProperty>(len);
+                children: []
+                pos: 9181
+                length: 84
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < len; ++i) {
+                                SettableBeanProperty prop = _propsInOrder[i];
+                                // 01-May-2015, tatu: Not 100% sure if existing `null`s should be retained;
+                                //   or, if entries to ignore should be retained as nulls. For now just
+                                //   prune them out
+                                if (prop != null) { // may contain holes, too, check.
+                                    if (!toExclude.contains(prop.getName())) {
+                                        newProps.add(prop);
+                                    }
+                                }
+                            }
+                children: []
+                pos: 9275
+                length: 500
+              - type: return_statement
+                fields:
+                  text: return new BeanPropertyMap(_caseInsensitive, newProps);
+                children: []
+                pos: 9841
+                length: 55
+              pos: 9055
+              length: 847
+          children: []
+          pos: 8980
+          length: 922
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: replace
+              children: []
+              pos: 10110
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty newProp
+                children: []
+                pos: 10118
+                length: 28
+              pos: 10098
+              length: 521
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String key = getPropertyName(newProp);
+                children: []
+                pos: 10162
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = _findIndexInHash(key);
+                children: []
+                pos: 10209
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: ix
+                            children: []
+                            pos: 10262
+                            length: 2
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 10268
+                            length: 1
+                        children: []
+                        pos: 10262
+                        length: 7
+                    children: []
+                    pos: 10261
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: SettableBeanProperty prop = (SettableBeanProperty) _hashArea[ix];
+                    children: []
+                    pos: 10285
+                    length: 65
+                  - type: expression_statement
+                    fields:
+                      text: _hashArea[ix] = newProp;
+                    children: []
+                    pos: 10363
+                    length: 24
+                  - type: expression_statement
+                    fields:
+                      text: _propsInOrder[_findFromOrdered(prop)] = newProp;
+                    children: []
+                    pos: 10441
+                    length: 48
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 10502
+                    length: 7
+                  pos: 10271
+                  length: 248
+                pos: 10258
+                length: 261
+              - type: throw_statement
+                fields:
+                  text: throw new NoSuchElementException("No entry '"+key+"' found,
+                    can't replace");
+                children: []
+                pos: 10537
+                length: 76
+              pos: 10152
+              length: 467
+          children: []
+          pos: 10098
+          length: 521
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: properties
+              children: []
+              pos: 10660
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10625
+              length: 390
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> p = new ArrayList<SettableBeanProperty>(_size);
+                children: []
+                pos: 10683
+                length: 79
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if (prop != null) {
+                                    p.add(prop);
+                                }
+                            }
+                children: []
+                pos: 10771
+                length: 220
+              - type: return_statement
+                fields:
+                  text: return p;
+                children: []
+                pos: 11000
+                length: 9
+              pos: 10673
+              length: 342
+          children: []
+          pos: 10625
+          length: 390
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: iterator
+              children: []
+              pos: 11151
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11099
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties().iterator();
+                children: []
+                pos: 11172
+                length: 31
+              pos: 11162
+              length: 47
+          children: []
+          pos: 11099
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertiesInInsertionOrder
+              children: []
+              pos: 11510
+              length: 29
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11480
+              length: 99
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return _propsInOrder;
+                children: []
+                pos: 11552
+                length: 21
+              pos: 11542
+              length: 37
+          children: []
+          pos: 11480
+          length: 99
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertyName
+              children: []
+              pos: 11797
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty prop
+                children: []
+                pos: 11813
+                length: 25
+              pos: 11774
+              length: 154
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return _caseInsensitive ? prop.getName().toLowerCase() :
+                    prop.getName();'
+                children: []
+                pos: 11850
+                length: 72
+              pos: 11840
+              length: 88
+          children: []
+          pos: 11774
+          length: 154
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: find
+              children: []
+              pos: 11996
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 12001
+                length: 9
+              pos: 11968
+              length: 452
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if ((prop != null) && (index == prop.getPropertyIndex())) {
+                                    return prop;
+                                }
+                            }
+                children: []
+                pos: 12133
+                length: 260
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 12402
+                length: 12
+              pos: 12016
+              length: 404
+          children: []
+          pos: 11968
+          length: 452
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: find
+              children: []
+              pos: 12454
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 12459
+                length: 10
+              pos: 12426
+              length: 663
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: key
+                            children: []
+                            pos: 12489
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12496
+                            length: 4
+                        children: []
+                        pos: 12489
+                        length: 11
+                    children: []
+                    pos: 12488
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("Can not pass null
+                        property name");
+                    children: []
+                    pos: 12516
+                    length: 70
+                  pos: 12502
+                  length: 94
+                pos: 12485
+                length: 111
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: _caseInsensitive
+                        children: []
+                        pos: 12609
+                        length: 16
+                    children: []
+                    pos: 12608
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: key = key.toLowerCase();
+                    children: []
+                    pos: 12641
+                    length: 24
+                  pos: 12627
+                  length: 48
+                pos: 12605
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: int slot = key.hashCode() & _hashMask;
+                children: []
+                pos: 12733
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = (slot<<1);
+                children: []
+                pos: 12865
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: Object match = _hashArea[ix];
+                children: []
+                pos: 12893
+                length: 29
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: match
+                                    children: []
+                                    pos: 12936
+                                    length: 5
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: key
+                                    children: []
+                                    pos: 12945
+                                    length: 3
+                                children: []
+                                pos: 12936
+                                length: 12
+                            children: []
+                            pos: 12935
+                            length: 14
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: key.equals(match)
+                            children: []
+                            pos: 12953
+                            length: 17
+                        children: []
+                        pos: 12935
+                        length: 35
+                    children: []
+                    pos: 12934
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (SettableBeanProperty) _hashArea[ix+1];
+                    children: []
+                    pos: 12986
+                    length: 46
+                  pos: 12972
+                  length: 70
+                pos: 12931
+                length: 111
+              - type: return_statement
+                fields:
+                  text: return _find2(key, slot, match);
+                children: []
+                pos: 13051
+                length: 32
+              pos: 12475
+              length: 614
+          children: []
+          pos: 12426
+          length: 663
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _find2
+              children: []
+              pos: 13130
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 13137
+                length: 10
+              pos: 13095
+              length: 786
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: match
+                            children: []
+                            pos: 13191
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13200
+                            length: 4
+                        children: []
+                        pos: 13191
+                        length: 13
+                    children: []
+                    pos: 13190
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 13220
+                    length: 12
+                  pos: 13206
+                  length: 36
+                pos: 13187
+                length: 55
+              - type: local_variable_declaration
+                fields:
+                  text: int hashSize = _hashMask+1;
+                children: []
+                pos: 13277
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = hashSize + (slot>>1) << 1;
+                children: []
+                pos: 13313
+                length: 35
+              - type: expression_statement
+                fields:
+                  text: match = _hashArea[ix];
+                children: []
+                pos: 13357
+                length: 22
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: key.equals(match)
+                        children: []
+                        pos: 13392
+                        length: 17
+                    children: []
+                    pos: 13391
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (SettableBeanProperty) _hashArea[ix+1];
+                    children: []
+                    pos: 13425
+                    length: 46
+                  pos: 13411
+                  length: 70
+                pos: 13388
+                length: 93
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: match
+                            children: []
+                            pos: 13494
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13503
+                            length: 4
+                        children: []
+                        pos: 13494
+                        length: 13
+                    children: []
+                    pos: 13493
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: int i = (hashSize + (hashSize>>1)) << 1;
+                    children: []
+                    pos: 13546
+                    length: 40
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (int end = i + _spillCount; i < end; i += 2) {
+                                        match = _hashArea[i];
+                                        if ((match == key) || key.equals(match)) {
+                                            return (SettableBeanProperty) _hashArea[i+1];
+                                        }
+                                    }
+                    children: []
+                    pos: 13599
+                    length: 245
+                  pos: 13509
+                  length: 345
+                pos: 13490
+                length: 364
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 13863
+                length: 12
+              pos: 13177
+              length: 704
+          children: []
+          pos: 13095
+          length: 786
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: size
+              children: []
+              pos: 14064
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14053
+              length: 35
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return _size;
+                children: []
+                pos: 14073
+                length: 13
+              pos: 14071
+              length: 17
+          children: []
+          pos: 14053
+          length: 35
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: remove
+              children: []
+              pos: 14252
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty propToRm
+                children: []
+                pos: 14259
+                length: 29
+              pos: 14240
+              length: 1096
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<SettableBeanProperty> props = new ArrayList<SettableBeanProperty>(_size);
+                children: []
+                pos: 14304
+                length: 83
+              - type: local_variable_declaration
+                fields:
+                  text: String key = getPropertyName(propToRm);
+                children: []
+                pos: 14396
+                length: 39
+              - type: local_variable_declaration
+                fields:
+                  text: boolean found = false;
+                children: []
+                pos: 14444
+                length: 22
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1, end = _hashArea.length; i < end; i += 2) {
+                                SettableBeanProperty prop = (SettableBeanProperty) _hashArea[i];
+                                if (prop == null) {
+                                    continue;
+                                }
+                                if (!found) {
+                                    // 09-Jan-2017, tatu: Important: must check name slot and NOT property name,
+                                    //   as only former is lower-case in case-insensitive case
+                                    found = key.equals(prop.getName());
+                                    if (found) {
+                                        // need to leave a hole here
+                                        _propsInOrder[_findFromOrdered(prop)] = null;
+                                        continue;
+                                    }
+                                }
+                                props.add(prop);
+                            }
+                children: []
+                pos: 14476
+                length: 698
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!found"
+                        children: []
+                        pos: 15187
+                        length: 6
+                    children: []
+                    pos: 15186
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new NoSuchElementException("No entry '"+propToRm.getName()+"'
+                        found, can't remove");
+                    children: []
+                    pos: 15209
+                    length: 90
+                  pos: 15195
+                  length: 114
+                pos: 15183
+                length: 126
+              - type: expression_statement
+                fields:
+                  text: init(props);
+                children: []
+                pos: 15318
+                length: 12
+              pos: 14294
+              length: 1042
+          children: []
+          pos: 14240
+          length: 1096
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findDeserializeAndSet
+              children: []
+              pos: 15761
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser p
+                children: []
+                pos: 15783
+                length: 12
+              pos: 15746
+              length: 438
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final SettableBeanProperty prop = find(key);
+                children: []
+                pos: 15896
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: prop
+                            children: []
+                            pos: 15953
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 15961
+                            length: 4
+                        children: []
+                        pos: 15953
+                        length: 12
+                    children: []
+                    pos: 15952
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 15981
+                    length: 13
+                  pos: 15967
+                  length: 37
+                pos: 15949
+                length: 55
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: prop.deserializeAndSet(p, ctxt, bean);
+                      children: []
+                      pos: 16031
+                      length: 38
+                    pos: 16017
+                    length: 62
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Exception e) {
+                                      wrapAndThrow(e, bean, key, ctxt);
+                                  }
+                      children: []
+                      pos: 16080
+                      length: 77
+                    pos: 16013
+                    length: 144
+                children: []
+                pos: 16013
+                length: 144
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 16166
+                length: 12
+              pos: 15886
+              length: 298
+          children: []
+          pos: 15746
+          length: 438
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 16218
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16190
+              length: 571
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuilder sb = new StringBuilder();
+                children: []
+                pos: 16243
+                length: 39
+              - type: expression_statement
+                fields:
+                  text: sb.append("Properties=[");
+                children: []
+                pos: 16291
+                length: 26
+              - type: local_variable_declaration
+                fields:
+                  text: int count = 0;
+                children: []
+                pos: 16326
+                length: 14
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<SettableBeanProperty> it = iterator();
+                children: []
+                pos: 16350
+                length: 47
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (it.hasNext()) {
+                                SettableBeanProperty prop = it.next();
+                                if (count++ > 0) {
+                                    sb.append(", ");
+                                }
+                                sb.append(prop.getName());
+                                sb.append('(');
+                                sb.append(prop.getType());
+                                sb.append(')');
+                            }
+                children: []
+                pos: 16406
+                length: 295
+              - type: expression_statement
+                fields:
+                  text: sb.append(']');
+                children: []
+                pos: 16710
+                length: 15
+              - type: return_statement
+                fields:
+                  text: return sb.toString();
+                children: []
+                pos: 16734
+                length: 21
+              pos: 16233
+              length: 528
+          children: []
+          pos: 16190
+          length: 571
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _rename
+              children: []
+              pos: 16968
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty prop
+                children: []
+                pos: 16976
+                length: 25
+              pos: 16937
+              length: 665
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: prop
+                            children: []
+                            pos: 17041
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 17049
+                            length: 4
+                        children: []
+                        pos: 17041
+                        length: 12
+                    children: []
+                    pos: 17040
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return prop;
+                    children: []
+                    pos: 17069
+                    length: 12
+                  pos: 17055
+                  length: 36
+                pos: 17037
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: String newName = xf.transform(prop.getName());
+                children: []
+                pos: 17100
+                length: 46
+              - type: expression_statement
+                fields:
+                  text: prop = prop.withSimpleName(newName);
+                children: []
+                pos: 17155
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: JsonDeserializer<?> deser = prop.getValueDeserializer();
+                children: []
+                pos: 17200
+                length: 56
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: deser
+                            children: []
+                            pos: 17269
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 17278
+                            length: 4
+                        children: []
+                        pos: 17269
+                        length: 13
+                    children: []
+                    pos: 17268
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: |-
+                        @SuppressWarnings("unchecked")
+                                    JsonDeserializer<Object> newDeser = (JsonDeserializer<Object>)
+                                        deser.unwrappingDeserializer(xf);
+                    children: []
+                    pos: 17298
+                    length: 155
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: newDeser
+                                children: []
+                                pos: 17470
+                                length: 8
+                              right:
+                                type: identifier
+                                fields:
+                                  text: deser
+                                children: []
+                                pos: 17482
+                                length: 5
+                            children: []
+                            pos: 17470
+                            length: 17
+                        children: []
+                        pos: 17469
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: prop = prop.withValueDeserializer(newDeser);
+                        children: []
+                        pos: 17507
+                        length: 44
+                      pos: 17489
+                      length: 76
+                    pos: 17466
+                    length: 99
+                  pos: 17284
+                  length: 291
+                pos: 17265
+                length: 310
+              - type: return_statement
+                fields:
+                  text: return prop;
+                children: []
+                pos: 17584
+                length: 12
+              pos: 17027
+              length: 575
+          children: []
+          pos: 16937
+          length: 665
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: wrapAndThrow
+              children: []
+              pos: 17623
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Throwable t
+                children: []
+                pos: 17636
+                length: 11
+              pos: 17608
+              length: 1087
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (t instanceof InvocationTargetException && t.getCause() != null) {
+                                t = t.getCause();
+                            }
+                children: []
+                pos: 17794
+                length: 112
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: t instanceof Error
+                        children: []
+                        pos: 17956
+                        length: 18
+                    children: []
+                    pos: 17955
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw (Error) t;
+                    children: []
+                    pos: 17990
+                    length: 16
+                  pos: 17976
+                  length: 40
+                pos: 17952
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: boolean wrap = (ctxt == null) || ctxt.isEnabled(DeserializationFeature.WRAP_EXCEPTIONS);
+                children: []
+                pos: 18095
+                length: 88
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: t instanceof IOException
+                        children: []
+                        pos: 18274
+                        length: 24
+                    children: []
+                    pos: 18273
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: unary_expression
+                                fields:
+                                  text: "!wrap"
+                                children: []
+                                pos: 18318
+                                length: 5
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!(t instanceof JsonProcessingException)"
+                                children: []
+                                pos: 18327
+                                length: 39
+                            children: []
+                            pos: 18318
+                            length: 48
+                        children: []
+                        pos: 18317
+                        length: 50
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: throw (IOException) t;
+                        children: []
+                        pos: 18386
+                        length: 22
+                      pos: 18368
+                      length: 54
+                    pos: 18314
+                    length: 108
+                  pos: 18300
+                  length: 132
+                pos: 18270
+                length: 350
+              - type: throw_statement
+                fields:
+                  text: throw JsonMappingException.wrapWithPath(t, bean, fieldName);
+                children: []
+                pos: 18629
+                length: 60
+              pos: 17740
+              length: 955
+          children: []
+          pos: 17608
+          length: 1087
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _findIndexInHash
+              children: []
+              pos: 18997
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 19014
+                length: 10
+              pos: 18979
+              length: 669
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int slot = _hashCode(key);
+                children: []
+                pos: 19040
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = (slot<<1);
+                children: []
+                pos: 19081
+                length: 19
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: key.equals(_hashArea[ix])
+                        children: []
+                        pos: 19148
+                        length: 25
+                    children: []
+                    pos: 19147
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return ix+1;
+                    children: []
+                    pos: 19189
+                    length: 12
+                  pos: 19175
+                  length: 36
+                pos: 19144
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: int hashSize = _hashMask+1;
+                children: []
+                pos: 19246
+                length: 27
+              - type: expression_statement
+                fields:
+                  text: ix = hashSize + (slot>>1) << 1;
+                children: []
+                pos: 19282
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: key.equals(_hashArea[ix])
+                        children: []
+                        pos: 19326
+                        length: 25
+                    children: []
+                    pos: 19325
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return ix+1;
+                    children: []
+                    pos: 19367
+                    length: 12
+                  pos: 19353
+                  length: 36
+                pos: 19322
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: int i = (hashSize + (hashSize>>1)) << 1;
+                children: []
+                pos: 19428
+                length: 40
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int end = i + _spillCount; i < end; i += 2) {
+                                if (key.equals(_hashArea[i])) {
+                                    return i+1;
+                                }
+                            }
+                children: []
+                pos: 19477
+                length: 146
+              - type: return_statement
+                fields:
+                  text: return -1;
+                children: []
+                pos: 19632
+                length: 10
+              pos: 19030
+              length: 618
+          children: []
+          pos: 18979
+          length: 669
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _findFromOrdered
+              children: []
+              pos: 19676
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SettableBeanProperty prop
+                children: []
+                pos: 19693
+                length: 25
+              pos: 19658
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, end = _propsInOrder.length; i < end; ++i) {
+                                if (_propsInOrder[i] == prop) {
+                                    return i;
+                                }
+                            }
+                children: []
+                pos: 19730
+                length: 153
+              - type: throw_statement
+                fields:
+                  text: 'throw new IllegalStateException("Illegal state: property
+                    ''"+prop.getName()+"'' missing from _propsInOrder");'
+                children: []
+                pos: 19892
+                length: 107
+              pos: 19720
+              length: 285
+          children: []
+          pos: 19658
+          length: 347
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _hashCode
+              children: []
+              pos: 20105
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String key
+                children: []
+                pos: 20115
+                length: 10
+              pos: 20087
+              length: 383
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return key.hashCode() & _hashMask;
+                children: []
+                pos: 20430
+                length: 34
+              pos: 20127
+              length: 343
+          children: []
+          pos: 20087
+          length: 383
+        pos: 1190
+        length: 19282
+    children: []
+    pos: 1190
+    length: 19282
+  pos: 0
+  length: 20473
 text_diff: |
   --- before
   +++ after

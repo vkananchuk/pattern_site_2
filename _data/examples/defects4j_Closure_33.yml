@@ -1,5 +1,5534 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: PrototypeObjectType
+        children: []
+        pos: 2757
+        length: 19
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 2800
+          length: 48
+        - type: field_declaration
+          fields:
+            text: private final String className;
+          children: []
+          pos: 2852
+          length: 31
+        - type: field_declaration
+          fields:
+            text: private final Map<String, Property> properties;
+          children: []
+          pos: 2886
+          length: 47
+        - type: field_declaration
+          fields:
+            text: private final boolean nativeType;
+          children: []
+          pos: 2936
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private ObjectType implicitPrototypeFallback;
+          children: []
+          pos: 3186
+          length: 45
+        - type: field_declaration
+          fields:
+            text: private FunctionType ownerFunction = null;
+          children: []
+          pos: 3454
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private boolean prettyPrint = false;
+          children: []
+          pos: 3608
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private static final int MAX_PRETTY_PRINTED_PROPERTIES = 4;
+          children: []
+          pos: 3648
+          length: 59
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrototypeObjectType(JSTypeRegistry registry, String className,
+                    ObjectType implicitPrototype) {
+                  this(registry, className, implicitPrototype, false);
+                }
+          children: []
+          pos: 4132
+          length: 161
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrototypeObjectType(JSTypeRegistry registry, String className,
+                    ObjectType implicitPrototype, boolean nativeType) {
+                  super(registry);
+                  this.properties = Maps.newTreeMap();
+                  this.className = className;
+                  this.nativeType = nativeType;
+                  if (nativeType || implicitPrototype != null) {
+                    setImplicitPrototype(implicitPrototype);
+                  } else {
+                    setImplicitPrototype(
+                        registry.getNativeObjectType(JSTypeNative.OBJECT_TYPE));
+                  }
+                }
+          children: []
+          pos: 4422
+          length: 464
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSlot
+              children: []
+              pos: 4918
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 4926
+                length: 11
+              pos: 4890
+              length: 543
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: properties.containsKey(name)
+                        children: []
+                        pos: 4949
+                        length: 28
+                    children: []
+                    pos: 4948
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return properties.get(name);
+                    children: []
+                    pos: 4987
+                    length: 28
+                  pos: 4979
+                  length: 42
+                pos: 4945
+                length: 76
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 5026
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 5089
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5110
+                            length: 4
+                        children: []
+                        pos: 5089
+                        length: 25
+                    children: []
+                    pos: 5088
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Property prop = implicitPrototype.getSlot(name);
+                    children: []
+                    pos: 5124
+                    length: 48
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: prop
+                                children: []
+                                pos: 5183
+                                length: 4
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 5191
+                                length: 4
+                            children: []
+                            pos: 5183
+                            length: 12
+                        children: []
+                        pos: 5182
+                        length: 14
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return prop;
+                        children: []
+                        pos: 5207
+                        length: 12
+                      pos: 5197
+                      length: 30
+                    pos: 5179
+                    length: 48
+                  pos: 5116
+                  length: 117
+                pos: 5085
+                length: 148
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (ObjectType interfaceType : getCtorExtendedInterfaces()) {
+                          Property prop = interfaceType.getSlot(name);
+                          if (prop != null) {
+                            return prop;
+                          }
+                        }
+                children: []
+                pos: 5238
+                length: 174
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 5417
+                length: 12
+              pos: 4939
+              length: 494
+          children: []
+          pos: 4890
+          length: 543
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertiesCount
+              children: []
+              pos: 5523
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5500
+              length: 416
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 5550
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 5613
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5634
+                            length: 4
+                        children: []
+                        pos: 5613
+                        length: 25
+                    children: []
+                    pos: 5612
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this.properties.size();
+                    children: []
+                    pos: 5648
+                    length: 30
+                  pos: 5640
+                  length: 44
+                pos: 5609
+                length: 75
+              - type: local_variable_declaration
+                fields:
+                  text: int localCount = 0;
+                children: []
+                pos: 5689
+                length: 19
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (String property : properties.keySet()) {
+                          if (!implicitPrototype.hasProperty(property)) {
+                            localCount++;
+                          }
+                        }
+                children: []
+                pos: 5713
+                length: 135
+              - type: return_statement
+                fields:
+                  text: return implicitPrototype.getPropertiesCount() + localCount;
+                children: []
+                pos: 5853
+                length: 59
+              pos: 5544
+              length: 372
+          children: []
+          pos: 5500
+          length: 416
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasProperty
+              children: []
+              pos: 5947
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 5959
+                length: 19
+              pos: 5920
+              length: 168
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return isUnknownType() || getSlot(propertyName) != null;
+                children: []
+                pos: 6028
+                length: 56
+              pos: 5980
+              length: 108
+          children: []
+          pos: 5920
+          length: 168
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasOwnProperty
+              children: []
+              pos: 6119
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 6134
+                length: 19
+              pos: 6092
+              length: 117
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties.get(propertyName) != null;
+                children: []
+                pos: 6161
+                length: 44
+              pos: 6155
+              length: 54
+          children: []
+          pos: 6092
+          length: 117
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOwnPropertyNames
+              children: []
+              pos: 6244
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6213
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties.keySet();
+                children: []
+                pos: 6272
+                length: 27
+              pos: 6266
+              length: 37
+          children: []
+          pos: 6213
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPropertyTypeDeclared
+              children: []
+              pos: 6334
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String property
+                children: []
+                pos: 6357
+                length: 15
+              pos: 6307
+              length: 206
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StaticSlot<JSType> slot = getSlot(property);
+                children: []
+                pos: 6380
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: slot
+                            children: []
+                            pos: 6433
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6441
+                            length: 4
+                        children: []
+                        pos: 6433
+                        length: 12
+                    children: []
+                    pos: 6432
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 6455
+                    length: 13
+                  pos: 6447
+                  length: 27
+                pos: 6429
+                length: 45
+              - type: return_statement
+                fields:
+                  text: return !slot.isTypeInferred();
+                children: []
+                pos: 6479
+                length: 30
+              pos: 6374
+              length: 139
+          children: []
+          pos: 6307
+          length: 206
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: collectPropertyNames
+              children: []
+              pos: 6534
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Set<String> props
+                children: []
+                pos: 6555
+                length: 17
+              pos: 6517
+              length: 292
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (String prop : properties.keySet()) {
+                          props.add(prop);
+                        }
+                children: []
+                pos: 6580
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 6655
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 6718
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6739
+                            length: 4
+                        children: []
+                        pos: 6718
+                        length: 25
+                    children: []
+                    pos: 6717
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: implicitPrototype.collectPropertyNames(props);
+                    children: []
+                    pos: 6753
+                    length: 46
+                  pos: 6745
+                  length: 60
+                pos: 6714
+                length: 91
+              pos: 6574
+              length: 235
+          children: []
+          pos: 6517
+          length: 292
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPropertyTypeInferred
+              children: []
+              pos: 6840
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String property
+                children: []
+                pos: 6863
+                length: 15
+              pos: 6813
+              length: 205
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StaticSlot<JSType> slot = getSlot(property);
+                children: []
+                pos: 6886
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: slot
+                            children: []
+                            pos: 6939
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6947
+                            length: 4
+                        children: []
+                        pos: 6939
+                        length: 12
+                    children: []
+                    pos: 6938
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 6961
+                    length: 13
+                  pos: 6953
+                  length: 27
+                pos: 6935
+                length: 45
+              - type: return_statement
+                fields:
+                  text: return slot.isTypeInferred();
+                children: []
+                pos: 6985
+                length: 29
+              pos: 6880
+              length: 138
+          children: []
+          pos: 6813
+          length: 205
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertyType
+              children: []
+              pos: 7048
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String property
+                children: []
+                pos: 7064
+                length: 15
+              pos: 7022
+              length: 225
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StaticSlot<JSType> slot = getSlot(property);
+                children: []
+                pos: 7087
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: slot
+                            children: []
+                            pos: 7140
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7148
+                            length: 4
+                        children: []
+                        pos: 7140
+                        length: 12
+                    children: []
+                    pos: 7139
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getNativeType(JSTypeNative.UNKNOWN_TYPE);
+                    children: []
+                    pos: 7162
+                    length: 48
+                  pos: 7154
+                  length: 62
+                pos: 7136
+                length: 80
+              - type: return_statement
+                fields:
+                  text: return slot.getType();
+                children: []
+                pos: 7221
+                length: 22
+              pos: 7081
+              length: 166
+          children: []
+          pos: 7022
+          length: 225
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPropertyInExterns
+              children: []
+              pos: 7278
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 7298
+                length: 19
+              pos: 7251
+              length: 365
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Property p = properties.get(propertyName);
+                children: []
+                pos: 7325
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: p
+                            children: []
+                            pos: 7376
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7381
+                            length: 4
+                        children: []
+                        pos: 7376
+                        length: 9
+                    children: []
+                    pos: 7375
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return p.isFromExterns();
+                    children: []
+                    pos: 7395
+                    length: 25
+                  pos: 7387
+                  length: 39
+                pos: 7372
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 7431
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 7494
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7515
+                            length: 4
+                        children: []
+                        pos: 7494
+                        length: 25
+                    children: []
+                    pos: 7493
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return implicitPrototype.isPropertyInExterns(propertyName);
+                    children: []
+                    pos: 7529
+                    length: 59
+                  pos: 7521
+                  length: 73
+                pos: 7490
+                length: 104
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7599
+                length: 13
+              pos: 7319
+              length: 297
+          children: []
+          pos: 7251
+          length: 365
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: defineProperty
+              children: []
+              pos: 7640
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 7655
+                length: 11
+              pos: 7620
+              length: 540
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: hasOwnDeclaredProperty(name)
+                        children: []
+                        pos: 7734
+                        length: 28
+                    children: []
+                    pos: 7733
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 7772
+                    length: 13
+                  pos: 7764
+                  length: 27
+                pos: 7730
+                length: 61
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    Property newProp = new Property(
+                            name, type, inferred, propertyNode);
+                children: []
+                pos: 7796
+                length: 77
+              - type: local_variable_declaration
+                fields:
+                  text: Property oldProp = properties.get(name);
+                children: []
+                pos: 7878
+                length: 40
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: oldProp
+                            children: []
+                            pos: 7927
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7938
+                            length: 4
+                        children: []
+                        pos: 7927
+                        length: 15
+                    children: []
+                    pos: 7926
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: newProp.setJSDocInfo(oldProp.getJSDocInfo());
+                    children: []
+                    pos: 8053
+                    length: 45
+                  pos: 7944
+                  length: 160
+                pos: 7923
+                length: 181
+              - type: expression_statement
+                fields:
+                  text: properties.put(name, newProp);
+                children: []
+                pos: 8109
+                length: 30
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 8144
+                length: 12
+              pos: 7724
+              length: 436
+          children: []
+          pos: 7620
+          length: 540
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeProperty
+              children: []
+              pos: 8191
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 8206
+                length: 11
+              pos: 8164
+              length: 104
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties.remove(name) != null;
+                children: []
+                pos: 8225
+                length: 39
+              pos: 8219
+              length: 49
+          children: []
+          pos: 8164
+          length: 104
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertyNode
+              children: []
+              pos: 8296
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 8312
+                length: 19
+              pos: 8272
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Property p = properties.get(propertyName);
+                children: []
+                pos: 8339
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: p
+                            children: []
+                            pos: 8390
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8395
+                            length: 4
+                        children: []
+                        pos: 8390
+                        length: 9
+                    children: []
+                    pos: 8389
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return p.getNode();
+                    children: []
+                    pos: 8409
+                    length: 19
+                  pos: 8401
+                  length: 33
+                pos: 8386
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 8439
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 8502
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8523
+                            length: 4
+                        children: []
+                        pos: 8502
+                        length: 25
+                    children: []
+                    pos: 8501
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return implicitPrototype.getPropertyNode(propertyName);
+                    children: []
+                    pos: 8537
+                    length: 55
+                  pos: 8529
+                  length: 69
+                pos: 8498
+                length: 100
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 8603
+                length: 12
+              pos: 8333
+              length: 286
+          children: []
+          pos: 8272
+          length: 347
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOwnPropertyJSDocInfo
+              children: []
+              pos: 8652
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 8676
+                length: 19
+              pos: 8623
+              length: 201
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Property p = properties.get(propertyName);
+                children: []
+                pos: 8703
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: p
+                            children: []
+                            pos: 8754
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8759
+                            length: 4
+                        children: []
+                        pos: 8754
+                        length: 9
+                    children: []
+                    pos: 8753
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return p.getJSDocInfo();
+                    children: []
+                    pos: 8773
+                    length: 24
+                  pos: 8765
+                  length: 38
+                pos: 8750
+                length: 53
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 8808
+                length: 12
+              pos: 8697
+              length: 127
+          children: []
+          pos: 8623
+          length: 201
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPropertyJSDocInfo
+              children: []
+              pos: 8852
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 8873
+                length: 19
+              pos: 8828
+              length: 718
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: info
+                            children: []
+                            pos: 8920
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8928
+                            length: 4
+                        children: []
+                        pos: 8920
+                        length: 12
+                    children: []
+                    pos: 8919
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!properties.containsKey(propertyName)"
+                            children: []
+                            pos: 8946
+                            length: 37
+                        children: []
+                        pos: 8945
+                        length: 39
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: |-
+                            defineInferredProperty(propertyName, getPropertyType(propertyName),
+                                        null);
+                        children: []
+                        pos: 9171
+                        length: 86
+                      pos: 8985
+                      length: 280
+                    pos: 8942
+                    length: 323
+                  - type: local_variable_declaration
+                    fields:
+                      text: Property property = properties.get(propertyName);
+                    children: []
+                    pos: 9412
+                    length: 49
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: property
+                                children: []
+                                pos: 9472
+                                length: 8
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 9484
+                                length: 4
+                            children: []
+                            pos: 9472
+                            length: 16
+                        children: []
+                        pos: 9471
+                        length: 18
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: property.setJSDocInfo(info);
+                        children: []
+                        pos: 9500
+                        length: 28
+                      pos: 9490
+                      length: 46
+                    pos: 9468
+                    length: 68
+                  pos: 8934
+                  length: 608
+                pos: 8916
+                length: 626
+              pos: 8910
+              length: 636
+          children: []
+          pos: 8828
+          length: 718
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesNumberContext
+              children: []
+              pos: 9577
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9550
+              length: 202
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isNumberObjectType() || isDateType() || isBooleanObjectType() ||
+                            isStringObjectType() || hasOverridenNativeProperty("valueOf");
+                children: []
+                pos: 9606
+                length: 142
+              pos: 9600
+              length: 152
+          children: []
+          pos: 9550
+          length: 202
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesStringContext
+              children: []
+              pos: 9783
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9756
+              length: 267
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isTheObjectType() || isStringObjectType() || isDateType() ||
+                            isRegexpType() || isArrayType() || isNumberObjectType() ||
+                            isBooleanObjectType() || hasOverridenNativeProperty("toString");
+                children: []
+                pos: 9812
+                length: 207
+              pos: 9806
+              length: 217
+          children: []
+          pos: 9756
+          length: 267
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasOverridenNativeProperty
+              children: []
+              pos: 10197
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 10224
+                length: 19
+              pos: 10181
+              length: 507
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: isNativeObjectType()
+                        children: []
+                        pos: 10255
+                        length: 20
+                    children: []
+                    pos: 10254
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 10285
+                    length: 13
+                  pos: 10277
+                  length: 27
+                pos: 10251
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: JSType propertyType = getPropertyType(propertyName);
+                children: []
+                pos: 10310
+                length: 52
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    ObjectType nativeType =
+                            this.isFunctionType() ?
+                            registry.getNativeObjectType(JSTypeNative.FUNCTION_PROTOTYPE) :
+                            registry.getNativeObjectType(JSTypeNative.OBJECT_PROTOTYPE);
+                children: []
+                pos: 10367
+                length: 196
+              - type: local_variable_declaration
+                fields:
+                  text: JSType nativePropertyType = nativeType.getPropertyType(propertyName);
+                children: []
+                pos: 10568
+                length: 69
+              - type: return_statement
+                fields:
+                  text: return propertyType != nativePropertyType;
+                children: []
+                pos: 10642
+                length: 42
+              pos: 10245
+              length: 443
+          children: []
+          pos: 10181
+          length: 507
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: unboxesTo
+              children: []
+              pos: 10718
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10692
+              length: 368
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: isStringObjectType()
+                        children: []
+                        pos: 10740
+                        length: 20
+                    children: []
+                    pos: 10739
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getNativeType(JSTypeNative.STRING_TYPE);
+                    children: []
+                    pos: 10770
+                    length: 47
+                  pos: 10762
+                  length: 61
+                pos: 10736
+                length: 320
+              pos: 10730
+              length: 330
+          children: []
+          pos: 10692
+          length: 368
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesObjectContext
+              children: []
+              pos: 11091
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11064
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 11120
+                length: 12
+              pos: 11114
+              length: 22
+          children: []
+          pos: 11064
+          length: 72
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canBeCalled
+              children: []
+              pos: 11167
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11140
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return isRegexpType();
+                children: []
+                pos: 11187
+                length: 22
+              pos: 11181
+              length: 32
+          children: []
+          pos: 11140
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toStringHelper
+              children: []
+              pos: 11236
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean forAnnotations
+                children: []
+                pos: 11251
+                length: 22
+              pos: 11217
+              length: 1245
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: hasReferenceName()
+                        children: []
+                        pos: 11285
+                        length: 18
+                    children: []
+                    pos: 11284
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getReferenceName();
+                    children: []
+                    pos: 11313
+                    length: 26
+                  pos: 11305
+                  length: 40
+                pos: 11281
+                length: 1177
+              pos: 11275
+              length: 1187
+          children: []
+          pos: 11217
+          length: 1245
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPrettyPrint
+              children: []
+              pos: 12471
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean prettyPrint
+                children: []
+                pos: 12486
+                length: 19
+              pos: 12466
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.prettyPrint = prettyPrint;
+                children: []
+                pos: 12513
+                length: 31
+              pos: 12507
+              length: 41
+          children: []
+          pos: 12466
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPrettyPrint
+              children: []
+              pos: 12560
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12552
+              length: 53
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return prettyPrint;
+                children: []
+                pos: 12582
+                length: 19
+              pos: 12576
+              length: 29
+          children: []
+          pos: 12552
+          length: 53
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConstructor
+              children: []
+              pos: 12641
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12609
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 12664
+                length: 12
+              pos: 12658
+              length: 22
+          children: []
+          pos: 12609
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getImplicitPrototype
+              children: []
+              pos: 12714
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12684
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return implicitPrototypeFallback;
+                children: []
+                pos: 12743
+                length: 33
+              pos: 12737
+              length: 43
+          children: []
+          pos: 12684
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setImplicitPrototype
+              children: []
+              pos: 13055
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectType implicitPrototype
+                children: []
+                pos: 13076
+                length: 28
+              pos: 13044
+              length: 159
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: checkState(!hasCachedValues());
+                children: []
+                pos: 13112
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: this.implicitPrototypeFallback = implicitPrototype;
+                children: []
+                pos: 13148
+                length: 51
+              pos: 13106
+              length: 97
+          children: []
+          pos: 13044
+          length: 159
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getReferenceName
+              children: []
+              pos: 13233
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13207
+              length: 243
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: className
+                            children: []
+                            pos: 13262
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13275
+                            length: 4
+                        children: []
+                        pos: 13262
+                        length: 17
+                    children: []
+                    pos: 13261
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return className;
+                    children: []
+                    pos: 13289
+                    length: 17
+                  pos: 13281
+                  length: 31
+                pos: 13258
+                length: 188
+              pos: 13252
+              length: 198
+          children: []
+          pos: 13207
+          length: 243
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasReferenceName
+              children: []
+              pos: 13481
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13454
+              length: 106
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return className != null || ownerFunction != null;
+                children: []
+                pos: 13506
+                length: 50
+              pos: 13500
+              length: 60
+          children: []
+          pos: 13454
+          length: 106
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSubtype
+              children: []
+              pos: 13591
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 13601
+                length: 11
+              pos: 13564
+              length: 1556
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: JSType.isSubtypeHelper(this, that)
+                        children: []
+                        pos: 13624
+                        length: 34
+                    children: []
+                    pos: 13623
+                    length: 36
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 13668
+                    length: 12
+                  pos: 13660
+                  length: 26
+                pos: 13620
+                length: 66
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: that.isUnionType()
+                        children: []
+                        pos: 13715
+                        length: 18
+                    children: []
+                    pos: 13714
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 13874
+                    length: 13
+                  pos: 13735
+                  length: 158
+                pos: 13711
+                length: 182
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: that.isRecordType()
+                        children: []
+                        pos: 13923
+                        length: 19
+                    children: []
+                    pos: 13922
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return RecordType.isSubtype(this, that.toMaybeRecordType());
+                    children: []
+                    pos: 13952
+                    length: 60
+                  pos: 13944
+                  length: 74
+                pos: 13919
+                length: 99
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType thatObj = that.toObjectType();
+                children: []
+                pos: 14154
+                length: 41
+              - type: local_variable_declaration
+                fields:
+                  text: 'ObjectType thatCtor = thatObj == null ? null : thatObj.getConstructor();'
+                children: []
+                pos: 14200
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: thatCtor
+                                children: []
+                                pos: 14281
+                                length: 8
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 14293
+                                length: 4
+                            children: []
+                            pos: 14281
+                            length: 16
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: thatCtor.isInterface()
+                            children: []
+                            pos: 14301
+                            length: 22
+                        children: []
+                        pos: 14281
+                        length: 42
+                    children: []
+                    pos: 14280
+                    length: 44
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Iterable<ObjectType> thisInterfaces = getCtorImplementedInterfaces();
+                    children: []
+                    pos: 14333
+                    length: 69
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (ObjectType thisInterface : thisInterfaces) {
+                                if (thisInterface.isSubtype(that)) {
+                                  return true;
+                                }
+                              }
+                    children: []
+                    pos: 14409
+                    length: 135
+                  pos: 14325
+                  length: 225
+                pos: 14277
+                length: 273
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: getConstructor()
+                                children: []
+                                pos: 14560
+                                length: 16
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 14580
+                                length: 4
+                            children: []
+                            pos: 14560
+                            length: 24
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: getConstructor().isInterface()
+                            children: []
+                            pos: 14588
+                            length: 30
+                        children: []
+                        pos: 14560
+                        length: 58
+                    children: []
+                    pos: 14559
+                    length: 60
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (ObjectType thisInterface : getCtorExtendedInterfaces()) {
+                                if (thisInterface.isSubtype(that)) {
+                                  return true;
+                                }
+                              }
+                    children: []
+                    pos: 14628
+                    length: 148
+                  pos: 14620
+                  length: 162
+                pos: 14556
+                length: 226
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: isUnknownType()
+                            children: []
+                            pos: 14829
+                            length: 15
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: implicitPrototypeChainIsUnknown()
+                            children: []
+                            pos: 14848
+                            length: 33
+                        children: []
+                        pos: 14829
+                        length: 52
+                    children: []
+                    pos: 14828
+                    length: 54
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 15052
+                    length: 12
+                  pos: 14883
+                  length: 187
+                pos: 14825
+                length: 245
+              - type: return_statement
+                fields:
+                  text: return this.isImplicitPrototype(thatObj);
+                children: []
+                pos: 15075
+                length: 41
+              pos: 13614
+              length: 1506
+          children: []
+          pos: 13564
+          length: 1556
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: implicitPrototypeChainIsUnknown
+              children: []
+              pos: 15140
+              length: 31
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15124
+              length: 242
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType p = getImplicitPrototype();
+                children: []
+                pos: 15180
+                length: 38
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (p != null) {
+                          if (p.isUnknownType()) {
+                            return true;
+                          }
+                          p = p.getImplicitPrototype();
+                        }
+                children: []
+                pos: 15223
+                length: 121
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 15349
+                length: 13
+              pos: 15174
+              length: 192
+          children: []
+          pos: 15124
+          length: 242
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasCachedValues
+              children: []
+              pos: 15397
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15370
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return super.hasCachedValues();
+                children: []
+                pos: 15421
+                length: 31
+              pos: 15415
+              length: 41
+          children: []
+          pos: 15370
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isNativeObjectType
+              children: []
+              pos: 15531
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15504
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return nativeType;
+                children: []
+                pos: 15558
+                length: 18
+              pos: 15552
+              length: 28
+          children: []
+          pos: 15504
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setOwnerFunction
+              children: []
+              pos: 15589
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: FunctionType type
+                children: []
+                pos: 15606
+                length: 17
+              pos: 15584
+              length: 141
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkState(ownerFunction == null || type ==
+                    null);
+                children: []
+                pos: 15631
+                length: 64
+              - type: expression_statement
+                fields:
+                  text: ownerFunction = type;
+                children: []
+                pos: 15700
+                length: 21
+              pos: 15625
+              length: 100
+          children: []
+          pos: 15584
+          length: 141
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOwnerFunction
+              children: []
+              pos: 15761
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15729
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return ownerFunction;
+                children: []
+                pos: 15786
+                length: 21
+              pos: 15780
+              length: 31
+          children: []
+          pos: 15729
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCtorImplementedInterfaces
+              children: []
+              pos: 15855
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15815
+              length: 211
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isFunctionPrototypeType()
+                            ? getOwnerFunction().getImplementedInterfaces()
+                            : ImmutableList.<ObjectType>of();
+                children: []
+                pos: 15892
+                length: 130
+              pos: 15886
+              length: 140
+          children: []
+          pos: 15815
+          length: 211
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCtorExtendedInterfaces
+              children: []
+              pos: 16070
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16030
+              length: 205
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isFunctionPrototypeType()
+                            ? getOwnerFunction().getExtendedInterfaces()
+                            : ImmutableList.<ObjectType>of();
+                children: []
+                pos: 16104
+                length: 127
+              pos: 16098
+              length: 137
+          children: []
+          pos: 16030
+          length: 205
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: resolveInternal
+              children: []
+              pos: 16258
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ErrorReporter t
+                children: []
+                pos: 16274
+                length: 15
+              pos: 16239
+              length: 446
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setResolvedTypeInternal(this);
+                children: []
+                pos: 16324
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 16360
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 16423
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 16444
+                            length: 4
+                        children: []
+                        pos: 16423
+                        length: 25
+                    children: []
+                    pos: 16422
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        implicitPrototypeFallback =
+                                  (ObjectType) implicitPrototype.resolve(t, scope);
+                    children: []
+                    pos: 16458
+                    length: 87
+                  pos: 16450
+                  length: 101
+                pos: 16419
+                length: 132
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Property prop : properties.values()) {
+                          prop.setType(safeResolve(prop.getType(), t, scope));
+                        }
+                children: []
+                pos: 16556
+                length: 108
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 16669
+                length: 12
+              pos: 16318
+              length: 367
+          children: []
+          pos: 16239
+          length: 446
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchConstraint
+              children: []
+              pos: 16713
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectType constraintObj
+                children: []
+                pos: 16729
+                length: 24
+              pos: 16689
+              length: 1037
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: hasReferenceName()
+                        children: []
+                        pos: 16825
+                        length: 18
+                    children: []
+                    pos: 16824
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 16853
+                    length: 7
+                  pos: 16845
+                  length: 21
+                pos: 16821
+                length: 45
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: constraintObj.isRecordType()
+                        children: []
+                        pos: 17237
+                        length: 28
+                    children: []
+                    pos: 17236
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (String prop : constraintObj.getOwnPropertyNames()) {
+                                JSType propType = constraintObj.getPropertyType(prop);
+                                if (!isPropertyTypeDeclared(prop)) {
+                                  JSType typeToInfer = propType;
+                                  if (!hasProperty(prop)) {
+                                    typeToInfer = getNativeType(JSTypeNative.VOID_TYPE)
+                                        .getLeastSupertype(propType);
+                                  }
+                                  defineInferredProperty(prop, typeToInfer, null);
+                                }
+                              }
+                    children: []
+                    pos: 17275
+                    length: 441
+                  pos: 17267
+                  length: 455
+                pos: 17233
+                length: 489
+              pos: 16755
+              length: 971
+          children: []
+          pos: 16689
+          length: 1037
+        pos: 2751
+        length: 14977
+    children: []
+    pos: 2751
+    length: 14977
+  pos: 0
+  length: 17729
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: PrototypeObjectType
+        children: []
+        pos: 2757
+        length: 19
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 2800
+          length: 48
+        - type: field_declaration
+          fields:
+            text: private final String className;
+          children: []
+          pos: 2852
+          length: 31
+        - type: field_declaration
+          fields:
+            text: private final Map<String, Property> properties;
+          children: []
+          pos: 2886
+          length: 47
+        - type: field_declaration
+          fields:
+            text: private final boolean nativeType;
+          children: []
+          pos: 2936
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private ObjectType implicitPrototypeFallback;
+          children: []
+          pos: 3186
+          length: 45
+        - type: field_declaration
+          fields:
+            text: private FunctionType ownerFunction = null;
+          children: []
+          pos: 3454
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private boolean prettyPrint = false;
+          children: []
+          pos: 3608
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private static final int MAX_PRETTY_PRINTED_PROPERTIES = 4;
+          children: []
+          pos: 3648
+          length: 59
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrototypeObjectType(JSTypeRegistry registry, String className,
+                    ObjectType implicitPrototype) {
+                  this(registry, className, implicitPrototype, false);
+                }
+          children: []
+          pos: 4132
+          length: 161
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrototypeObjectType(JSTypeRegistry registry, String className,
+                    ObjectType implicitPrototype, boolean nativeType) {
+                  super(registry);
+                  this.properties = Maps.newTreeMap();
+                  this.className = className;
+                  this.nativeType = nativeType;
+                  if (nativeType || implicitPrototype != null) {
+                    setImplicitPrototype(implicitPrototype);
+                  } else {
+                    setImplicitPrototype(
+                        registry.getNativeObjectType(JSTypeNative.OBJECT_TYPE));
+                  }
+                }
+          children: []
+          pos: 4422
+          length: 464
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSlot
+              children: []
+              pos: 4918
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 4926
+                length: 11
+              pos: 4890
+              length: 543
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: properties.containsKey(name)
+                        children: []
+                        pos: 4949
+                        length: 28
+                    children: []
+                    pos: 4948
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return properties.get(name);
+                    children: []
+                    pos: 4987
+                    length: 28
+                  pos: 4979
+                  length: 42
+                pos: 4945
+                length: 76
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 5026
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 5089
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5110
+                            length: 4
+                        children: []
+                        pos: 5089
+                        length: 25
+                    children: []
+                    pos: 5088
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Property prop = implicitPrototype.getSlot(name);
+                    children: []
+                    pos: 5124
+                    length: 48
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: prop
+                                children: []
+                                pos: 5183
+                                length: 4
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 5191
+                                length: 4
+                            children: []
+                            pos: 5183
+                            length: 12
+                        children: []
+                        pos: 5182
+                        length: 14
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return prop;
+                        children: []
+                        pos: 5207
+                        length: 12
+                      pos: 5197
+                      length: 30
+                    pos: 5179
+                    length: 48
+                  pos: 5116
+                  length: 117
+                pos: 5085
+                length: 148
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (ObjectType interfaceType : getCtorExtendedInterfaces()) {
+                          Property prop = interfaceType.getSlot(name);
+                          if (prop != null) {
+                            return prop;
+                          }
+                        }
+                children: []
+                pos: 5238
+                length: 174
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 5417
+                length: 12
+              pos: 4939
+              length: 494
+          children: []
+          pos: 4890
+          length: 543
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertiesCount
+              children: []
+              pos: 5523
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5500
+              length: 416
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 5550
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 5613
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5634
+                            length: 4
+                        children: []
+                        pos: 5613
+                        length: 25
+                    children: []
+                    pos: 5612
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this.properties.size();
+                    children: []
+                    pos: 5648
+                    length: 30
+                  pos: 5640
+                  length: 44
+                pos: 5609
+                length: 75
+              - type: local_variable_declaration
+                fields:
+                  text: int localCount = 0;
+                children: []
+                pos: 5689
+                length: 19
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (String property : properties.keySet()) {
+                          if (!implicitPrototype.hasProperty(property)) {
+                            localCount++;
+                          }
+                        }
+                children: []
+                pos: 5713
+                length: 135
+              - type: return_statement
+                fields:
+                  text: return implicitPrototype.getPropertiesCount() + localCount;
+                children: []
+                pos: 5853
+                length: 59
+              pos: 5544
+              length: 372
+          children: []
+          pos: 5500
+          length: 416
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasProperty
+              children: []
+              pos: 5947
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 5959
+                length: 19
+              pos: 5920
+              length: 168
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return isUnknownType() || getSlot(propertyName) != null;
+                children: []
+                pos: 6028
+                length: 56
+              pos: 5980
+              length: 108
+          children: []
+          pos: 5920
+          length: 168
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasOwnProperty
+              children: []
+              pos: 6119
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 6134
+                length: 19
+              pos: 6092
+              length: 117
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties.get(propertyName) != null;
+                children: []
+                pos: 6161
+                length: 44
+              pos: 6155
+              length: 54
+          children: []
+          pos: 6092
+          length: 117
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOwnPropertyNames
+              children: []
+              pos: 6244
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6213
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties.keySet();
+                children: []
+                pos: 6272
+                length: 27
+              pos: 6266
+              length: 37
+          children: []
+          pos: 6213
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPropertyTypeDeclared
+              children: []
+              pos: 6334
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String property
+                children: []
+                pos: 6357
+                length: 15
+              pos: 6307
+              length: 206
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StaticSlot<JSType> slot = getSlot(property);
+                children: []
+                pos: 6380
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: slot
+                            children: []
+                            pos: 6433
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6441
+                            length: 4
+                        children: []
+                        pos: 6433
+                        length: 12
+                    children: []
+                    pos: 6432
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 6455
+                    length: 13
+                  pos: 6447
+                  length: 27
+                pos: 6429
+                length: 45
+              - type: return_statement
+                fields:
+                  text: return !slot.isTypeInferred();
+                children: []
+                pos: 6479
+                length: 30
+              pos: 6374
+              length: 139
+          children: []
+          pos: 6307
+          length: 206
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: collectPropertyNames
+              children: []
+              pos: 6534
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Set<String> props
+                children: []
+                pos: 6555
+                length: 17
+              pos: 6517
+              length: 292
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (String prop : properties.keySet()) {
+                          props.add(prop);
+                        }
+                children: []
+                pos: 6580
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 6655
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 6718
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6739
+                            length: 4
+                        children: []
+                        pos: 6718
+                        length: 25
+                    children: []
+                    pos: 6717
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: implicitPrototype.collectPropertyNames(props);
+                    children: []
+                    pos: 6753
+                    length: 46
+                  pos: 6745
+                  length: 60
+                pos: 6714
+                length: 91
+              pos: 6574
+              length: 235
+          children: []
+          pos: 6517
+          length: 292
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPropertyTypeInferred
+              children: []
+              pos: 6840
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String property
+                children: []
+                pos: 6863
+                length: 15
+              pos: 6813
+              length: 205
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StaticSlot<JSType> slot = getSlot(property);
+                children: []
+                pos: 6886
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: slot
+                            children: []
+                            pos: 6939
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6947
+                            length: 4
+                        children: []
+                        pos: 6939
+                        length: 12
+                    children: []
+                    pos: 6938
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 6961
+                    length: 13
+                  pos: 6953
+                  length: 27
+                pos: 6935
+                length: 45
+              - type: return_statement
+                fields:
+                  text: return slot.isTypeInferred();
+                children: []
+                pos: 6985
+                length: 29
+              pos: 6880
+              length: 138
+          children: []
+          pos: 6813
+          length: 205
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertyType
+              children: []
+              pos: 7048
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String property
+                children: []
+                pos: 7064
+                length: 15
+              pos: 7022
+              length: 225
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StaticSlot<JSType> slot = getSlot(property);
+                children: []
+                pos: 7087
+                length: 44
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: slot
+                            children: []
+                            pos: 7140
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7148
+                            length: 4
+                        children: []
+                        pos: 7140
+                        length: 12
+                    children: []
+                    pos: 7139
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getNativeType(JSTypeNative.UNKNOWN_TYPE);
+                    children: []
+                    pos: 7162
+                    length: 48
+                  pos: 7154
+                  length: 62
+                pos: 7136
+                length: 80
+              - type: return_statement
+                fields:
+                  text: return slot.getType();
+                children: []
+                pos: 7221
+                length: 22
+              pos: 7081
+              length: 166
+          children: []
+          pos: 7022
+          length: 225
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPropertyInExterns
+              children: []
+              pos: 7278
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 7298
+                length: 19
+              pos: 7251
+              length: 365
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Property p = properties.get(propertyName);
+                children: []
+                pos: 7325
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: p
+                            children: []
+                            pos: 7376
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7381
+                            length: 4
+                        children: []
+                        pos: 7376
+                        length: 9
+                    children: []
+                    pos: 7375
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return p.isFromExterns();
+                    children: []
+                    pos: 7395
+                    length: 25
+                  pos: 7387
+                  length: 39
+                pos: 7372
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 7431
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 7494
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7515
+                            length: 4
+                        children: []
+                        pos: 7494
+                        length: 25
+                    children: []
+                    pos: 7493
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return implicitPrototype.isPropertyInExterns(propertyName);
+                    children: []
+                    pos: 7529
+                    length: 59
+                  pos: 7521
+                  length: 73
+                pos: 7490
+                length: 104
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7599
+                length: 13
+              pos: 7319
+              length: 297
+          children: []
+          pos: 7251
+          length: 365
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: defineProperty
+              children: []
+              pos: 7640
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 7655
+                length: 11
+              pos: 7620
+              length: 540
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: hasOwnDeclaredProperty(name)
+                        children: []
+                        pos: 7734
+                        length: 28
+                    children: []
+                    pos: 7733
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 7772
+                    length: 13
+                  pos: 7764
+                  length: 27
+                pos: 7730
+                length: 61
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    Property newProp = new Property(
+                            name, type, inferred, propertyNode);
+                children: []
+                pos: 7796
+                length: 77
+              - type: local_variable_declaration
+                fields:
+                  text: Property oldProp = properties.get(name);
+                children: []
+                pos: 7878
+                length: 40
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: oldProp
+                            children: []
+                            pos: 7927
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7938
+                            length: 4
+                        children: []
+                        pos: 7927
+                        length: 15
+                    children: []
+                    pos: 7926
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: newProp.setJSDocInfo(oldProp.getJSDocInfo());
+                    children: []
+                    pos: 8053
+                    length: 45
+                  pos: 7944
+                  length: 160
+                pos: 7923
+                length: 181
+              - type: expression_statement
+                fields:
+                  text: properties.put(name, newProp);
+                children: []
+                pos: 8109
+                length: 30
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 8144
+                length: 12
+              pos: 7724
+              length: 436
+          children: []
+          pos: 7620
+          length: 540
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeProperty
+              children: []
+              pos: 8191
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 8206
+                length: 11
+              pos: 8164
+              length: 104
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return properties.remove(name) != null;
+                children: []
+                pos: 8225
+                length: 39
+              pos: 8219
+              length: 49
+          children: []
+          pos: 8164
+          length: 104
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPropertyNode
+              children: []
+              pos: 8296
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 8312
+                length: 19
+              pos: 8272
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Property p = properties.get(propertyName);
+                children: []
+                pos: 8339
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: p
+                            children: []
+                            pos: 8390
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8395
+                            length: 4
+                        children: []
+                        pos: 8390
+                        length: 9
+                    children: []
+                    pos: 8389
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return p.getNode();
+                    children: []
+                    pos: 8409
+                    length: 19
+                  pos: 8401
+                  length: 33
+                pos: 8386
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 8439
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 8502
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8523
+                            length: 4
+                        children: []
+                        pos: 8502
+                        length: 25
+                    children: []
+                    pos: 8501
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return implicitPrototype.getPropertyNode(propertyName);
+                    children: []
+                    pos: 8537
+                    length: 55
+                  pos: 8529
+                  length: 69
+                pos: 8498
+                length: 100
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 8603
+                length: 12
+              pos: 8333
+              length: 286
+          children: []
+          pos: 8272
+          length: 347
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOwnPropertyJSDocInfo
+              children: []
+              pos: 8652
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 8676
+                length: 19
+              pos: 8623
+              length: 201
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Property p = properties.get(propertyName);
+                children: []
+                pos: 8703
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: p
+                            children: []
+                            pos: 8754
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8759
+                            length: 4
+                        children: []
+                        pos: 8754
+                        length: 9
+                    children: []
+                    pos: 8753
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return p.getJSDocInfo();
+                    children: []
+                    pos: 8773
+                    length: 24
+                  pos: 8765
+                  length: 38
+                pos: 8750
+                length: 53
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 8808
+                length: 12
+              pos: 8697
+              length: 127
+          children: []
+          pos: 8623
+          length: 201
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPropertyJSDocInfo
+              children: []
+              pos: 8852
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 8873
+                length: 19
+              pos: 8828
+              length: 718
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: info
+                            children: []
+                            pos: 8920
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8928
+                            length: 4
+                        children: []
+                        pos: 8920
+                        length: 12
+                    children: []
+                    pos: 8919
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!properties.containsKey(propertyName)"
+                            children: []
+                            pos: 8946
+                            length: 37
+                        children: []
+                        pos: 8945
+                        length: 39
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: |-
+                            defineInferredProperty(propertyName, getPropertyType(propertyName),
+                                        null);
+                        children: []
+                        pos: 9171
+                        length: 86
+                      pos: 8985
+                      length: 280
+                    pos: 8942
+                    length: 323
+                  - type: local_variable_declaration
+                    fields:
+                      text: Property property = properties.get(propertyName);
+                    children: []
+                    pos: 9412
+                    length: 49
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: property
+                                children: []
+                                pos: 9472
+                                length: 8
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 9484
+                                length: 4
+                            children: []
+                            pos: 9472
+                            length: 16
+                        children: []
+                        pos: 9471
+                        length: 18
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: property.setJSDocInfo(info);
+                        children: []
+                        pos: 9500
+                        length: 28
+                      pos: 9490
+                      length: 46
+                    pos: 9468
+                    length: 68
+                  pos: 8934
+                  length: 608
+                pos: 8916
+                length: 626
+              pos: 8910
+              length: 636
+          children: []
+          pos: 8828
+          length: 718
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesNumberContext
+              children: []
+              pos: 9577
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9550
+              length: 202
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isNumberObjectType() || isDateType() || isBooleanObjectType() ||
+                            isStringObjectType() || hasOverridenNativeProperty("valueOf");
+                children: []
+                pos: 9606
+                length: 142
+              pos: 9600
+              length: 152
+          children: []
+          pos: 9550
+          length: 202
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesStringContext
+              children: []
+              pos: 9783
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9756
+              length: 267
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isTheObjectType() || isStringObjectType() || isDateType() ||
+                            isRegexpType() || isArrayType() || isNumberObjectType() ||
+                            isBooleanObjectType() || hasOverridenNativeProperty("toString");
+                children: []
+                pos: 9812
+                length: 207
+              pos: 9806
+              length: 217
+          children: []
+          pos: 9756
+          length: 267
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasOverridenNativeProperty
+              children: []
+              pos: 10197
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 10224
+                length: 19
+              pos: 10181
+              length: 507
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: isNativeObjectType()
+                        children: []
+                        pos: 10255
+                        length: 20
+                    children: []
+                    pos: 10254
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 10285
+                    length: 13
+                  pos: 10277
+                  length: 27
+                pos: 10251
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: JSType propertyType = getPropertyType(propertyName);
+                children: []
+                pos: 10310
+                length: 52
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    ObjectType nativeType =
+                            this.isFunctionType() ?
+                            registry.getNativeObjectType(JSTypeNative.FUNCTION_PROTOTYPE) :
+                            registry.getNativeObjectType(JSTypeNative.OBJECT_PROTOTYPE);
+                children: []
+                pos: 10367
+                length: 196
+              - type: local_variable_declaration
+                fields:
+                  text: JSType nativePropertyType = nativeType.getPropertyType(propertyName);
+                children: []
+                pos: 10568
+                length: 69
+              - type: return_statement
+                fields:
+                  text: return propertyType != nativePropertyType;
+                children: []
+                pos: 10642
+                length: 42
+              pos: 10245
+              length: 443
+          children: []
+          pos: 10181
+          length: 507
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: unboxesTo
+              children: []
+              pos: 10718
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10692
+              length: 368
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: isStringObjectType()
+                        children: []
+                        pos: 10740
+                        length: 20
+                    children: []
+                    pos: 10739
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getNativeType(JSTypeNative.STRING_TYPE);
+                    children: []
+                    pos: 10770
+                    length: 47
+                  pos: 10762
+                  length: 61
+                pos: 10736
+                length: 320
+              pos: 10730
+              length: 330
+          children: []
+          pos: 10692
+          length: 368
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesObjectContext
+              children: []
+              pos: 11091
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11064
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 11120
+                length: 12
+              pos: 11114
+              length: 22
+          children: []
+          pos: 11064
+          length: 72
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canBeCalled
+              children: []
+              pos: 11167
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11140
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return isRegexpType();
+                children: []
+                pos: 11187
+                length: 22
+              pos: 11181
+              length: 32
+          children: []
+          pos: 11140
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toStringHelper
+              children: []
+              pos: 11236
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean forAnnotations
+                children: []
+                pos: 11251
+                length: 22
+              pos: 11217
+              length: 1245
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: hasReferenceName()
+                        children: []
+                        pos: 11285
+                        length: 18
+                    children: []
+                    pos: 11284
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getReferenceName();
+                    children: []
+                    pos: 11313
+                    length: 26
+                  pos: 11305
+                  length: 40
+                pos: 11281
+                length: 1177
+              pos: 11275
+              length: 1187
+          children: []
+          pos: 11217
+          length: 1245
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPrettyPrint
+              children: []
+              pos: 12471
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean prettyPrint
+                children: []
+                pos: 12486
+                length: 19
+              pos: 12466
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.prettyPrint = prettyPrint;
+                children: []
+                pos: 12513
+                length: 31
+              pos: 12507
+              length: 41
+          children: []
+          pos: 12466
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isPrettyPrint
+              children: []
+              pos: 12560
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12552
+              length: 53
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return prettyPrint;
+                children: []
+                pos: 12582
+                length: 19
+              pos: 12576
+              length: 29
+          children: []
+          pos: 12552
+          length: 53
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConstructor
+              children: []
+              pos: 12641
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12609
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 12664
+                length: 12
+              pos: 12658
+              length: 22
+          children: []
+          pos: 12609
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getImplicitPrototype
+              children: []
+              pos: 12714
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12684
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return implicitPrototypeFallback;
+                children: []
+                pos: 12743
+                length: 33
+              pos: 12737
+              length: 43
+          children: []
+          pos: 12684
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setImplicitPrototype
+              children: []
+              pos: 13055
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectType implicitPrototype
+                children: []
+                pos: 13076
+                length: 28
+              pos: 13044
+              length: 159
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: checkState(!hasCachedValues());
+                children: []
+                pos: 13112
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: this.implicitPrototypeFallback = implicitPrototype;
+                children: []
+                pos: 13148
+                length: 51
+              pos: 13106
+              length: 97
+          children: []
+          pos: 13044
+          length: 159
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getReferenceName
+              children: []
+              pos: 13233
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13207
+              length: 243
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: className
+                            children: []
+                            pos: 13262
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13275
+                            length: 4
+                        children: []
+                        pos: 13262
+                        length: 17
+                    children: []
+                    pos: 13261
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return className;
+                    children: []
+                    pos: 13289
+                    length: 17
+                  pos: 13281
+                  length: 31
+                pos: 13258
+                length: 188
+              pos: 13252
+              length: 198
+          children: []
+          pos: 13207
+          length: 243
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasReferenceName
+              children: []
+              pos: 13481
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13454
+              length: 106
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return className != null || ownerFunction != null;
+                children: []
+                pos: 13506
+                length: 50
+              pos: 13500
+              length: 60
+          children: []
+          pos: 13454
+          length: 106
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSubtype
+              children: []
+              pos: 13591
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 13601
+                length: 11
+              pos: 13564
+              length: 1556
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: JSType.isSubtypeHelper(this, that)
+                        children: []
+                        pos: 13624
+                        length: 34
+                    children: []
+                    pos: 13623
+                    length: 36
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 13668
+                    length: 12
+                  pos: 13660
+                  length: 26
+                pos: 13620
+                length: 66
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: that.isUnionType()
+                        children: []
+                        pos: 13715
+                        length: 18
+                    children: []
+                    pos: 13714
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 13874
+                    length: 13
+                  pos: 13735
+                  length: 158
+                pos: 13711
+                length: 182
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: that.isRecordType()
+                        children: []
+                        pos: 13923
+                        length: 19
+                    children: []
+                    pos: 13922
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return RecordType.isSubtype(this, that.toMaybeRecordType());
+                    children: []
+                    pos: 13952
+                    length: 60
+                  pos: 13944
+                  length: 74
+                pos: 13919
+                length: 99
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType thatObj = that.toObjectType();
+                children: []
+                pos: 14154
+                length: 41
+              - type: local_variable_declaration
+                fields:
+                  text: 'ObjectType thatCtor = thatObj == null ? null : thatObj.getConstructor();'
+                children: []
+                pos: 14200
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: thatCtor
+                                children: []
+                                pos: 14281
+                                length: 8
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 14293
+                                length: 4
+                            children: []
+                            pos: 14281
+                            length: 16
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: thatCtor.isInterface()
+                            children: []
+                            pos: 14301
+                            length: 22
+                        children: []
+                        pos: 14281
+                        length: 42
+                    children: []
+                    pos: 14280
+                    length: 44
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Iterable<ObjectType> thisInterfaces = getCtorImplementedInterfaces();
+                    children: []
+                    pos: 14333
+                    length: 69
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (ObjectType thisInterface : thisInterfaces) {
+                                if (thisInterface.isSubtype(that)) {
+                                  return true;
+                                }
+                              }
+                    children: []
+                    pos: 14409
+                    length: 135
+                  pos: 14325
+                  length: 225
+                pos: 14277
+                length: 273
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: getConstructor()
+                                children: []
+                                pos: 14560
+                                length: 16
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 14580
+                                length: 4
+                            children: []
+                            pos: 14560
+                            length: 24
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: getConstructor().isInterface()
+                            children: []
+                            pos: 14588
+                            length: 30
+                        children: []
+                        pos: 14560
+                        length: 58
+                    children: []
+                    pos: 14559
+                    length: 60
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (ObjectType thisInterface : getCtorExtendedInterfaces()) {
+                                if (thisInterface.isSubtype(that)) {
+                                  return true;
+                                }
+                              }
+                    children: []
+                    pos: 14628
+                    length: 148
+                  pos: 14620
+                  length: 162
+                pos: 14556
+                length: 226
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: isUnknownType()
+                            children: []
+                            pos: 14829
+                            length: 15
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: implicitPrototypeChainIsUnknown()
+                            children: []
+                            pos: 14848
+                            length: 33
+                        children: []
+                        pos: 14829
+                        length: 52
+                    children: []
+                    pos: 14828
+                    length: 54
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 15052
+                    length: 12
+                  pos: 14883
+                  length: 187
+                pos: 14825
+                length: 245
+              - type: return_statement
+                fields:
+                  text: return this.isImplicitPrototype(thatObj);
+                children: []
+                pos: 15075
+                length: 41
+              pos: 13614
+              length: 1506
+          children: []
+          pos: 13564
+          length: 1556
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: implicitPrototypeChainIsUnknown
+              children: []
+              pos: 15140
+              length: 31
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15124
+              length: 242
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType p = getImplicitPrototype();
+                children: []
+                pos: 15180
+                length: 38
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (p != null) {
+                          if (p.isUnknownType()) {
+                            return true;
+                          }
+                          p = p.getImplicitPrototype();
+                        }
+                children: []
+                pos: 15223
+                length: 121
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 15349
+                length: 13
+              pos: 15174
+              length: 192
+          children: []
+          pos: 15124
+          length: 242
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasCachedValues
+              children: []
+              pos: 15397
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15370
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return super.hasCachedValues();
+                children: []
+                pos: 15421
+                length: 31
+              pos: 15415
+              length: 41
+          children: []
+          pos: 15370
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isNativeObjectType
+              children: []
+              pos: 15531
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15504
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return nativeType;
+                children: []
+                pos: 15558
+                length: 18
+              pos: 15552
+              length: 28
+          children: []
+          pos: 15504
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setOwnerFunction
+              children: []
+              pos: 15589
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: FunctionType type
+                children: []
+                pos: 15606
+                length: 17
+              pos: 15584
+              length: 141
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkState(ownerFunction == null || type ==
+                    null);
+                children: []
+                pos: 15631
+                length: 64
+              - type: expression_statement
+                fields:
+                  text: ownerFunction = type;
+                children: []
+                pos: 15700
+                length: 21
+              pos: 15625
+              length: 100
+          children: []
+          pos: 15584
+          length: 141
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOwnerFunction
+              children: []
+              pos: 15761
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15729
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return ownerFunction;
+                children: []
+                pos: 15786
+                length: 21
+              pos: 15780
+              length: 31
+          children: []
+          pos: 15729
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCtorImplementedInterfaces
+              children: []
+              pos: 15855
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15815
+              length: 211
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isFunctionPrototypeType()
+                            ? getOwnerFunction().getImplementedInterfaces()
+                            : ImmutableList.<ObjectType>of();
+                children: []
+                pos: 15892
+                length: 130
+              pos: 15886
+              length: 140
+          children: []
+          pos: 15815
+          length: 211
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCtorExtendedInterfaces
+              children: []
+              pos: 16070
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16030
+              length: 205
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return isFunctionPrototypeType()
+                            ? getOwnerFunction().getExtendedInterfaces()
+                            : ImmutableList.<ObjectType>of();
+                children: []
+                pos: 16104
+                length: 127
+              pos: 16098
+              length: 137
+          children: []
+          pos: 16030
+          length: 205
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: resolveInternal
+              children: []
+              pos: 16258
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ErrorReporter t
+                children: []
+                pos: 16274
+                length: 15
+              pos: 16239
+              length: 446
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setResolvedTypeInternal(this);
+                children: []
+                pos: 16324
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectType implicitPrototype = getImplicitPrototype();
+                children: []
+                pos: 16360
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: implicitPrototype
+                            children: []
+                            pos: 16423
+                            length: 17
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 16444
+                            length: 4
+                        children: []
+                        pos: 16423
+                        length: 25
+                    children: []
+                    pos: 16422
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        implicitPrototypeFallback =
+                                  (ObjectType) implicitPrototype.resolve(t, scope);
+                    children: []
+                    pos: 16458
+                    length: 87
+                  pos: 16450
+                  length: 101
+                pos: 16419
+                length: 132
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Property prop : properties.values()) {
+                          prop.setType(safeResolve(prop.getType(), t, scope));
+                        }
+                children: []
+                pos: 16556
+                length: 108
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 16669
+                length: 12
+              pos: 16318
+              length: 367
+          children: []
+          pos: 16239
+          length: 446
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchConstraint
+              children: []
+              pos: 16713
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectType constraintObj
+                children: []
+                pos: 16729
+                length: 24
+              pos: 16689
+              length: 987
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: constraintObj.isRecordType()
+                        children: []
+                        pos: 17187
+                        length: 28
+                    children: []
+                    pos: 17186
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (String prop : constraintObj.getOwnPropertyNames()) {
+                                JSType propType = constraintObj.getPropertyType(prop);
+                                if (!isPropertyTypeDeclared(prop)) {
+                                  JSType typeToInfer = propType;
+                                  if (!hasProperty(prop)) {
+                                    typeToInfer = getNativeType(JSTypeNative.VOID_TYPE)
+                                        .getLeastSupertype(propType);
+                                  }
+                                  defineInferredProperty(prop, typeToInfer, null);
+                                }
+                              }
+                    children: []
+                    pos: 17225
+                    length: 441
+                  pos: 17217
+                  length: 455
+                pos: 17183
+                length: 489
+              pos: 16755
+              length: 921
+          children: []
+          pos: 16689
+          length: 987
+        pos: 2751
+        length: 14927
+    children: []
+    pos: 2751
+    length: 14927
+  pos: 0
+  length: 17679
 text_diff: "--- before\n+++ after\n@@ -554,9 +554,6 @@\n   @Override\n   public void
   matchConstraint(ObjectType constraintObj) {\n     // We only want to match contraints
   on anonymous types.\n-    if (hasReferenceName()) {\n-      return;\n-    }\n \n

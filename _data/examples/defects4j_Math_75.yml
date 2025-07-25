@@ -1,5 +1,4257 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Frequency
+        children: []
+        pos: 1968
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -3845586908418844111L;
+          children: []
+          pos: 2052
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final TreeMap<Comparable<?>, Long> freqTable;
+          children: []
+          pos: 2158
+          length: 53
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public Frequency() {
+                      freqTable = new TreeMap<Comparable<?>, Long>();
+                  }
+          children: []
+          pos: 2261
+          length: 82
+        - type: constructor_declaration
+          fields:
+            text: |-
+              @SuppressWarnings("unchecked")
+                  public Frequency(Comparator<?> comparator) {
+                      freqTable = new TreeMap<Comparable<?>, Long>((Comparator<? super Comparable<?>>) comparator);
+                  }
+          children: []
+          pos: 2492
+          length: 187
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 2853
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2825
+              length: 767
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: NumberFormat nf = NumberFormat.getPercentInstance();
+                children: []
+                pos: 2874
+                length: 52
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuffer outBuffer = new StringBuffer();
+                children: []
+                pos: 2935
+                length: 44
+              - type: expression_statement
+                fields:
+                  text: outBuffer.append("Value \t Freq. \t Pct. \t Cum Pct. \n");
+                children: []
+                pos: 2988
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<Comparable<?>> iter = freqTable.keySet().iterator();
+                children: []
+                pos: 3055
+                length: 61
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (iter.hasNext()) {
+                                Comparable<?> value = iter.next();
+                                outBuffer.append(value);
+                                outBuffer.append('\t');
+                                outBuffer.append(getCount(value));
+                                outBuffer.append('\t');
+                                outBuffer.append(nf.format(getPct(value)));
+                                outBuffer.append('\t');
+                                outBuffer.append(nf.format(getCumPct(value)));
+                                outBuffer.append('\n');
+                            }
+                children: []
+                pos: 3125
+                length: 424
+              - type: return_statement
+                fields:
+                  text: return outBuffer.toString();
+                children: []
+                pos: 3558
+                length: 28
+              pos: 2864
+              length: 728
+          children: []
+          pos: 2825
+          length: 767
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 4080
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 4089
+                length: 8
+              pos: 4052
+              length: 340
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Comparable<?>
+                        children: []
+                        pos: 4113
+                        length: 26
+                    children: []
+                    pos: 4112
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: addValue((Comparable<?>) v);
+                    children: []
+                    pos: 4154
+                    length: 28
+                  pos: 4140
+                  length: 52
+                pos: 4109
+                length: 277
+              pos: 4099
+              length: 293
+          children: []
+          pos: 4052
+          length: 340
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 4766
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 4775
+                length: 15
+              pos: 4754
+              length: 750
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Comparable<?> obj = v;
+                children: []
+                pos: 4801
+                length: 22
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Integer
+                        children: []
+                        pos: 4836
+                        length: 20
+                    children: []
+                    pos: 4835
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: obj = Long.valueOf(((Integer) v).longValue());
+                    children: []
+                    pos: 4871
+                    length: 46
+                  pos: 4858
+                  length: 69
+                pos: 4832
+                length: 95
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Long count = freqTable.get(obj);
+                      children: []
+                      pos: 4954
+                      length: 32
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: count
+                                  children: []
+                                  pos: 5003
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 5012
+                                  length: 4
+                              children: []
+                              pos: 5003
+                              length: 13
+                          children: []
+                          pos: 5002
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: freqTable.put(obj, Long.valueOf(1));
+                          children: []
+                          pos: 5036
+                          length: 36
+                        pos: 5018
+                        length: 68
+                      pos: 4999
+                      length: 181
+                    pos: 4940
+                    length: 250
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                      //TreeMap will throw ClassCastException if v is not comparable
+                                      throw MathRuntimeException.createIllegalArgumentException(
+                                            "instance of class {0} not comparable to existing values",
+                                            v.getClass().getName());
+                                  }
+                      children: []
+                      pos: 5191
+                      length: 307
+                    pos: 4936
+                    length: 562
+                children: []
+                pos: 4936
+                length: 562
+              pos: 4791
+              length: 713
+          children: []
+          pos: 4754
+          length: 750
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 5623
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 5632
+                length: 5
+              pos: 5611
+              length: 70
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Long.valueOf(v));
+                children: []
+                pos: 5649
+                length: 26
+              pos: 5639
+              length: 42
+          children: []
+          pos: 5611
+          length: 70
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 5845
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Integer v
+                children: []
+                pos: 5854
+                length: 9
+              pos: 5833
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Long.valueOf(v.longValue()));
+                children: []
+                pos: 5875
+                length: 38
+              pos: 5865
+              length: 54
+          children: []
+          pos: 5833
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 6038
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 6047
+                length: 6
+              pos: 6026
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Long.valueOf(v));
+                children: []
+                pos: 6065
+                length: 26
+              pos: 6055
+              length: 42
+          children: []
+          pos: 6026
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 6216
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 6225
+                length: 6
+              pos: 6204
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Character.valueOf(v));
+                children: []
+                pos: 6243
+                length: 31
+              pos: 6233
+              length: 47
+          children: []
+          pos: 6204
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clear
+              children: []
+              pos: 6336
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6324
+              length: 54
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: freqTable.clear();
+                children: []
+                pos: 6354
+                length: 18
+              pos: 6344
+              length: 34
+          children: []
+          pos: 6324
+          length: 54
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: valuesIterator
+              children: []
+              pos: 6768
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6737
+              length: 101
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return freqTable.keySet().iterator();
+                children: []
+                pos: 6795
+                length: 37
+              pos: 6785
+              length: 53
+          children: []
+          pos: 6737
+          length: 101
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSumFreq
+              children: []
+              pos: 7045
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7033
+              length: 244
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long result = 0;
+                children: []
+                pos: 7068
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<Long> iterator = freqTable.values().iterator();
+                children: []
+                pos: 7093
+                length: 56
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (iterator.hasNext())  {
+                                result += iterator.next().longValue();
+                            }
+                children: []
+                pos: 7158
+                length: 90
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 7257
+                length: 14
+              pos: 7058
+              length: 219
+          children: []
+          pos: 7033
+          length: 244
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 7567
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 7576
+                length: 8
+              pos: 7539
+              length: 98
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount((Comparable<?>) v);
+                children: []
+                pos: 7596
+                length: 35
+              pos: 7586
+              length: 51
+          children: []
+          pos: 7539
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 7840
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 7849
+                length: 15
+              pos: 7828
+              length: 495
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Integer
+                        children: []
+                        pos: 7880
+                        length: 20
+                    children: []
+                    pos: 7879
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getCount(((Integer) v).longValue());
+                    children: []
+                    pos: 7916
+                    length: 43
+                  pos: 7902
+                  length: 67
+                pos: 7876
+                length: 93
+              - type: local_variable_declaration
+                fields:
+                  text: long result = 0;
+                children: []
+                pos: 7978
+                length: 16
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Long count =  freqTable.get(v);
+                      children: []
+                      pos: 8021
+                      length: 31
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: count
+                                  children: []
+                                  pos: 8069
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 8078
+                                  length: 4
+                              children: []
+                              pos: 8069
+                              length: 13
+                          children: []
+                          pos: 8068
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: result = count.longValue();
+                          children: []
+                          pos: 8102
+                          length: 27
+                        pos: 8084
+                        length: 59
+                      pos: 8065
+                      length: 78
+                    pos: 8007
+                    length: 146
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                      // ignore and return 0 -- ClassCastException will be thrown if value is not comparable
+                                  }
+                      children: []
+                      pos: 8154
+                      length: 140
+                    pos: 8003
+                    length: 291
+                children: []
+                pos: 8003
+                length: 291
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 8303
+                length: 14
+              pos: 7866
+              length: 457
+          children: []
+          pos: 7828
+          length: 495
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 8477
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 8486
+                length: 5
+              pos: 8465
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount(Long.valueOf(v));
+                children: []
+                pos: 8503
+                length: 33
+              pos: 8493
+              length: 49
+          children: []
+          pos: 8465
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 8696
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 8705
+                length: 6
+              pos: 8684
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount(Long.valueOf(v));
+                children: []
+                pos: 8723
+                length: 33
+              pos: 8713
+              length: 49
+          children: []
+          pos: 8684
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 8916
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 8925
+                length: 6
+              pos: 8904
+              length: 83
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount(Character.valueOf(v));
+                children: []
+                pos: 8943
+                length: 38
+              pos: 8933
+              length: 54
+          children: []
+          pos: 8904
+          length: 83
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 9458
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 9465
+                length: 8
+              pos: 9428
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getPct((Comparable<?>) v);
+                children: []
+                pos: 9485
+                length: 33
+              pos: 9475
+              length: 49
+          children: []
+          pos: 9428
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 9840
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 9847
+                length: 15
+              pos: 9826
+              length: 213
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final long sumFreq = getSumFreq();
+                children: []
+                pos: 9874
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: sumFreq
+                            children: []
+                            pos: 9921
+                            length: 7
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 9932
+                            length: 1
+                        children: []
+                        pos: 9921
+                        length: 12
+                    children: []
+                    pos: 9920
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return Double.NaN;
+                    children: []
+                    pos: 9949
+                    length: 18
+                  pos: 9935
+                  length: 42
+                pos: 9917
+                length: 60
+              - type: return_statement
+                fields:
+                  text: return (double) getCount(v) / (double) sumFreq;
+                children: []
+                pos: 9986
+                length: 47
+              pos: 9864
+              length: 175
+          children: []
+          pos: 9826
+          length: 213
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 10271
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 10278
+                length: 5
+              pos: 10257
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getPct(Long.valueOf(v));
+                children: []
+                pos: 10295
+                length: 31
+              pos: 10285
+              length: 47
+          children: []
+          pos: 10257
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 10564
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 10571
+                length: 6
+              pos: 10550
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getPct(Long.valueOf(v));
+                children: []
+                pos: 10589
+                length: 31
+              pos: 10579
+              length: 47
+          children: []
+          pos: 10550
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 10858
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 10865
+                length: 6
+              pos: 10844
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getPct(Character.valueOf(v));
+                children: []
+                pos: 10883
+                length: 36
+              pos: 10873
+              length: 52
+          children: []
+          pos: 10844
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 11389
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 11400
+                length: 8
+              pos: 11361
+              length: 102
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq((Comparable<?>) v);
+                children: []
+                pos: 11420
+                length: 37
+              pos: 11410
+              length: 53
+          children: []
+          pos: 11361
+          length: 102
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 11780
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 11791
+                length: 15
+              pos: 11729
+              length: 1327
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: getSumFreq()
+                            children: []
+                            pos: 11822
+                            length: 12
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 11838
+                            length: 1
+                        children: []
+                        pos: 11822
+                        length: 17
+                    children: []
+                    pos: 11821
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 0;
+                    children: []
+                    pos: 11855
+                    length: 9
+                  pos: 11841
+                  length: 33
+                pos: 11818
+                length: 56
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Integer
+                        children: []
+                        pos: 11887
+                        length: 20
+                    children: []
+                    pos: 11886
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getCumFreq(((Integer) v).longValue());
+                    children: []
+                    pos: 11923
+                    length: 45
+                  pos: 11909
+                  length: 69
+                pos: 11883
+                length: 95
+              - type: local_variable_declaration
+                fields:
+                  text: Comparator<Comparable<?>> c = (Comparator<Comparable<?>>)
+                    freqTable.comparator();
+                children: []
+                pos: 11987
+                length: 81
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: c
+                            children: []
+                            pos: 12081
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12086
+                            length: 4
+                        children: []
+                        pos: 12081
+                        length: 9
+                    children: []
+                    pos: 12080
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: c = new NaturalComparator();
+                    children: []
+                    pos: 12106
+                    length: 28
+                  pos: 12092
+                  length: 52
+                pos: 12077
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: long result = 0;
+                children: []
+                pos: 12153
+                length: 16
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Long value = freqTable.get(v);
+                      children: []
+                      pos: 12197
+                      length: 30
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: value
+                                  children: []
+                                  pos: 12244
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 12253
+                                  length: 4
+                              children: []
+                              pos: 12244
+                              length: 13
+                          children: []
+                          pos: 12243
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: result = value.longValue();
+                          children: []
+                          pos: 12277
+                          length: 27
+                        pos: 12259
+                        length: 59
+                      pos: 12240
+                      length: 78
+                    pos: 12183
+                    length: 145
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                      return result;   // v is not comparable
+                                  }
+                      children: []
+                      pos: 12329
+                      length: 93
+                    pos: 12179
+                    length: 243
+                children: []
+                pos: 12179
+                length: 243
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: c.compare(v, freqTable.firstKey())
+                            children: []
+                            pos: 12436
+                            length: 34
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 12473
+                            length: 1
+                        children: []
+                        pos: 12436
+                        length: 38
+                    children: []
+                    pos: 12435
+                    length: 40
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 0;
+                    children: []
+                    pos: 12490
+                    length: 9
+                  pos: 12476
+                  length: 80
+                pos: 12432
+                length: 124
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_or_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: c.compare(v, freqTable.lastKey())
+                            children: []
+                            pos: 12570
+                            length: 33
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 12607
+                            length: 1
+                        children: []
+                        pos: 12570
+                        length: 38
+                    children: []
+                    pos: 12569
+                    length: 40
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getSumFreq();
+                    children: []
+                    pos: 12624
+                    length: 20
+                  pos: 12610
+                  length: 99
+                pos: 12566
+                length: 143
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<Comparable<?>> values = valuesIterator();
+                children: []
+                pos: 12719
+                length: 50
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (values.hasNext()) {
+                                Comparable<?> nextValue = values.next();
+                                if (c.compare(v, nextValue) > 0) {
+                                    result += getCount(nextValue);
+                                } else {
+                                    return result;
+                                }
+                            }
+                children: []
+                pos: 12778
+                length: 249
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 13036
+                length: 14
+              pos: 11808
+              length: 1248
+          children: []
+          pos: 11729
+          length: 1327
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 13334
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 13345
+                length: 5
+              pos: 13322
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq(Long.valueOf(v));
+                children: []
+                pos: 13362
+                length: 35
+              pos: 13352
+              length: 51
+          children: []
+          pos: 13322
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 13681
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 13692
+                length: 6
+              pos: 13669
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq(Long.valueOf(v));
+                children: []
+                pos: 13710
+                length: 35
+              pos: 13700
+              length: 51
+          children: []
+          pos: 13669
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 14028
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 14039
+                length: 6
+              pos: 14016
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq(Character.valueOf(v));
+                children: []
+                pos: 14057
+                length: 40
+              pos: 14047
+              length: 56
+          children: []
+          pos: 14016
+          length: 87
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 14742
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 14752
+                length: 8
+              pos: 14712
+              length: 103
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct((Comparable<?>) v);
+                children: []
+                pos: 14772
+                length: 36
+              pos: 14762
+              length: 53
+          children: []
+          pos: 14712
+          length: 103
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 15264
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 15274
+                length: 15
+              pos: 15250
+              length: 218
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final long sumFreq = getSumFreq();
+                children: []
+                pos: 15301
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: sumFreq
+                            children: []
+                            pos: 15348
+                            length: 7
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 15359
+                            length: 1
+                        children: []
+                        pos: 15348
+                        length: 12
+                    children: []
+                    pos: 15347
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return Double.NaN;
+                    children: []
+                    pos: 15376
+                    length: 18
+                  pos: 15362
+                  length: 42
+                pos: 15344
+                length: 60
+              - type: return_statement
+                fields:
+                  text: return (double) getCumFreq(v) / (double) sumFreq;
+                children: []
+                pos: 15413
+                length: 49
+              pos: 15291
+              length: 177
+          children: []
+          pos: 15250
+          length: 218
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 15802
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 15812
+                length: 5
+              pos: 15788
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct(Long.valueOf(v));
+                children: []
+                pos: 15829
+                length: 34
+              pos: 15819
+              length: 50
+          children: []
+          pos: 15788
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 16203
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 16213
+                length: 6
+              pos: 16189
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct(Long.valueOf(v));
+                children: []
+                pos: 16231
+                length: 34
+              pos: 16221
+              length: 50
+          children: []
+          pos: 16189
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 16605
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 16615
+                length: 6
+              pos: 16591
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct(Character.valueOf(v));
+                children: []
+                pos: 16633
+                length: 39
+              pos: 16623
+              length: 55
+          children: []
+          pos: 16591
+          length: 87
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: NaturalComparator
+              children: []
+              pos: 16861
+              length: 17
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private static final long serialVersionUID = -3852193713161395148L;
+                children: []
+                pos: 17013
+                length: 67
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: compare
+                    children: []
+                    pos: 17827
+                    length: 7
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Comparable<T> o1
+                      children: []
+                      pos: 17835
+                      length: 16
+                    pos: 17777
+                    length: 146
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return o1.compareTo((T) o2);
+                      children: []
+                      pos: 17885
+                      length: 28
+                    pos: 17871
+                    length: 52
+                children: []
+                pos: 17777
+                length: 146
+              pos: 16840
+              length: 1089
+          children: []
+          pos: 16840
+          length: 1089
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 17985
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17960
+              length: 221
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int prime = 31;
+                children: []
+                pos: 18006
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: int result = 1;
+                children: []
+                pos: 18036
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: |-
+                    result = prime * result +
+                                     ((freqTable == null) ? 0 : freqTable.hashCode());
+                children: []
+                pos: 18060
+                length: 92
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 18161
+                length: 14
+              pos: 17996
+              length: 185
+          children: []
+          pos: 17960
+          length: 221
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 18241
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object obj
+                children: []
+                pos: 18248
+                length: 10
+              pos: 18212
+              length: 472
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 18274
+                            length: 4
+                          right:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 18282
+                            length: 3
+                        children: []
+                        pos: 18274
+                        length: 11
+                    children: []
+                    pos: 18273
+                    length: 13
+                children:
+                - type: return_statement
+                  fields:
+                    text: return true;
+                  children: []
+                  pos: 18299
+                  length: 12
+                pos: 18270
+                length: 41
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 18324
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18331
+                            length: 4
+                        children: []
+                        pos: 18324
+                        length: 11
+                    children: []
+                    pos: 18323
+                    length: 13
+                children:
+                - type: return_statement
+                  fields:
+                    text: return false;
+                  children: []
+                  pos: 18349
+                  length: 13
+                pos: 18320
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(obj instanceof Frequency)"
+                        children: []
+                        pos: 18375
+                        length: 27
+                    children: []
+                    pos: 18374
+                    length: 29
+                children:
+                - type: return_statement
+                  fields:
+                    text: return false;
+                  children: []
+                  pos: 18416
+                  length: 13
+                pos: 18371
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: Frequency other = (Frequency) obj;
+                children: []
+                pos: 18438
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: freqTable
+                            children: []
+                            pos: 18485
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18498
+                            length: 4
+                        children: []
+                        pos: 18485
+                        length: 17
+                    children: []
+                    pos: 18484
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: field_access
+                                fields:
+                                  text: other.freqTable
+                                children: []
+                                pos: 18522
+                                length: 15
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 18541
+                                length: 4
+                            children: []
+                            pos: 18522
+                            length: 23
+                        children: []
+                        pos: 18521
+                        length: 25
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return false;
+                      children: []
+                      pos: 18563
+                      length: 13
+                    pos: 18518
+                    length: 58
+                  pos: 18504
+                  length: 82
+                pos: 18481
+                length: 176
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 18666
+                length: 12
+              pos: 18260
+              length: 424
+          children: []
+          pos: 18212
+          length: 472
+        pos: 1955
+        length: 16732
+    children: []
+    pos: 1955
+    length: 16732
+  pos: 0
+  length: 18688
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Frequency
+        children: []
+        pos: 1968
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -3845586908418844111L;
+          children: []
+          pos: 2052
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final TreeMap<Comparable<?>, Long> freqTable;
+          children: []
+          pos: 2158
+          length: 53
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public Frequency() {
+                      freqTable = new TreeMap<Comparable<?>, Long>();
+                  }
+          children: []
+          pos: 2261
+          length: 82
+        - type: constructor_declaration
+          fields:
+            text: |-
+              @SuppressWarnings("unchecked")
+                  public Frequency(Comparator<?> comparator) {
+                      freqTable = new TreeMap<Comparable<?>, Long>((Comparator<? super Comparable<?>>) comparator);
+                  }
+          children: []
+          pos: 2492
+          length: 187
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 2853
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2825
+              length: 767
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: NumberFormat nf = NumberFormat.getPercentInstance();
+                children: []
+                pos: 2874
+                length: 52
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuffer outBuffer = new StringBuffer();
+                children: []
+                pos: 2935
+                length: 44
+              - type: expression_statement
+                fields:
+                  text: outBuffer.append("Value \t Freq. \t Pct. \t Cum Pct. \n");
+                children: []
+                pos: 2988
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<Comparable<?>> iter = freqTable.keySet().iterator();
+                children: []
+                pos: 3055
+                length: 61
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (iter.hasNext()) {
+                                Comparable<?> value = iter.next();
+                                outBuffer.append(value);
+                                outBuffer.append('\t');
+                                outBuffer.append(getCount(value));
+                                outBuffer.append('\t');
+                                outBuffer.append(nf.format(getPct(value)));
+                                outBuffer.append('\t');
+                                outBuffer.append(nf.format(getCumPct(value)));
+                                outBuffer.append('\n');
+                            }
+                children: []
+                pos: 3125
+                length: 424
+              - type: return_statement
+                fields:
+                  text: return outBuffer.toString();
+                children: []
+                pos: 3558
+                length: 28
+              pos: 2864
+              length: 728
+          children: []
+          pos: 2825
+          length: 767
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 4080
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 4089
+                length: 8
+              pos: 4052
+              length: 340
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Comparable<?>
+                        children: []
+                        pos: 4113
+                        length: 26
+                    children: []
+                    pos: 4112
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: addValue((Comparable<?>) v);
+                    children: []
+                    pos: 4154
+                    length: 28
+                  pos: 4140
+                  length: 52
+                pos: 4109
+                length: 277
+              pos: 4099
+              length: 293
+          children: []
+          pos: 4052
+          length: 340
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 4766
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 4775
+                length: 15
+              pos: 4754
+              length: 750
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Comparable<?> obj = v;
+                children: []
+                pos: 4801
+                length: 22
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Integer
+                        children: []
+                        pos: 4836
+                        length: 20
+                    children: []
+                    pos: 4835
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: obj = Long.valueOf(((Integer) v).longValue());
+                    children: []
+                    pos: 4871
+                    length: 46
+                  pos: 4858
+                  length: 69
+                pos: 4832
+                length: 95
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Long count = freqTable.get(obj);
+                      children: []
+                      pos: 4954
+                      length: 32
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: count
+                                  children: []
+                                  pos: 5003
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 5012
+                                  length: 4
+                              children: []
+                              pos: 5003
+                              length: 13
+                          children: []
+                          pos: 5002
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: freqTable.put(obj, Long.valueOf(1));
+                          children: []
+                          pos: 5036
+                          length: 36
+                        pos: 5018
+                        length: 68
+                      pos: 4999
+                      length: 181
+                    pos: 4940
+                    length: 250
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                      //TreeMap will throw ClassCastException if v is not comparable
+                                      throw MathRuntimeException.createIllegalArgumentException(
+                                            "instance of class {0} not comparable to existing values",
+                                            v.getClass().getName());
+                                  }
+                      children: []
+                      pos: 5191
+                      length: 307
+                    pos: 4936
+                    length: 562
+                children: []
+                pos: 4936
+                length: 562
+              pos: 4791
+              length: 713
+          children: []
+          pos: 4754
+          length: 750
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 5623
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 5632
+                length: 5
+              pos: 5611
+              length: 70
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Long.valueOf(v));
+                children: []
+                pos: 5649
+                length: 26
+              pos: 5639
+              length: 42
+          children: []
+          pos: 5611
+          length: 70
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 5845
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Integer v
+                children: []
+                pos: 5854
+                length: 9
+              pos: 5833
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Long.valueOf(v.longValue()));
+                children: []
+                pos: 5875
+                length: 38
+              pos: 5865
+              length: 54
+          children: []
+          pos: 5833
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 6038
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 6047
+                length: 6
+              pos: 6026
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Long.valueOf(v));
+                children: []
+                pos: 6065
+                length: 26
+              pos: 6055
+              length: 42
+          children: []
+          pos: 6026
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addValue
+              children: []
+              pos: 6216
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 6225
+                length: 6
+              pos: 6204
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addValue(Character.valueOf(v));
+                children: []
+                pos: 6243
+                length: 31
+              pos: 6233
+              length: 47
+          children: []
+          pos: 6204
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clear
+              children: []
+              pos: 6336
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6324
+              length: 54
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: freqTable.clear();
+                children: []
+                pos: 6354
+                length: 18
+              pos: 6344
+              length: 34
+          children: []
+          pos: 6324
+          length: 54
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: valuesIterator
+              children: []
+              pos: 6768
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6737
+              length: 101
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return freqTable.keySet().iterator();
+                children: []
+                pos: 6795
+                length: 37
+              pos: 6785
+              length: 53
+          children: []
+          pos: 6737
+          length: 101
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSumFreq
+              children: []
+              pos: 7045
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7033
+              length: 244
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long result = 0;
+                children: []
+                pos: 7068
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<Long> iterator = freqTable.values().iterator();
+                children: []
+                pos: 7093
+                length: 56
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (iterator.hasNext())  {
+                                result += iterator.next().longValue();
+                            }
+                children: []
+                pos: 7158
+                length: 90
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 7257
+                length: 14
+              pos: 7058
+              length: 219
+          children: []
+          pos: 7033
+          length: 244
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 7567
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 7576
+                length: 8
+              pos: 7539
+              length: 98
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount((Comparable<?>) v);
+                children: []
+                pos: 7596
+                length: 35
+              pos: 7586
+              length: 51
+          children: []
+          pos: 7539
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 7840
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 7849
+                length: 15
+              pos: 7828
+              length: 495
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Integer
+                        children: []
+                        pos: 7880
+                        length: 20
+                    children: []
+                    pos: 7879
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getCount(((Integer) v).longValue());
+                    children: []
+                    pos: 7916
+                    length: 43
+                  pos: 7902
+                  length: 67
+                pos: 7876
+                length: 93
+              - type: local_variable_declaration
+                fields:
+                  text: long result = 0;
+                children: []
+                pos: 7978
+                length: 16
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Long count =  freqTable.get(v);
+                      children: []
+                      pos: 8021
+                      length: 31
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: count
+                                  children: []
+                                  pos: 8069
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 8078
+                                  length: 4
+                              children: []
+                              pos: 8069
+                              length: 13
+                          children: []
+                          pos: 8068
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: result = count.longValue();
+                          children: []
+                          pos: 8102
+                          length: 27
+                        pos: 8084
+                        length: 59
+                      pos: 8065
+                      length: 78
+                    pos: 8007
+                    length: 146
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                      // ignore and return 0 -- ClassCastException will be thrown if value is not comparable
+                                  }
+                      children: []
+                      pos: 8154
+                      length: 140
+                    pos: 8003
+                    length: 291
+                children: []
+                pos: 8003
+                length: 291
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 8303
+                length: 14
+              pos: 7866
+              length: 457
+          children: []
+          pos: 7828
+          length: 495
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 8477
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 8486
+                length: 5
+              pos: 8465
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount(Long.valueOf(v));
+                children: []
+                pos: 8503
+                length: 33
+              pos: 8493
+              length: 49
+          children: []
+          pos: 8465
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 8696
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 8705
+                length: 6
+              pos: 8684
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount(Long.valueOf(v));
+                children: []
+                pos: 8723
+                length: 33
+              pos: 8713
+              length: 49
+          children: []
+          pos: 8684
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCount
+              children: []
+              pos: 8916
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 8925
+                length: 6
+              pos: 8904
+              length: 83
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCount(Character.valueOf(v));
+                children: []
+                pos: 8943
+                length: 38
+              pos: 8933
+              length: 54
+          children: []
+          pos: 8904
+          length: 83
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 9458
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 9465
+                length: 8
+              pos: 9428
+              length: 99
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct((Comparable<?>) v);
+                children: []
+                pos: 9485
+                length: 36
+              pos: 9475
+              length: 52
+          children: []
+          pos: 9428
+          length: 99
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 9843
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 9850
+                length: 15
+              pos: 9829
+              length: 213
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final long sumFreq = getSumFreq();
+                children: []
+                pos: 9877
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: sumFreq
+                            children: []
+                            pos: 9924
+                            length: 7
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 9935
+                            length: 1
+                        children: []
+                        pos: 9924
+                        length: 12
+                    children: []
+                    pos: 9923
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return Double.NaN;
+                    children: []
+                    pos: 9952
+                    length: 18
+                  pos: 9938
+                  length: 42
+                pos: 9920
+                length: 60
+              - type: return_statement
+                fields:
+                  text: return (double) getCount(v) / (double) sumFreq;
+                children: []
+                pos: 9989
+                length: 47
+              pos: 9867
+              length: 175
+          children: []
+          pos: 9829
+          length: 213
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 10274
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 10281
+                length: 5
+              pos: 10260
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getPct(Long.valueOf(v));
+                children: []
+                pos: 10298
+                length: 31
+              pos: 10288
+              length: 47
+          children: []
+          pos: 10260
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 10567
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 10574
+                length: 6
+              pos: 10553
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getPct(Long.valueOf(v));
+                children: []
+                pos: 10592
+                length: 31
+              pos: 10582
+              length: 47
+          children: []
+          pos: 10553
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPct
+              children: []
+              pos: 10861
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 10868
+                length: 6
+              pos: 10847
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getPct(Character.valueOf(v));
+                children: []
+                pos: 10886
+                length: 36
+              pos: 10876
+              length: 52
+          children: []
+          pos: 10847
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 11392
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 11403
+                length: 8
+              pos: 11364
+              length: 102
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq((Comparable<?>) v);
+                children: []
+                pos: 11423
+                length: 37
+              pos: 11413
+              length: 53
+          children: []
+          pos: 11364
+          length: 102
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 11783
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 11794
+                length: 15
+              pos: 11732
+              length: 1327
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: getSumFreq()
+                            children: []
+                            pos: 11825
+                            length: 12
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 11841
+                            length: 1
+                        children: []
+                        pos: 11825
+                        length: 17
+                    children: []
+                    pos: 11824
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 0;
+                    children: []
+                    pos: 11858
+                    length: 9
+                  pos: 11844
+                  length: 33
+                pos: 11821
+                length: 56
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: v instanceof Integer
+                        children: []
+                        pos: 11890
+                        length: 20
+                    children: []
+                    pos: 11889
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getCumFreq(((Integer) v).longValue());
+                    children: []
+                    pos: 11926
+                    length: 45
+                  pos: 11912
+                  length: 69
+                pos: 11886
+                length: 95
+              - type: local_variable_declaration
+                fields:
+                  text: Comparator<Comparable<?>> c = (Comparator<Comparable<?>>)
+                    freqTable.comparator();
+                children: []
+                pos: 11990
+                length: 81
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: c
+                            children: []
+                            pos: 12084
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12089
+                            length: 4
+                        children: []
+                        pos: 12084
+                        length: 9
+                    children: []
+                    pos: 12083
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: c = new NaturalComparator();
+                    children: []
+                    pos: 12109
+                    length: 28
+                  pos: 12095
+                  length: 52
+                pos: 12080
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: long result = 0;
+                children: []
+                pos: 12156
+                length: 16
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Long value = freqTable.get(v);
+                      children: []
+                      pos: 12200
+                      length: 30
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: value
+                                  children: []
+                                  pos: 12247
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 12256
+                                  length: 4
+                              children: []
+                              pos: 12247
+                              length: 13
+                          children: []
+                          pos: 12246
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: result = value.longValue();
+                          children: []
+                          pos: 12280
+                          length: 27
+                        pos: 12262
+                        length: 59
+                      pos: 12243
+                      length: 78
+                    pos: 12186
+                    length: 145
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                      return result;   // v is not comparable
+                                  }
+                      children: []
+                      pos: 12332
+                      length: 93
+                    pos: 12182
+                    length: 243
+                children: []
+                pos: 12182
+                length: 243
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: c.compare(v, freqTable.firstKey())
+                            children: []
+                            pos: 12439
+                            length: 34
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 12476
+                            length: 1
+                        children: []
+                        pos: 12439
+                        length: 38
+                    children: []
+                    pos: 12438
+                    length: 40
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return 0;
+                    children: []
+                    pos: 12493
+                    length: 9
+                  pos: 12479
+                  length: 80
+                pos: 12435
+                length: 124
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_or_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: c.compare(v, freqTable.lastKey())
+                            children: []
+                            pos: 12573
+                            length: 33
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 12610
+                            length: 1
+                        children: []
+                        pos: 12573
+                        length: 38
+                    children: []
+                    pos: 12572
+                    length: 40
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getSumFreq();
+                    children: []
+                    pos: 12627
+                    length: 20
+                  pos: 12613
+                  length: 99
+                pos: 12569
+                length: 143
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator<Comparable<?>> values = valuesIterator();
+                children: []
+                pos: 12722
+                length: 50
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (values.hasNext()) {
+                                Comparable<?> nextValue = values.next();
+                                if (c.compare(v, nextValue) > 0) {
+                                    result += getCount(nextValue);
+                                } else {
+                                    return result;
+                                }
+                            }
+                children: []
+                pos: 12781
+                length: 249
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 13039
+                length: 14
+              pos: 11811
+              length: 1248
+          children: []
+          pos: 11732
+          length: 1327
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 13337
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 13348
+                length: 5
+              pos: 13325
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq(Long.valueOf(v));
+                children: []
+                pos: 13365
+                length: 35
+              pos: 13355
+              length: 51
+          children: []
+          pos: 13325
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 13684
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 13695
+                length: 6
+              pos: 13672
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq(Long.valueOf(v));
+                children: []
+                pos: 13713
+                length: 35
+              pos: 13703
+              length: 51
+          children: []
+          pos: 13672
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumFreq
+              children: []
+              pos: 14031
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 14042
+                length: 6
+              pos: 14019
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumFreq(Character.valueOf(v));
+                children: []
+                pos: 14060
+                length: 40
+              pos: 14050
+              length: 56
+          children: []
+          pos: 14019
+          length: 87
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 14745
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object v
+                children: []
+                pos: 14755
+                length: 8
+              pos: 14715
+              length: 103
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct((Comparable<?>) v);
+                children: []
+                pos: 14775
+                length: 36
+              pos: 14765
+              length: 53
+          children: []
+          pos: 14715
+          length: 103
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 15267
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Comparable<?> v
+                children: []
+                pos: 15277
+                length: 15
+              pos: 15253
+              length: 218
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final long sumFreq = getSumFreq();
+                children: []
+                pos: 15304
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: sumFreq
+                            children: []
+                            pos: 15351
+                            length: 7
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 15362
+                            length: 1
+                        children: []
+                        pos: 15351
+                        length: 12
+                    children: []
+                    pos: 15350
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return Double.NaN;
+                    children: []
+                    pos: 15379
+                    length: 18
+                  pos: 15365
+                  length: 42
+                pos: 15347
+                length: 60
+              - type: return_statement
+                fields:
+                  text: return (double) getCumFreq(v) / (double) sumFreq;
+                children: []
+                pos: 15416
+                length: 49
+              pos: 15294
+              length: 177
+          children: []
+          pos: 15253
+          length: 218
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 15805
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int v
+                children: []
+                pos: 15815
+                length: 5
+              pos: 15791
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct(Long.valueOf(v));
+                children: []
+                pos: 15832
+                length: 34
+              pos: 15822
+              length: 50
+          children: []
+          pos: 15791
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 16206
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long v
+                children: []
+                pos: 16216
+                length: 6
+              pos: 16192
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct(Long.valueOf(v));
+                children: []
+                pos: 16234
+                length: 34
+              pos: 16224
+              length: 50
+          children: []
+          pos: 16192
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCumPct
+              children: []
+              pos: 16608
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: char v
+                children: []
+                pos: 16618
+                length: 6
+              pos: 16594
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getCumPct(Character.valueOf(v));
+                children: []
+                pos: 16636
+                length: 39
+              pos: 16626
+              length: 55
+          children: []
+          pos: 16594
+          length: 87
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: NaturalComparator
+              children: []
+              pos: 16864
+              length: 17
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private static final long serialVersionUID = -3852193713161395148L;
+                children: []
+                pos: 17016
+                length: 67
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: compare
+                    children: []
+                    pos: 17830
+                    length: 7
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Comparable<T> o1
+                      children: []
+                      pos: 17838
+                      length: 16
+                    pos: 17780
+                    length: 146
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return o1.compareTo((T) o2);
+                      children: []
+                      pos: 17888
+                      length: 28
+                    pos: 17874
+                    length: 52
+                children: []
+                pos: 17780
+                length: 146
+              pos: 16843
+              length: 1089
+          children: []
+          pos: 16843
+          length: 1089
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 17988
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17963
+              length: 221
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int prime = 31;
+                children: []
+                pos: 18009
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: int result = 1;
+                children: []
+                pos: 18039
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: |-
+                    result = prime * result +
+                                     ((freqTable == null) ? 0 : freqTable.hashCode());
+                children: []
+                pos: 18063
+                length: 92
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 18164
+                length: 14
+              pos: 17999
+              length: 185
+          children: []
+          pos: 17963
+          length: 221
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 18244
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object obj
+                children: []
+                pos: 18251
+                length: 10
+              pos: 18215
+              length: 472
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 18277
+                            length: 4
+                          right:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 18285
+                            length: 3
+                        children: []
+                        pos: 18277
+                        length: 11
+                    children: []
+                    pos: 18276
+                    length: 13
+                children:
+                - type: return_statement
+                  fields:
+                    text: return true;
+                  children: []
+                  pos: 18302
+                  length: 12
+                pos: 18273
+                length: 41
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 18327
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18334
+                            length: 4
+                        children: []
+                        pos: 18327
+                        length: 11
+                    children: []
+                    pos: 18326
+                    length: 13
+                children:
+                - type: return_statement
+                  fields:
+                    text: return false;
+                  children: []
+                  pos: 18352
+                  length: 13
+                pos: 18323
+                length: 42
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(obj instanceof Frequency)"
+                        children: []
+                        pos: 18378
+                        length: 27
+                    children: []
+                    pos: 18377
+                    length: 29
+                children:
+                - type: return_statement
+                  fields:
+                    text: return false;
+                  children: []
+                  pos: 18419
+                  length: 13
+                pos: 18374
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: Frequency other = (Frequency) obj;
+                children: []
+                pos: 18441
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: freqTable
+                            children: []
+                            pos: 18488
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18501
+                            length: 4
+                        children: []
+                        pos: 18488
+                        length: 17
+                    children: []
+                    pos: 18487
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: field_access
+                                fields:
+                                  text: other.freqTable
+                                children: []
+                                pos: 18525
+                                length: 15
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 18544
+                                length: 4
+                            children: []
+                            pos: 18525
+                            length: 23
+                        children: []
+                        pos: 18524
+                        length: 25
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return false;
+                      children: []
+                      pos: 18566
+                      length: 13
+                    pos: 18521
+                    length: 58
+                  pos: 18507
+                  length: 82
+                pos: 18484
+                length: 176
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 18669
+                length: 12
+              pos: 18263
+              length: 424
+          children: []
+          pos: 18215
+          length: 472
+        pos: 1955
+        length: 16735
+    children: []
+    pos: 1955
+    length: 16735
+  pos: 0
+  length: 18691
 text_diff: "--- before\n+++ after\n@@ -300,7 +300,7 @@\n      */\n     @Deprecated\n
   \    public double getPct(Object v) {\n-        return getPct((Comparable<?>) v);\n+
   \       return getCumPct((Comparable<?>) v);\n     }\n \n     /**\n"

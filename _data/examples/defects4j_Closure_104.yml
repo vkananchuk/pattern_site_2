@@ -1,5 +1,3157 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: UnionType
+        children: []
+        pos: 2491
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 2520
+          length: 48
+        - type: field_declaration
+          fields:
+            text: Set<JSType> alternates;
+          children: []
+          pos: 2572
+          length: 23
+        - type: constructor_declaration
+          fields:
+            text: |-
+              UnionType(JSTypeRegistry registry, Set<JSType> alternates) {
+                  super(registry);
+                  this.alternates = alternates;
+                }
+          children: []
+          pos: 2694
+          length: 119
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getAlternates
+              children: []
+              pos: 2996
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2972
+              length: 68
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return alternates;
+                children: []
+                pos: 3018
+                length: 18
+              pos: 3012
+              length: 28
+          children: []
+          pos: 2972
+          length: 68
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: forgiveUnknownNames
+              children: []
+              pos: 3068
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3044
+              length: 133
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType type : getAlternates()) {
+                          type.forgiveUnknownNames();
+                        }
+                children: []
+                pos: 3096
+                length: 77
+              pos: 3090
+              length: 87
+          children: []
+          pos: 3044
+          length: 133
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesNumberContext
+              children: []
+              pos: 3426
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3399
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.matchesNumberContext()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 3533
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 3640
+                length: 13
+              pos: 3449
+              length: 208
+          children: []
+          pos: 3399
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesStringContext
+              children: []
+              pos: 4157
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4130
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.matchesStringContext()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 4264
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 4371
+                length: 13
+              pos: 4180
+              length: 208
+          children: []
+          pos: 4130
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesObjectContext
+              children: []
+              pos: 5073
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5046
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.matchesObjectContext()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 5180
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 5287
+                length: 13
+              pos: 5096
+              length: 208
+          children: []
+          pos: 5046
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findPropertyType
+              children: []
+              pos: 5334
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 5351
+                length: 19
+              pos: 5308
+              length: 621
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: JSType propertyType = null;
+                children: []
+                pos: 5378
+                length: 27
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : getAlternates()) {
+                          // Filter out the null/undefined type.
+                          if (alternate.isNullType() || alternate.isVoidType()) {
+                            continue;
+                          }
+
+                          JSType altPropertyType = alternate.findPropertyType(propertyName);
+                          if (altPropertyType == null) {
+                            continue;
+                          }
+
+                          if (propertyType == null) {
+                            propertyType = altPropertyType;
+                          } else {
+                            propertyType = propertyType.getLeastSupertype(altPropertyType);
+                          }
+                        }
+                children: []
+                pos: 5411
+                length: 488
+              - type: return_statement
+                fields:
+                  text: return propertyType;
+                children: []
+                pos: 5905
+                length: 20
+              pos: 5372
+              length: 557
+          children: []
+          pos: 5308
+          length: 621
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canAssignTo
+              children: []
+              pos: 5960
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 5972
+                length: 11
+              pos: 5933
+              length: 249
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: boolean canAssign = true;
+                children: []
+                pos: 5991
+                length: 25
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isUnknownType()) {
+                            return true;
+                          }
+                          canAssign &= t.canAssignTo(that);
+                        }
+                children: []
+                pos: 6021
+                length: 135
+              - type: return_statement
+                fields:
+                  text: return canAssign;
+                children: []
+                pos: 6161
+                length: 17
+              pos: 5985
+              length: 197
+          children: []
+          pos: 5933
+          length: 249
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canBeCalled
+              children: []
+              pos: 6213
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6186
+              length: 163
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (!t.canBeCalled()) {
+                            return false;
+                          }
+                        }
+                children: []
+                pos: 6233
+                length: 95
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 6333
+                length: 12
+              pos: 6227
+              length: 122
+          children: []
+          pos: 6186
+          length: 163
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: restrictByNotNullOrUndefined
+              children: []
+              pos: 6379
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6353
+              length: 264
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder restricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 6416
+                length: 61
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          restricted.addAlternate(t.restrictByNotNullOrUndefined());
+                        }
+                children: []
+                pos: 6482
+                length: 100
+              - type: return_statement
+                fields:
+                  text: return restricted.build();
+                children: []
+                pos: 6587
+                length: 26
+              pos: 6410
+              length: 207
+          children: []
+          pos: 6353
+          length: 264
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: testForEquality
+              children: []
+              pos: 6653
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 6669
+                length: 11
+              pos: 6621
+              length: 332
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: TernaryValue result = null;
+                children: []
+                pos: 6688
+                length: 27
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          TernaryValue test = t.testForEquality(that);
+                          if (result == null) {
+                            result = test;
+                          } else if (!result.equals(test)) {
+                            return UNKNOWN;
+                          }
+                        }
+                children: []
+                pos: 6720
+                length: 210
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 6935
+                length: 14
+              pos: 6682
+              length: 271
+          children: []
+          pos: 6621
+          length: 332
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isNullable
+              children: []
+              pos: 7273
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7246
+              length: 160
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isNullable()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 7292
+                length: 92
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7389
+                length: 13
+              pos: 7286
+              length: 120
+          children: []
+          pos: 7246
+          length: 160
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isUnknownType
+              children: []
+              pos: 7437
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7410
+              length: 166
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isUnknownType()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 7459
+                length: 95
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7559
+                length: 13
+              pos: 7453
+              length: 123
+          children: []
+          pos: 7410
+          length: 166
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLeastSupertype
+              children: []
+              pos: 7606
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 7624
+                length: 11
+              pos: 7580
+              length: 300
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!that.isUnknownType()"
+                        children: []
+                        pos: 7647
+                        length: 21
+                    children: []
+                    pos: 7646
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (JSType alternate : alternates) {
+                                if (!alternate.isUnknownType() && that.isSubtype(alternate)) {
+                                  return this;
+                                }
+                              }
+                    children: []
+                    pos: 7678
+                    length: 149
+                  pos: 7670
+                  length: 163
+                pos: 7643
+                length: 190
+              - type: return_statement
+                fields:
+                  text: return getLeastSupertype(this, that);
+                children: []
+                pos: 7839
+                length: 37
+              pos: 7637
+              length: 243
+          children: []
+          pos: 7580
+          length: 300
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: meet
+              children: []
+              pos: 7891
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 7896
+                length: 11
+              pos: 7884
+              length: 793
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder builder = new UnionTypeBuilder(registry);
+                children: []
+                pos: 7915
+                length: 58
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : alternates) {
+                          if (alternate.isSubtype(that)) {
+                            builder.addAlternate(alternate);
+                          }
+                        }
+                children: []
+                pos: 7978
+                length: 131
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: that instanceof UnionType
+                        children: []
+                        pos: 8119
+                        length: 25
+                    children: []
+                    pos: 8118
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (JSType otherAlternate : ((UnionType) that).alternates) {
+                                if (otherAlternate.isSubtype(this)) {
+                                  builder.addAlternate(otherAlternate);
+                                }
+                              }
+                    children: []
+                    pos: 8154
+                    length: 173
+                  pos: 8146
+                  length: 187
+                pos: 8115
+                length: 291
+              - type: local_variable_declaration
+                fields:
+                  text: JSType result = builder.build();
+                children: []
+                pos: 8411
+                length: 32
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!result.isNoType()"
+                        children: []
+                        pos: 8452
+                        length: 18
+                    children: []
+                    pos: 8451
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return result;
+                    children: []
+                    pos: 8480
+                    length: 14
+                  pos: 8472
+                  length: 28
+                pos: 8448
+                length: 225
+              pos: 7909
+              length: 768
+          children: []
+          pos: 7884
+          length: 793
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 8829
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object object
+                children: []
+                pos: 8836
+                length: 13
+              pos: 8802
+              length: 224
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: object instanceof UnionType
+                        children: []
+                        pos: 8861
+                        length: 27
+                    children: []
+                    pos: 8860
+                    length: 29
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: UnionType that = (UnionType) object;
+                    children: []
+                    pos: 8898
+                    length: 36
+                  - type: return_statement
+                    fields:
+                      text: return alternates.equals(that.alternates);
+                    children: []
+                    pos: 8941
+                    length: 42
+                  pos: 8890
+                  length: 99
+                pos: 8857
+                length: 165
+              pos: 8851
+              length: 175
+          children: []
+          pos: 8802
+          length: 224
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 9053
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9030
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return alternates.hashCode();
+                children: []
+                pos: 9070
+                length: 29
+              pos: 9064
+              length: 39
+          children: []
+          pos: 9030
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isUnionType
+              children: []
+              pos: 9134
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9107
+              length: 63
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 9154
+                length: 12
+              pos: 9148
+              length: 22
+          children: []
+          pos: 9107
+          length: 63
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isObject
+              children: []
+              pos: 9201
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9174
+              length: 173
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : alternates) {
+                          if (!alternate.isObject()) {
+                            return false;
+                          }
+                        }
+                children: []
+                pos: 9218
+                length: 108
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 9331
+                length: 12
+              pos: 9212
+              length: 135
+          children: []
+          pos: 9174
+          length: 173
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: contains
+              children: []
+              pos: 9750
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType alternate
+                children: []
+                pos: 9759
+                length: 16
+              pos: 9735
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return alternates.contains(alternate);
+                children: []
+                pos: 9783
+                length: 38
+              pos: 9777
+              length: 48
+          children: []
+          pos: 9735
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedUnion
+              children: []
+              pos: 10303
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 10322
+                length: 11
+              pos: 10289
+              length: 285
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder restricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 10341
+                length: 61
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isUnknownType() || !t.isSubtype(type)) {
+                            restricted.addAlternate(t);
+                          }
+                        }
+                children: []
+                pos: 10407
+                length: 132
+              - type: return_statement
+                fields:
+                  text: return restricted.build();
+                children: []
+                pos: 10544
+                length: 26
+              pos: 10335
+              length: 239
+          children: []
+          pos: 10289
+          length: 285
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 10602
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10578
+              length: 458
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuilder result = new StringBuilder();
+                children: []
+                pos: 10619
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: boolean firstAlternate = true;
+                children: []
+                pos: 10667
+                length: 30
+              - type: expression_statement
+                fields:
+                  text: result.append("(");
+                children: []
+                pos: 10703
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: SortedSet<JSType> sorted = new TreeSet<JSType>(ALPHA);
+                children: []
+                pos: 10727
+                length: 54
+              - type: expression_statement
+                fields:
+                  text: sorted.addAll(alternates);
+                children: []
+                pos: 10786
+                length: 26
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : sorted) {
+                          if (!firstAlternate) {
+                            result.append("|");
+                          }
+                          result.append(t.toString());
+                          firstAlternate = false;
+                        }
+                children: []
+                pos: 10817
+                length: 161
+              - type: expression_statement
+                fields:
+                  text: result.append(")");
+                children: []
+                pos: 10983
+                length: 19
+              - type: return_statement
+                fields:
+                  text: return result.toString();
+                children: []
+                pos: 11007
+                length: 25
+              pos: 10613
+              length: 423
+          children: []
+          pos: 10578
+          length: 458
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSubtype
+              children: []
+              pos: 11067
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 11077
+                length: 11
+              pos: 11040
+              length: 186
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          if (!element.isSubtype(that)) {
+                            return false;
+                          }
+                        }
+                children: []
+                pos: 11096
+                length: 109
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 11210
+                length: 12
+              pos: 11090
+              length: 136
+          children: []
+          pos: 11040
+          length: 186
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedTypeGivenToBooleanOutcome
+              children: []
+              pos: 11256
+              length: 38
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean outcome
+                children: []
+                pos: 11295
+                length: 15
+              pos: 11230
+              length: 370
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder restricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 11359
+                length: 61
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          restricted.addAlternate(
+                              element.getRestrictedTypeGivenToBooleanOutcome(outcome));
+                        }
+                children: []
+                pos: 11425
+                length: 140
+              - type: return_statement
+                fields:
+                  text: return restricted.build();
+                children: []
+                pos: 11570
+                length: 26
+              pos: 11312
+              length: 288
+          children: []
+          pos: 11230
+          length: 370
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPossibleToBooleanOutcomes
+              children: []
+              pos: 11641
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11604
+              length: 342
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: BooleanLiteralSet literals = BooleanLiteralSet.EMPTY;
+                children: []
+                pos: 11678
+                length: 53
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          literals = literals.union(element.getPossibleToBooleanOutcomes());
+                          if (literals == BooleanLiteralSet.BOTH) {
+                            break;
+                          }
+                        }
+                children: []
+                pos: 11736
+                length: 185
+              - type: return_statement
+                fields:
+                  text: return literals;
+                children: []
+                pos: 11926
+                length: 16
+              pos: 11672
+              length: 274
+          children: []
+          pos: 11604
+          length: 342
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypesUnderEquality
+              children: []
+              pos: 11978
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 12000
+                length: 11
+              pos: 11950
+              length: 566
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thisRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12019
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thatRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12089
+                length: 65
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          TypePair p = element.getTypesUnderEquality(that);
+                          if (p.typeA != null) {
+                            thisRestricted.addAlternate(p.typeA);
+                          }
+                          if (p.typeB != null) {
+                            thatRestricted.addAlternate(p.typeB);
+                          }
+                        }
+                children: []
+                pos: 12159
+                length: 263
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new TypePair(
+                            thisRestricted.build(),
+                            thatRestricted.build());
+                children: []
+                pos: 12427
+                length: 85
+              pos: 12013
+              length: 503
+          children: []
+          pos: 11950
+          length: 566
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypesUnderInequality
+              children: []
+              pos: 12548
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 12572
+                length: 11
+              pos: 12520
+              length: 570
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thisRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12591
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thatRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12661
+                length: 65
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          TypePair p = element.getTypesUnderInequality(that);
+                          if (p.typeA != null) {
+                            thisRestricted.addAlternate(p.typeA);
+                          }
+                          if (p.typeB != null) {
+                            thatRestricted.addAlternate(p.typeB);
+                          }
+                        }
+                children: []
+                pos: 12731
+                length: 265
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new TypePair(
+                            thisRestricted.build(),
+                            thatRestricted.build());
+                children: []
+                pos: 13001
+                length: 85
+              pos: 12585
+              length: 505
+          children: []
+          pos: 12520
+          length: 570
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypesUnderShallowInequality
+              children: []
+              pos: 13122
+              length: 30
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 13153
+                length: 11
+              pos: 13094
+              length: 584
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thisRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 13172
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thatRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 13242
+                length: 65
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          TypePair p = element.getTypesUnderShallowInequality(that);
+                          if (p.typeA != null) {
+                            thisRestricted.addAlternate(p.typeA);
+                          }
+                          if (p.typeB != null) {
+                            thatRestricted.addAlternate(p.typeB);
+                          }
+                        }
+                children: []
+                pos: 13312
+                length: 272
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new TypePair(
+                            thisRestricted.build(),
+                            thatRestricted.build());
+                children: []
+                pos: 13589
+                length: 85
+              pos: 13166
+              length: 512
+          children: []
+          pos: 13094
+          length: 584
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 13707
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Visitor<T> visitor
+                children: []
+                pos: 13713
+                length: 18
+              pos: 13682
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return visitor.caseUnionType(this);
+                children: []
+                pos: 13739
+                length: 35
+              pos: 13733
+              length: 45
+          children: []
+          pos: 13682
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: resolveInternal
+              children: []
+              pos: 13801
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ErrorReporter t
+                children: []
+                pos: 13817
+                length: 15
+              pos: 13782
+              length: 526
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setResolvedTypeInternal(this);
+                children: []
+                pos: 13867
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: boolean changed = false;
+                children: []
+                pos: 13936
+                length: 24
+              - type: local_variable_declaration
+                fields:
+                  text: ImmutableSet.Builder<JSType> resolvedTypes = ImmutableSet.builder();
+                children: []
+                pos: 13965
+                length: 68
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : alternates) {
+                          JSType newAlternate = alternate.resolve(t, scope);
+                          changed |= (alternate != newAlternate);
+                          resolvedTypes.add(alternate);
+                        }
+                children: []
+                pos: 14038
+                length: 182
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: changed
+                        children: []
+                        pos: 14229
+                        length: 7
+                    children: []
+                    pos: 14228
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: alternates = resolvedTypes.build();
+                    children: []
+                    pos: 14246
+                    length: 35
+                  pos: 14238
+                  length: 49
+                pos: 14225
+                length: 62
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 14292
+                length: 12
+              pos: 13861
+              length: 447
+          children: []
+          pos: 13782
+          length: 526
+        pos: 2478
+        length: 11832
+    children: []
+    pos: 2478
+    length: 11832
+  pos: 0
+  length: 14311
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: UnionType
+        children: []
+        pos: 2491
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 2520
+          length: 48
+        - type: field_declaration
+          fields:
+            text: Set<JSType> alternates;
+          children: []
+          pos: 2572
+          length: 23
+        - type: constructor_declaration
+          fields:
+            text: |-
+              UnionType(JSTypeRegistry registry, Set<JSType> alternates) {
+                  super(registry);
+                  this.alternates = alternates;
+                }
+          children: []
+          pos: 2694
+          length: 119
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getAlternates
+              children: []
+              pos: 2996
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2972
+              length: 68
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return alternates;
+                children: []
+                pos: 3018
+                length: 18
+              pos: 3012
+              length: 28
+          children: []
+          pos: 2972
+          length: 68
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: forgiveUnknownNames
+              children: []
+              pos: 3068
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3044
+              length: 133
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType type : getAlternates()) {
+                          type.forgiveUnknownNames();
+                        }
+                children: []
+                pos: 3096
+                length: 77
+              pos: 3090
+              length: 87
+          children: []
+          pos: 3044
+          length: 133
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesNumberContext
+              children: []
+              pos: 3426
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3399
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.matchesNumberContext()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 3533
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 3640
+                length: 13
+              pos: 3449
+              length: 208
+          children: []
+          pos: 3399
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesStringContext
+              children: []
+              pos: 4157
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4130
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.matchesStringContext()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 4264
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 4371
+                length: 13
+              pos: 4180
+              length: 208
+          children: []
+          pos: 4130
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchesObjectContext
+              children: []
+              pos: 5073
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5046
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.matchesObjectContext()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 5180
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 5287
+                length: 13
+              pos: 5096
+              length: 208
+          children: []
+          pos: 5046
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findPropertyType
+              children: []
+              pos: 5334
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String propertyName
+                children: []
+                pos: 5351
+                length: 19
+              pos: 5308
+              length: 621
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: JSType propertyType = null;
+                children: []
+                pos: 5378
+                length: 27
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : getAlternates()) {
+                          // Filter out the null/undefined type.
+                          if (alternate.isNullType() || alternate.isVoidType()) {
+                            continue;
+                          }
+
+                          JSType altPropertyType = alternate.findPropertyType(propertyName);
+                          if (altPropertyType == null) {
+                            continue;
+                          }
+
+                          if (propertyType == null) {
+                            propertyType = altPropertyType;
+                          } else {
+                            propertyType = propertyType.getLeastSupertype(altPropertyType);
+                          }
+                        }
+                children: []
+                pos: 5411
+                length: 488
+              - type: return_statement
+                fields:
+                  text: return propertyType;
+                children: []
+                pos: 5905
+                length: 20
+              pos: 5372
+              length: 557
+          children: []
+          pos: 5308
+          length: 621
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canAssignTo
+              children: []
+              pos: 5960
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 5972
+                length: 11
+              pos: 5933
+              length: 249
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: boolean canAssign = true;
+                children: []
+                pos: 5991
+                length: 25
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isUnknownType()) {
+                            return true;
+                          }
+                          canAssign &= t.canAssignTo(that);
+                        }
+                children: []
+                pos: 6021
+                length: 135
+              - type: return_statement
+                fields:
+                  text: return canAssign;
+                children: []
+                pos: 6161
+                length: 17
+              pos: 5985
+              length: 197
+          children: []
+          pos: 5933
+          length: 249
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canBeCalled
+              children: []
+              pos: 6213
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6186
+              length: 163
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (!t.canBeCalled()) {
+                            return false;
+                          }
+                        }
+                children: []
+                pos: 6233
+                length: 95
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 6333
+                length: 12
+              pos: 6227
+              length: 122
+          children: []
+          pos: 6186
+          length: 163
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: restrictByNotNullOrUndefined
+              children: []
+              pos: 6379
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6353
+              length: 264
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder restricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 6416
+                length: 61
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          restricted.addAlternate(t.restrictByNotNullOrUndefined());
+                        }
+                children: []
+                pos: 6482
+                length: 100
+              - type: return_statement
+                fields:
+                  text: return restricted.build();
+                children: []
+                pos: 6587
+                length: 26
+              pos: 6410
+              length: 207
+          children: []
+          pos: 6353
+          length: 264
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: testForEquality
+              children: []
+              pos: 6653
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 6669
+                length: 11
+              pos: 6621
+              length: 332
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: TernaryValue result = null;
+                children: []
+                pos: 6688
+                length: 27
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          TernaryValue test = t.testForEquality(that);
+                          if (result == null) {
+                            result = test;
+                          } else if (!result.equals(test)) {
+                            return UNKNOWN;
+                          }
+                        }
+                children: []
+                pos: 6720
+                length: 210
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 6935
+                length: 14
+              pos: 6682
+              length: 271
+          children: []
+          pos: 6621
+          length: 332
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isNullable
+              children: []
+              pos: 7273
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7246
+              length: 160
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isNullable()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 7292
+                length: 92
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7389
+                length: 13
+              pos: 7286
+              length: 120
+          children: []
+          pos: 7246
+          length: 160
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isUnknownType
+              children: []
+              pos: 7437
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7410
+              length: 166
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isUnknownType()) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 7459
+                length: 95
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7559
+                length: 13
+              pos: 7453
+              length: 123
+          children: []
+          pos: 7410
+          length: 166
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLeastSupertype
+              children: []
+              pos: 7606
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 7624
+                length: 11
+              pos: 7580
+              length: 300
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!that.isUnknownType()"
+                        children: []
+                        pos: 7647
+                        length: 21
+                    children: []
+                    pos: 7646
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (JSType alternate : alternates) {
+                                if (!alternate.isUnknownType() && that.isSubtype(alternate)) {
+                                  return this;
+                                }
+                              }
+                    children: []
+                    pos: 7678
+                    length: 149
+                  pos: 7670
+                  length: 163
+                pos: 7643
+                length: 190
+              - type: return_statement
+                fields:
+                  text: return getLeastSupertype(this, that);
+                children: []
+                pos: 7839
+                length: 37
+              pos: 7637
+              length: 243
+          children: []
+          pos: 7580
+          length: 300
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: meet
+              children: []
+              pos: 7891
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 7896
+                length: 11
+              pos: 7884
+              length: 789
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder builder = new UnionTypeBuilder(registry);
+                children: []
+                pos: 7915
+                length: 58
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : alternates) {
+                          if (alternate.isSubtype(that)) {
+                            builder.addAlternate(alternate);
+                          }
+                        }
+                children: []
+                pos: 7978
+                length: 131
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: that instanceof UnionType
+                        children: []
+                        pos: 8119
+                        length: 25
+                    children: []
+                    pos: 8118
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (JSType otherAlternate : ((UnionType) that).alternates) {
+                                if (otherAlternate.isSubtype(this)) {
+                                  builder.addAlternate(otherAlternate);
+                                }
+                              }
+                    children: []
+                    pos: 8154
+                    length: 173
+                  pos: 8146
+                  length: 187
+                pos: 8115
+                length: 291
+              - type: local_variable_declaration
+                fields:
+                  text: JSType result = builder.build();
+                children: []
+                pos: 8411
+                length: 32
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: result
+                            children: []
+                            pos: 8452
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8462
+                            length: 4
+                        children: []
+                        pos: 8452
+                        length: 14
+                    children: []
+                    pos: 8451
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return result;
+                    children: []
+                    pos: 8476
+                    length: 14
+                  pos: 8468
+                  length: 28
+                pos: 8448
+                length: 221
+              pos: 7909
+              length: 764
+          children: []
+          pos: 7884
+          length: 789
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 8825
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object object
+                children: []
+                pos: 8832
+                length: 13
+              pos: 8798
+              length: 224
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: object instanceof UnionType
+                        children: []
+                        pos: 8857
+                        length: 27
+                    children: []
+                    pos: 8856
+                    length: 29
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: UnionType that = (UnionType) object;
+                    children: []
+                    pos: 8894
+                    length: 36
+                  - type: return_statement
+                    fields:
+                      text: return alternates.equals(that.alternates);
+                    children: []
+                    pos: 8937
+                    length: 42
+                  pos: 8886
+                  length: 99
+                pos: 8853
+                length: 165
+              pos: 8847
+              length: 175
+          children: []
+          pos: 8798
+          length: 224
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 9049
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9026
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return alternates.hashCode();
+                children: []
+                pos: 9066
+                length: 29
+              pos: 9060
+              length: 39
+          children: []
+          pos: 9026
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isUnionType
+              children: []
+              pos: 9130
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9103
+              length: 63
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 9150
+                length: 12
+              pos: 9144
+              length: 22
+          children: []
+          pos: 9103
+          length: 63
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isObject
+              children: []
+              pos: 9197
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9170
+              length: 173
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : alternates) {
+                          if (!alternate.isObject()) {
+                            return false;
+                          }
+                        }
+                children: []
+                pos: 9214
+                length: 108
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 9327
+                length: 12
+              pos: 9208
+              length: 135
+          children: []
+          pos: 9170
+          length: 173
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: contains
+              children: []
+              pos: 9746
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType alternate
+                children: []
+                pos: 9755
+                length: 16
+              pos: 9731
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return alternates.contains(alternate);
+                children: []
+                pos: 9779
+                length: 38
+              pos: 9773
+              length: 48
+          children: []
+          pos: 9731
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedUnion
+              children: []
+              pos: 10299
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 10318
+                length: 11
+              pos: 10285
+              length: 285
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder restricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 10337
+                length: 61
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : alternates) {
+                          if (t.isUnknownType() || !t.isSubtype(type)) {
+                            restricted.addAlternate(t);
+                          }
+                        }
+                children: []
+                pos: 10403
+                length: 132
+              - type: return_statement
+                fields:
+                  text: return restricted.build();
+                children: []
+                pos: 10540
+                length: 26
+              pos: 10331
+              length: 239
+          children: []
+          pos: 10285
+          length: 285
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 10598
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10574
+              length: 458
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuilder result = new StringBuilder();
+                children: []
+                pos: 10615
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: boolean firstAlternate = true;
+                children: []
+                pos: 10663
+                length: 30
+              - type: expression_statement
+                fields:
+                  text: result.append("(");
+                children: []
+                pos: 10699
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: SortedSet<JSType> sorted = new TreeSet<JSType>(ALPHA);
+                children: []
+                pos: 10723
+                length: 54
+              - type: expression_statement
+                fields:
+                  text: sorted.addAll(alternates);
+                children: []
+                pos: 10782
+                length: 26
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType t : sorted) {
+                          if (!firstAlternate) {
+                            result.append("|");
+                          }
+                          result.append(t.toString());
+                          firstAlternate = false;
+                        }
+                children: []
+                pos: 10813
+                length: 161
+              - type: expression_statement
+                fields:
+                  text: result.append(")");
+                children: []
+                pos: 10979
+                length: 19
+              - type: return_statement
+                fields:
+                  text: return result.toString();
+                children: []
+                pos: 11003
+                length: 25
+              pos: 10609
+              length: 423
+          children: []
+          pos: 10574
+          length: 458
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSubtype
+              children: []
+              pos: 11063
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 11073
+                length: 11
+              pos: 11036
+              length: 186
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          if (!element.isSubtype(that)) {
+                            return false;
+                          }
+                        }
+                children: []
+                pos: 11092
+                length: 109
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 11206
+                length: 12
+              pos: 11086
+              length: 136
+          children: []
+          pos: 11036
+          length: 186
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedTypeGivenToBooleanOutcome
+              children: []
+              pos: 11252
+              length: 38
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean outcome
+                children: []
+                pos: 11291
+                length: 15
+              pos: 11226
+              length: 370
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder restricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 11355
+                length: 61
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          restricted.addAlternate(
+                              element.getRestrictedTypeGivenToBooleanOutcome(outcome));
+                        }
+                children: []
+                pos: 11421
+                length: 140
+              - type: return_statement
+                fields:
+                  text: return restricted.build();
+                children: []
+                pos: 11566
+                length: 26
+              pos: 11308
+              length: 288
+          children: []
+          pos: 11226
+          length: 370
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPossibleToBooleanOutcomes
+              children: []
+              pos: 11637
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11600
+              length: 342
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: BooleanLiteralSet literals = BooleanLiteralSet.EMPTY;
+                children: []
+                pos: 11674
+                length: 53
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          literals = literals.union(element.getPossibleToBooleanOutcomes());
+                          if (literals == BooleanLiteralSet.BOTH) {
+                            break;
+                          }
+                        }
+                children: []
+                pos: 11732
+                length: 185
+              - type: return_statement
+                fields:
+                  text: return literals;
+                children: []
+                pos: 11922
+                length: 16
+              pos: 11668
+              length: 274
+          children: []
+          pos: 11600
+          length: 342
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypesUnderEquality
+              children: []
+              pos: 11974
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 11996
+                length: 11
+              pos: 11946
+              length: 566
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thisRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12015
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thatRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12085
+                length: 65
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          TypePair p = element.getTypesUnderEquality(that);
+                          if (p.typeA != null) {
+                            thisRestricted.addAlternate(p.typeA);
+                          }
+                          if (p.typeB != null) {
+                            thatRestricted.addAlternate(p.typeB);
+                          }
+                        }
+                children: []
+                pos: 12155
+                length: 263
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new TypePair(
+                            thisRestricted.build(),
+                            thatRestricted.build());
+                children: []
+                pos: 12423
+                length: 85
+              pos: 12009
+              length: 503
+          children: []
+          pos: 11946
+          length: 566
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypesUnderInequality
+              children: []
+              pos: 12544
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 12568
+                length: 11
+              pos: 12516
+              length: 570
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thisRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12587
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thatRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 12657
+                length: 65
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          TypePair p = element.getTypesUnderInequality(that);
+                          if (p.typeA != null) {
+                            thisRestricted.addAlternate(p.typeA);
+                          }
+                          if (p.typeB != null) {
+                            thatRestricted.addAlternate(p.typeB);
+                          }
+                        }
+                children: []
+                pos: 12727
+                length: 265
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new TypePair(
+                            thisRestricted.build(),
+                            thatRestricted.build());
+                children: []
+                pos: 12997
+                length: 85
+              pos: 12581
+              length: 505
+          children: []
+          pos: 12516
+          length: 570
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypesUnderShallowInequality
+              children: []
+              pos: 13118
+              length: 30
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType that
+                children: []
+                pos: 13149
+                length: 11
+              pos: 13090
+              length: 584
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thisRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 13168
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: UnionTypeBuilder thatRestricted = new UnionTypeBuilder(registry);
+                children: []
+                pos: 13238
+                length: 65
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType element : alternates) {
+                          TypePair p = element.getTypesUnderShallowInequality(that);
+                          if (p.typeA != null) {
+                            thisRestricted.addAlternate(p.typeA);
+                          }
+                          if (p.typeB != null) {
+                            thatRestricted.addAlternate(p.typeB);
+                          }
+                        }
+                children: []
+                pos: 13308
+                length: 272
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new TypePair(
+                            thisRestricted.build(),
+                            thatRestricted.build());
+                children: []
+                pos: 13585
+                length: 85
+              pos: 13162
+              length: 512
+          children: []
+          pos: 13090
+          length: 584
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 13703
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Visitor<T> visitor
+                children: []
+                pos: 13709
+                length: 18
+              pos: 13678
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return visitor.caseUnionType(this);
+                children: []
+                pos: 13735
+                length: 35
+              pos: 13729
+              length: 45
+          children: []
+          pos: 13678
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: resolveInternal
+              children: []
+              pos: 13797
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ErrorReporter t
+                children: []
+                pos: 13813
+                length: 15
+              pos: 13778
+              length: 526
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setResolvedTypeInternal(this);
+                children: []
+                pos: 13863
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: boolean changed = false;
+                children: []
+                pos: 13932
+                length: 24
+              - type: local_variable_declaration
+                fields:
+                  text: ImmutableSet.Builder<JSType> resolvedTypes = ImmutableSet.builder();
+                children: []
+                pos: 13961
+                length: 68
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (JSType alternate : alternates) {
+                          JSType newAlternate = alternate.resolve(t, scope);
+                          changed |= (alternate != newAlternate);
+                          resolvedTypes.add(alternate);
+                        }
+                children: []
+                pos: 14034
+                length: 182
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: changed
+                        children: []
+                        pos: 14225
+                        length: 7
+                    children: []
+                    pos: 14224
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: alternates = resolvedTypes.build();
+                    children: []
+                    pos: 14242
+                    length: 35
+                  pos: 14234
+                  length: 49
+                pos: 14221
+                length: 62
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 14288
+                length: 12
+              pos: 13857
+              length: 447
+          children: []
+          pos: 13778
+          length: 526
+        pos: 2478
+        length: 11828
+    children: []
+    pos: 2478
+    length: 11828
+  pos: 0
+  length: 14307
 text_diff: |
   --- before
   +++ after

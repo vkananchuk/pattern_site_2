@@ -1,5 +1,1698 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: PrepareAst
+        children: []
+        pos: 1206
+        length: 10
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1246
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final boolean checkOnly;
+          children: []
+          pos: 1289
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrepareAst(AbstractCompiler compiler) {
+                  this(compiler, false);
+                }
+          children: []
+          pos: 1325
+          length: 70
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrepareAst(AbstractCompiler compiler, boolean checkOnly) {
+                  this.compiler = compiler;
+                  this.checkOnly = checkOnly;
+                }
+          children: []
+          pos: 1399
+          length: 124
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reportChange
+              children: []
+              pos: 1540
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1527
+              length: 141
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: checkOnly
+                        children: []
+                        pos: 1565
+                        length: 9
+                    children: []
+                    pos: 1564
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: Preconditions.checkState(false, "normalizeNodeType constraints
+                        violated");
+                    children: []
+                    pos: 1584
+                    length: 74
+                  pos: 1576
+                  length: 88
+                pos: 1561
+                length: 103
+              pos: 1555
+              length: 113
+          children: []
+          pos: 1527
+          length: 141
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 1696
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 1704
+                length: 12
+              pos: 1672
+              length: 613
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: checkOnly
+                        children: []
+                        pos: 1739
+                        length: 9
+                    children: []
+                    pos: 1738
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: normalizeNodeTypes(root);
+                    children: []
+                    pos: 1758
+                    length: 25
+                  pos: 1750
+                  length: 39
+                pos: 1735
+                length: 546
+              pos: 1729
+              length: 556
+          children: []
+          pos: 1672
+          length: 613
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeNodeTypes
+              children: []
+              pos: 2385
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 2404
+                length: 6
+              pos: 2372
+              length: 394
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: normalizeBlocks(n);
+                children: []
+                pos: 2418
+                length: 19
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node child = n.getFirstChild();
+                             child != null; child = child.getNext()) {
+                          // This pass is run during the CompilerTestCase validation, so this
+                          // parent pointer check serves as a more general check.
+                          Preconditions.checkState(child.getParent() == n);
+
+                          normalizeNodeTypes(child);
+                        }
+                children: []
+                pos: 2443
+                length: 319
+              pos: 2412
+              length: 354
+          children: []
+          pos: 2372
+          length: 394
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeBlocks
+              children: []
+              pos: 2834
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 2850
+                length: 6
+              pos: 2821
+              length: 597
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: and
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: NodeUtil.isControlStructure(n)
+                                children: []
+                                pos: 2868
+                                length: 30
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!n.isLabel()"
+                                children: []
+                                pos: 2910
+                                length: 12
+                            children: []
+                            pos: 2868
+                            length: 54
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!n.isSwitch()"
+                            children: []
+                            pos: 2934
+                            length: 13
+                        children: []
+                        pos: 2868
+                        length: 79
+                    children: []
+                    pos: 2867
+                    length: 81
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
+                                if (NodeUtil.isControlStructureCodeBlock(n,c) &&
+                                    !c.isBlock()) {
+                                  Node newBlock = IR.block().srcref(n);
+                                  n.replaceChild(c, newBlock);
+                                  if (!c.isEmpty()) {
+                                    newBlock.addChildrenToFront(c);
+                                  } else {
+                                    newBlock.setWasEmptyNode(true);
+                                  }
+                                  c = newBlock;
+                                  reportChange();
+                                }
+                              }
+                    children: []
+                    pos: 2957
+                    length: 451
+                  pos: 2949
+                  length: 465
+                pos: 2864
+                length: 550
+              pos: 2858
+              length: 560
+          children: []
+          pos: 2821
+          length: 597
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: PrepareAnnotations
+              children: []
+              pos: 3578
+              length: 18
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    PrepareAnnotations() {
+                        }
+                children: []
+                pos: 3644
+                length: 28
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: shouldTraverse
+                    children: []
+                    pos: 3707
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3722
+                      length: 15
+                    pos: 3678
+                    length: 191
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isObjectLit()
+                              children: []
+                              pos: 3772
+                              length: 15
+                          children: []
+                          pos: 3771
+                          length: 17
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: normalizeObjectLiteralAnnotations(n);
+                          children: []
+                          pos: 3799
+                          length: 37
+                        pos: 3789
+                        length: 55
+                      pos: 3768
+                      length: 76
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 3851
+                      length: 12
+                    pos: 3760
+                    length: 109
+                children: []
+                pos: 3678
+                length: 191
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 3901
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3907
+                      length: 15
+                    pos: 3875
+                    length: 273
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: switch_expression
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.getType()
+                              children: []
+                              pos: 3961
+                              length: 11
+                          children: []
+                          pos: 3960
+                          length: 13
+                        body:
+                          type: switch_block
+                          fields:
+                            text: |-
+                              {
+                                      case Token.CALL:
+                                        annotateCalls(n);
+                                        break;
+
+                                      case Token.FUNCTION:
+                                        annotateDispatchers(n, parent);
+                                        break;
+                                    }
+                          children: []
+                          pos: 3974
+                          length: 168
+                      children: []
+                      pos: 3953
+                      length: 189
+                    pos: 3945
+                    length: 203
+                children: []
+                pos: 3875
+                length: 273
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: normalizeObjectLiteralAnnotations
+                    children: []
+                    pos: 4167
+                    length: 33
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node objlit
+                      children: []
+                      pos: 4201
+                      length: 11
+                    pos: 4154
+                    length: 330
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(objlit.isObjectLit());
+                      children: []
+                      pos: 4222
+                      length: 47
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node key = objlit.getFirstChild();
+                                     key != null; key = key.getNext()) {
+                                  Node value = key.getFirstChild();
+                                  normalizeObjectLiteralKeyAnnotations(objlit, key, value);
+                                }
+                      children: []
+                      pos: 4276
+                      length: 202
+                    pos: 4214
+                    length: 270
+                children: []
+                pos: 4154
+                length: 330
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: annotateCalls
+                    children: []
+                    pos: 4677
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 4691
+                      length: 6
+                    pos: 4664
+                    length: 714
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(n.isCall());
+                      children: []
+                      pos: 4707
+                      length: 37
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node first = n.getFirstChild();
+                      children: []
+                      pos: 4868
+                      length: 31
+                    - type: while_statement
+                      fields:
+                        text: |-
+                          while (first.isCast()) {
+                                  first = first.getFirstChild();
+                                }
+                      children: []
+                      pos: 4935
+                      length: 71
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!NodeUtil.isGet(first)"
+                              children: []
+                              pos: 5018
+                              length: 22
+                          children: []
+                          pos: 5017
+                          length: 24
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: n.putBooleanProp(Node.FREE_CALL, true);
+                          children: []
+                          pos: 5052
+                          length: 39
+                        pos: 5042
+                        length: 57
+                      pos: 5014
+                      length: 85
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: first.isName()
+                                  children: []
+                                  pos: 5247
+                                  length: 14
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: '"eval".equals(first.getString())'
+                                  children: []
+                                  pos: 5275
+                                  length: 32
+                              children: []
+                              pos: 5247
+                              length: 60
+                          children: []
+                          pos: 5246
+                          length: 62
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: first.putBooleanProp(Node.DIRECT_EVAL, true);
+                          children: []
+                          pos: 5319
+                          length: 45
+                        pos: 5309
+                        length: 63
+                      pos: 5243
+                      length: 129
+                    pos: 4699
+                    length: 679
+                children: []
+                pos: 4664
+                length: 714
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: annotateDispatchers
+                    children: []
+                    pos: 5479
+                    length: 19
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 5499
+                      length: 6
+                    pos: 5466
+                    length: 373
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(n.isFunction());
+                      children: []
+                      pos: 5528
+                      length: 41
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: parent.getJSDocInfo()
+                                      children: []
+                                      pos: 5580
+                                      length: 21
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 5605
+                                      length: 4
+                                  children: []
+                                  pos: 5580
+                                  length: 29
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: parent.getJSDocInfo().isJavaDispatch()
+                                  children: []
+                                  pos: 5623
+                                  length: 38
+                              children: []
+                              pos: 5580
+                              length: 81
+                          children: []
+                          pos: 5579
+                          length: 83
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: parent.isAssign()
+                                  children: []
+                                  pos: 5677
+                                  length: 17
+                              children: []
+                              pos: 5676
+                              length: 19
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: Preconditions.checkState(parent.getLastChild()
+                                  == n);
+                              children: []
+                              pos: 5708
+                              length: 53
+                            - type: expression_statement
+                              fields:
+                                text: n.putBooleanProp(Node.IS_DISPATCHER, true);
+                              children: []
+                              pos: 5772
+                              length: 43
+                            pos: 5696
+                            length: 129
+                          pos: 5673
+                          length: 152
+                        pos: 5663
+                        length: 170
+                      pos: 5576
+                      length: 257
+                    pos: 5520
+                    length: 319
+                children: []
+                pos: 5466
+                length: 373
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: normalizeObjectLiteralKeyAnnotations
+                    children: []
+                    pos: 6310
+                    length: 36
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node objlit
+                      children: []
+                      pos: 6356
+                      length: 11
+                    pos: 6297
+                    length: 283
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(objlit.isObjectLit());
+                      children: []
+                      pos: 6399
+                      length: 47
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: key.getJSDocInfo()
+                                      children: []
+                                      pos: 6457
+                                      length: 18
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 6479
+                                      length: 4
+                                  children: []
+                                  pos: 6457
+                                  length: 26
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: value.isFunction()
+                                  children: []
+                                  pos: 6497
+                                  length: 18
+                              children: []
+                              pos: 6457
+                              length: 58
+                          children: []
+                          pos: 6456
+                          length: 60
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: value.setJSDocInfo(key.getJSDocInfo());
+                          children: []
+                          pos: 6527
+                          length: 39
+                        pos: 6517
+                        length: 57
+                      pos: 6453
+                      length: 121
+                    pos: 6391
+                    length: 189
+                children: []
+                pos: 6297
+                length: 283
+              pos: 3565
+              length: 3019
+          children: []
+          pos: 3565
+          length: 3019
+        pos: 1200
+        length: 5386
+    children: []
+    pos: 1200
+    length: 5386
+  pos: 0
+  length: 6587
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: PrepareAst
+        children: []
+        pos: 1206
+        length: 10
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1246
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final boolean checkOnly;
+          children: []
+          pos: 1289
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrepareAst(AbstractCompiler compiler) {
+                  this(compiler, false);
+                }
+          children: []
+          pos: 1325
+          length: 70
+        - type: constructor_declaration
+          fields:
+            text: |-
+              PrepareAst(AbstractCompiler compiler, boolean checkOnly) {
+                  this.compiler = compiler;
+                  this.checkOnly = checkOnly;
+                }
+          children: []
+          pos: 1399
+          length: 124
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reportChange
+              children: []
+              pos: 1540
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1527
+              length: 141
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: checkOnly
+                        children: []
+                        pos: 1565
+                        length: 9
+                    children: []
+                    pos: 1564
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: Preconditions.checkState(false, "normalizeNodeType constraints
+                        violated");
+                    children: []
+                    pos: 1584
+                    length: 74
+                  pos: 1576
+                  length: 88
+                pos: 1561
+                length: 103
+              pos: 1555
+              length: 113
+          children: []
+          pos: 1527
+          length: 141
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 1696
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 1704
+                length: 12
+              pos: 1672
+              length: 613
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: checkOnly
+                        children: []
+                        pos: 1739
+                        length: 9
+                    children: []
+                    pos: 1738
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: normalizeNodeTypes(root);
+                    children: []
+                    pos: 1758
+                    length: 25
+                  pos: 1750
+                  length: 39
+                pos: 1735
+                length: 546
+              pos: 1729
+              length: 556
+          children: []
+          pos: 1672
+          length: 613
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeNodeTypes
+              children: []
+              pos: 2385
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 2404
+                length: 6
+              pos: 2372
+              length: 394
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: normalizeBlocks(n);
+                children: []
+                pos: 2418
+                length: 19
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node child = n.getFirstChild();
+                             child != null; child = child.getNext()) {
+                          // This pass is run during the CompilerTestCase validation, so this
+                          // parent pointer check serves as a more general check.
+                          Preconditions.checkState(child.getParent() == n);
+
+                          normalizeNodeTypes(child);
+                        }
+                children: []
+                pos: 2443
+                length: 319
+              pos: 2412
+              length: 354
+          children: []
+          pos: 2372
+          length: 394
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeBlocks
+              children: []
+              pos: 2834
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 2850
+                length: 6
+              pos: 2821
+              length: 597
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: and
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: NodeUtil.isControlStructure(n)
+                                children: []
+                                pos: 2868
+                                length: 30
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!n.isLabel()"
+                                children: []
+                                pos: 2910
+                                length: 12
+                            children: []
+                            pos: 2868
+                            length: 54
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!n.isSwitch()"
+                            children: []
+                            pos: 2934
+                            length: 13
+                        children: []
+                        pos: 2868
+                        length: 79
+                    children: []
+                    pos: 2867
+                    length: 81
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
+                                if (NodeUtil.isControlStructureCodeBlock(n,c) &&
+                                    !c.isBlock()) {
+                                  Node newBlock = IR.block().srcref(n);
+                                  n.replaceChild(c, newBlock);
+                                  if (!c.isEmpty()) {
+                                    newBlock.addChildrenToFront(c);
+                                  } else {
+                                    newBlock.setWasEmptyNode(true);
+                                  }
+                                  c = newBlock;
+                                  reportChange();
+                                }
+                              }
+                    children: []
+                    pos: 2957
+                    length: 451
+                  pos: 2949
+                  length: 465
+                pos: 2864
+                length: 550
+              pos: 2858
+              length: 560
+          children: []
+          pos: 2821
+          length: 597
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: PrepareAnnotations
+              children: []
+              pos: 3578
+              length: 18
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    PrepareAnnotations() {
+                        }
+                children: []
+                pos: 3644
+                length: 28
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: shouldTraverse
+                    children: []
+                    pos: 3707
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3722
+                      length: 15
+                    pos: 3678
+                    length: 191
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isObjectLit()
+                              children: []
+                              pos: 3772
+                              length: 15
+                          children: []
+                          pos: 3771
+                          length: 17
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: normalizeObjectLiteralAnnotations(n);
+                          children: []
+                          pos: 3799
+                          length: 37
+                        pos: 3789
+                        length: 55
+                      pos: 3768
+                      length: 76
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 3851
+                      length: 12
+                    pos: 3760
+                    length: 109
+                children: []
+                pos: 3678
+                length: 191
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 3901
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3907
+                      length: 15
+                    pos: 3875
+                    length: 273
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: switch_expression
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.getType()
+                              children: []
+                              pos: 3961
+                              length: 11
+                          children: []
+                          pos: 3960
+                          length: 13
+                        body:
+                          type: switch_block
+                          fields:
+                            text: |-
+                              {
+                                      case Token.CALL:
+                                        annotateCalls(n);
+                                        break;
+
+                                      case Token.FUNCTION:
+                                        annotateDispatchers(n, parent);
+                                        break;
+                                    }
+                          children: []
+                          pos: 3974
+                          length: 168
+                      children: []
+                      pos: 3953
+                      length: 189
+                    pos: 3945
+                    length: 203
+                children: []
+                pos: 3875
+                length: 273
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: normalizeObjectLiteralAnnotations
+                    children: []
+                    pos: 4167
+                    length: 33
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node objlit
+                      children: []
+                      pos: 4201
+                      length: 11
+                    pos: 4154
+                    length: 330
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(objlit.isObjectLit());
+                      children: []
+                      pos: 4222
+                      length: 47
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node key = objlit.getFirstChild();
+                                     key != null; key = key.getNext()) {
+                                  Node value = key.getFirstChild();
+                                  normalizeObjectLiteralKeyAnnotations(objlit, key, value);
+                                }
+                      children: []
+                      pos: 4276
+                      length: 202
+                    pos: 4214
+                    length: 270
+                children: []
+                pos: 4154
+                length: 330
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: annotateCalls
+                    children: []
+                    pos: 4677
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 4691
+                      length: 6
+                    pos: 4664
+                    length: 636
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(n.isCall());
+                      children: []
+                      pos: 4707
+                      length: 37
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node first = n.getFirstChild();
+                      children: []
+                      pos: 4868
+                      length: 31
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!NodeUtil.isGet(first)"
+                              children: []
+                              pos: 4940
+                              length: 22
+                          children: []
+                          pos: 4939
+                          length: 24
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: n.putBooleanProp(Node.FREE_CALL, true);
+                          children: []
+                          pos: 4974
+                          length: 39
+                        pos: 4964
+                        length: 57
+                      pos: 4936
+                      length: 85
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: first.isName()
+                                  children: []
+                                  pos: 5169
+                                  length: 14
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: '"eval".equals(first.getString())'
+                                  children: []
+                                  pos: 5197
+                                  length: 32
+                              children: []
+                              pos: 5169
+                              length: 60
+                          children: []
+                          pos: 5168
+                          length: 62
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: first.putBooleanProp(Node.DIRECT_EVAL, true);
+                          children: []
+                          pos: 5241
+                          length: 45
+                        pos: 5231
+                        length: 63
+                      pos: 5165
+                      length: 129
+                    pos: 4699
+                    length: 601
+                children: []
+                pos: 4664
+                length: 636
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: annotateDispatchers
+                    children: []
+                    pos: 5401
+                    length: 19
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 5421
+                      length: 6
+                    pos: 5388
+                    length: 373
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(n.isFunction());
+                      children: []
+                      pos: 5450
+                      length: 41
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: parent.getJSDocInfo()
+                                      children: []
+                                      pos: 5502
+                                      length: 21
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 5527
+                                      length: 4
+                                  children: []
+                                  pos: 5502
+                                  length: 29
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: parent.getJSDocInfo().isJavaDispatch()
+                                  children: []
+                                  pos: 5545
+                                  length: 38
+                              children: []
+                              pos: 5502
+                              length: 81
+                          children: []
+                          pos: 5501
+                          length: 83
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: parent.isAssign()
+                                  children: []
+                                  pos: 5599
+                                  length: 17
+                              children: []
+                              pos: 5598
+                              length: 19
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: Preconditions.checkState(parent.getLastChild()
+                                  == n);
+                              children: []
+                              pos: 5630
+                              length: 53
+                            - type: expression_statement
+                              fields:
+                                text: n.putBooleanProp(Node.IS_DISPATCHER, true);
+                              children: []
+                              pos: 5694
+                              length: 43
+                            pos: 5618
+                            length: 129
+                          pos: 5595
+                          length: 152
+                        pos: 5585
+                        length: 170
+                      pos: 5498
+                      length: 257
+                    pos: 5442
+                    length: 319
+                children: []
+                pos: 5388
+                length: 373
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: normalizeObjectLiteralKeyAnnotations
+                    children: []
+                    pos: 6232
+                    length: 36
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node objlit
+                      children: []
+                      pos: 6278
+                      length: 11
+                    pos: 6219
+                    length: 283
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(objlit.isObjectLit());
+                      children: []
+                      pos: 6321
+                      length: 47
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: key.getJSDocInfo()
+                                      children: []
+                                      pos: 6379
+                                      length: 18
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 6401
+                                      length: 4
+                                  children: []
+                                  pos: 6379
+                                  length: 26
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: value.isFunction()
+                                  children: []
+                                  pos: 6419
+                                  length: 18
+                              children: []
+                              pos: 6379
+                              length: 58
+                          children: []
+                          pos: 6378
+                          length: 60
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: value.setJSDocInfo(key.getJSDocInfo());
+                          children: []
+                          pos: 6449
+                          length: 39
+                        pos: 6439
+                        length: 57
+                      pos: 6375
+                      length: 121
+                    pos: 6313
+                    length: 189
+                children: []
+                pos: 6219
+                length: 283
+              pos: 3565
+              length: 2941
+          children: []
+          pos: 3565
+          length: 2941
+        pos: 1200
+        length: 5308
+    children: []
+    pos: 1200
+    length: 5308
+  pos: 0
+  length: 6509
 text_diff: "--- before\n+++ after\n@@ -163,9 +163,6 @@\n       Node first = n.getFirstChild();\n
   \n       // ignore cast nodes.\n-      while (first.isCast()) {\n-        first
   = first.getFirstChild();\n-      }\n \n       if (!NodeUtil.isGet(first)) {\n         n.putBooleanProp(Node.FREE_CALL,

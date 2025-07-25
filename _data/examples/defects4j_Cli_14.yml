@@ -1,5 +1,3527 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: GroupImpl
+        children: []
+        pos: 1583
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final String name;
+          children: []
+          pos: 1639
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final String description;
+          children: []
+          pos: 1670
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final List options;
+          children: []
+          pos: 1708
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private final int minimum;
+          children: []
+          pos: 1740
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final int maximum;
+          children: []
+          pos: 1771
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final List anonymous;
+          children: []
+          pos: 1802
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final SortedMap optionMap;
+          children: []
+          pos: 1836
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private final Set prefixes;
+          children: []
+          pos: 1875
+          length: 27
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public GroupImpl(final List options,
+                                   final String name,
+                                   final String description,
+                                   final int minimum,
+                                   final int maximum) {
+                      super(0, false);
+
+                      this.name = name;
+                      this.description = description;
+                      this.minimum = minimum;
+                      this.maximum = maximum;
+
+                      // store a copy of the options to be used by the
+                      // help methods
+                      this.options = Collections.unmodifiableList(options);
+
+                      // anonymous Argument temporary storage
+                      final List newAnonymous = new ArrayList();
+
+                      // map (key=trigger & value=Option) temporary storage
+                      final SortedMap newOptionMap = new TreeMap(ReverseStringComparator.getInstance());
+
+                      // prefixes temporary storage
+                      final Set newPrefixes = new HashSet();
+
+                      // process the options
+                      for (final Iterator i = options.iterator(); i.hasNext();) {
+                          final Option option = (Option) i.next();
+
+                          if (option instanceof Argument) {
+                              i.remove();
+                              newAnonymous.add(option);
+                          } else {
+                              final Set triggers = option.getTriggers();
+
+                              for (Iterator j = triggers.iterator(); j.hasNext();) {
+                                  newOptionMap.put(j.next(), option);
+                              }
+
+                              // store the prefixes
+                              newPrefixes.addAll(option.getPrefixes());
+                          }
+                      }
+
+                      this.anonymous = Collections.unmodifiableList(newAnonymous);
+                      this.optionMap = Collections.unmodifiableSortedMap(newOptionMap);
+                      this.prefixes = Collections.unmodifiableSet(newPrefixes);
+                  }
+          children: []
+          pos: 2322
+          length: 1678
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canProcess
+              children: []
+              pos: 4021
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 4032
+                length: 38
+              pos: 4006
+              length: 904
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: arg
+                            children: []
+                            pos: 4134
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4141
+                            length: 4
+                        children: []
+                        pos: 4134
+                        length: 11
+                    children: []
+                    pos: 4133
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 4161
+                    length: 13
+                  pos: 4147
+                  length: 37
+                pos: 4130
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: optionMap.containsKey(arg)
+                        children: []
+                        pos: 4242
+                        length: 26
+                    children: []
+                    pos: 4241
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 4284
+                    length: 12
+                  pos: 4270
+                  length: 36
+                pos: 4238
+                length: 68
+              - type: local_variable_declaration
+                fields:
+                  text: final Map tailMap = optionMap.tailMap(arg);
+                children: []
+                pos: 4334
+                length: 43
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator iter = tailMap.values().iterator(); iter.hasNext();) {
+                                final Option option = (Option) iter.next();
+
+                                if (option.canProcess(commandLine, arg)) {
+                                    return true;
+                                }
+                            }
+                children: []
+                pos: 4428
+                length: 239
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: commandLine.looksLikeOption(arg)
+                        children: []
+                        pos: 4681
+                        length: 32
+                    children: []
+                    pos: 4680
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 4729
+                    length: 13
+                  pos: 4715
+                  length: 37
+                pos: 4677
+                length: 75
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_than
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: anonymous.size()
+                            children: []
+                            pos: 4823
+                            length: 16
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4842
+                            length: 1
+                        children: []
+                        pos: 4823
+                        length: 20
+                    children: []
+                    pos: 4822
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 4859
+                    length: 12
+                  pos: 4845
+                  length: 36
+                pos: 4819
+                length: 62
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 4891
+                length: 13
+              pos: 4120
+              length: 790
+          children: []
+          pos: 4006
+          length: 904
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPrefixes
+              children: []
+              pos: 4927
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4916
+              length: 57
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return prefixes;
+                children: []
+                pos: 4951
+                length: 16
+              pos: 4941
+              length: 32
+          children: []
+          pos: 4916
+          length: 57
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTriggers
+              children: []
+              pos: 4990
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4979
+              length: 67
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return optionMap.keySet();
+                children: []
+                pos: 5014
+                length: 26
+              pos: 5004
+              length: 42
+          children: []
+          pos: 4979
+          length: 67
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 5064
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 5072
+                length: 38
+              pos: 5052
+              length: 3047
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String previous = null;
+                children: []
+                pos: 5207
+                length: 23
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (arguments.hasNext()) {
+                                // grab the next argument
+                                final String arg = (String) arguments.next();
+
+                                // if we have just tried to process this instance
+                                if (arg == previous) {
+                                    // rollback and abort
+                                    arguments.previous();
+
+                                    break;
+                                }
+
+                                // remember last processed instance
+                                previous = arg;
+
+                                final Option opt = (Option) optionMap.get(arg);
+
+                                // option found
+                                if (opt != null) {
+                                    arguments.previous();
+                                    opt.process(commandLine, arguments);
+                                }
+                                // [START option NOT found
+                                else {
+                                    // it might be an anonymous argument continue search
+                                    // [START argument may be anonymous
+                                    if (commandLine.looksLikeOption(arg)) {
+                                        // narrow the search
+                                        final Collection values = optionMap.tailMap(arg).values();
+
+                                        boolean foundMemberOption = false;
+
+                                        for (Iterator i = values.iterator(); i.hasNext() && !foundMemberOption;) {
+                                            final Option option = (Option) i.next();
+
+                                            if (option.canProcess(commandLine, arg)) {
+                                                foundMemberOption = true;
+                                                arguments.previous();
+                                                option.process(commandLine, arguments);
+                                            }
+                                        }
+
+                                        // back track and abort this group if necessary
+                                        if (!foundMemberOption) {
+                                            arguments.previous();
+
+                                            return;
+                                        }
+                                    } // [END argument may be anonymous
+
+                                    // [START argument is NOT anonymous
+                                    else {
+                                        // move iterator back, current value not used
+                                        arguments.previous();
+
+                                        // if there are no anonymous arguments then this group can't
+                                        // process the argument
+                                        if (anonymous.isEmpty()) {
+                                            break;
+                                        }
+
+                                        // TODO: why do we iterate over all anonymous arguments?
+                                        // canProcess will always return true?
+                                        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                            final Argument argument = (Argument) i.next();
+
+                                            if (argument.canProcess(commandLine, arguments)) {
+                                                argument.process(commandLine, arguments);
+                                            }
+                                        }
+                                    } // [END argument is NOT anonymous
+                                } // [END option NOT found
+                            }
+                children: []
+                pos: 5290
+                length: 2763
+              pos: 5197
+              length: 2902
+          children: []
+          pos: 5052
+          length: 3047
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: validate
+              children: []
+              pos: 8117
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 8126
+                length: 38
+              pos: 8105
+              length: 1458
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int present = 0;
+                children: []
+                pos: 8242
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Option unexpected = null;
+                children: []
+                pos: 8316
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = options.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+
+                                // needs validation?
+                                boolean validate = option.isRequired() || option instanceof Group;
+
+                                // if the child option is present then validate it
+                                if (commandLine.hasOption(option)) {
+                                    if (++present > maximum) {
+                                        unexpected = option;
+
+                                        break;
+                                    }
+                                    validate = true;
+                                }
+
+                                if (validate) {
+                                    option.validate(commandLine);
+                                }
+                            }
+                children: []
+                pos: 8351
+                length: 614
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: unexpected
+                            children: []
+                            pos: 9007
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 9021
+                            length: 4
+                        children: []
+                        pos: 9007
+                        length: 18
+                    children: []
+                    pos: 9006
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new OptionException(this, ResourceConstants.UNEXPECTED_TOKEN,
+                                                              unexpected.getPreferredName());
+                    children: []
+                    pos: 9041
+                    length: 137
+                  pos: 9027
+                  length: 161
+                pos: 9003
+                length: 185
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: present
+                            children: []
+                            pos: 9228
+                            length: 7
+                          right:
+                            type: identifier
+                            fields:
+                              text: minimum
+                            children: []
+                            pos: 9238
+                            length: 7
+                        children: []
+                        pos: 9228
+                        length: 17
+                    children: []
+                    pos: 9227
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new OptionException(this, ResourceConstants.MISSING_OPTION);
+                    children: []
+                    pos: 9261
+                    length: 66
+                  pos: 9247
+                  length: 90
+                pos: 9224
+                length: 113
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+                                option.validate(commandLine);
+                            }
+                children: []
+                pos: 9391
+                length: 166
+              pos: 8197
+              length: 1366
+          children: []
+          pos: 8105
+          length: 1458
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPreferredName
+              children: []
+              pos: 9583
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9569
+              length: 61
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return name;
+                children: []
+                pos: 9612
+                length: 12
+              pos: 9602
+              length: 28
+          children: []
+          pos: 9569
+          length: 61
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDescription
+              children: []
+              pos: 9650
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9636
+              length: 66
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return description;
+                children: []
+                pos: 9677
+                length: 19
+              pos: 9667
+              length: 35
+          children: []
+          pos: 9636
+          length: 66
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: appendUsage
+              children: []
+              pos: 9720
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StringBuffer buffer
+                children: []
+                pos: 9732
+                length: 25
+              pos: 9708
+              length: 215
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: appendUsage(buffer, helpSettings, comp, "|");
+                children: []
+                pos: 9872
+                length: 45
+              pos: 9862
+              length: 61
+          children: []
+          pos: 9708
+          length: 215
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: appendUsage
+              children: []
+              pos: 9941
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StringBuffer buffer
+                children: []
+                pos: 9953
+                length: 25
+              pos: 9929
+              length: 2886
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Set helpSettingsCopy = new HashSet(helpSettings);
+                children: []
+                pos: 10145
+                length: 55
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final boolean optional =
+                                (minimum == 0) && helpSettingsCopy.contains(DisplaySetting.DISPLAY_OPTIONAL);
+                children: []
+                pos: 10210
+                length: 114
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final boolean expanded =
+                                (name == null) || helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_EXPANDED);
+                children: []
+                pos: 10334
+                length: 120
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final boolean named =
+                                !expanded ||
+                                ((name != null) && helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_NAME));
+                children: []
+                pos: 10464
+                length: 140
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean arguments = helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_ARGUMENT);
+                children: []
+                pos: 10614
+                length: 91
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean outer = helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_OUTER);
+                children: []
+                pos: 10715
+                length: 84
+              - type: expression_statement
+                fields:
+                  text: helpSettingsCopy.remove(DisplaySetting.DISPLAY_GROUP_OUTER);
+                children: []
+                pos: 10809
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean both = named && expanded;
+                children: []
+                pos: 10879
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: optional
+                        children: []
+                        pos: 10932
+                        length: 8
+                    children: []
+                    pos: 10931
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append('[');
+                    children: []
+                    pos: 10956
+                    length: 19
+                  pos: 10942
+                  length: 43
+                pos: 10928
+                length: 57
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: named
+                        children: []
+                        pos: 10999
+                        length: 5
+                    children: []
+                    pos: 10998
+                    length: 7
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(name);
+                    children: []
+                    pos: 11020
+                    length: 20
+                  pos: 11006
+                  length: 44
+                pos: 10995
+                length: 55
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: both
+                        children: []
+                        pos: 11064
+                        length: 4
+                    children: []
+                    pos: 11063
+                    length: 6
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(" (");
+                    children: []
+                    pos: 11084
+                    length: 20
+                  pos: 11070
+                  length: 44
+                pos: 11060
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: expanded
+                        children: []
+                        pos: 11128
+                        length: 8
+                    children: []
+                    pos: 11127
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final Set childSettings;
+                    children: []
+                    pos: 11152
+                    length: 24
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_EXPANDED)"
+                            children: []
+                            pos: 11194
+                            length: 65
+                        children: []
+                        pos: 11193
+                        length: 67
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: childSettings = DisplaySetting.NONE;
+                        children: []
+                        pos: 11279
+                        length: 36
+                      pos: 11261
+                      length: 68
+                    pos: 11190
+                    length: 294
+                  - type: local_variable_declaration
+                    fields:
+                      text: final List list;
+                    children: []
+                    pos: 11549
+                    length: 16
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: comp
+                                children: []
+                                pos: 11583
+                                length: 4
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 11591
+                                length: 4
+                            children: []
+                            pos: 11583
+                            length: 12
+                        children: []
+                        pos: 11582
+                        length: 14
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: list = options;
+                        children: []
+                        pos: 11669
+                        length: 15
+                      pos: 11597
+                      length: 101
+                    pos: 11579
+                    length: 291
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = list.iterator(); i.hasNext();) {
+                                        final Option option = (Option) i.next();
+
+                                        // append usage information
+                                        option.appendUsage(buffer, childSettings, comp);
+
+                                        // add separators as needed
+                                        if (i.hasNext()) {
+                                            buffer.append(separator);
+                                        }
+                                    }
+                    children: []
+                    pos: 11916
+                    length: 381
+                  pos: 11138
+                  length: 1169
+                pos: 11124
+                length: 1183
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: both
+                        children: []
+                        pos: 12321
+                        length: 4
+                    children: []
+                    pos: 12320
+                    length: 6
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(')');
+                    children: []
+                    pos: 12341
+                    length: 19
+                  pos: 12327
+                  length: 43
+                pos: 12317
+                length: 53
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: optional
+                            children: []
+                            pos: 12384
+                            length: 8
+                          right:
+                            type: identifier
+                            fields:
+                              text: outer
+                            children: []
+                            pos: 12396
+                            length: 5
+                        children: []
+                        pos: 12384
+                        length: 17
+                    children: []
+                    pos: 12383
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(']');
+                    children: []
+                    pos: 12417
+                    length: 19
+                  pos: 12403
+                  length: 43
+                pos: 12380
+                length: 66
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: arguments
+                        children: []
+                        pos: 12460
+                        length: 9
+                    children: []
+                    pos: 12459
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                        buffer.append(' ');
+
+                                        final Option option = (Option) i.next();
+                                        option.appendUsage(buffer, helpSettingsCopy, comp);
+                                    }
+                    children: []
+                    pos: 12485
+                    length: 237
+                  pos: 12471
+                  length: 261
+                pos: 12456
+                length: 276
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: optional
+                            children: []
+                            pos: 12746
+                            length: 8
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!outer"
+                            children: []
+                            pos: 12758
+                            length: 6
+                        children: []
+                        pos: 12746
+                        length: 18
+                    children: []
+                    pos: 12745
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(']');
+                    children: []
+                    pos: 12780
+                    length: 19
+                  pos: 12766
+                  length: 43
+                pos: 12742
+                length: 67
+              pos: 10135
+              length: 2680
+          children: []
+          pos: 9929
+          length: 2886
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: helpLines
+              children: []
+              pos: 12833
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int depth
+                children: []
+                pos: 12843
+                length: 15
+              pos: 12821
+              length: 1451
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final List helpLines = new ArrayList();
+                children: []
+                pos: 12969
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: helpSettings.contains(DisplaySetting.DISPLAY_GROUP_NAME)
+                        children: []
+                        pos: 13022
+                        length: 56
+                    children: []
+                    pos: 13021
+                    length: 58
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final HelpLine helpLine = new HelpLineImpl(this, depth);
+                    children: []
+                    pos: 13094
+                    length: 56
+                  - type: expression_statement
+                    fields:
+                      text: helpLines.add(helpLine);
+                    children: []
+                    pos: 13163
+                    length: 24
+                  pos: 13080
+                  length: 117
+                pos: 13018
+                length: 179
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: helpSettings.contains(DisplaySetting.DISPLAY_GROUP_EXPANDED)
+                        children: []
+                        pos: 13211
+                        length: 60
+                    children: []
+                    pos: 13210
+                    length: 62
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final List list;
+                    children: []
+                    pos: 13338
+                    length: 16
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: comp
+                                children: []
+                                pos: 13372
+                                length: 4
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 13380
+                                length: 4
+                            children: []
+                            pos: 13372
+                            length: 12
+                        children: []
+                        pos: 13371
+                        length: 14
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: list = options;
+                        children: []
+                        pos: 13458
+                        length: 15
+                      pos: 13386
+                      length: 101
+                    pos: 13368
+                    length: 291
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = list.iterator(); i.hasNext();) {
+                                        final Option option = (Option) i.next();
+                                        helpLines.addAll(option.helpLines(depth + 1, helpSettings, comp));
+                                    }
+                    children: []
+                    pos: 13704
+                    length: 210
+                  pos: 13273
+                  length: 651
+                pos: 13207
+                length: 717
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: helpSettings.contains(DisplaySetting.DISPLAY_GROUP_ARGUMENT)
+                        children: []
+                        pos: 13938
+                        length: 60
+                    children: []
+                    pos: 13937
+                    length: 62
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                        final Option option = (Option) i.next();
+                                        helpLines.addAll(option.helpLines(depth + 1, helpSettings, comp));
+                                    }
+                    children: []
+                    pos: 14014
+                    length: 215
+                  pos: 14000
+                  length: 239
+                pos: 13934
+                length: 305
+              - type: return_statement
+                fields:
+                  text: return helpLines;
+                children: []
+                pos: 14249
+                length: 17
+              pos: 12959
+              length: 1313
+          children: []
+          pos: 12821
+          length: 1451
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOptions
+              children: []
+              pos: 14458
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14446
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return options;
+                children: []
+                pos: 14481
+                length: 15
+              pos: 14471
+              length: 31
+          children: []
+          pos: 14446
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getAnonymous
+              children: []
+              pos: 14637
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14625
+              length: 60
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return anonymous;
+                children: []
+                pos: 14662
+                length: 17
+              pos: 14652
+              length: 33
+          children: []
+          pos: 14625
+          length: 60
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findOption
+              children: []
+              pos: 14705
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String trigger
+                children: []
+                pos: 14716
+                length: 20
+              pos: 14691
+              length: 361
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Iterator i = getOptions().iterator();
+                children: []
+                pos: 14748
+                length: 43
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (i.hasNext()) {
+                                final Option option = (Option) i.next();
+                                final Option found = option.findOption(trigger);
+
+                                if (found != null) {
+                                    return found;
+                                }
+                            }
+                children: []
+                pos: 14801
+                length: 223
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 15034
+                length: 12
+              pos: 14738
+              length: 314
+          children: []
+          pos: 14691
+          length: 361
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMinimum
+              children: []
+              pos: 15069
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15058
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return minimum;
+                children: []
+                pos: 15092
+                length: 15
+              pos: 15082
+              length: 31
+          children: []
+          pos: 15058
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaximum
+              children: []
+              pos: 15130
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15119
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maximum;
+                children: []
+                pos: 15153
+                length: 15
+              pos: 15143
+              length: 31
+          children: []
+          pos: 15119
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isRequired
+              children: []
+              pos: 15195
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15180
+              length: 68
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getMinimum() > 0;
+                children: []
+                pos: 15218
+                length: 24
+              pos: 15208
+              length: 40
+          children: []
+          pos: 15180
+          length: 68
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: defaults
+              children: []
+              pos: 15266
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 15275
+                length: 38
+              pos: 15254
+              length: 455
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: super.defaults(commandLine);
+                children: []
+                pos: 15325
+                length: 28
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = options.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+                                option.defaults(commandLine);
+                            }
+                children: []
+                pos: 15363
+                length: 164
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+                                option.defaults(commandLine);
+                            }
+                children: []
+                pos: 15537
+                length: 166
+              pos: 15315
+              length: 394
+          children: []
+          pos: 15254
+          length: 455
+        pos: 1570
+        length: 14141
+    children: []
+    pos: 1570
+    length: 14141
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ReverseStringComparator
+        children: []
+        pos: 15720
+        length: 23
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final Comparator instance = new ReverseStringComparator();
+          children: []
+          pos: 15772
+          length: 73
+        - type: constructor_declaration
+          fields:
+            text: |-
+              private ReverseStringComparator() {
+                      // just making sure nobody else creates one
+                  }
+          children: []
+          pos: 15851
+          length: 93
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInstance
+              children: []
+              pos: 16097
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16066
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return instance;
+                children: []
+                pos: 16121
+                length: 16
+              pos: 16111
+              length: 32
+          children: []
+          pos: 16066
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: compare
+              children: []
+              pos: 16160
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Object o1
+                children: []
+                pos: 16168
+                length: 15
+              pos: 16149
+              length: 196
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final String s1 = (String) o1;
+                children: []
+                pos: 16235
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: final String s2 = (String) o2;
+                children: []
+                pos: 16274
+                length: 30
+              - type: return_statement
+                fields:
+                  text: return -s1.compareTo(s2);
+                children: []
+                pos: 16314
+                length: 25
+              pos: 16225
+              length: 120
+          children: []
+          pos: 16149
+          length: 196
+        pos: 15714
+        length: 633
+    children: []
+    pos: 15714
+    length: 633
+  pos: 0
+  length: 16348
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: GroupImpl
+        children: []
+        pos: 1583
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final String name;
+          children: []
+          pos: 1639
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final String description;
+          children: []
+          pos: 1670
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final List options;
+          children: []
+          pos: 1708
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private final int minimum;
+          children: []
+          pos: 1740
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final int maximum;
+          children: []
+          pos: 1771
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final List anonymous;
+          children: []
+          pos: 1802
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final SortedMap optionMap;
+          children: []
+          pos: 1836
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private final Set prefixes;
+          children: []
+          pos: 1875
+          length: 27
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public GroupImpl(final List options,
+                                   final String name,
+                                   final String description,
+                                   final int minimum,
+                                   final int maximum) {
+                      super(0, false);
+
+                      this.name = name;
+                      this.description = description;
+                      this.minimum = minimum;
+                      this.maximum = maximum;
+
+                      // store a copy of the options to be used by the
+                      // help methods
+                      this.options = Collections.unmodifiableList(options);
+
+                      // anonymous Argument temporary storage
+                      final List newAnonymous = new ArrayList();
+
+                      // map (key=trigger & value=Option) temporary storage
+                      final SortedMap newOptionMap = new TreeMap(ReverseStringComparator.getInstance());
+
+                      // prefixes temporary storage
+                      final Set newPrefixes = new HashSet();
+
+                      // process the options
+                      for (final Iterator i = options.iterator(); i.hasNext();) {
+                          final Option option = (Option) i.next();
+
+                          if (option instanceof Argument) {
+                              i.remove();
+                              newAnonymous.add(option);
+                          } else {
+                              final Set triggers = option.getTriggers();
+
+                              for (Iterator j = triggers.iterator(); j.hasNext();) {
+                                  newOptionMap.put(j.next(), option);
+                              }
+
+                              // store the prefixes
+                              newPrefixes.addAll(option.getPrefixes());
+                          }
+                      }
+
+                      this.anonymous = Collections.unmodifiableList(newAnonymous);
+                      this.optionMap = Collections.unmodifiableSortedMap(newOptionMap);
+                      this.prefixes = Collections.unmodifiableSet(newPrefixes);
+                  }
+          children: []
+          pos: 2322
+          length: 1678
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: canProcess
+              children: []
+              pos: 4021
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 4032
+                length: 38
+              pos: 4006
+              length: 904
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: arg
+                            children: []
+                            pos: 4134
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4141
+                            length: 4
+                        children: []
+                        pos: 4134
+                        length: 11
+                    children: []
+                    pos: 4133
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 4161
+                    length: 13
+                  pos: 4147
+                  length: 37
+                pos: 4130
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: optionMap.containsKey(arg)
+                        children: []
+                        pos: 4242
+                        length: 26
+                    children: []
+                    pos: 4241
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 4284
+                    length: 12
+                  pos: 4270
+                  length: 36
+                pos: 4238
+                length: 68
+              - type: local_variable_declaration
+                fields:
+                  text: final Map tailMap = optionMap.tailMap(arg);
+                children: []
+                pos: 4334
+                length: 43
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator iter = tailMap.values().iterator(); iter.hasNext();) {
+                                final Option option = (Option) iter.next();
+
+                                if (option.canProcess(commandLine, arg)) {
+                                    return true;
+                                }
+                            }
+                children: []
+                pos: 4428
+                length: 239
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: commandLine.looksLikeOption(arg)
+                        children: []
+                        pos: 4681
+                        length: 32
+                    children: []
+                    pos: 4680
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 4729
+                    length: 13
+                  pos: 4715
+                  length: 37
+                pos: 4677
+                length: 75
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_than
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: anonymous.size()
+                            children: []
+                            pos: 4823
+                            length: 16
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4842
+                            length: 1
+                        children: []
+                        pos: 4823
+                        length: 20
+                    children: []
+                    pos: 4822
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 4859
+                    length: 12
+                  pos: 4845
+                  length: 36
+                pos: 4819
+                length: 62
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 4891
+                length: 13
+              pos: 4120
+              length: 790
+          children: []
+          pos: 4006
+          length: 904
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPrefixes
+              children: []
+              pos: 4927
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4916
+              length: 57
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return prefixes;
+                children: []
+                pos: 4951
+                length: 16
+              pos: 4941
+              length: 32
+          children: []
+          pos: 4916
+          length: 57
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTriggers
+              children: []
+              pos: 4990
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4979
+              length: 67
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return optionMap.keySet();
+                children: []
+                pos: 5014
+                length: 26
+              pos: 5004
+              length: 42
+          children: []
+          pos: 4979
+          length: 67
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 5064
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 5072
+                length: 38
+              pos: 5052
+              length: 3047
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String previous = null;
+                children: []
+                pos: 5207
+                length: 23
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (arguments.hasNext()) {
+                                // grab the next argument
+                                final String arg = (String) arguments.next();
+
+                                // if we have just tried to process this instance
+                                if (arg == previous) {
+                                    // rollback and abort
+                                    arguments.previous();
+
+                                    break;
+                                }
+
+                                // remember last processed instance
+                                previous = arg;
+
+                                final Option opt = (Option) optionMap.get(arg);
+
+                                // option found
+                                if (opt != null) {
+                                    arguments.previous();
+                                    opt.process(commandLine, arguments);
+                                }
+                                // [START option NOT found
+                                else {
+                                    // it might be an anonymous argument continue search
+                                    // [START argument may be anonymous
+                                    if (commandLine.looksLikeOption(arg)) {
+                                        // narrow the search
+                                        final Collection values = optionMap.tailMap(arg).values();
+
+                                        boolean foundMemberOption = false;
+
+                                        for (Iterator i = values.iterator(); i.hasNext() && !foundMemberOption;) {
+                                            final Option option = (Option) i.next();
+
+                                            if (option.canProcess(commandLine, arg)) {
+                                                foundMemberOption = true;
+                                                arguments.previous();
+                                                option.process(commandLine, arguments);
+                                            }
+                                        }
+
+                                        // back track and abort this group if necessary
+                                        if (!foundMemberOption) {
+                                            arguments.previous();
+
+                                            return;
+                                        }
+                                    } // [END argument may be anonymous
+
+                                    // [START argument is NOT anonymous
+                                    else {
+                                        // move iterator back, current value not used
+                                        arguments.previous();
+
+                                        // if there are no anonymous arguments then this group can't
+                                        // process the argument
+                                        if (anonymous.isEmpty()) {
+                                            break;
+                                        }
+
+                                        // TODO: why do we iterate over all anonymous arguments?
+                                        // canProcess will always return true?
+                                        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                            final Argument argument = (Argument) i.next();
+
+                                            if (argument.canProcess(commandLine, arguments)) {
+                                                argument.process(commandLine, arguments);
+                                            }
+                                        }
+                                    } // [END argument is NOT anonymous
+                                } // [END option NOT found
+                            }
+                children: []
+                pos: 5290
+                length: 2763
+              pos: 5197
+              length: 2902
+          children: []
+          pos: 5052
+          length: 3047
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: validate
+              children: []
+              pos: 8117
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 8126
+                length: 38
+              pos: 8105
+              length: 1471
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int present = 0;
+                children: []
+                pos: 8242
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Option unexpected = null;
+                children: []
+                pos: 8316
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = options.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+
+                                // needs validation?
+                                boolean validate = option.isRequired() || option instanceof Group;
+                                if (validate) {
+                                    option.validate(commandLine);
+                                }
+
+                                // if the child option is present then validate it
+                                if (commandLine.hasOption(option)) {
+                                    if (++present > maximum) {
+                                        unexpected = option;
+
+                                        break;
+                                    }
+
+                                    option.validate(commandLine);
+                                }
+                            }
+                children: []
+                pos: 8351
+                length: 627
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: unexpected
+                            children: []
+                            pos: 9020
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 9034
+                            length: 4
+                        children: []
+                        pos: 9020
+                        length: 18
+                    children: []
+                    pos: 9019
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new OptionException(this, ResourceConstants.UNEXPECTED_TOKEN,
+                                                              unexpected.getPreferredName());
+                    children: []
+                    pos: 9054
+                    length: 137
+                  pos: 9040
+                  length: 161
+                pos: 9016
+                length: 185
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: present
+                            children: []
+                            pos: 9241
+                            length: 7
+                          right:
+                            type: identifier
+                            fields:
+                              text: minimum
+                            children: []
+                            pos: 9251
+                            length: 7
+                        children: []
+                        pos: 9241
+                        length: 17
+                    children: []
+                    pos: 9240
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new OptionException(this, ResourceConstants.MISSING_OPTION);
+                    children: []
+                    pos: 9274
+                    length: 66
+                  pos: 9260
+                  length: 90
+                pos: 9237
+                length: 113
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+                                option.validate(commandLine);
+                            }
+                children: []
+                pos: 9404
+                length: 166
+              pos: 8197
+              length: 1379
+          children: []
+          pos: 8105
+          length: 1471
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPreferredName
+              children: []
+              pos: 9596
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9582
+              length: 61
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return name;
+                children: []
+                pos: 9625
+                length: 12
+              pos: 9615
+              length: 28
+          children: []
+          pos: 9582
+          length: 61
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDescription
+              children: []
+              pos: 9663
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9649
+              length: 66
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return description;
+                children: []
+                pos: 9690
+                length: 19
+              pos: 9680
+              length: 35
+          children: []
+          pos: 9649
+          length: 66
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: appendUsage
+              children: []
+              pos: 9733
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StringBuffer buffer
+                children: []
+                pos: 9745
+                length: 25
+              pos: 9721
+              length: 215
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: appendUsage(buffer, helpSettings, comp, "|");
+                children: []
+                pos: 9885
+                length: 45
+              pos: 9875
+              length: 61
+          children: []
+          pos: 9721
+          length: 215
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: appendUsage
+              children: []
+              pos: 9954
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StringBuffer buffer
+                children: []
+                pos: 9966
+                length: 25
+              pos: 9942
+              length: 2886
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Set helpSettingsCopy = new HashSet(helpSettings);
+                children: []
+                pos: 10158
+                length: 55
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final boolean optional =
+                                (minimum == 0) && helpSettingsCopy.contains(DisplaySetting.DISPLAY_OPTIONAL);
+                children: []
+                pos: 10223
+                length: 114
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final boolean expanded =
+                                (name == null) || helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_EXPANDED);
+                children: []
+                pos: 10347
+                length: 120
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final boolean named =
+                                !expanded ||
+                                ((name != null) && helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_NAME));
+                children: []
+                pos: 10477
+                length: 140
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean arguments = helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_ARGUMENT);
+                children: []
+                pos: 10627
+                length: 91
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean outer = helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_OUTER);
+                children: []
+                pos: 10728
+                length: 84
+              - type: expression_statement
+                fields:
+                  text: helpSettingsCopy.remove(DisplaySetting.DISPLAY_GROUP_OUTER);
+                children: []
+                pos: 10822
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean both = named && expanded;
+                children: []
+                pos: 10892
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: optional
+                        children: []
+                        pos: 10945
+                        length: 8
+                    children: []
+                    pos: 10944
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append('[');
+                    children: []
+                    pos: 10969
+                    length: 19
+                  pos: 10955
+                  length: 43
+                pos: 10941
+                length: 57
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: named
+                        children: []
+                        pos: 11012
+                        length: 5
+                    children: []
+                    pos: 11011
+                    length: 7
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(name);
+                    children: []
+                    pos: 11033
+                    length: 20
+                  pos: 11019
+                  length: 44
+                pos: 11008
+                length: 55
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: both
+                        children: []
+                        pos: 11077
+                        length: 4
+                    children: []
+                    pos: 11076
+                    length: 6
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(" (");
+                    children: []
+                    pos: 11097
+                    length: 20
+                  pos: 11083
+                  length: 44
+                pos: 11073
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: expanded
+                        children: []
+                        pos: 11141
+                        length: 8
+                    children: []
+                    pos: 11140
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final Set childSettings;
+                    children: []
+                    pos: 11165
+                    length: 24
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!helpSettingsCopy.contains(DisplaySetting.DISPLAY_GROUP_EXPANDED)"
+                            children: []
+                            pos: 11207
+                            length: 65
+                        children: []
+                        pos: 11206
+                        length: 67
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: childSettings = DisplaySetting.NONE;
+                        children: []
+                        pos: 11292
+                        length: 36
+                      pos: 11274
+                      length: 68
+                    pos: 11203
+                    length: 294
+                  - type: local_variable_declaration
+                    fields:
+                      text: final List list;
+                    children: []
+                    pos: 11562
+                    length: 16
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: comp
+                                children: []
+                                pos: 11596
+                                length: 4
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 11604
+                                length: 4
+                            children: []
+                            pos: 11596
+                            length: 12
+                        children: []
+                        pos: 11595
+                        length: 14
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: list = options;
+                        children: []
+                        pos: 11682
+                        length: 15
+                      pos: 11610
+                      length: 101
+                    pos: 11592
+                    length: 291
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = list.iterator(); i.hasNext();) {
+                                        final Option option = (Option) i.next();
+
+                                        // append usage information
+                                        option.appendUsage(buffer, childSettings, comp);
+
+                                        // add separators as needed
+                                        if (i.hasNext()) {
+                                            buffer.append(separator);
+                                        }
+                                    }
+                    children: []
+                    pos: 11929
+                    length: 381
+                  pos: 11151
+                  length: 1169
+                pos: 11137
+                length: 1183
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: both
+                        children: []
+                        pos: 12334
+                        length: 4
+                    children: []
+                    pos: 12333
+                    length: 6
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(')');
+                    children: []
+                    pos: 12354
+                    length: 19
+                  pos: 12340
+                  length: 43
+                pos: 12330
+                length: 53
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: optional
+                            children: []
+                            pos: 12397
+                            length: 8
+                          right:
+                            type: identifier
+                            fields:
+                              text: outer
+                            children: []
+                            pos: 12409
+                            length: 5
+                        children: []
+                        pos: 12397
+                        length: 17
+                    children: []
+                    pos: 12396
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(']');
+                    children: []
+                    pos: 12430
+                    length: 19
+                  pos: 12416
+                  length: 43
+                pos: 12393
+                length: 66
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: arguments
+                        children: []
+                        pos: 12473
+                        length: 9
+                    children: []
+                    pos: 12472
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                        buffer.append(' ');
+
+                                        final Option option = (Option) i.next();
+                                        option.appendUsage(buffer, helpSettingsCopy, comp);
+                                    }
+                    children: []
+                    pos: 12498
+                    length: 237
+                  pos: 12484
+                  length: 261
+                pos: 12469
+                length: 276
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: optional
+                            children: []
+                            pos: 12759
+                            length: 8
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!outer"
+                            children: []
+                            pos: 12771
+                            length: 6
+                        children: []
+                        pos: 12759
+                        length: 18
+                    children: []
+                    pos: 12758
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.append(']');
+                    children: []
+                    pos: 12793
+                    length: 19
+                  pos: 12779
+                  length: 43
+                pos: 12755
+                length: 67
+              pos: 10148
+              length: 2680
+          children: []
+          pos: 9942
+          length: 2886
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: helpLines
+              children: []
+              pos: 12846
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int depth
+                children: []
+                pos: 12856
+                length: 15
+              pos: 12834
+              length: 1451
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final List helpLines = new ArrayList();
+                children: []
+                pos: 12982
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: helpSettings.contains(DisplaySetting.DISPLAY_GROUP_NAME)
+                        children: []
+                        pos: 13035
+                        length: 56
+                    children: []
+                    pos: 13034
+                    length: 58
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final HelpLine helpLine = new HelpLineImpl(this, depth);
+                    children: []
+                    pos: 13107
+                    length: 56
+                  - type: expression_statement
+                    fields:
+                      text: helpLines.add(helpLine);
+                    children: []
+                    pos: 13176
+                    length: 24
+                  pos: 13093
+                  length: 117
+                pos: 13031
+                length: 179
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: helpSettings.contains(DisplaySetting.DISPLAY_GROUP_EXPANDED)
+                        children: []
+                        pos: 13224
+                        length: 60
+                    children: []
+                    pos: 13223
+                    length: 62
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final List list;
+                    children: []
+                    pos: 13351
+                    length: 16
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: comp
+                                children: []
+                                pos: 13385
+                                length: 4
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 13393
+                                length: 4
+                            children: []
+                            pos: 13385
+                            length: 12
+                        children: []
+                        pos: 13384
+                        length: 14
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: list = options;
+                        children: []
+                        pos: 13471
+                        length: 15
+                      pos: 13399
+                      length: 101
+                    pos: 13381
+                    length: 291
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = list.iterator(); i.hasNext();) {
+                                        final Option option = (Option) i.next();
+                                        helpLines.addAll(option.helpLines(depth + 1, helpSettings, comp));
+                                    }
+                    children: []
+                    pos: 13717
+                    length: 210
+                  pos: 13286
+                  length: 651
+                pos: 13220
+                length: 717
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: helpSettings.contains(DisplaySetting.DISPLAY_GROUP_ARGUMENT)
+                        children: []
+                        pos: 13951
+                        length: 60
+                    children: []
+                    pos: 13950
+                    length: 62
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                        final Option option = (Option) i.next();
+                                        helpLines.addAll(option.helpLines(depth + 1, helpSettings, comp));
+                                    }
+                    children: []
+                    pos: 14027
+                    length: 215
+                  pos: 14013
+                  length: 239
+                pos: 13947
+                length: 305
+              - type: return_statement
+                fields:
+                  text: return helpLines;
+                children: []
+                pos: 14262
+                length: 17
+              pos: 12972
+              length: 1313
+          children: []
+          pos: 12834
+          length: 1451
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOptions
+              children: []
+              pos: 14471
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14459
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return options;
+                children: []
+                pos: 14494
+                length: 15
+              pos: 14484
+              length: 31
+          children: []
+          pos: 14459
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getAnonymous
+              children: []
+              pos: 14650
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14638
+              length: 60
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return anonymous;
+                children: []
+                pos: 14675
+                length: 17
+              pos: 14665
+              length: 33
+          children: []
+          pos: 14638
+          length: 60
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findOption
+              children: []
+              pos: 14718
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String trigger
+                children: []
+                pos: 14729
+                length: 20
+              pos: 14704
+              length: 361
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Iterator i = getOptions().iterator();
+                children: []
+                pos: 14761
+                length: 43
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (i.hasNext()) {
+                                final Option option = (Option) i.next();
+                                final Option found = option.findOption(trigger);
+
+                                if (found != null) {
+                                    return found;
+                                }
+                            }
+                children: []
+                pos: 14814
+                length: 223
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 15047
+                length: 12
+              pos: 14751
+              length: 314
+          children: []
+          pos: 14704
+          length: 361
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMinimum
+              children: []
+              pos: 15082
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15071
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return minimum;
+                children: []
+                pos: 15105
+                length: 15
+              pos: 15095
+              length: 31
+          children: []
+          pos: 15071
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaximum
+              children: []
+              pos: 15143
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15132
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maximum;
+                children: []
+                pos: 15166
+                length: 15
+              pos: 15156
+              length: 31
+          children: []
+          pos: 15132
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isRequired
+              children: []
+              pos: 15208
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15193
+              length: 68
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getMinimum() > 0;
+                children: []
+                pos: 15231
+                length: 24
+              pos: 15221
+              length: 40
+          children: []
+          pos: 15193
+          length: 68
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: defaults
+              children: []
+              pos: 15279
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final WriteableCommandLine commandLine
+                children: []
+                pos: 15288
+                length: 38
+              pos: 15267
+              length: 455
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: super.defaults(commandLine);
+                children: []
+                pos: 15338
+                length: 28
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = options.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+                                option.defaults(commandLine);
+                            }
+                children: []
+                pos: 15376
+                length: 164
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                                final Option option = (Option) i.next();
+                                option.defaults(commandLine);
+                            }
+                children: []
+                pos: 15550
+                length: 166
+              pos: 15328
+              length: 394
+          children: []
+          pos: 15267
+          length: 455
+        pos: 1570
+        length: 14154
+    children: []
+    pos: 1570
+    length: 14154
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ReverseStringComparator
+        children: []
+        pos: 15733
+        length: 23
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final Comparator instance = new ReverseStringComparator();
+          children: []
+          pos: 15785
+          length: 73
+        - type: constructor_declaration
+          fields:
+            text: |-
+              private ReverseStringComparator() {
+                      // just making sure nobody else creates one
+                  }
+          children: []
+          pos: 15864
+          length: 93
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInstance
+              children: []
+              pos: 16110
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16079
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return instance;
+                children: []
+                pos: 16134
+                length: 16
+              pos: 16124
+              length: 32
+          children: []
+          pos: 16079
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: compare
+              children: []
+              pos: 16173
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Object o1
+                children: []
+                pos: 16181
+                length: 15
+              pos: 16162
+              length: 196
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final String s1 = (String) o1;
+                children: []
+                pos: 16248
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: final String s2 = (String) o2;
+                children: []
+                pos: 16287
+                length: 30
+              - type: return_statement
+                fields:
+                  text: return -s1.compareTo(s2);
+                children: []
+                pos: 16327
+                length: 25
+              pos: 16238
+              length: 120
+          children: []
+          pos: 16162
+          length: 196
+        pos: 15727
+        length: 633
+    children: []
+    pos: 15727
+    length: 633
+  pos: 0
+  length: 16361
 text_diff: "--- before\n+++ after\n@@ -247,6 +247,9 @@\n \n             // needs validation?\n
   \            boolean validate = option.isRequired() || option instanceof Group;\n+
   \           if (validate) {\n+                option.validate(commandLine);\n+            }\n

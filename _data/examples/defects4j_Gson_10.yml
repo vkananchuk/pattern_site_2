@@ -1,5 +1,2177 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ReflectiveTypeAdapterFactory
+        children: []
+        pos: 1767
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final ConstructorConstructor constructorConstructor;
+          children: []
+          pos: 1830
+          length: 60
+        - type: field_declaration
+          fields:
+            text: private final FieldNamingStrategy fieldNamingPolicy;
+          children: []
+          pos: 1893
+          length: 52
+        - type: field_declaration
+          fields:
+            text: private final Excluder excluder;
+          children: []
+          pos: 1948
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ReflectiveTypeAdapterFactory(ConstructorConstructor constructorConstructor,
+                    FieldNamingStrategy fieldNamingPolicy, Excluder excluder) {
+                  this.constructorConstructor = constructorConstructor;
+                  this.fieldNamingPolicy = fieldNamingPolicy;
+                  this.excluder = excluder;
+                }
+          children: []
+          pos: 1984
+          length: 288
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: excludeField
+              children: []
+              pos: 2291
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 2304
+                length: 7
+              pos: 2276
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return excludeField(f, serialize, excluder);
+                children: []
+                pos: 2338
+                length: 44
+              pos: 2332
+              length: 54
+          children: []
+          pos: 2276
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: excludeField
+              children: []
+              pos: 2405
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 2418
+                length: 7
+              pos: 2390
+              length: 179
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return !excluder.excludeClass(f.getType(), serialize) && !excluder.excludeField(f,
+                    serialize);
+                children: []
+                pos: 2471
+                length: 94
+              pos: 2465
+              length: 104
+          children: []
+          pos: 2390
+          length: 179
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFieldNames
+              children: []
+              pos: 2640
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 2654
+                length: 7
+              pos: 2619
+              length: 670
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: SerializedName annotation = f.getAnnotation(SerializedName.class);
+                children: []
+                pos: 2669
+                length: 66
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: annotation
+                            children: []
+                            pos: 2744
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2758
+                            length: 4
+                        children: []
+                        pos: 2744
+                        length: 18
+                    children: []
+                    pos: 2743
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String name = fieldNamingPolicy.translateName(f);
+                    children: []
+                    pos: 2772
+                    length: 49
+                  - type: return_statement
+                    fields:
+                      text: return Collections.singletonList(name);
+                    children: []
+                    pos: 2828
+                    length: 39
+                  pos: 2764
+                  length: 109
+                pos: 2740
+                length: 133
+              - type: local_variable_declaration
+                fields:
+                  text: String serializedName = annotation.value();
+                children: []
+                pos: 2879
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: String[] alternates = annotation.alternate();
+                children: []
+                pos: 2927
+                length: 45
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: alternates.length
+                            children: []
+                            pos: 2981
+                            length: 17
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 3002
+                            length: 1
+                        children: []
+                        pos: 2981
+                        length: 22
+                    children: []
+                    pos: 2980
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return Collections.singletonList(serializedName);
+                    children: []
+                    pos: 3013
+                    length: 49
+                  pos: 3005
+                  length: 63
+                pos: 2977
+                length: 91
+              - type: local_variable_declaration
+                fields:
+                  text: List<String> fieldNames = new ArrayList<String>(alternates.length
+                    + 1);
+                children: []
+                pos: 3074
+                length: 71
+              - type: expression_statement
+                fields:
+                  text: fieldNames.add(serializedName);
+                children: []
+                pos: 3150
+                length: 31
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (String alternate : alternates) {
+                          fieldNames.add(alternate);
+                        }
+                children: []
+                pos: 3186
+                length: 76
+              - type: return_statement
+                fields:
+                  text: return fieldNames;
+                children: []
+                pos: 3267
+                length: 18
+              pos: 2663
+              length: 626
+          children: []
+          pos: 2619
+          length: 670
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: create
+              children: []
+              pos: 3329
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Gson gson
+                children: []
+                pos: 3336
+                length: 9
+              pos: 3293
+              length: 371
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Class<? super T> raw = type.getRawType();
+                children: []
+                pos: 3378
+                length: 41
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!Object.class.isAssignableFrom(raw)"
+                        children: []
+                        pos: 3429
+                        length: 35
+                    children: []
+                    pos: 3428
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 3474
+                    length: 12
+                  pos: 3466
+                  length: 47
+                pos: 3425
+                length: 88
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectConstructor<T> constructor = constructorConstructor.get(type);
+                children: []
+                pos: 3519
+                length: 68
+              - type: return_statement
+                fields:
+                  text: return new Adapter<T>(constructor, getBoundFields(gson, type,
+                    raw));
+                children: []
+                pos: 3592
+                length: 68
+              pos: 3372
+              length: 292
+          children: []
+          pos: 3293
+          length: 371
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createBoundField
+              children: []
+              pos: 3716
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Gson context
+                children: []
+                pos: 3740
+                length: 18
+              pos: 3668
+              length: 1851
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean isPrimitive = Primitives.isPrimitive(fieldType.getRawType());
+                children: []
+                pos: 3880
+                length: 75
+              - type: local_variable_declaration
+                fields:
+                  text: JsonAdapter annotation = field.getAnnotation(JsonAdapter.class);
+                children: []
+                pos: 4022
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: TypeAdapter<?> mapped = null;
+                children: []
+                pos: 4091
+                length: 29
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: annotation
+                            children: []
+                            pos: 4129
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4143
+                            length: 4
+                        children: []
+                        pos: 4129
+                        length: 18
+                    children: []
+                    pos: 4128
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: mapped = getTypeAdapter(constructorConstructor, context,
+                        fieldType, annotation);
+                    children: []
+                    pos: 4157
+                    length: 80
+                  pos: 4149
+                  length: 94
+                pos: 4125
+                length: 118
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean jsonAdapterPresent = mapped != null;
+                children: []
+                pos: 4248
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: mapped
+                            children: []
+                            pos: 4307
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4317
+                            length: 4
+                        children: []
+                        pos: 4307
+                        length: 14
+                    children: []
+                    pos: 4306
+                    length: 16
+                children:
+                - type: expression_statement
+                  fields:
+                    text: mapped = context.getAdapter(fieldType);
+                  children: []
+                  pos: 4323
+                  length: 39
+                pos: 4303
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: final TypeAdapter<?> typeAdapter = mapped;
+                children: []
+                pos: 4368
+                length: 42
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new ReflectiveTypeAdapterFactory.BoundField(name, serialize, deserialize) {
+                          @SuppressWarnings({"unchecked", "rawtypes"}) // the type adapter and field type always agree
+                          @Override void write(JsonWriter writer, Object value)
+                              throws IOException, IllegalAccessException {
+                            Object fieldValue = field.get(value);
+                            TypeAdapter t = jsonAdapterPresent ? typeAdapter
+                                : new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());
+                            t.write(writer, fieldValue);
+                          }
+                          @Override void read(JsonReader reader, Object value)
+                              throws IOException, IllegalAccessException {
+                            Object fieldValue = typeAdapter.read(reader);
+                            if (fieldValue != null || !isPrimitive) {
+                              field.set(value, fieldValue);
+                            }
+                          }
+                          @Override public boolean writeField(Object value) throws IOException, IllegalAccessException {
+                            if (!serialized) return false;
+                            Object fieldValue = field.get(value);
+                            return fieldValue != value; // avoid recursion for example for Throwable.cause
+                          }
+                        };
+                children: []
+                pos: 4415
+                length: 1100
+              pos: 3874
+              length: 1645
+          children: []
+          pos: 3668
+          length: 1851
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getBoundFields
+              children: []
+              pos: 5555
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Gson context
+                children: []
+                pos: 5570
+                length: 12
+              pos: 5523
+              length: 1566
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Map<String, BoundField> result = new LinkedHashMap<String,
+                    BoundField>();
+                children: []
+                pos: 5623
+                length: 73
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: raw.isInterface()
+                        children: []
+                        pos: 5705
+                        length: 17
+                    children: []
+                    pos: 5704
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return result;
+                    children: []
+                    pos: 5732
+                    length: 14
+                  pos: 5724
+                  length: 28
+                pos: 5701
+                length: 51
+              - type: local_variable_declaration
+                fields:
+                  text: Type declaredType = type.getType();
+                children: []
+                pos: 5758
+                length: 35
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (raw != Object.class) {
+                          Field[] fields = raw.getDeclaredFields();
+                          for (Field field : fields) {
+                            boolean serialize = excludeField(field, true);
+                            boolean deserialize = excludeField(field, false);
+                            if (!serialize && !deserialize) {
+                              continue;
+                            }
+                            field.setAccessible(true);
+                            Type fieldType = $Gson$Types.resolve(type.getType(), raw, field.getGenericType());
+                            List<String> fieldNames = getFieldNames(field);
+                            BoundField previous = null;
+                            for (int i = 0; i < fieldNames.size(); ++i) {
+                              String name = fieldNames.get(i);
+                              if (i != 0) serialize = false; // only serialize the default name
+                              BoundField boundField = createBoundField(context, field, name,
+                                  TypeToken.get(fieldType), serialize, deserialize);
+                              BoundField replaced = result.put(name, boundField);
+                              if (previous == null) previous = replaced;
+                            }
+                            if (previous != null) {
+                              throw new IllegalArgumentException(declaredType
+                                  + " declares multiple JSON fields named " + previous.name);
+                            }
+                          }
+                          type = TypeToken.get($Gson$Types.resolve(type.getType(), raw, raw.getGenericSuperclass()));
+                          raw = type.getRawType();
+                        }
+                children: []
+                pos: 5798
+                length: 1268
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 7071
+                length: 14
+              pos: 5617
+              length: 1472
+          children: []
+          pos: 5523
+          length: 1566
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: BoundField
+              children: []
+              pos: 7115
+              length: 10
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final String name;
+                children: []
+                pos: 7132
+                length: 18
+              - type: field_declaration
+                fields:
+                  text: final boolean serialized;
+                children: []
+                pos: 7155
+                length: 25
+              - type: field_declaration
+                fields:
+                  text: final boolean deserialized;
+                children: []
+                pos: 7185
+                length: 27
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    protected BoundField(String name, boolean serialized, boolean deserialized) {
+                          this.name = name;
+                          this.serialized = serialized;
+                          this.deserialized = deserialized;
+                        }
+                children: []
+                pos: 7218
+                length: 183
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: writeField
+                    children: []
+                    pos: 7423
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Object value
+                      children: []
+                      pos: 7434
+                      length: 12
+                    pos: 7406
+                    length: 85
+                children: []
+                pos: 7406
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: write
+                    children: []
+                    pos: 7510
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonWriter writer
+                      children: []
+                      pos: 7516
+                      length: 17
+                    pos: 7496
+                    length: 96
+                children: []
+                pos: 7496
+                length: 96
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 7611
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonReader reader
+                      children: []
+                      pos: 7616
+                      length: 17
+                    pos: 7597
+                    length: 95
+                children: []
+                pos: 7597
+                length: 95
+              pos: 7093
+              length: 603
+          children: []
+          pos: 7093
+          length: 603
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Adapter
+              children: []
+              pos: 7726
+              length: 7
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final ObjectConstructor<T> constructor;
+                children: []
+                pos: 7766
+                length: 47
+              - type: field_declaration
+                fields:
+                  text: private final Map<String, BoundField> boundFields;
+                children: []
+                pos: 7818
+                length: 50
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    Adapter(ObjectConstructor<T> constructor, Map<String, BoundField> boundFields) {
+                          this.constructor = constructor;
+                          this.boundFields = boundFields;
+                        }
+                children: []
+                pos: 7874
+                length: 162
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 8061
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonReader in
+                      children: []
+                      pos: 8066
+                      length: 13
+                    pos: 8042
+                    length: 742
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: in.peek()
+                                  children: []
+                                  pos: 8112
+                                  length: 9
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: JsonToken.NULL
+                                  children: []
+                                  pos: 8125
+                                  length: 14
+                              children: []
+                              pos: 8112
+                              length: 27
+                          children: []
+                          pos: 8111
+                          length: 29
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: in.nextNull();
+                          children: []
+                          pos: 8151
+                          length: 14
+                        - type: return_statement
+                          fields:
+                            text: return null;
+                          children: []
+                          pos: 8174
+                          length: 12
+                        pos: 8141
+                        length: 53
+                      pos: 8108
+                      length: 86
+                    - type: local_variable_declaration
+                      fields:
+                        text: T instance = constructor.construct();
+                      children: []
+                      pos: 8202
+                      length: 37
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: in.beginObject();
+                            children: []
+                            pos: 8261
+                            length: 17
+                          - type: while_statement
+                            fields:
+                              text: |-
+                                while (in.hasNext()) {
+                                          String name = in.nextName();
+                                          BoundField field = boundFields.get(name);
+                                          if (field == null || !field.deserialized) {
+                                            in.skipValue();
+                                          } else {
+                                            field.read(in, instance);
+                                          }
+                                        }
+                            children: []
+                            pos: 8287
+                            length: 274
+                          pos: 8251
+                          length: 318
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (IllegalStateException e) {
+                                        throw new JsonSyntaxException(e);
+                                      }
+                            children: []
+                            pos: 8570
+                            length: 83
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (IllegalAccessException e) {
+                                        throw new AssertionError(e);
+                                      }
+                            children: []
+                            pos: 8654
+                            length: 79
+                          pos: 8247
+                          length: 486
+                      children: []
+                      pos: 8247
+                      length: 486
+                    - type: expression_statement
+                      fields:
+                        text: in.endObject();
+                      children: []
+                      pos: 8740
+                      length: 15
+                    - type: return_statement
+                      fields:
+                        text: return instance;
+                      children: []
+                      pos: 8762
+                      length: 16
+                    pos: 8100
+                    length: 684
+                children: []
+                pos: 8042
+                length: 742
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: write
+                    children: []
+                    pos: 8812
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonWriter out
+                      children: []
+                      pos: 8818
+                      length: 14
+                    pos: 8790
+                    length: 514
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: value
+                                  children: []
+                                  pos: 8874
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 8883
+                                  length: 4
+                              children: []
+                              pos: 8874
+                              length: 13
+                          children: []
+                          pos: 8873
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: out.nullValue();
+                          children: []
+                          pos: 8899
+                          length: 16
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 8924
+                          length: 7
+                        pos: 8889
+                        length: 50
+                      pos: 8870
+                      length: 69
+                    - type: expression_statement
+                      fields:
+                        text: out.beginObject();
+                      children: []
+                      pos: 8947
+                      length: 18
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: enhanced_for_statement
+                            fields:
+                              text: |-
+                                for (BoundField boundField : boundFields.values()) {
+                                          if (boundField.writeField(value)) {
+                                            out.name(boundField.name);
+                                            boundField.write(out, value);
+                                          }
+                                        }
+                            children: []
+                            pos: 8986
+                            length: 201
+                          pos: 8976
+                          length: 219
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (IllegalAccessException e) {
+                                        throw new AssertionError(e);
+                                      }
+                            children: []
+                            pos: 9196
+                            length: 79
+                          pos: 8972
+                          length: 303
+                      children: []
+                      pos: 8972
+                      length: 303
+                    - type: expression_statement
+                      fields:
+                        text: out.endObject();
+                      children: []
+                      pos: 9282
+                      length: 16
+                    pos: 8862
+                    length: 442
+                children: []
+                pos: 8790
+                length: 514
+              pos: 7700
+              length: 1608
+          children: []
+          pos: 7700
+          length: 1608
+        pos: 1748
+        length: 7562
+    children: []
+    pos: 1748
+    length: 7562
+  pos: 0
+  length: 9311
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ReflectiveTypeAdapterFactory
+        children: []
+        pos: 1767
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final ConstructorConstructor constructorConstructor;
+          children: []
+          pos: 1830
+          length: 60
+        - type: field_declaration
+          fields:
+            text: private final FieldNamingStrategy fieldNamingPolicy;
+          children: []
+          pos: 1893
+          length: 52
+        - type: field_declaration
+          fields:
+            text: private final Excluder excluder;
+          children: []
+          pos: 1948
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ReflectiveTypeAdapterFactory(ConstructorConstructor constructorConstructor,
+                    FieldNamingStrategy fieldNamingPolicy, Excluder excluder) {
+                  this.constructorConstructor = constructorConstructor;
+                  this.fieldNamingPolicy = fieldNamingPolicy;
+                  this.excluder = excluder;
+                }
+          children: []
+          pos: 1984
+          length: 288
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: excludeField
+              children: []
+              pos: 2291
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 2304
+                length: 7
+              pos: 2276
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return excludeField(f, serialize, excluder);
+                children: []
+                pos: 2338
+                length: 44
+              pos: 2332
+              length: 54
+          children: []
+          pos: 2276
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: excludeField
+              children: []
+              pos: 2405
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 2418
+                length: 7
+              pos: 2390
+              length: 179
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return !excluder.excludeClass(f.getType(), serialize) && !excluder.excludeField(f,
+                    serialize);
+                children: []
+                pos: 2471
+                length: 94
+              pos: 2465
+              length: 104
+          children: []
+          pos: 2390
+          length: 179
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFieldNames
+              children: []
+              pos: 2640
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 2654
+                length: 7
+              pos: 2619
+              length: 670
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: SerializedName annotation = f.getAnnotation(SerializedName.class);
+                children: []
+                pos: 2669
+                length: 66
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: annotation
+                            children: []
+                            pos: 2744
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2758
+                            length: 4
+                        children: []
+                        pos: 2744
+                        length: 18
+                    children: []
+                    pos: 2743
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String name = fieldNamingPolicy.translateName(f);
+                    children: []
+                    pos: 2772
+                    length: 49
+                  - type: return_statement
+                    fields:
+                      text: return Collections.singletonList(name);
+                    children: []
+                    pos: 2828
+                    length: 39
+                  pos: 2764
+                  length: 109
+                pos: 2740
+                length: 133
+              - type: local_variable_declaration
+                fields:
+                  text: String serializedName = annotation.value();
+                children: []
+                pos: 2879
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: String[] alternates = annotation.alternate();
+                children: []
+                pos: 2927
+                length: 45
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: alternates.length
+                            children: []
+                            pos: 2981
+                            length: 17
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 3002
+                            length: 1
+                        children: []
+                        pos: 2981
+                        length: 22
+                    children: []
+                    pos: 2980
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return Collections.singletonList(serializedName);
+                    children: []
+                    pos: 3013
+                    length: 49
+                  pos: 3005
+                  length: 63
+                pos: 2977
+                length: 91
+              - type: local_variable_declaration
+                fields:
+                  text: List<String> fieldNames = new ArrayList<String>(alternates.length
+                    + 1);
+                children: []
+                pos: 3074
+                length: 71
+              - type: expression_statement
+                fields:
+                  text: fieldNames.add(serializedName);
+                children: []
+                pos: 3150
+                length: 31
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (String alternate : alternates) {
+                          fieldNames.add(alternate);
+                        }
+                children: []
+                pos: 3186
+                length: 76
+              - type: return_statement
+                fields:
+                  text: return fieldNames;
+                children: []
+                pos: 3267
+                length: 18
+              pos: 2663
+              length: 626
+          children: []
+          pos: 2619
+          length: 670
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: create
+              children: []
+              pos: 3329
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Gson gson
+                children: []
+                pos: 3336
+                length: 9
+              pos: 3293
+              length: 371
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Class<? super T> raw = type.getRawType();
+                children: []
+                pos: 3378
+                length: 41
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!Object.class.isAssignableFrom(raw)"
+                        children: []
+                        pos: 3429
+                        length: 35
+                    children: []
+                    pos: 3428
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 3474
+                    length: 12
+                  pos: 3466
+                  length: 47
+                pos: 3425
+                length: 88
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectConstructor<T> constructor = constructorConstructor.get(type);
+                children: []
+                pos: 3519
+                length: 68
+              - type: return_statement
+                fields:
+                  text: return new Adapter<T>(constructor, getBoundFields(gson, type,
+                    raw));
+                children: []
+                pos: 3592
+                length: 68
+              pos: 3372
+              length: 292
+          children: []
+          pos: 3293
+          length: 371
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createBoundField
+              children: []
+              pos: 3716
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Gson context
+                children: []
+                pos: 3740
+                length: 18
+              pos: 3668
+              length: 1814
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean isPrimitive = Primitives.isPrimitive(fieldType.getRawType());
+                children: []
+                pos: 3880
+                length: 75
+              - type: local_variable_declaration
+                fields:
+                  text: JsonAdapter annotation = field.getAnnotation(JsonAdapter.class);
+                children: []
+                pos: 4022
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: TypeAdapter<?> mapped = null;
+                children: []
+                pos: 4091
+                length: 29
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: annotation
+                            children: []
+                            pos: 4129
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4143
+                            length: 4
+                        children: []
+                        pos: 4129
+                        length: 18
+                    children: []
+                    pos: 4128
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: mapped = getTypeAdapter(constructorConstructor, context,
+                        fieldType, annotation);
+                    children: []
+                    pos: 4157
+                    length: 80
+                  pos: 4149
+                  length: 94
+                pos: 4125
+                length: 118
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean jsonAdapterPresent = mapped != null;
+                children: []
+                pos: 4248
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: mapped
+                            children: []
+                            pos: 4307
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4317
+                            length: 4
+                        children: []
+                        pos: 4307
+                        length: 14
+                    children: []
+                    pos: 4306
+                    length: 16
+                children:
+                - type: expression_statement
+                  fields:
+                    text: mapped = context.getAdapter(fieldType);
+                  children: []
+                  pos: 4323
+                  length: 39
+                pos: 4303
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: final TypeAdapter<?> typeAdapter = mapped;
+                children: []
+                pos: 4368
+                length: 42
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new ReflectiveTypeAdapterFactory.BoundField(name, serialize, deserialize) {
+                          @SuppressWarnings({"unchecked", "rawtypes"}) // the type adapter and field type always agree
+                          @Override void write(JsonWriter writer, Object value)
+                              throws IOException, IllegalAccessException {
+                            Object fieldValue = field.get(value);
+                            TypeAdapter t =
+                              new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());
+                            t.write(writer, fieldValue);
+                          }
+                          @Override void read(JsonReader reader, Object value)
+                              throws IOException, IllegalAccessException {
+                            Object fieldValue = typeAdapter.read(reader);
+                            if (fieldValue != null || !isPrimitive) {
+                              field.set(value, fieldValue);
+                            }
+                          }
+                          @Override public boolean writeField(Object value) throws IOException, IllegalAccessException {
+                            if (!serialized) return false;
+                            Object fieldValue = field.get(value);
+                            return fieldValue != value; // avoid recursion for example for Throwable.cause
+                          }
+                        };
+                children: []
+                pos: 4415
+                length: 1063
+              pos: 3874
+              length: 1608
+          children: []
+          pos: 3668
+          length: 1814
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getBoundFields
+              children: []
+              pos: 5518
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Gson context
+                children: []
+                pos: 5533
+                length: 12
+              pos: 5486
+              length: 1566
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Map<String, BoundField> result = new LinkedHashMap<String,
+                    BoundField>();
+                children: []
+                pos: 5586
+                length: 73
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: raw.isInterface()
+                        children: []
+                        pos: 5668
+                        length: 17
+                    children: []
+                    pos: 5667
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return result;
+                    children: []
+                    pos: 5695
+                    length: 14
+                  pos: 5687
+                  length: 28
+                pos: 5664
+                length: 51
+              - type: local_variable_declaration
+                fields:
+                  text: Type declaredType = type.getType();
+                children: []
+                pos: 5721
+                length: 35
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (raw != Object.class) {
+                          Field[] fields = raw.getDeclaredFields();
+                          for (Field field : fields) {
+                            boolean serialize = excludeField(field, true);
+                            boolean deserialize = excludeField(field, false);
+                            if (!serialize && !deserialize) {
+                              continue;
+                            }
+                            field.setAccessible(true);
+                            Type fieldType = $Gson$Types.resolve(type.getType(), raw, field.getGenericType());
+                            List<String> fieldNames = getFieldNames(field);
+                            BoundField previous = null;
+                            for (int i = 0; i < fieldNames.size(); ++i) {
+                              String name = fieldNames.get(i);
+                              if (i != 0) serialize = false; // only serialize the default name
+                              BoundField boundField = createBoundField(context, field, name,
+                                  TypeToken.get(fieldType), serialize, deserialize);
+                              BoundField replaced = result.put(name, boundField);
+                              if (previous == null) previous = replaced;
+                            }
+                            if (previous != null) {
+                              throw new IllegalArgumentException(declaredType
+                                  + " declares multiple JSON fields named " + previous.name);
+                            }
+                          }
+                          type = TypeToken.get($Gson$Types.resolve(type.getType(), raw, raw.getGenericSuperclass()));
+                          raw = type.getRawType();
+                        }
+                children: []
+                pos: 5761
+                length: 1268
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 7034
+                length: 14
+              pos: 5580
+              length: 1472
+          children: []
+          pos: 5486
+          length: 1566
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: BoundField
+              children: []
+              pos: 7078
+              length: 10
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final String name;
+                children: []
+                pos: 7095
+                length: 18
+              - type: field_declaration
+                fields:
+                  text: final boolean serialized;
+                children: []
+                pos: 7118
+                length: 25
+              - type: field_declaration
+                fields:
+                  text: final boolean deserialized;
+                children: []
+                pos: 7148
+                length: 27
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    protected BoundField(String name, boolean serialized, boolean deserialized) {
+                          this.name = name;
+                          this.serialized = serialized;
+                          this.deserialized = deserialized;
+                        }
+                children: []
+                pos: 7181
+                length: 183
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: writeField
+                    children: []
+                    pos: 7386
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Object value
+                      children: []
+                      pos: 7397
+                      length: 12
+                    pos: 7369
+                    length: 85
+                children: []
+                pos: 7369
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: write
+                    children: []
+                    pos: 7473
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonWriter writer
+                      children: []
+                      pos: 7479
+                      length: 17
+                    pos: 7459
+                    length: 96
+                children: []
+                pos: 7459
+                length: 96
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 7574
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonReader reader
+                      children: []
+                      pos: 7579
+                      length: 17
+                    pos: 7560
+                    length: 95
+                children: []
+                pos: 7560
+                length: 95
+              pos: 7056
+              length: 603
+          children: []
+          pos: 7056
+          length: 603
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Adapter
+              children: []
+              pos: 7689
+              length: 7
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final ObjectConstructor<T> constructor;
+                children: []
+                pos: 7729
+                length: 47
+              - type: field_declaration
+                fields:
+                  text: private final Map<String, BoundField> boundFields;
+                children: []
+                pos: 7781
+                length: 50
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    Adapter(ObjectConstructor<T> constructor, Map<String, BoundField> boundFields) {
+                          this.constructor = constructor;
+                          this.boundFields = boundFields;
+                        }
+                children: []
+                pos: 7837
+                length: 162
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 8024
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonReader in
+                      children: []
+                      pos: 8029
+                      length: 13
+                    pos: 8005
+                    length: 742
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: in.peek()
+                                  children: []
+                                  pos: 8075
+                                  length: 9
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: JsonToken.NULL
+                                  children: []
+                                  pos: 8088
+                                  length: 14
+                              children: []
+                              pos: 8075
+                              length: 27
+                          children: []
+                          pos: 8074
+                          length: 29
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: in.nextNull();
+                          children: []
+                          pos: 8114
+                          length: 14
+                        - type: return_statement
+                          fields:
+                            text: return null;
+                          children: []
+                          pos: 8137
+                          length: 12
+                        pos: 8104
+                        length: 53
+                      pos: 8071
+                      length: 86
+                    - type: local_variable_declaration
+                      fields:
+                        text: T instance = constructor.construct();
+                      children: []
+                      pos: 8165
+                      length: 37
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: in.beginObject();
+                            children: []
+                            pos: 8224
+                            length: 17
+                          - type: while_statement
+                            fields:
+                              text: |-
+                                while (in.hasNext()) {
+                                          String name = in.nextName();
+                                          BoundField field = boundFields.get(name);
+                                          if (field == null || !field.deserialized) {
+                                            in.skipValue();
+                                          } else {
+                                            field.read(in, instance);
+                                          }
+                                        }
+                            children: []
+                            pos: 8250
+                            length: 274
+                          pos: 8214
+                          length: 318
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (IllegalStateException e) {
+                                        throw new JsonSyntaxException(e);
+                                      }
+                            children: []
+                            pos: 8533
+                            length: 83
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (IllegalAccessException e) {
+                                        throw new AssertionError(e);
+                                      }
+                            children: []
+                            pos: 8617
+                            length: 79
+                          pos: 8210
+                          length: 486
+                      children: []
+                      pos: 8210
+                      length: 486
+                    - type: expression_statement
+                      fields:
+                        text: in.endObject();
+                      children: []
+                      pos: 8703
+                      length: 15
+                    - type: return_statement
+                      fields:
+                        text: return instance;
+                      children: []
+                      pos: 8725
+                      length: 16
+                    pos: 8063
+                    length: 684
+                children: []
+                pos: 8005
+                length: 742
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: write
+                    children: []
+                    pos: 8775
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JsonWriter out
+                      children: []
+                      pos: 8781
+                      length: 14
+                    pos: 8753
+                    length: 514
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: value
+                                  children: []
+                                  pos: 8837
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 8846
+                                  length: 4
+                              children: []
+                              pos: 8837
+                              length: 13
+                          children: []
+                          pos: 8836
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: out.nullValue();
+                          children: []
+                          pos: 8862
+                          length: 16
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 8887
+                          length: 7
+                        pos: 8852
+                        length: 50
+                      pos: 8833
+                      length: 69
+                    - type: expression_statement
+                      fields:
+                        text: out.beginObject();
+                      children: []
+                      pos: 8910
+                      length: 18
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: enhanced_for_statement
+                            fields:
+                              text: |-
+                                for (BoundField boundField : boundFields.values()) {
+                                          if (boundField.writeField(value)) {
+                                            out.name(boundField.name);
+                                            boundField.write(out, value);
+                                          }
+                                        }
+                            children: []
+                            pos: 8949
+                            length: 201
+                          pos: 8939
+                          length: 219
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (IllegalAccessException e) {
+                                        throw new AssertionError(e);
+                                      }
+                            children: []
+                            pos: 9159
+                            length: 79
+                          pos: 8935
+                          length: 303
+                      children: []
+                      pos: 8935
+                      length: 303
+                    - type: expression_statement
+                      fields:
+                        text: out.endObject();
+                      children: []
+                      pos: 9245
+                      length: 16
+                    pos: 8825
+                    length: 442
+                children: []
+                pos: 8753
+                length: 514
+              pos: 7663
+              length: 1608
+          children: []
+          pos: 7663
+          length: 1608
+        pos: 1748
+        length: 7525
+    children: []
+    pos: 1748
+    length: 7525
+  pos: 0
+  length: 9274
 text_diff: |
   --- before
   +++ after

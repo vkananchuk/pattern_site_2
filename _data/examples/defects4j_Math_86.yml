@@ -1,5 +1,1669 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: CholeskyDecompositionImpl
+        children: []
+        pos: 1421
+        length: 25
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: public static final double DEFAULT_RELATIVE_SYMMETRY_THRESHOLD =
+              1.0e-15;
+          children: []
+          pos: 1612
+          length: 73
+        - type: field_declaration
+          fields:
+            text: public static final double DEFAULT_ABSOLUTE_POSITIVITY_THRESHOLD
+              = 1.0e-10;
+          children: []
+          pos: 1811
+          length: 75
+        - type: field_declaration
+          fields:
+            text: private double[][] lTData;
+          children: []
+          pos: 1955
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedL;
+          children: []
+          pos: 2017
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedLT;
+          children: []
+          pos: 2081
+          length: 28
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public CholeskyDecompositionImpl(final RealMatrix matrix)
+                      throws NonSquareMatrixException,
+                             NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+                      this(matrix, DEFAULT_RELATIVE_SYMMETRY_THRESHOLD,
+                           DEFAULT_ABSOLUTE_POSITIVITY_THRESHOLD);
+                  }
+          children: []
+          pos: 2967
+          length: 296
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public CholeskyDecompositionImpl(final RealMatrix matrix,
+                                                   final double relativeSymmetryThreshold,
+                                                   final double absolutePositivityThreshold)
+                      throws NonSquareMatrixException,
+                             NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+
+                      if (!matrix.isSquare()) {
+                          throw new NonSquareMatrixException(matrix.getRowDimension(),
+                                                             matrix.getColumnDimension());
+                      }
+
+                      final int order = matrix.getRowDimension();
+                      lTData   = matrix.getData();
+                      cachedL  = null;
+                      cachedLT = null;
+
+                      // check the matrix before transformation
+                      for (int i = 0; i < order; ++i) {
+
+                          final double[] lI = lTData[i];
+
+                          // check off-diagonal elements (and reset them to 0)
+                          for (int j = i + 1; j < order; ++j) {
+                              final double[] lJ = lTData[j];
+                              final double lIJ = lI[j];
+                              final double lJI = lJ[i];
+                              final double maxDelta =
+                                  relativeSymmetryThreshold * Math.max(Math.abs(lIJ), Math.abs(lJI));
+                              if (Math.abs(lIJ - lJI) > maxDelta) {
+                                  throw new NotSymmetricMatrixException();
+                              }
+                              lJ[i] = 0;
+                         }
+                      }
+
+                      // transform the matrix
+                      for (int i = 0; i < order; ++i) {
+
+                          final double[] ltI = lTData[i];
+
+                          // check diagonal element
+                          if (ltI[i] < absolutePositivityThreshold) {
+                              throw new NotPositiveDefiniteMatrixException();
+                          }
+
+                          ltI[i] = Math.sqrt(ltI[i]);
+                          final double inverse = 1.0 / ltI[i];
+
+                          for (int q = order - 1; q > i; --q) {
+                              ltI[q] *= inverse;
+                              final double[] ltQ = lTData[q];
+                              for (int p = q; p < order; ++p) {
+                                  ltQ[p] -= ltI[q] * ltI[p];
+                              }
+                          }
+
+                      }
+
+                  }
+          children: []
+          pos: 4082
+          length: 2029
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getL
+              children: []
+              pos: 6160
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6142
+              length: 140
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedL
+                            children: []
+                            pos: 6181
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6192
+                            length: 4
+                        children: []
+                        pos: 6181
+                        length: 15
+                    children: []
+                    pos: 6180
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedL = getLT().transpose();
+                    children: []
+                    pos: 6212
+                    length: 30
+                  pos: 6198
+                  length: 54
+                pos: 6177
+                length: 75
+              - type: return_statement
+                fields:
+                  text: return cachedL;
+                children: []
+                pos: 6261
+                length: 15
+              pos: 6167
+              length: 115
+          children: []
+          pos: 6142
+          length: 140
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLT
+              children: []
+              pos: 6331
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6313
+              length: 200
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedLT
+                            children: []
+                            pos: 6354
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6366
+                            length: 4
+                        children: []
+                        pos: 6354
+                        length: 16
+                    children: []
+                    pos: 6353
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedLT = MatrixUtils.createRealMatrix(lTData);
+                    children: []
+                    pos: 6386
+                    length: 48
+                  pos: 6372
+                  length: 72
+                pos: 6350
+                length: 94
+              - type: return_statement
+                fields:
+                  text: return cachedLT;
+                children: []
+                pos: 6490
+                length: 16
+              pos: 6339
+              length: 174
+          children: []
+          pos: 6313
+          length: 200
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDeterminant
+              children: []
+              pos: 6558
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6544
+              length: 240
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double determinant = 1.0;
+                children: []
+                pos: 6585
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < lTData.length; ++i) {
+                                double lTii = lTData[i][i];
+                                determinant *= lTii * lTii;
+                            }
+                children: []
+                pos: 6619
+                length: 131
+              - type: return_statement
+                fields:
+                  text: return determinant;
+                children: []
+                pos: 6759
+                length: 19
+              pos: 6575
+              length: 209
+          children: []
+          pos: 6544
+          length: 240
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSolver
+              children: []
+              pos: 6842
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6815
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Solver(lTData);
+                children: []
+                pos: 6864
+                length: 26
+              pos: 6854
+              length: 42
+          children: []
+          pos: 6815
+          length: 81
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Solver
+              children: []
+              pos: 6954
+              length: 6
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final double[][] lTData;
+                children: []
+                pos: 7074
+                length: 32
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private Solver(final double[][] lTData) {
+                                this.lTData = lTData;
+                            }
+                children: []
+                pos: 7266
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isNonSingular
+                    children: []
+                    pos: 7405
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 7390
+                    length: 155
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 7523
+                      length: 12
+                    pos: 7421
+                    length: 124
+                children: []
+                pos: 7390
+                length: 155
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 7600
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: double[] b
+                      children: []
+                      pos: 7606
+                      length: 10
+                    pos: 7584
+                    length: 1049
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int m = lTData.length;
+                      children: []
+                      pos: 7701
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: field_access
+                                  fields:
+                                    text: b.length
+                                  children: []
+                                  pos: 7746
+                                  length: 8
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: m
+                                  children: []
+                                  pos: 7758
+                                  length: 1
+                              children: []
+                              pos: 7746
+                              length: 13
+                          children: []
+                          pos: 7745
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: throw_statement
+                          fields:
+                            text: |-
+                              throw MathRuntimeException.createIllegalArgumentException(
+                                                      "vector length mismatch: got {0} but expected {1}",
+                                                      b.length, m);
+                          children: []
+                          pos: 7779
+                          length: 172
+                        pos: 7761
+                        length: 204
+                      pos: 7742
+                      length: 223
+                    - type: local_variable_declaration
+                      fields:
+                        text: final double[] x = b.clone();
+                      children: []
+                      pos: 7979
+                      length: 29
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = 0; j < m; j++) {
+                                          final double[] lJ = lTData[j];
+                                          x[j] /= lJ[j];
+                                          final double xJ = x[j];
+                                          for (int i = j + 1; i < m; i++) {
+                                              x[i] -= xJ * lJ[i];
+                                          }
+                                      }
+                      children: []
+                      pos: 8050
+                      length: 269
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = m - 1; j >= 0; j--) {
+                                          x[j] /= lTData[j][j];
+                                          final double xJ = x[j];
+                                          for (int i = 0; i < j; i++) {
+                                              x[i] -= xJ * lTData[i][j];
+                                          }
+                                      }
+                      children: []
+                      pos: 8362
+                      length: 237
+                    - type: return_statement
+                      fields:
+                        text: return x;
+                      children: []
+                      pos: 8613
+                      length: 9
+                    pos: 7686
+                    length: 947
+                children: []
+                pos: 7584
+                length: 1049
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 8690
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: RealVector b
+                      children: []
+                      pos: 8696
+                      length: 12
+                    pos: 8672
+                    length: 1327
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return solve((RealVectorImpl) b);
+                            children: []
+                            pos: 8814
+                            length: 33
+                          pos: 8796
+                          length: 65
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (ClassCastException cce) {
+
+                                                final int m = lTData.length;
+                                                if (b.getDimension() != m) {
+                                                    throw MathRuntimeException.createIllegalArgumentException(
+                                                            "vector length mismatch: got {0} but expected {1}",
+                                                            b.getDimension(), m);
+                                                }
+
+                                                final double[] x = b.getData();
+
+                                                // Solve LY = b
+                                                for (int j = 0; j < m; j++) {
+                                                    final double[] lJ = lTData[j];
+                                                    x[j] /= lJ[j];
+                                                    final double xJ = x[j];
+                                                    for (int i = j + 1; i < m; i++) {
+                                                        x[i] -= xJ * lJ[i];
+                                                    }
+                                                }
+
+                                                // Solve LTX = Y
+                                                for (int j = m - 1; j >= 0; j--) {
+                                                    x[j] /= lTData[j][j];
+                                                    final double xJ = x[j];
+                                                    for (int i = 0; i < j; i++) {
+                                                        x[i] -= xJ * lTData[i][j];
+                                                    }
+                                                }
+
+                                                return new RealVectorImpl(x, false);
+
+                                            }
+                            children: []
+                            pos: 8862
+                            length: 1127
+                          pos: 8792
+                          length: 1197
+                      children: []
+                      pos: 8792
+                      length: 1197
+                    pos: 8778
+                    length: 1221
+                children: []
+                pos: 8672
+                length: 1327
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 10438
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: RealVectorImpl b
+                      children: []
+                      pos: 10444
+                      length: 16
+                    pos: 10416
+                    length: 194
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new RealVectorImpl(solve(b.getDataRef()), false);
+                      children: []
+                      pos: 10544
+                      length: 56
+                    pos: 10530
+                    length: 80
+                children: []
+                pos: 10416
+                length: 194
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 10667
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: RealMatrix b
+                      children: []
+                      pos: 10673
+                      length: 12
+                    pos: 10649
+                    length: 1766
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int m = lTData.length;
+                      children: []
+                      pos: 10770
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: b.getRowDimension()
+                                  children: []
+                                  pos: 10815
+                                  length: 19
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: m
+                                  children: []
+                                  pos: 10838
+                                  length: 1
+                              children: []
+                              pos: 10815
+                              length: 24
+                          children: []
+                          pos: 10814
+                          length: 26
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: throw_statement
+                          fields:
+                            text: |-
+                              throw MathRuntimeException.createIllegalArgumentException(
+                                                      "dimensions mismatch: got {0}x{1} but expected {2}x{3}",
+                                                      b.getRowDimension(), b.getColumnDimension(), m, "n");
+                          children: []
+                          pos: 10859
+                          length: 217
+                        pos: 10841
+                        length: 249
+                      pos: 10811
+                      length: 279
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int nColB = b.getColumnDimension();
+                      children: []
+                      pos: 11104
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: double[][] x = b.getData();
+                      children: []
+                      pos: 11158
+                      length: 27
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = 0; j < m; j++) {
+                                          final double[] lJ = lTData[j];
+                                          final double lJJ = lJ[j];
+                                          final double[] xJ = x[j];
+                                          for (int k = 0; k < nColB; ++k) {
+                                              xJ[k] /= lJJ;
+                                          }
+                                          for (int i = j + 1; i < m; i++) {
+                                              final double[] xI = x[i];
+                                              final double lJI = lJ[i];
+                                              for (int k = 0; k < nColB; ++k) {
+                                                  xI[k] -= xJ[k] * lJI;
+                                              }
+                                          }
+                                      }
+                      children: []
+                      pos: 11227
+                      length: 558
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = m - 1; j >= 0; j--) {
+                                          final double lJJ = lTData[j][j];
+                                          final double[] xJ = x[j];
+                                          for (int k = 0; k < nColB; ++k) {
+                                              xJ[k] /= lJJ;
+                                          }
+                                          for (int i = 0; i < j; i++) {
+                                              final double[] xI = x[i];
+                                              final double lIJ = lTData[i][j];
+                                              for (int k = 0; k < nColB; ++k) {
+                                                  xI[k] -= xJ[k] * lIJ;
+                                              }
+                                          }
+                                      }
+                      children: []
+                      pos: 11828
+                      length: 526
+                    - type: return_statement
+                      fields:
+                        text: return new RealMatrixImpl(x, false);
+                      children: []
+                      pos: 12368
+                      length: 36
+                    pos: 10755
+                    length: 1660
+                children: []
+                pos: 10649
+                length: 1766
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getInverse
+                    children: []
+                    pos: 12472
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 12454
+                    length: 151
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return solve(MatrixUtils.createRealIdentityMatrix(lTData.length));
+                      children: []
+                      pos: 12529
+                      length: 66
+                    pos: 12515
+                    length: 90
+                children: []
+                pos: 12454
+                length: 151
+              pos: 6933
+              length: 5679
+          children: []
+          pos: 6933
+          length: 5679
+        pos: 1408
+        length: 11207
+    children: []
+    pos: 1408
+    length: 11207
+  pos: 0
+  length: 12616
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: CholeskyDecompositionImpl
+        children: []
+        pos: 1421
+        length: 25
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: public static final double DEFAULT_RELATIVE_SYMMETRY_THRESHOLD =
+              1.0e-15;
+          children: []
+          pos: 1612
+          length: 73
+        - type: field_declaration
+          fields:
+            text: public static final double DEFAULT_ABSOLUTE_POSITIVITY_THRESHOLD
+              = 1.0e-10;
+          children: []
+          pos: 1811
+          length: 75
+        - type: field_declaration
+          fields:
+            text: private double[][] lTData;
+          children: []
+          pos: 1955
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedL;
+          children: []
+          pos: 2017
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedLT;
+          children: []
+          pos: 2081
+          length: 28
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public CholeskyDecompositionImpl(final RealMatrix matrix)
+                      throws NonSquareMatrixException,
+                             NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+                      this(matrix, DEFAULT_RELATIVE_SYMMETRY_THRESHOLD,
+                           DEFAULT_ABSOLUTE_POSITIVITY_THRESHOLD);
+                  }
+          children: []
+          pos: 2967
+          length: 296
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public CholeskyDecompositionImpl(final RealMatrix matrix,
+                                                   final double relativeSymmetryThreshold,
+                                                   final double absolutePositivityThreshold)
+                      throws NonSquareMatrixException,
+                             NotSymmetricMatrixException, NotPositiveDefiniteMatrixException {
+
+                      if (!matrix.isSquare()) {
+                          throw new NonSquareMatrixException(matrix.getRowDimension(),
+                                                             matrix.getColumnDimension());
+                      }
+
+                      final int order = matrix.getRowDimension();
+                      lTData   = matrix.getData();
+                      cachedL  = null;
+                      cachedLT = null;
+
+                      // check the matrix before transformation
+                      for (int i = 0; i < order; ++i) {
+
+                          final double[] lI = lTData[i];
+
+                          if (lTData[i][i] < absolutePositivityThreshold) {
+                              throw new NotPositiveDefiniteMatrixException();
+                          }
+                          // check off-diagonal elements (and reset them to 0)
+                          for (int j = i + 1; j < order; ++j) {
+                              final double[] lJ = lTData[j];
+                              final double lIJ = lI[j];
+                              final double lJI = lJ[i];
+                              final double maxDelta =
+                                  relativeSymmetryThreshold * Math.max(Math.abs(lIJ), Math.abs(lJI));
+                              if (Math.abs(lIJ - lJI) > maxDelta) {
+                                  throw new NotSymmetricMatrixException();
+                              }
+                              lJ[i] = 0;
+                         }
+                      }
+
+                      // transform the matrix
+                      for (int i = 0; i < order; ++i) {
+
+                          final double[] ltI = lTData[i];
+
+                          // check diagonal element
+
+                          ltI[i] = Math.sqrt(ltI[i]);
+                          final double inverse = 1.0 / ltI[i];
+
+                          for (int q = order - 1; q > i; --q) {
+                              ltI[q] *= inverse;
+                              final double[] ltQ = lTData[q];
+                              for (int p = q; p < order; ++p) {
+                                  ltQ[p] -= ltI[q] * ltI[p];
+                              }
+                          }
+
+                      }
+
+                  }
+          children: []
+          pos: 4082
+          length: 2035
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getL
+              children: []
+              pos: 6166
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6148
+              length: 140
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedL
+                            children: []
+                            pos: 6187
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6198
+                            length: 4
+                        children: []
+                        pos: 6187
+                        length: 15
+                    children: []
+                    pos: 6186
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedL = getLT().transpose();
+                    children: []
+                    pos: 6218
+                    length: 30
+                  pos: 6204
+                  length: 54
+                pos: 6183
+                length: 75
+              - type: return_statement
+                fields:
+                  text: return cachedL;
+                children: []
+                pos: 6267
+                length: 15
+              pos: 6173
+              length: 115
+          children: []
+          pos: 6148
+          length: 140
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLT
+              children: []
+              pos: 6337
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6319
+              length: 200
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedLT
+                            children: []
+                            pos: 6360
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6372
+                            length: 4
+                        children: []
+                        pos: 6360
+                        length: 16
+                    children: []
+                    pos: 6359
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedLT = MatrixUtils.createRealMatrix(lTData);
+                    children: []
+                    pos: 6392
+                    length: 48
+                  pos: 6378
+                  length: 72
+                pos: 6356
+                length: 94
+              - type: return_statement
+                fields:
+                  text: return cachedLT;
+                children: []
+                pos: 6496
+                length: 16
+              pos: 6345
+              length: 174
+          children: []
+          pos: 6319
+          length: 200
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDeterminant
+              children: []
+              pos: 6564
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6550
+              length: 240
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double determinant = 1.0;
+                children: []
+                pos: 6591
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < lTData.length; ++i) {
+                                double lTii = lTData[i][i];
+                                determinant *= lTii * lTii;
+                            }
+                children: []
+                pos: 6625
+                length: 131
+              - type: return_statement
+                fields:
+                  text: return determinant;
+                children: []
+                pos: 6765
+                length: 19
+              pos: 6581
+              length: 209
+          children: []
+          pos: 6550
+          length: 240
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSolver
+              children: []
+              pos: 6848
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6821
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Solver(lTData);
+                children: []
+                pos: 6870
+                length: 26
+              pos: 6860
+              length: 42
+          children: []
+          pos: 6821
+          length: 81
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Solver
+              children: []
+              pos: 6960
+              length: 6
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final double[][] lTData;
+                children: []
+                pos: 7080
+                length: 32
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private Solver(final double[][] lTData) {
+                                this.lTData = lTData;
+                            }
+                children: []
+                pos: 7272
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isNonSingular
+                    children: []
+                    pos: 7411
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 7396
+                    length: 155
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 7529
+                      length: 12
+                    pos: 7427
+                    length: 124
+                children: []
+                pos: 7396
+                length: 155
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 7606
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: double[] b
+                      children: []
+                      pos: 7612
+                      length: 10
+                    pos: 7590
+                    length: 1049
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int m = lTData.length;
+                      children: []
+                      pos: 7707
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: field_access
+                                  fields:
+                                    text: b.length
+                                  children: []
+                                  pos: 7752
+                                  length: 8
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: m
+                                  children: []
+                                  pos: 7764
+                                  length: 1
+                              children: []
+                              pos: 7752
+                              length: 13
+                          children: []
+                          pos: 7751
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: throw_statement
+                          fields:
+                            text: |-
+                              throw MathRuntimeException.createIllegalArgumentException(
+                                                      "vector length mismatch: got {0} but expected {1}",
+                                                      b.length, m);
+                          children: []
+                          pos: 7785
+                          length: 172
+                        pos: 7767
+                        length: 204
+                      pos: 7748
+                      length: 223
+                    - type: local_variable_declaration
+                      fields:
+                        text: final double[] x = b.clone();
+                      children: []
+                      pos: 7985
+                      length: 29
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = 0; j < m; j++) {
+                                          final double[] lJ = lTData[j];
+                                          x[j] /= lJ[j];
+                                          final double xJ = x[j];
+                                          for (int i = j + 1; i < m; i++) {
+                                              x[i] -= xJ * lJ[i];
+                                          }
+                                      }
+                      children: []
+                      pos: 8056
+                      length: 269
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = m - 1; j >= 0; j--) {
+                                          x[j] /= lTData[j][j];
+                                          final double xJ = x[j];
+                                          for (int i = 0; i < j; i++) {
+                                              x[i] -= xJ * lTData[i][j];
+                                          }
+                                      }
+                      children: []
+                      pos: 8368
+                      length: 237
+                    - type: return_statement
+                      fields:
+                        text: return x;
+                      children: []
+                      pos: 8619
+                      length: 9
+                    pos: 7692
+                    length: 947
+                children: []
+                pos: 7590
+                length: 1049
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 8696
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: RealVector b
+                      children: []
+                      pos: 8702
+                      length: 12
+                    pos: 8678
+                    length: 1327
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return solve((RealVectorImpl) b);
+                            children: []
+                            pos: 8820
+                            length: 33
+                          pos: 8802
+                          length: 65
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (ClassCastException cce) {
+
+                                                final int m = lTData.length;
+                                                if (b.getDimension() != m) {
+                                                    throw MathRuntimeException.createIllegalArgumentException(
+                                                            "vector length mismatch: got {0} but expected {1}",
+                                                            b.getDimension(), m);
+                                                }
+
+                                                final double[] x = b.getData();
+
+                                                // Solve LY = b
+                                                for (int j = 0; j < m; j++) {
+                                                    final double[] lJ = lTData[j];
+                                                    x[j] /= lJ[j];
+                                                    final double xJ = x[j];
+                                                    for (int i = j + 1; i < m; i++) {
+                                                        x[i] -= xJ * lJ[i];
+                                                    }
+                                                }
+
+                                                // Solve LTX = Y
+                                                for (int j = m - 1; j >= 0; j--) {
+                                                    x[j] /= lTData[j][j];
+                                                    final double xJ = x[j];
+                                                    for (int i = 0; i < j; i++) {
+                                                        x[i] -= xJ * lTData[i][j];
+                                                    }
+                                                }
+
+                                                return new RealVectorImpl(x, false);
+
+                                            }
+                            children: []
+                            pos: 8868
+                            length: 1127
+                          pos: 8798
+                          length: 1197
+                      children: []
+                      pos: 8798
+                      length: 1197
+                    pos: 8784
+                    length: 1221
+                children: []
+                pos: 8678
+                length: 1327
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 10444
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: RealVectorImpl b
+                      children: []
+                      pos: 10450
+                      length: 16
+                    pos: 10422
+                    length: 194
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new RealVectorImpl(solve(b.getDataRef()), false);
+                      children: []
+                      pos: 10550
+                      length: 56
+                    pos: 10536
+                    length: 80
+                children: []
+                pos: 10422
+                length: 194
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 10673
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: RealMatrix b
+                      children: []
+                      pos: 10679
+                      length: 12
+                    pos: 10655
+                    length: 1766
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int m = lTData.length;
+                      children: []
+                      pos: 10776
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: b.getRowDimension()
+                                  children: []
+                                  pos: 10821
+                                  length: 19
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: m
+                                  children: []
+                                  pos: 10844
+                                  length: 1
+                              children: []
+                              pos: 10821
+                              length: 24
+                          children: []
+                          pos: 10820
+                          length: 26
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: throw_statement
+                          fields:
+                            text: |-
+                              throw MathRuntimeException.createIllegalArgumentException(
+                                                      "dimensions mismatch: got {0}x{1} but expected {2}x{3}",
+                                                      b.getRowDimension(), b.getColumnDimension(), m, "n");
+                          children: []
+                          pos: 10865
+                          length: 217
+                        pos: 10847
+                        length: 249
+                      pos: 10817
+                      length: 279
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int nColB = b.getColumnDimension();
+                      children: []
+                      pos: 11110
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: double[][] x = b.getData();
+                      children: []
+                      pos: 11164
+                      length: 27
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = 0; j < m; j++) {
+                                          final double[] lJ = lTData[j];
+                                          final double lJJ = lJ[j];
+                                          final double[] xJ = x[j];
+                                          for (int k = 0; k < nColB; ++k) {
+                                              xJ[k] /= lJJ;
+                                          }
+                                          for (int i = j + 1; i < m; i++) {
+                                              final double[] xI = x[i];
+                                              final double lJI = lJ[i];
+                                              for (int k = 0; k < nColB; ++k) {
+                                                  xI[k] -= xJ[k] * lJI;
+                                              }
+                                          }
+                                      }
+                      children: []
+                      pos: 11233
+                      length: 558
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int j = m - 1; j >= 0; j--) {
+                                          final double lJJ = lTData[j][j];
+                                          final double[] xJ = x[j];
+                                          for (int k = 0; k < nColB; ++k) {
+                                              xJ[k] /= lJJ;
+                                          }
+                                          for (int i = 0; i < j; i++) {
+                                              final double[] xI = x[i];
+                                              final double lIJ = lTData[i][j];
+                                              for (int k = 0; k < nColB; ++k) {
+                                                  xI[k] -= xJ[k] * lIJ;
+                                              }
+                                          }
+                                      }
+                      children: []
+                      pos: 11834
+                      length: 526
+                    - type: return_statement
+                      fields:
+                        text: return new RealMatrixImpl(x, false);
+                      children: []
+                      pos: 12374
+                      length: 36
+                    pos: 10761
+                    length: 1660
+                children: []
+                pos: 10655
+                length: 1766
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getInverse
+                    children: []
+                    pos: 12478
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 12460
+                    length: 151
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return solve(MatrixUtils.createRealIdentityMatrix(lTData.length));
+                      children: []
+                      pos: 12535
+                      length: 66
+                    pos: 12521
+                    length: 90
+                children: []
+                pos: 12460
+                length: 151
+              pos: 6939
+              length: 5679
+          children: []
+          pos: 6939
+          length: 5679
+        pos: 1408
+        length: 11213
+    children: []
+    pos: 1408
+    length: 11213
+  pos: 0
+  length: 12622
 text_diff: "--- before\n+++ after\n@@ -111,6 +111,9 @@\n \n             final double[]
   lI = lTData[i];\n \n+            if (lTData[i][i] < absolutePositivityThreshold)
   {\n+                throw new NotPositiveDefiniteMatrixException();\n+            }\n

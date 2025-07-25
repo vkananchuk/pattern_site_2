@@ -33,6 +33,12 @@ Generate the *examples* data using
 bundle exec rake examples:all
 ```
 
+Generate the construct usages data using
+
+``` sh
+bundle exec rake construct_usages:generate
+```
+
 To start, run in docker console:
 ```sh
 bundle instal

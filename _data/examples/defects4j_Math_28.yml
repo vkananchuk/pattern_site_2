@@ -1,5 +1,1069 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SimplexSolver
+        children: []
+        pos: 1206
+        length: 13
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final double DEFAULT_EPSILON = 1.0e-6;
+          children: []
+          pos: 1331
+          length: 53
+        - type: field_declaration
+          fields:
+            text: private static final int DEFAULT_ULPS = 10;
+          children: []
+          pos: 1476
+          length: 43
+        - type: field_declaration
+          fields:
+            text: private final double epsilon;
+          children: []
+          pos: 1589
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final int maxUlps;
+          children: []
+          pos: 1702
+          length: 26
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SimplexSolver() {
+                      this(DEFAULT_EPSILON, DEFAULT_ULPS);
+                  }
+          children: []
+          pos: 1803
+          length: 75
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SimplexSolver(final double epsilon, final int maxUlps) {
+                      this.epsilon = epsilon;
+                      this.maxUlps = maxUlps;
+                  }
+          children: []
+          pos: 2128
+          length: 133
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPivotColumn
+              children: []
+              pos: 2501
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SimplexTableau tableau
+                children: []
+                pos: 2516
+                length: 22
+              pos: 2485
+              length: 541
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double minValue = 0;
+                children: []
+                pos: 2550
+                length: 20
+              - type: local_variable_declaration
+                fields:
+                  text: Integer minPos = null;
+                children: []
+                pos: 2579
+                length: 22
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = tableau.getNumObjectiveFunctions(); i < tableau.getWidth() - 1; i++) {
+                                final double entry = tableau.getEntry(0, i);
+                                // check if the entry is strictly smaller than the current minimum
+                                // do not use a ulp/epsilon check
+                                if (entry < minValue) {
+                                    minValue = entry;
+                                    minPos = i;
+                                }
+                            }
+                children: []
+                pos: 2610
+                length: 387
+              - type: return_statement
+                fields:
+                  text: return minPos;
+                children: []
+                pos: 3006
+                length: 14
+              pos: 2540
+              length: 486
+          children: []
+          pos: 2485
+          length: 541
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPivotRow
+              children: []
+              pos: 3343
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SimplexTableau tableau
+                children: []
+                pos: 3355
+                length: 22
+              pos: 3327
+              length: 3399
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: List<Integer> minRatioPositions = new ArrayList<Integer>();
+                children: []
+                pos: 3501
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: double minRatio = Double.MAX_VALUE;
+                children: []
+                pos: 3569
+                length: 35
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = tableau.getNumObjectiveFunctions(); i < tableau.getHeight(); i++) {
+                                final double rhs = tableau.getEntry(i, tableau.getWidth() - 1);
+                                final double entry = tableau.getEntry(i, col);
+
+                                if (Precision.compareTo(entry, 0d, maxUlps) > 0) {
+                                    final double ratio = rhs / entry;
+                                    // check if the entry is strictly equal to the current min ratio
+                                    // do not use a ulp/epsilon check
+                                    final int cmp = Double.compare(ratio, minRatio);
+                                    if (cmp == 0) {
+                                        minRatioPositions.add(i);
+                                    } else if (cmp < 0) {
+                                        minRatio = ratio;
+                                        minRatioPositions = new ArrayList<Integer>();
+                                        minRatioPositions.add(i);
+                                    }
+                                }
+                            }
+                children: []
+                pos: 3613
+                length: 833
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: minRatioPositions.size()
+                            children: []
+                            pos: 4460
+                            length: 24
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4488
+                            length: 1
+                        children: []
+                        pos: 4460
+                        length: 29
+                    children: []
+                    pos: 4459
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 4505
+                    length: 12
+                  pos: 4491
+                  length: 36
+                pos: 4456
+                length: 2223
+              - type: return_statement
+                fields:
+                  text: return minRatioPositions.get(0);
+                children: []
+                pos: 6688
+                length: 32
+              pos: 3394
+              length: 3332
+          children: []
+          pos: 3327
+          length: 3399
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doIteration
+              children: []
+              pos: 7069
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final SimplexTableau tableau
+                children: []
+                pos: 7081
+                length: 28
+              pos: 7054
+              length: 826
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: incrementIterationsCounter();
+                children: []
+                pos: 7191
+                length: 29
+              - type: local_variable_declaration
+                fields:
+                  text: Integer pivotCol = getPivotColumn(tableau);
+                children: []
+                pos: 7230
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: Integer pivotRow = getPivotRow(tableau, pivotCol);
+                children: []
+                pos: 7282
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: pivotRow
+                            children: []
+                            pos: 7345
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7357
+                            length: 4
+                        children: []
+                        pos: 7345
+                        length: 16
+                    children: []
+                    pos: 7344
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new UnboundedSolutionException();
+                    children: []
+                    pos: 7377
+                    length: 39
+                  pos: 7363
+                  length: 63
+                pos: 7341
+                length: 85
+              - type: local_variable_declaration
+                fields:
+                  text: double pivotVal = tableau.getEntry(pivotRow, pivotCol);
+                children: []
+                pos: 7474
+                length: 55
+              - type: expression_statement
+                fields:
+                  text: tableau.divideRow(pivotRow, pivotVal);
+                children: []
+                pos: 7538
+                length: 38
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < tableau.getHeight(); i++) {
+                                if (i != pivotRow) {
+                                    final double multiplier = tableau.getEntry(i, pivotCol);
+                                    tableau.subtractRow(i, pivotRow, multiplier);
+                                }
+                            }
+                children: []
+                pos: 7635
+                length: 239
+              pos: 7180
+              length: 700
+          children: []
+          pos: 7054
+          length: 826
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: solvePhase1
+              children: []
+              pos: 8276
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final SimplexTableau tableau
+                children: []
+                pos: 8288
+                length: 28
+              pos: 8261
+              length: 588
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: tableau.getNumArtificialVariables()
+                            children: []
+                            pos: 8469
+                            length: 35
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 8508
+                            length: 1
+                        children: []
+                        pos: 8469
+                        length: 40
+                    children: []
+                    pos: 8468
+                    length: 42
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8525
+                    length: 7
+                  pos: 8511
+                  length: 31
+                pos: 8465
+                length: 77
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tableau.isOptimal()) {
+                                doIteration(tableau);
+                            }
+                children: []
+                pos: 8552
+                length: 74
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!Precision.equals(tableau.getEntry(0, tableau.getRhsOffset()),
+                            0d, epsilon)"
+                        children: []
+                        pos: 8702
+                        length: 75
+                    children: []
+                    pos: 8701
+                    length: 77
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new NoFeasibleSolutionException();
+                    children: []
+                    pos: 8793
+                    length: 40
+                  pos: 8779
+                  length: 64
+                pos: 8698
+                length: 145
+              pos: 8416
+              length: 433
+          children: []
+          pos: 8261
+          length: 588
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doOptimize
+              children: []
+              pos: 8916
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8880
+              length: 663
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final SimplexTableau tableau =
+                                new SimplexTableau(getFunction(),
+                                                   getConstraints(),
+                                                   getGoalType(),
+                                                   restrictToNonNegative(),
+                                                   epsilon,
+                                                   maxUlps);
+                children: []
+                pos: 9037
+                length: 308
+              - type: expression_statement
+                fields:
+                  text: solvePhase1(tableau);
+                children: []
+                pos: 9355
+                length: 21
+              - type: expression_statement
+                fields:
+                  text: tableau.dropPhase1Objective();
+                children: []
+                pos: 9385
+                length: 30
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tableau.isOptimal()) {
+                                doIteration(tableau);
+                            }
+                children: []
+                pos: 9425
+                length: 74
+              - type: return_statement
+                fields:
+                  text: return tableau.getSolution();
+                children: []
+                pos: 9508
+                length: 29
+              pos: 9027
+              length: 516
+          children: []
+          pos: 8880
+          length: 663
+        pos: 1193
+        length: 8353
+    children: []
+    pos: 1193
+    length: 8353
+  pos: 0
+  length: 9547
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SimplexSolver
+        children: []
+        pos: 1206
+        length: 13
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final double DEFAULT_EPSILON = 1.0e-6;
+          children: []
+          pos: 1331
+          length: 53
+        - type: field_declaration
+          fields:
+            text: private static final int DEFAULT_ULPS = 10;
+          children: []
+          pos: 1476
+          length: 43
+        - type: field_declaration
+          fields:
+            text: private final double epsilon;
+          children: []
+          pos: 1589
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final int maxUlps;
+          children: []
+          pos: 1702
+          length: 26
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SimplexSolver() {
+                      this(DEFAULT_EPSILON, DEFAULT_ULPS);
+                  }
+          children: []
+          pos: 1803
+          length: 75
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SimplexSolver(final double epsilon, final int maxUlps) {
+                      this.epsilon = epsilon;
+                      this.maxUlps = maxUlps;
+                  }
+          children: []
+          pos: 2128
+          length: 133
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPivotColumn
+              children: []
+              pos: 2501
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SimplexTableau tableau
+                children: []
+                pos: 2516
+                length: 22
+              pos: 2485
+              length: 541
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double minValue = 0;
+                children: []
+                pos: 2550
+                length: 20
+              - type: local_variable_declaration
+                fields:
+                  text: Integer minPos = null;
+                children: []
+                pos: 2579
+                length: 22
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = tableau.getNumObjectiveFunctions(); i < tableau.getWidth() - 1; i++) {
+                                final double entry = tableau.getEntry(0, i);
+                                // check if the entry is strictly smaller than the current minimum
+                                // do not use a ulp/epsilon check
+                                if (entry < minValue) {
+                                    minValue = entry;
+                                    minPos = i;
+                                }
+                            }
+                children: []
+                pos: 2610
+                length: 387
+              - type: return_statement
+                fields:
+                  text: return minPos;
+                children: []
+                pos: 3006
+                length: 14
+              pos: 2540
+              length: 486
+          children: []
+          pos: 2485
+          length: 541
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPivotRow
+              children: []
+              pos: 3343
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SimplexTableau tableau
+                children: []
+                pos: 3355
+                length: 22
+              pos: 3327
+              length: 3252
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: List<Integer> minRatioPositions = new ArrayList<Integer>();
+                children: []
+                pos: 3501
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: double minRatio = Double.MAX_VALUE;
+                children: []
+                pos: 3569
+                length: 35
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = tableau.getNumObjectiveFunctions(); i < tableau.getHeight(); i++) {
+                                final double rhs = tableau.getEntry(i, tableau.getWidth() - 1);
+                                final double entry = tableau.getEntry(i, col);
+
+                                if (Precision.compareTo(entry, 0d, maxUlps) > 0) {
+                                    final double ratio = rhs / entry;
+                                    // check if the entry is strictly equal to the current min ratio
+                                    // do not use a ulp/epsilon check
+                                    final int cmp = Double.compare(ratio, minRatio);
+                                    if (cmp == 0) {
+                                        minRatioPositions.add(i);
+                                    } else if (cmp < 0) {
+                                        minRatio = ratio;
+                                        minRatioPositions = new ArrayList<Integer>();
+                                        minRatioPositions.add(i);
+                                    }
+                                }
+                            }
+                children: []
+                pos: 3613
+                length: 833
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: minRatioPositions.size()
+                            children: []
+                            pos: 4460
+                            length: 24
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4488
+                            length: 1
+                        children: []
+                        pos: 4460
+                        length: 29
+                    children: []
+                    pos: 4459
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 4505
+                    length: 12
+                  pos: 4491
+                  length: 36
+                pos: 4456
+                length: 2076
+              - type: return_statement
+                fields:
+                  text: return minRatioPositions.get(0);
+                children: []
+                pos: 6541
+                length: 32
+              pos: 3394
+              length: 3185
+          children: []
+          pos: 3327
+          length: 3252
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doIteration
+              children: []
+              pos: 6922
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final SimplexTableau tableau
+                children: []
+                pos: 6934
+                length: 28
+              pos: 6907
+              length: 826
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: incrementIterationsCounter();
+                children: []
+                pos: 7044
+                length: 29
+              - type: local_variable_declaration
+                fields:
+                  text: Integer pivotCol = getPivotColumn(tableau);
+                children: []
+                pos: 7083
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: Integer pivotRow = getPivotRow(tableau, pivotCol);
+                children: []
+                pos: 7135
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: pivotRow
+                            children: []
+                            pos: 7198
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7210
+                            length: 4
+                        children: []
+                        pos: 7198
+                        length: 16
+                    children: []
+                    pos: 7197
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new UnboundedSolutionException();
+                    children: []
+                    pos: 7230
+                    length: 39
+                  pos: 7216
+                  length: 63
+                pos: 7194
+                length: 85
+              - type: local_variable_declaration
+                fields:
+                  text: double pivotVal = tableau.getEntry(pivotRow, pivotCol);
+                children: []
+                pos: 7327
+                length: 55
+              - type: expression_statement
+                fields:
+                  text: tableau.divideRow(pivotRow, pivotVal);
+                children: []
+                pos: 7391
+                length: 38
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < tableau.getHeight(); i++) {
+                                if (i != pivotRow) {
+                                    final double multiplier = tableau.getEntry(i, pivotCol);
+                                    tableau.subtractRow(i, pivotRow, multiplier);
+                                }
+                            }
+                children: []
+                pos: 7488
+                length: 239
+              pos: 7033
+              length: 700
+          children: []
+          pos: 6907
+          length: 826
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: solvePhase1
+              children: []
+              pos: 8129
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final SimplexTableau tableau
+                children: []
+                pos: 8141
+                length: 28
+              pos: 8114
+              length: 588
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: tableau.getNumArtificialVariables()
+                            children: []
+                            pos: 8322
+                            length: 35
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 8361
+                            length: 1
+                        children: []
+                        pos: 8322
+                        length: 40
+                    children: []
+                    pos: 8321
+                    length: 42
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8378
+                    length: 7
+                  pos: 8364
+                  length: 31
+                pos: 8318
+                length: 77
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tableau.isOptimal()) {
+                                doIteration(tableau);
+                            }
+                children: []
+                pos: 8405
+                length: 74
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!Precision.equals(tableau.getEntry(0, tableau.getRhsOffset()),
+                            0d, epsilon)"
+                        children: []
+                        pos: 8555
+                        length: 75
+                    children: []
+                    pos: 8554
+                    length: 77
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new NoFeasibleSolutionException();
+                    children: []
+                    pos: 8646
+                    length: 40
+                  pos: 8632
+                  length: 64
+                pos: 8551
+                length: 145
+              pos: 8269
+              length: 433
+          children: []
+          pos: 8114
+          length: 588
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doOptimize
+              children: []
+              pos: 8769
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8733
+              length: 663
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final SimplexTableau tableau =
+                                new SimplexTableau(getFunction(),
+                                                   getConstraints(),
+                                                   getGoalType(),
+                                                   restrictToNonNegative(),
+                                                   epsilon,
+                                                   maxUlps);
+                children: []
+                pos: 8890
+                length: 308
+              - type: expression_statement
+                fields:
+                  text: solvePhase1(tableau);
+                children: []
+                pos: 9208
+                length: 21
+              - type: expression_statement
+                fields:
+                  text: tableau.dropPhase1Objective();
+                children: []
+                pos: 9238
+                length: 30
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tableau.isOptimal()) {
+                                doIteration(tableau);
+                            }
+                children: []
+                pos: 9278
+                length: 74
+              - type: return_statement
+                fields:
+                  text: return tableau.getSolution();
+                children: []
+                pos: 9361
+                length: 29
+              pos: 8880
+              length: 516
+          children: []
+          pos: 8733
+          length: 663
+        pos: 1193
+        length: 8206
+    children: []
+    pos: 1193
+    length: 8206
+  pos: 0
+  length: 9400
 text_diff: "--- before\n+++ after\n@@ -116,7 +116,6 @@\n             // there's a
   degeneracy as indicated by a tie in the minimum ratio test\n \n             // 1.
   check if there's an artificial variable that can be forced out of the basis\n-            if

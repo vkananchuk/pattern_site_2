@@ -1,5 +1,1433 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: StringArrayDeserializer
+        children: []
+        pos: 634
+        length: 23
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -7589512013334920693L;
+          children: []
+          pos: 740
+          length: 67
+        - type: field_declaration
+          fields:
+            text: public final static StringArrayDeserializer instance = new StringArrayDeserializer();
+          children: []
+          pos: 813
+          length: 85
+        - type: field_declaration
+          fields:
+            text: protected JsonDeserializer<String> _elementDeserializer;
+          children: []
+          pos: 999
+          length: 56
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public StringArrayDeserializer() {
+                      super(String[].class);
+                      _elementDeserializer = null;
+                  }
+          children: []
+          pos: 1061
+          length: 108
+        - type: constructor_declaration
+          fields:
+            text: |-
+              @SuppressWarnings("unchecked")
+                  protected StringArrayDeserializer(JsonDeserializer<?> deser) {
+                      super(String[].class);
+                      _elementDeserializer = (JsonDeserializer<String>) deser;
+                  }
+          children: []
+          pos: 1175
+          length: 199
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserialize
+              children: []
+              pos: 1413
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 1425
+                length: 13
+              pos: 1383
+              length: 1357
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!jp.isExpectedStartArrayToken()"
+                        children: []
+                        pos: 1563
+                        length: 31
+                    children: []
+                    pos: 1562
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return handleNonArray(jp, ctxt);
+                    children: []
+                    pos: 1610
+                    length: 32
+                  pos: 1596
+                  length: 56
+                pos: 1559
+                length: 93
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _elementDeserializer
+                            children: []
+                            pos: 1665
+                            length: 20
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 1689
+                            length: 4
+                        children: []
+                        pos: 1665
+                        length: 28
+                    children: []
+                    pos: 1664
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return _deserializeCustom(jp, ctxt);
+                    children: []
+                    pos: 1709
+                    length: 36
+                  pos: 1695
+                  length: 60
+                pos: 1661
+                length: 94
+              - type: local_variable_declaration
+                fields:
+                  text: final ObjectBuffer buffer = ctxt.leaseObjectBuffer();
+                children: []
+                pos: 1765
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: Object[] chunk = buffer.resetAndStart();
+                children: []
+                pos: 1827
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = 0;
+                children: []
+                pos: 1885
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: JsonToken t;
+                children: []
+                pos: 1905
+                length: 12
+              - type: while_statement
+                fields:
+                  text: |-
+                    while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                                // Ok: no need to convert Strings, but must recognize nulls
+                                String value;
+                                if (t == JsonToken.VALUE_STRING) {
+                                    value = jp.getText();
+                                } else if (t == JsonToken.VALUE_NULL) {
+                                    value = null; // since we have established that '_elementDeserializer == null' earlier
+                                } else {
+                                    value = _parseString(jp, ctxt);
+                                }
+                                if (ix >= chunk.length) {
+                                    chunk = buffer.appendCompletedChunk(chunk);
+                                    ix = 0;
+                                }
+                                chunk[ix++] = value;
+                            }
+                children: []
+                pos: 1935
+                length: 653
+              - type: local_variable_declaration
+                fields:
+                  text: String[] result = buffer.completeAndClearBuffer(chunk, ix,
+                    String.class);
+                children: []
+                pos: 2597
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: ctxt.returnObjectBuffer(buffer);
+                children: []
+                pos: 2679
+                length: 32
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 2720
+                length: 14
+              pos: 1492
+              length: 1248
+          children: []
+          pos: 1383
+          length: 1357
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _deserializeCustom
+              children: []
+              pos: 2871
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 2890
+                length: 13
+              pos: 2846
+              length: 925
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final ObjectBuffer buffer = ctxt.leaseObjectBuffer();
+                children: []
+                pos: 2967
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: Object[] chunk = buffer.resetAndStart();
+                children: []
+                pos: 3029
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final JsonDeserializer<String> deser = _elementDeserializer;
+                children: []
+                pos: 3078
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = 0;
+                children: []
+                pos: 3156
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: JsonToken t;
+                children: []
+                pos: 3176
+                length: 12
+              - type: while_statement
+                fields:
+                  text: |-
+                    while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                                // Ok: no need to convert Strings, but must recognize nulls
+                                String value = (t == JsonToken.VALUE_NULL) ? deser.getNullValue() : deser.deserialize(jp, ctxt);
+                                if (ix >= chunk.length) {
+                                    chunk = buffer.appendCompletedChunk(chunk);
+                                    ix = 0;
+                                }
+                                chunk[ix++] = value;
+                            }
+                children: []
+                pos: 3206
+                length: 413
+              - type: local_variable_declaration
+                fields:
+                  text: String[] result = buffer.completeAndClearBuffer(chunk, ix,
+                    String.class);
+                children: []
+                pos: 3628
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: ctxt.returnObjectBuffer(buffer);
+                children: []
+                pos: 3710
+                length: 32
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 3751
+                length: 14
+              pos: 2957
+              length: 814
+          children: []
+          pos: 2846
+          length: 925
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserializeWithType
+              children: []
+              pos: 3809
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 3829
+                length: 13
+              pos: 3781
+              length: 222
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return typeDeserializer.deserializeTypedFromArray(jp, ctxt);
+                children: []
+                pos: 3937
+                length: 60
+              pos: 3927
+              length: 76
+          children: []
+          pos: 3781
+          length: 222
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: handleNonArray
+              children: []
+              pos: 4032
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 4047
+                length: 13
+              pos: 4009
+              length: 809
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!ctxt.isEnabled(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)"
+                        children: []
+                        pos: 4190
+                        length: 68
+                    children: []
+                    pos: 4189
+                    length: 70
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: equals
+                                    fields:
+                                      left:
+                                        type: method_invocation
+                                        fields:
+                                          text: jp.getCurrentToken()
+                                        children: []
+                                        pos: 4340
+                                        length: 20
+                                      right:
+                                        type: field_access
+                                        fields:
+                                          text: JsonToken.VALUE_STRING
+                                        children: []
+                                        pos: 4364
+                                        length: 22
+                                    children: []
+                                    pos: 4340
+                                    length: 46
+                                children: []
+                                pos: 4339
+                                length: 48
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: ctxt.isEnabled(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
+                                children: []
+                                pos: 4411
+                                length: 73
+                            children: []
+                            pos: 4339
+                            length: 145
+                        children: []
+                        pos: 4338
+                        length: 147
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: String str = jp.getText();
+                        children: []
+                        pos: 4504
+                        length: 26
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: method_invocation
+                                    fields:
+                                      text: str.length()
+                                    children: []
+                                    pos: 4551
+                                    length: 12
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 4567
+                                    length: 1
+                                children: []
+                                pos: 4551
+                                length: 17
+                            children: []
+                            pos: 4550
+                            length: 19
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return null;
+                            children: []
+                            pos: 4592
+                            length: 12
+                          pos: 4570
+                          length: 52
+                        pos: 4547
+                        length: 75
+                      pos: 4486
+                      length: 150
+                    pos: 4335
+                    length: 301
+                  - type: throw_statement
+                    fields:
+                      text: throw ctxt.mappingException(_valueClass);
+                    children: []
+                    pos: 4649
+                    length: 41
+                  pos: 4260
+                  length: 440
+                pos: 4186
+                length: 514
+              - type: return_statement
+                fields:
+                  text: 'return new String[] { (jp.getCurrentToken() == JsonToken.VALUE_NULL)
+                    ? null : _parseString(jp, ctxt) };'
+                children: []
+                pos: 4709
+                length: 103
+              pos: 4114
+              length: 704
+          children: []
+          pos: 4009
+          length: 809
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createContextual
+              children: []
+              pos: 5038
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DeserializationContext ctxt
+                children: []
+                pos: 5055
+                length: 27
+              pos: 4997
+              length: 945
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: JsonDeserializer<?> deser = _elementDeserializer;
+                children: []
+                pos: 5149
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: deser = findConvertingContentDeserializer(ctxt, property,
+                    deser);
+                children: []
+                pos: 5253
+                length: 65
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: deser
+                            children: []
+                            pos: 5331
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5340
+                            length: 4
+                        children: []
+                        pos: 5331
+                        length: 13
+                    children: []
+                    pos: 5330
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: deser = ctxt.findContextualValueDeserializer(ctxt.constructType(String.class),
+                        property);
+                    children: []
+                    pos: 5360
+                    length: 89
+                  pos: 5346
+                  length: 113
+                pos: 5327
+                length: 283
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: deser
+                                children: []
+                                pos: 5716
+                                length: 5
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 5725
+                                length: 4
+                            children: []
+                            pos: 5716
+                            length: 13
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: this.isDefaultDeserializer(deser)
+                            children: []
+                            pos: 5733
+                            length: 33
+                        children: []
+                        pos: 5716
+                        length: 50
+                    children: []
+                    pos: 5715
+                    length: 52
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: deser = null;
+                    children: []
+                    pos: 5782
+                    length: 13
+                  pos: 5768
+                  length: 37
+                pos: 5712
+                length: 93
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _elementDeserializer
+                            children: []
+                            pos: 5818
+                            length: 20
+                          right:
+                            type: identifier
+                            fields:
+                              text: deser
+                            children: []
+                            pos: 5842
+                            length: 5
+                        children: []
+                        pos: 5818
+                        length: 29
+                    children: []
+                    pos: 5817
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return new StringArrayDeserializer(deser);
+                    children: []
+                    pos: 5863
+                    length: 42
+                  pos: 5849
+                  length: 66
+                pos: 5814
+                length: 101
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 5924
+                length: 12
+              pos: 5139
+              length: 803
+          children: []
+          pos: 4997
+          length: 945
+        pos: 599
+        length: 5345
+    children: []
+    pos: 599
+    length: 5345
+  pos: 0
+  length: 5945
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: StringArrayDeserializer
+        children: []
+        pos: 634
+        length: 23
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -7589512013334920693L;
+          children: []
+          pos: 740
+          length: 67
+        - type: field_declaration
+          fields:
+            text: public final static StringArrayDeserializer instance = new StringArrayDeserializer();
+          children: []
+          pos: 813
+          length: 85
+        - type: field_declaration
+          fields:
+            text: protected JsonDeserializer<String> _elementDeserializer;
+          children: []
+          pos: 999
+          length: 56
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public StringArrayDeserializer() {
+                      super(String[].class);
+                      _elementDeserializer = null;
+                  }
+          children: []
+          pos: 1061
+          length: 108
+        - type: constructor_declaration
+          fields:
+            text: |-
+              @SuppressWarnings("unchecked")
+                  protected StringArrayDeserializer(JsonDeserializer<?> deser) {
+                      super(String[].class);
+                      _elementDeserializer = (JsonDeserializer<String>) deser;
+                  }
+          children: []
+          pos: 1175
+          length: 199
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserialize
+              children: []
+              pos: 1413
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 1425
+                length: 13
+              pos: 1383
+              length: 1315
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!jp.isExpectedStartArrayToken()"
+                        children: []
+                        pos: 1563
+                        length: 31
+                    children: []
+                    pos: 1562
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return handleNonArray(jp, ctxt);
+                    children: []
+                    pos: 1610
+                    length: 32
+                  pos: 1596
+                  length: 56
+                pos: 1559
+                length: 93
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _elementDeserializer
+                            children: []
+                            pos: 1665
+                            length: 20
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 1689
+                            length: 4
+                        children: []
+                        pos: 1665
+                        length: 28
+                    children: []
+                    pos: 1664
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return _deserializeCustom(jp, ctxt);
+                    children: []
+                    pos: 1709
+                    length: 36
+                  pos: 1695
+                  length: 60
+                pos: 1661
+                length: 94
+              - type: local_variable_declaration
+                fields:
+                  text: final ObjectBuffer buffer = ctxt.leaseObjectBuffer();
+                children: []
+                pos: 1765
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: Object[] chunk = buffer.resetAndStart();
+                children: []
+                pos: 1827
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = 0;
+                children: []
+                pos: 1885
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: JsonToken t;
+                children: []
+                pos: 1905
+                length: 12
+              - type: while_statement
+                fields:
+                  text: |-
+                    while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                                // Ok: no need to convert Strings, but must recognize nulls
+                                String value;
+                                if (t == JsonToken.VALUE_STRING) {
+                                    value = jp.getText();
+                                } else if (t == JsonToken.VALUE_NULL) {
+                                    value = _elementDeserializer.getNullValue();
+                                } else {
+                                    value = _parseString(jp, ctxt);
+                                }
+                                if (ix >= chunk.length) {
+                                    chunk = buffer.appendCompletedChunk(chunk);
+                                    ix = 0;
+                                }
+                                chunk[ix++] = value;
+                            }
+                children: []
+                pos: 1935
+                length: 611
+              - type: local_variable_declaration
+                fields:
+                  text: String[] result = buffer.completeAndClearBuffer(chunk, ix,
+                    String.class);
+                children: []
+                pos: 2555
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: ctxt.returnObjectBuffer(buffer);
+                children: []
+                pos: 2637
+                length: 32
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 2678
+                length: 14
+              pos: 1492
+              length: 1206
+          children: []
+          pos: 1383
+          length: 1315
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _deserializeCustom
+              children: []
+              pos: 2829
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 2848
+                length: 13
+              pos: 2804
+              length: 909
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final ObjectBuffer buffer = ctxt.leaseObjectBuffer();
+                children: []
+                pos: 2925
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: Object[] chunk = buffer.resetAndStart();
+                children: []
+                pos: 2987
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final JsonDeserializer<String> deser = _elementDeserializer;
+                children: []
+                pos: 3036
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: int ix = 0;
+                children: []
+                pos: 3114
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: JsonToken t;
+                children: []
+                pos: 3134
+                length: 12
+              - type: while_statement
+                fields:
+                  text: |-
+                    while ((t = jp.nextToken()) != JsonToken.END_ARRAY) {
+                                // Ok: no need to convert Strings, but must recognize nulls
+                                String value = (t == JsonToken.VALUE_NULL) ? null : deser.deserialize(jp, ctxt);
+                                if (ix >= chunk.length) {
+                                    chunk = buffer.appendCompletedChunk(chunk);
+                                    ix = 0;
+                                }
+                                chunk[ix++] = value;
+                            }
+                children: []
+                pos: 3164
+                length: 397
+              - type: local_variable_declaration
+                fields:
+                  text: String[] result = buffer.completeAndClearBuffer(chunk, ix,
+                    String.class);
+                children: []
+                pos: 3570
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: ctxt.returnObjectBuffer(buffer);
+                children: []
+                pos: 3652
+                length: 32
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 3693
+                length: 14
+              pos: 2915
+              length: 798
+          children: []
+          pos: 2804
+          length: 909
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserializeWithType
+              children: []
+              pos: 3751
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 3771
+                length: 13
+              pos: 3723
+              length: 222
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return typeDeserializer.deserializeTypedFromArray(jp, ctxt);
+                children: []
+                pos: 3879
+                length: 60
+              pos: 3869
+              length: 76
+          children: []
+          pos: 3723
+          length: 222
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: handleNonArray
+              children: []
+              pos: 3974
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonParser jp
+                children: []
+                pos: 3989
+                length: 13
+              pos: 3951
+              length: 809
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!ctxt.isEnabled(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)"
+                        children: []
+                        pos: 4132
+                        length: 68
+                    children: []
+                    pos: 4131
+                    length: 70
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: equals
+                                    fields:
+                                      left:
+                                        type: method_invocation
+                                        fields:
+                                          text: jp.getCurrentToken()
+                                        children: []
+                                        pos: 4282
+                                        length: 20
+                                      right:
+                                        type: field_access
+                                        fields:
+                                          text: JsonToken.VALUE_STRING
+                                        children: []
+                                        pos: 4306
+                                        length: 22
+                                    children: []
+                                    pos: 4282
+                                    length: 46
+                                children: []
+                                pos: 4281
+                                length: 48
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: ctxt.isEnabled(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
+                                children: []
+                                pos: 4353
+                                length: 73
+                            children: []
+                            pos: 4281
+                            length: 145
+                        children: []
+                        pos: 4280
+                        length: 147
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: String str = jp.getText();
+                        children: []
+                        pos: 4446
+                        length: 26
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: method_invocation
+                                    fields:
+                                      text: str.length()
+                                    children: []
+                                    pos: 4493
+                                    length: 12
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 4509
+                                    length: 1
+                                children: []
+                                pos: 4493
+                                length: 17
+                            children: []
+                            pos: 4492
+                            length: 19
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return null;
+                            children: []
+                            pos: 4534
+                            length: 12
+                          pos: 4512
+                          length: 52
+                        pos: 4489
+                        length: 75
+                      pos: 4428
+                      length: 150
+                    pos: 4277
+                    length: 301
+                  - type: throw_statement
+                    fields:
+                      text: throw ctxt.mappingException(_valueClass);
+                    children: []
+                    pos: 4591
+                    length: 41
+                  pos: 4202
+                  length: 440
+                pos: 4128
+                length: 514
+              - type: return_statement
+                fields:
+                  text: 'return new String[] { (jp.getCurrentToken() == JsonToken.VALUE_NULL)
+                    ? null : _parseString(jp, ctxt) };'
+                children: []
+                pos: 4651
+                length: 103
+              pos: 4056
+              length: 704
+          children: []
+          pos: 3951
+          length: 809
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createContextual
+              children: []
+              pos: 4980
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DeserializationContext ctxt
+                children: []
+                pos: 4997
+                length: 27
+              pos: 4939
+              length: 945
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: JsonDeserializer<?> deser = _elementDeserializer;
+                children: []
+                pos: 5091
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: deser = findConvertingContentDeserializer(ctxt, property,
+                    deser);
+                children: []
+                pos: 5195
+                length: 65
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: deser
+                            children: []
+                            pos: 5273
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5282
+                            length: 4
+                        children: []
+                        pos: 5273
+                        length: 13
+                    children: []
+                    pos: 5272
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: deser = ctxt.findContextualValueDeserializer(ctxt.constructType(String.class),
+                        property);
+                    children: []
+                    pos: 5302
+                    length: 89
+                  pos: 5288
+                  length: 113
+                pos: 5269
+                length: 283
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: deser
+                                children: []
+                                pos: 5658
+                                length: 5
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 5667
+                                length: 4
+                            children: []
+                            pos: 5658
+                            length: 13
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: this.isDefaultDeserializer(deser)
+                            children: []
+                            pos: 5675
+                            length: 33
+                        children: []
+                        pos: 5658
+                        length: 50
+                    children: []
+                    pos: 5657
+                    length: 52
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: deser = null;
+                    children: []
+                    pos: 5724
+                    length: 13
+                  pos: 5710
+                  length: 37
+                pos: 5654
+                length: 93
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _elementDeserializer
+                            children: []
+                            pos: 5760
+                            length: 20
+                          right:
+                            type: identifier
+                            fields:
+                              text: deser
+                            children: []
+                            pos: 5784
+                            length: 5
+                        children: []
+                        pos: 5760
+                        length: 29
+                    children: []
+                    pos: 5759
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return new StringArrayDeserializer(deser);
+                    children: []
+                    pos: 5805
+                    length: 42
+                  pos: 5791
+                  length: 66
+                pos: 5756
+                length: 101
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 5866
+                length: 12
+              pos: 5081
+              length: 803
+          children: []
+          pos: 4939
+          length: 945
+        pos: 599
+        length: 5287
+    children: []
+    pos: 599
+    length: 5287
+  pos: 0
+  length: 5887
 text_diff: "--- before\n+++ after\n@@ -63,7 +63,7 @@\n             if (t == JsonToken.VALUE_STRING)
   {\n                 value = jp.getText();\n             } else if (t == JsonToken.VALUE_NULL)
   {\n-                value = null; // since we have established that '_elementDeserializer

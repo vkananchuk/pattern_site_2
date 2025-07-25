@@ -1,5 +1,986 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: CSVRecord
+        children: []
+        pos: 1022
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 1081
+          length: 48
+        - type: field_declaration
+          fields:
+            text: private static final String[] EMPTY_STRING_ARRAY = new String[0];
+          children: []
+          pos: 1135
+          length: 65
+        - type: field_declaration
+          fields:
+            text: private final String[] values;
+          children: []
+          pos: 1242
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private final Map<String, Integer> mapping;
+          children: []
+          pos: 1323
+          length: 43
+        - type: field_declaration
+          fields:
+            text: private final String comment;
+          children: []
+          pos: 1417
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final long recordNumber;
+          children: []
+          pos: 1482
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              CSVRecord(final String[] values, final Map<String, Integer> mapping,
+                          final String comment, final long recordNumber) {
+                      this.recordNumber = recordNumber;
+                      this.values = values != null ? values : EMPTY_STRING_ARRAY;
+                      this.mapping = mapping;
+                      this.comment = comment;
+                  }
+          children: []
+          pos: 1520
+          length: 309
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: get
+              children: []
+              pos: 2009
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int i
+                children: []
+                pos: 2013
+                length: 11
+              pos: 1995
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return values[i];
+                children: []
+                pos: 2036
+                length: 17
+              pos: 2026
+              length: 33
+          children: []
+          pos: 1995
+          length: 64
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: get
+              children: []
+              pos: 2499
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String name
+                children: []
+                pos: 2503
+                length: 17
+              pos: 2485
+              length: 670
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: mapping
+                            children: []
+                            pos: 2536
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2547
+                            length: 4
+                        children: []
+                        pos: 2536
+                        length: 15
+                    children: []
+                    pos: 2535
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new IllegalStateException(
+                                            "No header mapping was specified, the record values can't be accessed by name");
+                    children: []
+                    pos: 2567
+                    length: 133
+                  pos: 2553
+                  length: 157
+                pos: 2532
+                length: 178
+              - type: local_variable_declaration
+                fields:
+                  text: final Integer index = mapping.get(name);
+                children: []
+                pos: 2719
+                length: 40
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return index != null ? values[index.intValue()] : null;'
+                      children: []
+                      pos: 2786
+                      length: 55
+                    pos: 2772
+                    length: 79
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ArrayIndexOutOfBoundsException e) {
+                                      throw new IllegalArgumentException(
+                                              String.format(
+                                                      "Index for header '%s' is %d but CSVRecord only has %d values!",
+                                                      name, index.intValue(), values.length));
+                                  }
+                      children: []
+                      pos: 2852
+                      length: 297
+                    pos: 2768
+                    length: 381
+                children: []
+                pos: 2768
+                length: 381
+              pos: 2522
+              length: 633
+          children: []
+          pos: 2485
+          length: 670
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isConsistent
+              children: []
+              pos: 3599
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3584
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return mapping == null ? true : mapping.size() == values.length;'
+                children: []
+                pos: 3624
+                length: 64
+              pos: 3614
+              length: 80
+          children: []
+          pos: 3584
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isMapped
+              children: []
+              pos: 3913
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String name
+                children: []
+                pos: 3922
+                length: 17
+              pos: 3898
+              length: 118
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return mapping != null ? mapping.containsKey(name) : false;'
+                children: []
+                pos: 3951
+                length: 59
+              pos: 3941
+              length: 75
+          children: []
+          pos: 3898
+          length: 118
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSet
+              children: []
+              pos: 4252
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String name
+                children: []
+                pos: 4258
+                length: 17
+              pos: 4237
+              length: 126
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return isMapped(name) && mapping.get(name).intValue() < values.length;
+                children: []
+                pos: 4287
+                length: 70
+              pos: 4277
+              length: 86
+          children: []
+          pos: 4237
+          length: 126
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: iterator
+              children: []
+              pos: 4534
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4510
+              length: 91
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return Arrays.asList(values).iterator();
+                children: []
+                pos: 4555
+                length: 40
+              pos: 4545
+              length: 56
+          children: []
+          pos: 4510
+          length: 91
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: values
+              children: []
+              pos: 4616
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4607
+              length: 48
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return values;
+                children: []
+                pos: 4635
+                length: 14
+              pos: 4625
+              length: 30
+          children: []
+          pos: 4607
+          length: 48
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getComment
+              children: []
+              pos: 4861
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4847
+              length: 58
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return comment;
+                children: []
+                pos: 4884
+                length: 15
+              pos: 4874
+              length: 31
+          children: []
+          pos: 4847
+          length: 58
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRecordNumber
+              children: []
+              pos: 5053
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5041
+              length: 66
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return recordNumber;
+                children: []
+                pos: 5081
+                length: 20
+              pos: 5071
+              length: 36
+          children: []
+          pos: 5041
+          length: 66
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: size
+              children: []
+              pos: 5236
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5225
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return values.length;
+                children: []
+                pos: 5253
+                length: 21
+              pos: 5243
+              length: 37
+          children: []
+          pos: 5225
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 5314
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5286
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return Arrays.toString(values);
+                children: []
+                pos: 5335
+                length: 31
+              pos: 5325
+              length: 47
+          children: []
+          pos: 5286
+          length: 86
+        pos: 1009
+        length: 4366
+    children: []
+    pos: 1009
+    length: 4366
+  pos: 0
+  length: 5376
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: CSVRecord
+        children: []
+        pos: 1022
+        length: 9
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 1081
+          length: 48
+        - type: field_declaration
+          fields:
+            text: private static final String[] EMPTY_STRING_ARRAY = new String[0];
+          children: []
+          pos: 1135
+          length: 65
+        - type: field_declaration
+          fields:
+            text: private final String[] values;
+          children: []
+          pos: 1242
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private final Map<String, Integer> mapping;
+          children: []
+          pos: 1323
+          length: 43
+        - type: field_declaration
+          fields:
+            text: private final String comment;
+          children: []
+          pos: 1417
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final long recordNumber;
+          children: []
+          pos: 1482
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              CSVRecord(final String[] values, final Map<String, Integer> mapping,
+                          final String comment, final long recordNumber) {
+                      this.recordNumber = recordNumber;
+                      this.values = values != null ? values : EMPTY_STRING_ARRAY;
+                      this.mapping = mapping;
+                      this.comment = comment;
+                  }
+          children: []
+          pos: 1520
+          length: 309
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: get
+              children: []
+              pos: 2009
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int i
+                children: []
+                pos: 2013
+                length: 11
+              pos: 1995
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return values[i];
+                children: []
+                pos: 2036
+                length: 17
+              pos: 2026
+              length: 33
+          children: []
+          pos: 1995
+          length: 64
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: get
+              children: []
+              pos: 2499
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String name
+                children: []
+                pos: 2503
+                length: 17
+              pos: 2485
+              length: 348
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: mapping
+                            children: []
+                            pos: 2536
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2547
+                            length: 4
+                        children: []
+                        pos: 2536
+                        length: 15
+                    children: []
+                    pos: 2535
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new IllegalStateException(
+                                            "No header mapping was specified, the record values can't be accessed by name");
+                    children: []
+                    pos: 2567
+                    length: 133
+                  pos: 2553
+                  length: 157
+                pos: 2532
+                length: 178
+              - type: local_variable_declaration
+                fields:
+                  text: final Integer index = mapping.get(name);
+                children: []
+                pos: 2719
+                length: 40
+              - type: return_statement
+                fields:
+                  text: 'return index != null ? values[index.intValue()] : null;'
+                children: []
+                pos: 2772
+                length: 55
+              pos: 2522
+              length: 311
+          children: []
+          pos: 2485
+          length: 348
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isConsistent
+              children: []
+              pos: 3277
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3262
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return mapping == null ? true : mapping.size() == values.length;'
+                children: []
+                pos: 3302
+                length: 64
+              pos: 3292
+              length: 80
+          children: []
+          pos: 3262
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isMapped
+              children: []
+              pos: 3591
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String name
+                children: []
+                pos: 3600
+                length: 17
+              pos: 3576
+              length: 118
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return mapping != null ? mapping.containsKey(name) : false;'
+                children: []
+                pos: 3629
+                length: 59
+              pos: 3619
+              length: 75
+          children: []
+          pos: 3576
+          length: 118
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSet
+              children: []
+              pos: 3930
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final String name
+                children: []
+                pos: 3936
+                length: 17
+              pos: 3915
+              length: 126
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return isMapped(name) && mapping.get(name).intValue() < values.length;
+                children: []
+                pos: 3965
+                length: 70
+              pos: 3955
+              length: 86
+          children: []
+          pos: 3915
+          length: 126
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: iterator
+              children: []
+              pos: 4212
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4188
+              length: 91
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return Arrays.asList(values).iterator();
+                children: []
+                pos: 4233
+                length: 40
+              pos: 4223
+              length: 56
+          children: []
+          pos: 4188
+          length: 91
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: values
+              children: []
+              pos: 4294
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4285
+              length: 48
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return values;
+                children: []
+                pos: 4313
+                length: 14
+              pos: 4303
+              length: 30
+          children: []
+          pos: 4285
+          length: 48
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getComment
+              children: []
+              pos: 4539
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4525
+              length: 58
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return comment;
+                children: []
+                pos: 4562
+                length: 15
+              pos: 4552
+              length: 31
+          children: []
+          pos: 4525
+          length: 58
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRecordNumber
+              children: []
+              pos: 4731
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4719
+              length: 66
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return recordNumber;
+                children: []
+                pos: 4759
+                length: 20
+              pos: 4749
+              length: 36
+          children: []
+          pos: 4719
+          length: 66
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: size
+              children: []
+              pos: 4914
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4903
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return values.length;
+                children: []
+                pos: 4931
+                length: 21
+              pos: 4921
+              length: 37
+          children: []
+          pos: 4903
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 4992
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4964
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return Arrays.toString(values);
+                children: []
+                pos: 5013
+                length: 31
+              pos: 5003
+              length: 47
+          children: []
+          pos: 4964
+          length: 86
+        pos: 1009
+        length: 4044
+    children: []
+    pos: 1009
+    length: 4044
+  pos: 0
+  length: 5054
 text_diff: "--- before\n+++ after\n@@ -82,14 +82,7 @@\n                     \"No header
   mapping was specified, the record values can't be accessed by name\");\n         }\n
   \        final Integer index = mapping.get(name);\n-        try {\n             return

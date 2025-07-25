@@ -1,5 +1,1899 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: HypergeometricDistribution
+        children: []
+        pos: 1614
+        length: 26
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -436928820673516179L;
+          children: []
+          pos: 1727
+          length: 66
+        - type: field_declaration
+          fields:
+            text: private final int numberOfSuccesses;
+          children: []
+          pos: 1852
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private final int populationSize;
+          children: []
+          pos: 1925
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final int sampleSize;
+          children: []
+          pos: 1991
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private double numericalVariance = Double.NaN;
+          children: []
+          pos: 2062
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private boolean numericalVarianceIsCalculated = false;
+          children: []
+          pos: 2182
+          length: 54
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public HypergeometricDistribution(int populationSize, int numberOfSuccesses, int sampleSize)
+                  throws NotPositiveException, NotStrictlyPositiveException, NumberIsTooLargeException {
+                      this(new Well19937c(), populationSize, numberOfSuccesses, sampleSize);
+                  }
+          children: []
+          pos: 2851
+          length: 268
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public HypergeometricDistribution(RandomGenerator rng,
+                                                    int populationSize,
+                                                    int numberOfSuccesses,
+                                                    int sampleSize)
+                  throws NotPositiveException, NotStrictlyPositiveException, NumberIsTooLargeException {
+                      super(rng);
+
+                      if (populationSize <= 0) {
+                          throw new NotStrictlyPositiveException(LocalizedFormats.POPULATION_SIZE,
+                                                                 populationSize);
+                      }
+                      if (numberOfSuccesses < 0) {
+                          throw new NotPositiveException(LocalizedFormats.NUMBER_OF_SUCCESSES,
+                                                         numberOfSuccesses);
+                      }
+                      if (sampleSize < 0) {
+                          throw new NotPositiveException(LocalizedFormats.NUMBER_OF_SAMPLES,
+                                                         sampleSize);
+                      }
+
+                      if (numberOfSuccesses > populationSize) {
+                          throw new NumberIsTooLargeException(LocalizedFormats.NUMBER_OF_SUCCESS_LARGER_THAN_POPULATION_SIZE,
+                                                              numberOfSuccesses, populationSize, true);
+                      }
+                      if (sampleSize > populationSize) {
+                          throw new NumberIsTooLargeException(LocalizedFormats.SAMPLE_SIZE_LARGER_THAN_POPULATION_SIZE,
+                                                              sampleSize, populationSize, true);
+                      }
+
+                      this.numberOfSuccesses = numberOfSuccesses;
+                      this.populationSize = populationSize;
+                      this.sampleSize = sampleSize;
+                  }
+          children: []
+          pos: 3695
+          length: 1551
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: cumulativeProbability
+              children: []
+              pos: 5291
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x
+                children: []
+                pos: 5313
+                length: 5
+              pos: 5277
+              length: 375
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret;
+                children: []
+                pos: 5330
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: int[] domain = getDomain(populationSize, numberOfSuccesses,
+                    sampleSize);
+                children: []
+                pos: 5351
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: x
+                            children: []
+                            pos: 5436
+                            length: 1
+                          right:
+                            type: array_access
+                            fields:
+                              array:
+                                type: identifier
+                                fields:
+                                  text: domain
+                                children: []
+                                pos: 5440
+                                length: 6
+                              index:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 5447
+                                length: 1
+                            children: []
+                            pos: 5440
+                            length: 9
+                        children: []
+                        pos: 5436
+                        length: 13
+                    children: []
+                    pos: 5435
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ret = 0.0;
+                    children: []
+                    pos: 5465
+                    length: 10
+                  pos: 5451
+                  length: 34
+                pos: 5432
+                length: 193
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 5635
+                length: 11
+              pos: 5320
+              length: 332
+          children: []
+          pos: 5277
+          length: 375
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDomain
+              children: []
+              pos: 6007
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int n
+                children: []
+                pos: 6017
+                length: 5
+              pos: 5993
+              length: 128
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new int[] { getLowerDomain(n, m, k), getUpperDomain(m,
+                    k) };
+                children: []
+                pos: 6048
+                length: 67
+              pos: 6038
+              length: 83
+          children: []
+          pos: 5993
+          length: 128
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLowerDomain
+              children: []
+              pos: 6453
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int n
+                children: []
+                pos: 6468
+                length: 5
+              pos: 6441
+              length: 100
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return FastMath.max(0, m - (n - k));
+                children: []
+                pos: 6499
+                length: 36
+              pos: 6489
+              length: 52
+          children: []
+          pos: 6441
+          length: 100
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumberOfSuccesses
+              children: []
+              pos: 6660
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6649
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numberOfSuccesses;
+                children: []
+                pos: 6693
+                length: 25
+              pos: 6683
+              length: 41
+          children: []
+          pos: 6649
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPopulationSize
+              children: []
+              pos: 6835
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6824
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return populationSize;
+                children: []
+                pos: 6865
+                length: 22
+              pos: 6855
+              length: 38
+          children: []
+          pos: 6824
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSampleSize
+              children: []
+              pos: 6996
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6985
+              length: 61
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return sampleSize;
+                children: []
+                pos: 7022
+                length: 18
+              pos: 7012
+              length: 34
+          children: []
+          pos: 6985
+          length: 61
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUpperDomain
+              children: []
+              pos: 7347
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int m
+                children: []
+                pos: 7362
+                length: 5
+              pos: 7335
+              length: 83
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return FastMath.min(k, m);
+                children: []
+                pos: 7386
+                length: 26
+              pos: 7376
+              length: 42
+          children: []
+          pos: 7335
+          length: 83
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: probability
+              children: []
+              pos: 7463
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x
+                children: []
+                pos: 7475
+                length: 5
+              pos: 7449
+              length: 863
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret;
+                children: []
+                pos: 7492
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: int[] domain = getDomain(populationSize, numberOfSuccesses,
+                    sampleSize);
+                children: []
+                pos: 7513
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: less_than
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: x
+                                children: []
+                                pos: 7598
+                                length: 1
+                              right:
+                                type: array_access
+                                fields:
+                                  array:
+                                    type: identifier
+                                    fields:
+                                      text: domain
+                                    children: []
+                                    pos: 7602
+                                    length: 6
+                                  index:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 7609
+                                    length: 1
+                                children: []
+                                pos: 7602
+                                length: 9
+                            children: []
+                            pos: 7598
+                            length: 13
+                          right:
+                            type: greater_than
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: x
+                                children: []
+                                pos: 7615
+                                length: 1
+                              right:
+                                type: array_access
+                                fields:
+                                  array:
+                                    type: identifier
+                                    fields:
+                                      text: domain
+                                    children: []
+                                    pos: 7619
+                                    length: 6
+                                  index:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '1'
+                                    children: []
+                                    pos: 7626
+                                    length: 1
+                                children: []
+                                pos: 7619
+                                length: 9
+                            children: []
+                            pos: 7615
+                            length: 13
+                        children: []
+                        pos: 7598
+                        length: 30
+                    children: []
+                    pos: 7597
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ret = 0.0;
+                    children: []
+                    pos: 7644
+                    length: 10
+                  pos: 7630
+                  length: 34
+                pos: 7594
+                length: 691
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 8295
+                length: 11
+              pos: 7482
+              length: 830
+          children: []
+          pos: 7449
+          length: 863
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: upperCumulativeProbability
+              children: []
+              pos: 8563
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x
+                children: []
+                pos: 8590
+                length: 5
+              pos: 8549
+              length: 387
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret;
+                children: []
+                pos: 8607
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: final int[] domain = getDomain(populationSize, numberOfSuccesses,
+                    sampleSize);
+                children: []
+                pos: 8628
+                length: 78
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: x
+                            children: []
+                            pos: 8719
+                            length: 1
+                          right:
+                            type: array_access
+                            fields:
+                              array:
+                                type: identifier
+                                fields:
+                                  text: domain
+                                children: []
+                                pos: 8724
+                                length: 6
+                              index:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 8731
+                                length: 1
+                            children: []
+                            pos: 8724
+                            length: 9
+                        children: []
+                        pos: 8719
+                        length: 14
+                    children: []
+                    pos: 8718
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ret = 1.0;
+                    children: []
+                    pos: 8749
+                    length: 10
+                  pos: 8735
+                  length: 34
+                pos: 8715
+                length: 194
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 8919
+                length: 11
+              pos: 8597
+              length: 339
+          children: []
+          pos: 8549
+          length: 387
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: innerCumulativeProbability
+              children: []
+              pos: 9492
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x0
+                children: []
+                pos: 9519
+                length: 6
+              pos: 9477
+              length: 226
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret = probability(x0);
+                children: []
+                pos: 9553
+                length: 29
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (x0 != x1) {
+                                x0 += dx;
+                                ret += probability(x0);
+                            }
+                children: []
+                pos: 9591
+                length: 86
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 9686
+                length: 11
+              pos: 9543
+              length: 160
+          children: []
+          pos: 9477
+          length: 226
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumericalMean
+              children: []
+              pos: 9901
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9887
+              length: 130
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getSampleSize() * (getNumberOfSuccesses() / (double)
+                    getPopulationSize());
+                children: []
+                pos: 9930
+                length: 81
+              pos: 9920
+              length: 97
+          children: []
+          pos: 9887
+          length: 130
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumericalVariance
+              children: []
+              pos: 10262
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10248
+              length: 246
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!numericalVarianceIsCalculated"
+                        children: []
+                        pos: 10299
+                        length: 30
+                    children: []
+                    pos: 10298
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: numericalVariance = calculateNumericalVariance();
+                    children: []
+                    pos: 10345
+                    length: 49
+                  - type: expression_statement
+                    fields:
+                      text: numericalVarianceIsCalculated = true;
+                    children: []
+                    pos: 10407
+                    length: 37
+                  pos: 10331
+                  length: 123
+                pos: 10295
+                length: 159
+              - type: return_statement
+                fields:
+                  text: return numericalVariance;
+                children: []
+                pos: 10463
+                length: 25
+              pos: 10285
+              length: 209
+          children: []
+          pos: 10248
+          length: 246
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: calculateNumericalVariance
+              children: []
+              pos: 10637
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10620
+              length: 254
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double N = getPopulationSize();
+                children: []
+                pos: 10676
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: final double m = getNumberOfSuccesses();
+                children: []
+                pos: 10722
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final double n = getSampleSize();
+                children: []
+                pos: 10771
+                length: 33
+              - type: return_statement
+                fields:
+                  text: return (n * m * (N - n) * (N - m)) / (N * N * (N - 1));
+                children: []
+                pos: 10813
+                length: 55
+              pos: 10666
+              length: 208
+          children: []
+          pos: 10620
+          length: 254
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSupportLowerBound
+              children: []
+              pos: 11155
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11144
+              length: 165
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return FastMath.max(0,
+                                                getSampleSize() + getNumberOfSuccesses() - getPopulationSize());
+                children: []
+                pos: 11188
+                length: 115
+              pos: 11178
+              length: 131
+          children: []
+          pos: 11144
+          length: 165
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSupportUpperBound
+              children: []
+              pos: 11547
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11536
+              length: 111
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return FastMath.min(getNumberOfSuccesses(), getSampleSize());
+                children: []
+                pos: 11580
+                length: 61
+              pos: 11570
+              length: 77
+          children: []
+          pos: 11536
+          length: 111
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSupportConnected
+              children: []
+              pos: 11801
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11786
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 11832
+                length: 12
+              pos: 11822
+              length: 28
+          children: []
+          pos: 11786
+          length: 64
+        pos: 1601
+        length: 10251
+    children: []
+    pos: 1601
+    length: 10251
+  pos: 0
+  length: 11853
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: HypergeometricDistribution
+        children: []
+        pos: 1614
+        length: 26
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -436928820673516179L;
+          children: []
+          pos: 1727
+          length: 66
+        - type: field_declaration
+          fields:
+            text: private final int numberOfSuccesses;
+          children: []
+          pos: 1852
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private final int populationSize;
+          children: []
+          pos: 1925
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final int sampleSize;
+          children: []
+          pos: 1991
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private double numericalVariance = Double.NaN;
+          children: []
+          pos: 2062
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private boolean numericalVarianceIsCalculated = false;
+          children: []
+          pos: 2182
+          length: 54
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public HypergeometricDistribution(int populationSize, int numberOfSuccesses, int sampleSize)
+                  throws NotPositiveException, NotStrictlyPositiveException, NumberIsTooLargeException {
+                      this(new Well19937c(), populationSize, numberOfSuccesses, sampleSize);
+                  }
+          children: []
+          pos: 2851
+          length: 268
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public HypergeometricDistribution(RandomGenerator rng,
+                                                    int populationSize,
+                                                    int numberOfSuccesses,
+                                                    int sampleSize)
+                  throws NotPositiveException, NotStrictlyPositiveException, NumberIsTooLargeException {
+                      super(rng);
+
+                      if (populationSize <= 0) {
+                          throw new NotStrictlyPositiveException(LocalizedFormats.POPULATION_SIZE,
+                                                                 populationSize);
+                      }
+                      if (numberOfSuccesses < 0) {
+                          throw new NotPositiveException(LocalizedFormats.NUMBER_OF_SUCCESSES,
+                                                         numberOfSuccesses);
+                      }
+                      if (sampleSize < 0) {
+                          throw new NotPositiveException(LocalizedFormats.NUMBER_OF_SAMPLES,
+                                                         sampleSize);
+                      }
+
+                      if (numberOfSuccesses > populationSize) {
+                          throw new NumberIsTooLargeException(LocalizedFormats.NUMBER_OF_SUCCESS_LARGER_THAN_POPULATION_SIZE,
+                                                              numberOfSuccesses, populationSize, true);
+                      }
+                      if (sampleSize > populationSize) {
+                          throw new NumberIsTooLargeException(LocalizedFormats.SAMPLE_SIZE_LARGER_THAN_POPULATION_SIZE,
+                                                              sampleSize, populationSize, true);
+                      }
+
+                      this.numberOfSuccesses = numberOfSuccesses;
+                      this.populationSize = populationSize;
+                      this.sampleSize = sampleSize;
+                  }
+          children: []
+          pos: 3695
+          length: 1551
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: cumulativeProbability
+              children: []
+              pos: 5291
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x
+                children: []
+                pos: 5313
+                length: 5
+              pos: 5277
+              length: 375
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret;
+                children: []
+                pos: 5330
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: int[] domain = getDomain(populationSize, numberOfSuccesses,
+                    sampleSize);
+                children: []
+                pos: 5351
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: x
+                            children: []
+                            pos: 5436
+                            length: 1
+                          right:
+                            type: array_access
+                            fields:
+                              array:
+                                type: identifier
+                                fields:
+                                  text: domain
+                                children: []
+                                pos: 5440
+                                length: 6
+                              index:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 5447
+                                length: 1
+                            children: []
+                            pos: 5440
+                            length: 9
+                        children: []
+                        pos: 5436
+                        length: 13
+                    children: []
+                    pos: 5435
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ret = 0.0;
+                    children: []
+                    pos: 5465
+                    length: 10
+                  pos: 5451
+                  length: 34
+                pos: 5432
+                length: 193
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 5635
+                length: 11
+              pos: 5320
+              length: 332
+          children: []
+          pos: 5277
+          length: 375
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDomain
+              children: []
+              pos: 6007
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int n
+                children: []
+                pos: 6017
+                length: 5
+              pos: 5993
+              length: 128
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new int[] { getLowerDomain(n, m, k), getUpperDomain(m,
+                    k) };
+                children: []
+                pos: 6048
+                length: 67
+              pos: 6038
+              length: 83
+          children: []
+          pos: 5993
+          length: 128
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLowerDomain
+              children: []
+              pos: 6453
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int n
+                children: []
+                pos: 6468
+                length: 5
+              pos: 6441
+              length: 100
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return FastMath.max(0, m - (n - k));
+                children: []
+                pos: 6499
+                length: 36
+              pos: 6489
+              length: 52
+          children: []
+          pos: 6441
+          length: 100
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumberOfSuccesses
+              children: []
+              pos: 6660
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6649
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numberOfSuccesses;
+                children: []
+                pos: 6693
+                length: 25
+              pos: 6683
+              length: 41
+          children: []
+          pos: 6649
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPopulationSize
+              children: []
+              pos: 6835
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6824
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return populationSize;
+                children: []
+                pos: 6865
+                length: 22
+              pos: 6855
+              length: 38
+          children: []
+          pos: 6824
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSampleSize
+              children: []
+              pos: 6996
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6985
+              length: 61
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return sampleSize;
+                children: []
+                pos: 7022
+                length: 18
+              pos: 7012
+              length: 34
+          children: []
+          pos: 6985
+          length: 61
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUpperDomain
+              children: []
+              pos: 7347
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int m
+                children: []
+                pos: 7362
+                length: 5
+              pos: 7335
+              length: 83
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return FastMath.min(k, m);
+                children: []
+                pos: 7386
+                length: 26
+              pos: 7376
+              length: 42
+          children: []
+          pos: 7335
+          length: 83
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: probability
+              children: []
+              pos: 7463
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x
+                children: []
+                pos: 7475
+                length: 5
+              pos: 7449
+              length: 863
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret;
+                children: []
+                pos: 7492
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: int[] domain = getDomain(populationSize, numberOfSuccesses,
+                    sampleSize);
+                children: []
+                pos: 7513
+                length: 72
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: less_than
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: x
+                                children: []
+                                pos: 7598
+                                length: 1
+                              right:
+                                type: array_access
+                                fields:
+                                  array:
+                                    type: identifier
+                                    fields:
+                                      text: domain
+                                    children: []
+                                    pos: 7602
+                                    length: 6
+                                  index:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 7609
+                                    length: 1
+                                children: []
+                                pos: 7602
+                                length: 9
+                            children: []
+                            pos: 7598
+                            length: 13
+                          right:
+                            type: greater_than
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: x
+                                children: []
+                                pos: 7615
+                                length: 1
+                              right:
+                                type: array_access
+                                fields:
+                                  array:
+                                    type: identifier
+                                    fields:
+                                      text: domain
+                                    children: []
+                                    pos: 7619
+                                    length: 6
+                                  index:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '1'
+                                    children: []
+                                    pos: 7626
+                                    length: 1
+                                children: []
+                                pos: 7619
+                                length: 9
+                            children: []
+                            pos: 7615
+                            length: 13
+                        children: []
+                        pos: 7598
+                        length: 30
+                    children: []
+                    pos: 7597
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ret = 0.0;
+                    children: []
+                    pos: 7644
+                    length: 10
+                  pos: 7630
+                  length: 34
+                pos: 7594
+                length: 691
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 8295
+                length: 11
+              pos: 7482
+              length: 830
+          children: []
+          pos: 7449
+          length: 863
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: upperCumulativeProbability
+              children: []
+              pos: 8563
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x
+                children: []
+                pos: 8590
+                length: 5
+              pos: 8549
+              length: 387
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret;
+                children: []
+                pos: 8607
+                length: 11
+              - type: local_variable_declaration
+                fields:
+                  text: final int[] domain = getDomain(populationSize, numberOfSuccesses,
+                    sampleSize);
+                children: []
+                pos: 8628
+                length: 78
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: x
+                            children: []
+                            pos: 8719
+                            length: 1
+                          right:
+                            type: array_access
+                            fields:
+                              array:
+                                type: identifier
+                                fields:
+                                  text: domain
+                                children: []
+                                pos: 8724
+                                length: 6
+                              index:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 8731
+                                length: 1
+                            children: []
+                            pos: 8724
+                            length: 9
+                        children: []
+                        pos: 8719
+                        length: 14
+                    children: []
+                    pos: 8718
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ret = 1.0;
+                    children: []
+                    pos: 8749
+                    length: 10
+                  pos: 8735
+                  length: 34
+                pos: 8715
+                length: 194
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 8919
+                length: 11
+              pos: 8597
+              length: 339
+          children: []
+          pos: 8549
+          length: 387
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: innerCumulativeProbability
+              children: []
+              pos: 9492
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int x0
+                children: []
+                pos: 9519
+                length: 6
+              pos: 9477
+              length: 226
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double ret = probability(x0);
+                children: []
+                pos: 9553
+                length: 29
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (x0 != x1) {
+                                x0 += dx;
+                                ret += probability(x0);
+                            }
+                children: []
+                pos: 9591
+                length: 86
+              - type: return_statement
+                fields:
+                  text: return ret;
+                children: []
+                pos: 9686
+                length: 11
+              pos: 9543
+              length: 160
+          children: []
+          pos: 9477
+          length: 226
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumericalMean
+              children: []
+              pos: 9901
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9887
+              length: 139
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return (double) (getSampleSize() * getNumberOfSuccesses())
+                    / (double) getPopulationSize();
+                children: []
+                pos: 9930
+                length: 90
+              pos: 9920
+              length: 106
+          children: []
+          pos: 9887
+          length: 139
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumericalVariance
+              children: []
+              pos: 10271
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10257
+              length: 246
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!numericalVarianceIsCalculated"
+                        children: []
+                        pos: 10308
+                        length: 30
+                    children: []
+                    pos: 10307
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: numericalVariance = calculateNumericalVariance();
+                    children: []
+                    pos: 10354
+                    length: 49
+                  - type: expression_statement
+                    fields:
+                      text: numericalVarianceIsCalculated = true;
+                    children: []
+                    pos: 10416
+                    length: 37
+                  pos: 10340
+                  length: 123
+                pos: 10304
+                length: 159
+              - type: return_statement
+                fields:
+                  text: return numericalVariance;
+                children: []
+                pos: 10472
+                length: 25
+              pos: 10294
+              length: 209
+          children: []
+          pos: 10257
+          length: 246
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: calculateNumericalVariance
+              children: []
+              pos: 10646
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10629
+              length: 254
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double N = getPopulationSize();
+                children: []
+                pos: 10685
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: final double m = getNumberOfSuccesses();
+                children: []
+                pos: 10731
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final double n = getSampleSize();
+                children: []
+                pos: 10780
+                length: 33
+              - type: return_statement
+                fields:
+                  text: return (n * m * (N - n) * (N - m)) / (N * N * (N - 1));
+                children: []
+                pos: 10822
+                length: 55
+              pos: 10675
+              length: 208
+          children: []
+          pos: 10629
+          length: 254
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSupportLowerBound
+              children: []
+              pos: 11164
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11153
+              length: 165
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return FastMath.max(0,
+                                                getSampleSize() + getNumberOfSuccesses() - getPopulationSize());
+                children: []
+                pos: 11197
+                length: 115
+              pos: 11187
+              length: 131
+          children: []
+          pos: 11153
+          length: 165
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSupportUpperBound
+              children: []
+              pos: 11556
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11545
+              length: 111
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return FastMath.min(getNumberOfSuccesses(), getSampleSize());
+                children: []
+                pos: 11589
+                length: 61
+              pos: 11579
+              length: 77
+          children: []
+          pos: 11545
+          length: 111
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSupportConnected
+              children: []
+              pos: 11810
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11795
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 11841
+                length: 12
+              pos: 11831
+              length: 28
+          children: []
+          pos: 11795
+          length: 64
+        pos: 1601
+        length: 10260
+    children: []
+    pos: 1601
+    length: 10260
+  pos: 0
+  length: 11862
 text_diff: "--- before\n+++ after\n@@ -265,7 +265,7 @@\n      * size {@code n}, the
   mean is {@code n * m / N}.\n      */\n     public double getNumericalMean() {\n-
   \       return getSampleSize() * (getNumberOfSuccesses() / (double) getPopulationSize());\n+

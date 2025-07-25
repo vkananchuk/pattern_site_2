@@ -1,5 +1,2535 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: XmlSerializerProvider
+        children: []
+        pos: 1040
+        length: 21
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 1119
+          length: 48
+        - type: field_declaration
+          fields:
+            text: protected final static QName ROOT_NAME_FOR_NULL = new QName("null");
+          children: []
+          pos: 1345
+          length: 68
+        - type: field_declaration
+          fields:
+            text: protected final XmlRootNameLookup _rootNameLookup;
+          children: []
+          pos: 1419
+          length: 50
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public XmlSerializerProvider(XmlRootNameLookup rootNames)
+                  {
+                      super();
+                      _rootNameLookup = rootNames;
+                  }
+          children: []
+          pos: 1475
+          length: 123
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public XmlSerializerProvider(XmlSerializerProvider src,
+                          SerializationConfig config, SerializerFactory f)
+                  {
+                      super(src, config, f);
+                      _rootNameLookup  = src._rootNameLookup;
+                  }
+          children: []
+          pos: 1604
+          length: 207
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected XmlSerializerProvider(XmlSerializerProvider src) {
+                      super(src);
+                      // 21-May-2018, tatu: As per [dataformat-xml#282], should NOT really copy
+                      //    root name lookup as that may link back to diff version, configuration
+                      _rootNameLookup = new XmlRootNameLookup();
+                  }
+          children: []
+          pos: 1853
+          length: 303
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: copy
+              children: []
+              pos: 2403
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2356
+              length: 109
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new XmlSerializerProvider(this);
+                children: []
+                pos: 2420
+                length: 39
+              pos: 2410
+              length: 55
+          children: []
+          pos: 2356
+          length: 109
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createInstance
+              children: []
+              pos: 2518
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializationConfig config
+                children: []
+                pos: 2533
+                length: 26
+              pos: 2471
+              length: 193
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new XmlSerializerProvider(this, config, jsf);
+                children: []
+                pos: 2606
+                length: 52
+              pos: 2596
+              length: 68
+          children: []
+          pos: 2471
+          length: 193
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serializeValue
+              children: []
+              pos: 2730
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator gen
+                children: []
+                pos: 2745
+                length: 17
+              pos: 2670
+              length: 1287
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 2815
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2824
+                            length: 4
+                        children: []
+                        pos: 2815
+                        length: 13
+                    children: []
+                    pos: 2814
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: _serializeXmlNull(gen);
+                    children: []
+                    pos: 2844
+                    length: 23
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 2880
+                    length: 7
+                  pos: 2830
+                  length: 67
+                pos: 2811
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: final Class<?> cls = value.getClass();
+                children: []
+                pos: 2906
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean asArray;
+                children: []
+                pos: 2953
+                length: 22
+              - type: local_variable_declaration
+                fields:
+                  text: final ToXmlGenerator xgen = _asXmlGenerator(gen);
+                children: []
+                pos: 2984
+                length: 49
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: xgen
+                            children: []
+                            pos: 3046
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 3054
+                            length: 4
+                        children: []
+                        pos: 3046
+                        length: 12
+                    children: []
+                    pos: 3045
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: asArray = false;
+                    children: []
+                    pos: 3102
+                    length: 16
+                  pos: 3060
+                  length: 68
+                pos: 3042
+                length: 464
+              - type: local_variable_declaration
+                fields:
+                  text: final JsonSerializer<Object> ser = findTypedValueSerializer(cls,
+                    true, null);
+                children: []
+                pos: 3567
+                length: 77
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: ser.serialize(value, gen, this);
+                      children: []
+                      pos: 3671
+                      length: 32
+                    pos: 3657
+                    length: 56
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Exception e) { // but wrap RuntimeExceptions, to get path information
+                                      throw _wrapAsIOE(gen, e);
+                                  }
+                      children: []
+                      pos: 3714
+                      length: 124
+                    pos: 3653
+                    length: 185
+                children: []
+                pos: 3653
+                length: 185
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: asArray
+                        children: []
+                        pos: 3897
+                        length: 7
+                    children: []
+                    pos: 3896
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: gen.writeEndObject();
+                    children: []
+                    pos: 3920
+                    length: 21
+                  pos: 3906
+                  length: 45
+                pos: 3893
+                length: 58
+              pos: 2801
+              length: 1156
+          children: []
+          pos: 2670
+          length: 1287
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serializeValue
+              children: []
+              pos: 4041
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator gen
+                children: []
+                pos: 4056
+                length: 17
+              pos: 3981
+              length: 1306
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 4185
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4194
+                            length: 4
+                        children: []
+                        pos: 4185
+                        length: 13
+                    children: []
+                    pos: 4184
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: _serializeXmlNull(gen);
+                    children: []
+                    pos: 4214
+                    length: 23
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 4250
+                    length: 7
+                  pos: 4200
+                  length: 67
+                pos: 4181
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean asArray;
+                children: []
+                pos: 4276
+                length: 22
+              - type: local_variable_declaration
+                fields:
+                  text: final ToXmlGenerator xgen = _asXmlGenerator(gen);
+                children: []
+                pos: 4307
+                length: 49
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: xgen
+                            children: []
+                            pos: 4369
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4377
+                            length: 4
+                        children: []
+                        pos: 4369
+                        length: 12
+                    children: []
+                    pos: 4368
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: asArray = false;
+                    children: []
+                    pos: 4425
+                    length: 16
+                  pos: 4383
+                  length: 68
+                pos: 4365
+                length: 474
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: ser
+                            children: []
+                            pos: 4852
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4859
+                            length: 4
+                        children: []
+                        pos: 4852
+                        length: 11
+                    children: []
+                    pos: 4851
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ser = findTypedValueSerializer(rootType, true, null);
+                    children: []
+                    pos: 4879
+                    length: 53
+                  pos: 4865
+                  length: 77
+                pos: 4848
+                length: 94
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: ser.serialize(value, gen, this);
+                      children: []
+                      pos: 5012
+                      length: 32
+                    pos: 4998
+                    length: 56
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Exception e) { // but others do need to be, to get path etc
+                                      throw _wrapAsIOE(gen, e);
+                                  }
+                      children: []
+                      pos: 5055
+                      length: 114
+                    pos: 4994
+                    length: 175
+                children: []
+                pos: 4994
+                length: 175
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: asArray
+                        children: []
+                        pos: 5227
+                        length: 7
+                    children: []
+                    pos: 5226
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: gen.writeEndObject();
+                    children: []
+                    pos: 5250
+                    length: 21
+                  pos: 5236
+                  length: 45
+                pos: 5223
+                length: 58
+              pos: 4171
+              length: 1116
+          children: []
+          pos: 3981
+          length: 1306
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _serializeXmlNull
+              children: []
+              pos: 5308
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator jgen
+                children: []
+                pos: 5326
+                length: 18
+              pos: 5293
+              length: 498
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: QName rootName = _rootNameFromConfig();
+                children: []
+                pos: 5499
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: rootName
+                            children: []
+                            pos: 5551
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5563
+                            length: 4
+                        children: []
+                        pos: 5551
+                        length: 16
+                    children: []
+                    pos: 5550
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: rootName = ROOT_NAME_FOR_NULL;
+                    children: []
+                    pos: 5583
+                    length: 30
+                  pos: 5569
+                  length: 54
+                pos: 5547
+                length: 76
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: jgen instanceof ToXmlGenerator
+                        children: []
+                        pos: 5636
+                        length: 30
+                    children: []
+                    pos: 5635
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: _initWithRootName((ToXmlGenerator) jgen, rootName);
+                    children: []
+                    pos: 5682
+                    length: 51
+                  pos: 5668
+                  length: 75
+                pos: 5632
+                length: 111
+              - type: expression_statement
+                fields:
+                  text: super.serializeValue(jgen, null);
+                children: []
+                pos: 5752
+                length: 33
+              pos: 5369
+              length: 422
+          children: []
+          pos: 5293
+          length: 498
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _startRootArray
+              children: []
+              pos: 5816
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ToXmlGenerator xgen
+                children: []
+                pos: 5832
+                length: 19
+              pos: 5801
+              length: 243
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: xgen.writeStartObject();
+                children: []
+                pos: 5902
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: xgen.writeFieldName("item");
+                children: []
+                pos: 6010
+                length: 28
+              pos: 5892
+              length: 152
+          children: []
+          pos: 5801
+          length: 243
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _initWithRootName
+              children: []
+              pos: 6069
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ToXmlGenerator xgen
+                children: []
+                pos: 6087
+                length: 19
+              pos: 6054
+              length: 1060
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!xgen.setNextNameIfMissing(rootName)"
+                        children: []
+                        pos: 6361
+                        length: 36
+                    children: []
+                    pos: 6360
+                    length: 38
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: xgen.inRoot()
+                            children: []
+                            pos: 6470
+                            length: 13
+                        children: []
+                        pos: 6469
+                        length: 15
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: xgen.setNextName(rootName);
+                        children: []
+                        pos: 6503
+                        length: 27
+                      pos: 6485
+                      length: 59
+                    pos: 6466
+                    length: 78
+                  pos: 6399
+                  length: 155
+                pos: 6357
+                length: 197
+              - type: expression_statement
+                fields:
+                  text: xgen.initGenerator();
+                children: []
+                pos: 6563
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: String ns = rootName.getNamespaceURI();
+                children: []
+                pos: 6593
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: ns
+                                children: []
+                                pos: 6865
+                                length: 2
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6871
+                                length: 4
+                            children: []
+                            pos: 6865
+                            length: 10
+                          right:
+                            type: greater_than
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: ns.length()
+                                children: []
+                                pos: 6879
+                                length: 11
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 6893
+                                length: 1
+                            children: []
+                            pos: 6879
+                            length: 15
+                        children: []
+                        pos: 6865
+                        length: 29
+                    children: []
+                    pos: 6864
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: try_statement
+                    fields:
+                      body:
+                        type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: xgen.getStaxWriter().setDefaultNamespace(ns);
+                          children: []
+                          pos: 6932
+                          length: 45
+                        pos: 6914
+                        length: 77
+                      excepts:
+                        type: excepts
+                        fields: {}
+                        children:
+                        - type: catch_clause
+                          fields:
+                            text: |-
+                              catch (XMLStreamException e) {
+                                              StaxUtil.throwAsGenerationException(e, xgen);
+                                          }
+                          children: []
+                          pos: 6992
+                          length: 106
+                        pos: 6910
+                        length: 188
+                    children: []
+                    pos: 6910
+                    length: 188
+                  pos: 6896
+                  length: 212
+                pos: 6861
+                length: 247
+              pos: 6147
+              length: 967
+          children: []
+          pos: 6054
+          length: 1060
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _rootNameFromConfig
+              children: []
+              pos: 7136
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7120
+              length: 364
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: PropertyName name = _config.getFullRootName();
+                children: []
+                pos: 7172
+                length: 46
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: name
+                            children: []
+                            pos: 7231
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7239
+                            length: 4
+                        children: []
+                        pos: 7231
+                        length: 12
+                    children: []
+                    pos: 7230
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 7259
+                    length: 12
+                  pos: 7245
+                  length: 36
+                pos: 7227
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: String ns = name.getNamespace();
+                children: []
+                pos: 7290
+                length: 32
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: ns
+                                children: []
+                                pos: 7335
+                                length: 2
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7341
+                                length: 4
+                            children: []
+                            pos: 7335
+                            length: 10
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: ns.isEmpty()
+                            children: []
+                            pos: 7349
+                            length: 12
+                        children: []
+                        pos: 7335
+                        length: 26
+                    children: []
+                    pos: 7334
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return new QName(name.getSimpleName());
+                    children: []
+                    pos: 7377
+                    length: 39
+                  pos: 7363
+                  length: 63
+                pos: 7331
+                length: 95
+              - type: return_statement
+                fields:
+                  text: return new QName(ns, name.getSimpleName());
+                children: []
+                pos: 7435
+                length: 43
+              pos: 7162
+              length: 322
+          children: []
+          pos: 7120
+          length: 364
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _asXmlGenerator
+              children: []
+              pos: 7515
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator gen
+                children: []
+                pos: 7531
+                length: 17
+              pos: 7490
+              length: 581
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(gen instanceof ToXmlGenerator)"
+                        children: []
+                        pos: 7687
+                        length: 32
+                    children: []
+                    pos: 7686
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!(gen instanceof TokenBuffer)"
+                            children: []
+                            pos: 7765
+                            length: 29
+                        children: []
+                        pos: 7764
+                        length: 31
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw JsonMappingException.from(gen,
+                                                    "XmlMapper does not with generators of type other than ToXmlGenerator; got: "+gen.getClass().getName());
+                        children: []
+                        pos: 7814
+                        length: 165
+                      pos: 7796
+                      length: 197
+                    pos: 7761
+                    length: 232
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 8006
+                    length: 12
+                  pos: 7721
+                  length: 307
+                pos: 7683
+                length: 345
+              - type: return_statement
+                fields:
+                  text: return (ToXmlGenerator) gen;
+                children: []
+                pos: 8037
+                length: 28
+              pos: 7590
+              length: 481
+          children: []
+          pos: 7490
+          length: 581
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _wrapAsIOE
+              children: []
+              pos: 8103
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator g
+                children: []
+                pos: 8114
+                length: 15
+              pos: 8081
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: e instanceof IOException
+                        children: []
+                        pos: 8158
+                        length: 24
+                    children: []
+                    pos: 8157
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (IOException) e;
+                    children: []
+                    pos: 8198
+                    length: 23
+                  pos: 8184
+                  length: 47
+                pos: 8154
+                length: 77
+              - type: local_variable_declaration
+                fields:
+                  text: String msg = e.getMessage();
+                children: []
+                pos: 8240
+                length: 28
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: msg
+                            children: []
+                            pos: 8281
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8288
+                            length: 4
+                        children: []
+                        pos: 8281
+                        length: 11
+                    children: []
+                    pos: 8280
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: msg = "[no message for "+e.getClass().getName()+"]";
+                    children: []
+                    pos: 8308
+                    length: 52
+                  pos: 8294
+                  length: 76
+                pos: 8277
+                length: 93
+              - type: return_statement
+                fields:
+                  text: return new JsonMappingException(g, msg, e);
+                children: []
+                pos: 8379
+                length: 43
+              pos: 8144
+              length: 284
+          children: []
+          pos: 8081
+          length: 347
+        pos: 1027
+        length: 7403
+    children: []
+    pos: 1027
+    length: 7403
+  pos: 0
+  length: 8431
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: XmlSerializerProvider
+        children: []
+        pos: 1040
+        length: 21
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1L;
+          children: []
+          pos: 1119
+          length: 48
+        - type: field_declaration
+          fields:
+            text: protected final static QName ROOT_NAME_FOR_NULL = new QName("null");
+          children: []
+          pos: 1345
+          length: 68
+        - type: field_declaration
+          fields:
+            text: protected final XmlRootNameLookup _rootNameLookup;
+          children: []
+          pos: 1419
+          length: 50
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public XmlSerializerProvider(XmlRootNameLookup rootNames)
+                  {
+                      super();
+                      _rootNameLookup = rootNames;
+                  }
+          children: []
+          pos: 1475
+          length: 123
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public XmlSerializerProvider(XmlSerializerProvider src,
+                          SerializationConfig config, SerializerFactory f)
+                  {
+                      super(src, config, f);
+                      _rootNameLookup  = src._rootNameLookup;
+                  }
+          children: []
+          pos: 1604
+          length: 207
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected XmlSerializerProvider(XmlSerializerProvider src) {
+                      super(src);
+                      // 21-May-2018, tatu: As per [dataformat-xml#282], should NOT really copy
+                      //    root name lookup as that may link back to diff version, configuration
+                      _rootNameLookup = src._rootNameLookup;
+                  }
+          children: []
+          pos: 1853
+          length: 299
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: copy
+              children: []
+              pos: 2399
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2352
+              length: 109
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new XmlSerializerProvider(this);
+                children: []
+                pos: 2416
+                length: 39
+              pos: 2406
+              length: 55
+          children: []
+          pos: 2352
+          length: 109
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createInstance
+              children: []
+              pos: 2514
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializationConfig config
+                children: []
+                pos: 2529
+                length: 26
+              pos: 2467
+              length: 193
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new XmlSerializerProvider(this, config, jsf);
+                children: []
+                pos: 2602
+                length: 52
+              pos: 2592
+              length: 68
+          children: []
+          pos: 2467
+          length: 193
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serializeValue
+              children: []
+              pos: 2726
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator gen
+                children: []
+                pos: 2741
+                length: 17
+              pos: 2666
+              length: 1287
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 2811
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2820
+                            length: 4
+                        children: []
+                        pos: 2811
+                        length: 13
+                    children: []
+                    pos: 2810
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: _serializeXmlNull(gen);
+                    children: []
+                    pos: 2840
+                    length: 23
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 2876
+                    length: 7
+                  pos: 2826
+                  length: 67
+                pos: 2807
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: final Class<?> cls = value.getClass();
+                children: []
+                pos: 2902
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean asArray;
+                children: []
+                pos: 2949
+                length: 22
+              - type: local_variable_declaration
+                fields:
+                  text: final ToXmlGenerator xgen = _asXmlGenerator(gen);
+                children: []
+                pos: 2980
+                length: 49
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: xgen
+                            children: []
+                            pos: 3042
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 3050
+                            length: 4
+                        children: []
+                        pos: 3042
+                        length: 12
+                    children: []
+                    pos: 3041
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: asArray = false;
+                    children: []
+                    pos: 3098
+                    length: 16
+                  pos: 3056
+                  length: 68
+                pos: 3038
+                length: 464
+              - type: local_variable_declaration
+                fields:
+                  text: final JsonSerializer<Object> ser = findTypedValueSerializer(cls,
+                    true, null);
+                children: []
+                pos: 3563
+                length: 77
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: ser.serialize(value, gen, this);
+                      children: []
+                      pos: 3667
+                      length: 32
+                    pos: 3653
+                    length: 56
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Exception e) { // but wrap RuntimeExceptions, to get path information
+                                      throw _wrapAsIOE(gen, e);
+                                  }
+                      children: []
+                      pos: 3710
+                      length: 124
+                    pos: 3649
+                    length: 185
+                children: []
+                pos: 3649
+                length: 185
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: asArray
+                        children: []
+                        pos: 3893
+                        length: 7
+                    children: []
+                    pos: 3892
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: gen.writeEndObject();
+                    children: []
+                    pos: 3916
+                    length: 21
+                  pos: 3902
+                  length: 45
+                pos: 3889
+                length: 58
+              pos: 2797
+              length: 1156
+          children: []
+          pos: 2666
+          length: 1287
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serializeValue
+              children: []
+              pos: 4037
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator gen
+                children: []
+                pos: 4052
+                length: 17
+              pos: 3977
+              length: 1306
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 4181
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4190
+                            length: 4
+                        children: []
+                        pos: 4181
+                        length: 13
+                    children: []
+                    pos: 4180
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: _serializeXmlNull(gen);
+                    children: []
+                    pos: 4210
+                    length: 23
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 4246
+                    length: 7
+                  pos: 4196
+                  length: 67
+                pos: 4177
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean asArray;
+                children: []
+                pos: 4272
+                length: 22
+              - type: local_variable_declaration
+                fields:
+                  text: final ToXmlGenerator xgen = _asXmlGenerator(gen);
+                children: []
+                pos: 4303
+                length: 49
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: xgen
+                            children: []
+                            pos: 4365
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4373
+                            length: 4
+                        children: []
+                        pos: 4365
+                        length: 12
+                    children: []
+                    pos: 4364
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: asArray = false;
+                    children: []
+                    pos: 4421
+                    length: 16
+                  pos: 4379
+                  length: 68
+                pos: 4361
+                length: 474
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: ser
+                            children: []
+                            pos: 4848
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4855
+                            length: 4
+                        children: []
+                        pos: 4848
+                        length: 11
+                    children: []
+                    pos: 4847
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ser = findTypedValueSerializer(rootType, true, null);
+                    children: []
+                    pos: 4875
+                    length: 53
+                  pos: 4861
+                  length: 77
+                pos: 4844
+                length: 94
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: ser.serialize(value, gen, this);
+                      children: []
+                      pos: 5008
+                      length: 32
+                    pos: 4994
+                    length: 56
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Exception e) { // but others do need to be, to get path etc
+                                      throw _wrapAsIOE(gen, e);
+                                  }
+                      children: []
+                      pos: 5051
+                      length: 114
+                    pos: 4990
+                    length: 175
+                children: []
+                pos: 4990
+                length: 175
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: asArray
+                        children: []
+                        pos: 5223
+                        length: 7
+                    children: []
+                    pos: 5222
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: gen.writeEndObject();
+                    children: []
+                    pos: 5246
+                    length: 21
+                  pos: 5232
+                  length: 45
+                pos: 5219
+                length: 58
+              pos: 4167
+              length: 1116
+          children: []
+          pos: 3977
+          length: 1306
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _serializeXmlNull
+              children: []
+              pos: 5304
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator jgen
+                children: []
+                pos: 5322
+                length: 18
+              pos: 5289
+              length: 498
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: QName rootName = _rootNameFromConfig();
+                children: []
+                pos: 5495
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: rootName
+                            children: []
+                            pos: 5547
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5559
+                            length: 4
+                        children: []
+                        pos: 5547
+                        length: 16
+                    children: []
+                    pos: 5546
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: rootName = ROOT_NAME_FOR_NULL;
+                    children: []
+                    pos: 5579
+                    length: 30
+                  pos: 5565
+                  length: 54
+                pos: 5543
+                length: 76
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: jgen instanceof ToXmlGenerator
+                        children: []
+                        pos: 5632
+                        length: 30
+                    children: []
+                    pos: 5631
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: _initWithRootName((ToXmlGenerator) jgen, rootName);
+                    children: []
+                    pos: 5678
+                    length: 51
+                  pos: 5664
+                  length: 75
+                pos: 5628
+                length: 111
+              - type: expression_statement
+                fields:
+                  text: super.serializeValue(jgen, null);
+                children: []
+                pos: 5748
+                length: 33
+              pos: 5365
+              length: 422
+          children: []
+          pos: 5289
+          length: 498
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _startRootArray
+              children: []
+              pos: 5812
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ToXmlGenerator xgen
+                children: []
+                pos: 5828
+                length: 19
+              pos: 5797
+              length: 243
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: xgen.writeStartObject();
+                children: []
+                pos: 5898
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: xgen.writeFieldName("item");
+                children: []
+                pos: 6006
+                length: 28
+              pos: 5888
+              length: 152
+          children: []
+          pos: 5797
+          length: 243
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _initWithRootName
+              children: []
+              pos: 6065
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ToXmlGenerator xgen
+                children: []
+                pos: 6083
+                length: 19
+              pos: 6050
+              length: 1060
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!xgen.setNextNameIfMissing(rootName)"
+                        children: []
+                        pos: 6357
+                        length: 36
+                    children: []
+                    pos: 6356
+                    length: 38
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: xgen.inRoot()
+                            children: []
+                            pos: 6466
+                            length: 13
+                        children: []
+                        pos: 6465
+                        length: 15
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: xgen.setNextName(rootName);
+                        children: []
+                        pos: 6499
+                        length: 27
+                      pos: 6481
+                      length: 59
+                    pos: 6462
+                    length: 78
+                  pos: 6395
+                  length: 155
+                pos: 6353
+                length: 197
+              - type: expression_statement
+                fields:
+                  text: xgen.initGenerator();
+                children: []
+                pos: 6559
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: String ns = rootName.getNamespaceURI();
+                children: []
+                pos: 6589
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: ns
+                                children: []
+                                pos: 6861
+                                length: 2
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6867
+                                length: 4
+                            children: []
+                            pos: 6861
+                            length: 10
+                          right:
+                            type: greater_than
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: ns.length()
+                                children: []
+                                pos: 6875
+                                length: 11
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 6889
+                                length: 1
+                            children: []
+                            pos: 6875
+                            length: 15
+                        children: []
+                        pos: 6861
+                        length: 29
+                    children: []
+                    pos: 6860
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: try_statement
+                    fields:
+                      body:
+                        type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: xgen.getStaxWriter().setDefaultNamespace(ns);
+                          children: []
+                          pos: 6928
+                          length: 45
+                        pos: 6910
+                        length: 77
+                      excepts:
+                        type: excepts
+                        fields: {}
+                        children:
+                        - type: catch_clause
+                          fields:
+                            text: |-
+                              catch (XMLStreamException e) {
+                                              StaxUtil.throwAsGenerationException(e, xgen);
+                                          }
+                          children: []
+                          pos: 6988
+                          length: 106
+                        pos: 6906
+                        length: 188
+                    children: []
+                    pos: 6906
+                    length: 188
+                  pos: 6892
+                  length: 212
+                pos: 6857
+                length: 247
+              pos: 6143
+              length: 967
+          children: []
+          pos: 6050
+          length: 1060
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _rootNameFromConfig
+              children: []
+              pos: 7132
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7116
+              length: 364
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: PropertyName name = _config.getFullRootName();
+                children: []
+                pos: 7168
+                length: 46
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: name
+                            children: []
+                            pos: 7227
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7235
+                            length: 4
+                        children: []
+                        pos: 7227
+                        length: 12
+                    children: []
+                    pos: 7226
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 7255
+                    length: 12
+                  pos: 7241
+                  length: 36
+                pos: 7223
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: String ns = name.getNamespace();
+                children: []
+                pos: 7286
+                length: 32
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: ns
+                                children: []
+                                pos: 7331
+                                length: 2
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7337
+                                length: 4
+                            children: []
+                            pos: 7331
+                            length: 10
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: ns.isEmpty()
+                            children: []
+                            pos: 7345
+                            length: 12
+                        children: []
+                        pos: 7331
+                        length: 26
+                    children: []
+                    pos: 7330
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return new QName(name.getSimpleName());
+                    children: []
+                    pos: 7373
+                    length: 39
+                  pos: 7359
+                  length: 63
+                pos: 7327
+                length: 95
+              - type: return_statement
+                fields:
+                  text: return new QName(ns, name.getSimpleName());
+                children: []
+                pos: 7431
+                length: 43
+              pos: 7158
+              length: 322
+          children: []
+          pos: 7116
+          length: 364
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _asXmlGenerator
+              children: []
+              pos: 7511
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator gen
+                children: []
+                pos: 7527
+                length: 17
+              pos: 7486
+              length: 581
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(gen instanceof ToXmlGenerator)"
+                        children: []
+                        pos: 7683
+                        length: 32
+                    children: []
+                    pos: 7682
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!(gen instanceof TokenBuffer)"
+                            children: []
+                            pos: 7761
+                            length: 29
+                        children: []
+                        pos: 7760
+                        length: 31
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw JsonMappingException.from(gen,
+                                                    "XmlMapper does not with generators of type other than ToXmlGenerator; got: "+gen.getClass().getName());
+                        children: []
+                        pos: 7810
+                        length: 165
+                      pos: 7792
+                      length: 197
+                    pos: 7757
+                    length: 232
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 8002
+                    length: 12
+                  pos: 7717
+                  length: 307
+                pos: 7679
+                length: 345
+              - type: return_statement
+                fields:
+                  text: return (ToXmlGenerator) gen;
+                children: []
+                pos: 8033
+                length: 28
+              pos: 7586
+              length: 481
+          children: []
+          pos: 7486
+          length: 581
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _wrapAsIOE
+              children: []
+              pos: 8099
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonGenerator g
+                children: []
+                pos: 8110
+                length: 15
+              pos: 8077
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: e instanceof IOException
+                        children: []
+                        pos: 8154
+                        length: 24
+                    children: []
+                    pos: 8153
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return (IOException) e;
+                    children: []
+                    pos: 8194
+                    length: 23
+                  pos: 8180
+                  length: 47
+                pos: 8150
+                length: 77
+              - type: local_variable_declaration
+                fields:
+                  text: String msg = e.getMessage();
+                children: []
+                pos: 8236
+                length: 28
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: msg
+                            children: []
+                            pos: 8277
+                            length: 3
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8284
+                            length: 4
+                        children: []
+                        pos: 8277
+                        length: 11
+                    children: []
+                    pos: 8276
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: msg = "[no message for "+e.getClass().getName()+"]";
+                    children: []
+                    pos: 8304
+                    length: 52
+                  pos: 8290
+                  length: 76
+                pos: 8273
+                length: 93
+              - type: return_statement
+                fields:
+                  text: return new JsonMappingException(g, msg, e);
+                children: []
+                pos: 8375
+                length: 43
+              pos: 8140
+              length: 284
+          children: []
+          pos: 8077
+          length: 347
+        pos: 1027
+        length: 7399
+    children: []
+    pos: 1027
+    length: 7399
+  pos: 0
+  length: 8427
 text_diff: "--- before\n+++ after\n@@ -56,7 +56,7 @@\n         super(src);\n         //
   21-May-2018, tatu: As per [dataformat-xml#282], should NOT really copy\n         //
   \   root name lookup as that may link back to diff version, configuration\n-        _rootNameLookup

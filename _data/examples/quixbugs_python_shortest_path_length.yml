@@ -1,5 +1,381 @@
 ---
 language: python
+before_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: shortest_path_length
+        children: []
+        pos: 25
+        length: 20
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: length_by_edge
+          children: []
+          pos: 46
+          length: 14
+        pos: 21
+        length: 750
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: unvisited_nodes = []
+          children: []
+          pos: 88
+          length: 20
+        - type: expression_statement
+          fields:
+            text: heappush(unvisited_nodes, (0, startnode))
+          children: []
+          pos: 113
+          length: 41
+        - type: expression_statement
+          fields:
+            text: visited_nodes = set()
+          children: []
+          pos: 159
+          length: 21
+        - type: while_statement
+          fields:
+            text: |-
+              while len(unvisited_nodes) > 0:
+                      distance, node = heappop(unvisited_nodes)
+                      if node is goalnode:
+                          return distance
+
+                      visited_nodes.add(node)
+
+                      for nextnode in node.successors:
+                          if nextnode in visited_nodes:
+                              continue
+
+                          insert_or_update(unvisited_nodes,
+                              (min(
+                                  get(unvisited_nodes, nextnode) or float('inf'),
+                                  get(unvisited_nodes, nextnode) + length_by_edge[node, nextnode]
+                              ),
+                              nextnode)
+                          )
+          children: []
+          pos: 186
+          length: 560
+        - type: return_statement
+          fields:
+            text: return float('inf')
+          children: []
+          pos: 752
+          length: 19
+        pos: 88
+        length: 683
+    children: []
+    pos: 21
+    length: 750
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: get
+        children: []
+        pos: 778
+        length: 3
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: node_heap
+          children: []
+          pos: 782
+          length: 9
+        pos: 774
+        length: 134
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: for_statement
+          fields:
+            text: |-
+              for dist, node in node_heap:
+                      if node == wanted_node:
+                          return dist
+          children: []
+          pos: 811
+          length: 84
+        - type: return_statement
+          fields:
+            text: return 0
+          children: []
+          pos: 900
+          length: 8
+        pos: 811
+        length: 97
+    children: []
+    pos: 774
+    length: 134
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: insert_or_update
+        children: []
+        pos: 914
+        length: 16
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: node_heap
+          children: []
+          pos: 931
+          length: 9
+        pos: 910
+        length: 264
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: dist, node = dist_node
+          children: []
+          pos: 958
+          length: 22
+        - type: for_statement
+          fields:
+            text: |-
+              for i, tpl in enumerate(node_heap):
+                      a, b = tpl
+                      if b == node:
+                          node_heap[i] = dist_node
+                          return None
+          children: []
+          pos: 985
+          length: 137
+        - type: expression_statement
+          fields:
+            text: heappush(node_heap, dist_node)
+          children: []
+          pos: 1128
+          length: 30
+        - type: return_statement
+          fields:
+            text: return None
+          children: []
+          pos: 1163
+          length: 11
+        pos: 958
+        length: 216
+    children: []
+    pos: 910
+    length: 264
+  pos: 0
+  length: 1175
+after_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: shortest_path_length
+        children: []
+        pos: 25
+        length: 20
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: length_by_edge
+          children: []
+          pos: 46
+          length: 14
+        pos: 21
+        length: 728
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: unvisited_nodes = []
+          children: []
+          pos: 88
+          length: 20
+        - type: expression_statement
+          fields:
+            text: heappush(unvisited_nodes, (0, startnode))
+          children: []
+          pos: 113
+          length: 41
+        - type: expression_statement
+          fields:
+            text: visited_nodes = set()
+          children: []
+          pos: 159
+          length: 21
+        - type: while_statement
+          fields:
+            text: |-
+              while len(unvisited_nodes) > 0:
+                      distance, node = heappop(unvisited_nodes)
+                      if node is goalnode:
+                          return distance
+
+                      visited_nodes.add(node)
+
+                      for nextnode in node.successors:
+                          if nextnode in visited_nodes:
+                              continue
+
+                          insert_or_update(unvisited_nodes,
+                              (min(
+                                  get(unvisited_nodes, nextnode) or float('inf'),
+                                  distance + length_by_edge[node, nextnode]
+                              ),
+                              nextnode)
+                          )
+          children: []
+          pos: 186
+          length: 538
+        - type: return_statement
+          fields:
+            text: return float('inf')
+          children: []
+          pos: 730
+          length: 19
+        pos: 88
+        length: 661
+    children: []
+    pos: 21
+    length: 728
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: get
+        children: []
+        pos: 756
+        length: 3
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: node_heap
+          children: []
+          pos: 760
+          length: 9
+        pos: 752
+        length: 134
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: for_statement
+          fields:
+            text: |-
+              for dist, node in node_heap:
+                      if node == wanted_node:
+                          return dist
+          children: []
+          pos: 789
+          length: 84
+        - type: return_statement
+          fields:
+            text: return 0
+          children: []
+          pos: 878
+          length: 8
+        pos: 789
+        length: 97
+    children: []
+    pos: 752
+    length: 134
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: insert_or_update
+        children: []
+        pos: 892
+        length: 16
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: node_heap
+          children: []
+          pos: 909
+          length: 9
+        pos: 888
+        length: 264
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: dist, node = dist_node
+          children: []
+          pos: 936
+          length: 22
+        - type: for_statement
+          fields:
+            text: |-
+              for i, tpl in enumerate(node_heap):
+                      a, b = tpl
+                      if b == node:
+                          node_heap[i] = dist_node
+                          return None
+          children: []
+          pos: 963
+          length: 137
+        - type: expression_statement
+          fields:
+            text: heappush(node_heap, dist_node)
+          children: []
+          pos: 1106
+          length: 30
+        - type: return_statement
+          fields:
+            text: return None
+          children: []
+          pos: 1141
+          length: 11
+        pos: 936
+        length: 216
+    children: []
+    pos: 888
+    length: 264
+  pos: 0
+  length: 1153
 text_diff: |
   --- before
   +++ after
@@ -70,7 +446,7 @@ tree_diff: |+
                       get(unvisited_nodes, nextnode) + length_by_edge[node, nextnode]
                   ),
                   nextnode)
-              ) [230,790]
+              ) [186,746]
   replace while len(unvisited_nodes) > 0:
           distance, node = heappop(unvisited_nodes)
           if node is goalnode:

@@ -1,0 +1,48 @@
+---
+layout: default
+---
+<h1>Construct usage: {{ page.data_key }}</h1>
+
+<h2>Usages</h2>
+{% for usage in page.data_value %}
+
+  In {{ usage.example }} ({{ usage.version }}): <br>
+  {% if usage.fields != empty %}
+    Fields:
+    <ol>
+      {% for field in usage.fields %}
+        <li>{{ field[0] }}:
+          {% for t in field[1] %}
+            {% assign p = t | find_in_collection: 'constructs' %}
+            {% if p != null %}
+              <a href="{{ p.url | relative_url}}">{{ t }}</a>
+            {% else %}
+              {{ t }} <span class="error">construct not defined</span>
+            {% endif %}
+
+            {% unless forloop.last %}
+              ,
+            {% endunless %}
+          {% endfor %}
+        </li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+
+  {% if usage.children != empty %}
+    Children:
+    <ol>
+      {% for child in usage.children %}
+        <li>
+          {% assign p = child | find_in_collection: 'constructs' %}
+          {% if p != null %}
+            <a href="{{ p.url | relative_url }}">{{ child }}</a>
+          {% else %}
+            {{ child }} <span class="error">construct not defined</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+
+{% endfor %}

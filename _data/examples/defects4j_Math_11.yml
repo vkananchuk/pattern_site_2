@@ -1,5 +1,955 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MultivariateNormalDistribution
+        children: []
+        pos: 1832
+        length: 30
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final double[] means;
+          children: []
+          pos: 1946
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix covarianceMatrix;
+          children: []
+          pos: 2010
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix covarianceMatrixInverse;
+          children: []
+          pos: 2113
+          length: 49
+        - type: field_declaration
+          fields:
+            text: private final double covarianceMatrixDeterminant;
+          children: []
+          pos: 2220
+          length: 49
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix samplingMatrix;
+          children: []
+          pos: 2324
+          length: 40
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultivariateNormalDistribution(final double[] means,
+                                                        final double[][] covariances)
+                      throws SingularMatrixException,
+                             DimensionMismatchException,
+                             NonPositiveDefiniteMatrixException {
+                      this(new Well19937c(), means, covariances);
+                  }
+          children: []
+          pos: 3109
+          length: 324
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultivariateNormalDistribution(RandomGenerator rng,
+                                                        final double[] means,
+                                                        final double[][] covariances)
+                          throws SingularMatrixException,
+                                 DimensionMismatchException,
+                                 NonPositiveDefiniteMatrixException {
+                      super(rng, means.length);
+
+                      final int dim = means.length;
+
+                      if (covariances.length != dim) {
+                          throw new DimensionMismatchException(covariances.length, dim);
+                      }
+
+                      for (int i = 0; i < dim; i++) {
+                          if (dim != covariances[i].length) {
+                              throw new DimensionMismatchException(covariances[i].length, dim);
+                          }
+                      }
+
+                      this.means = MathArrays.copyOf(means);
+
+                      covarianceMatrix = new Array2DRowRealMatrix(covariances);
+
+                      // Covariance matrix eigen decomposition.
+                      final EigenDecomposition covMatDec = new EigenDecomposition(covarianceMatrix);
+
+                      // Compute and store the inverse.
+                      covarianceMatrixInverse = covMatDec.getSolver().getInverse();
+                      // Compute and store the determinant.
+                      covarianceMatrixDeterminant = covMatDec.getDeterminant();
+
+                      // Eigenvalues of the covariance matrix.
+                      final double[] covMatEigenvalues = covMatDec.getRealEigenvalues();
+
+                      for (int i = 0; i < covMatEigenvalues.length; i++) {
+                          if (covMatEigenvalues[i] < 0) {
+                              throw new NonPositiveDefiniteMatrixException(covMatEigenvalues[i], i, 0);
+                          }
+                      }
+
+                      // Matrix where each column is an eigenvector of the covariance matrix.
+                      final Array2DRowRealMatrix covMatEigenvectors = new Array2DRowRealMatrix(dim, dim);
+                      for (int v = 0; v < dim; v++) {
+                          final double[] evec = covMatDec.getEigenvector(v).toArray();
+                          covMatEigenvectors.setColumn(v, evec);
+                      }
+
+                      final RealMatrix tmpMatrix = covMatEigenvectors.transpose();
+
+                      // Scale each eigenvector by the square root of its eigenvalue.
+                      for (int row = 0; row < dim; row++) {
+                          final double factor = FastMath.sqrt(covMatEigenvalues[row]);
+                          for (int col = 0; col < dim; col++) {
+                              tmpMatrix.multiplyEntry(row, col, factor);
+                          }
+                      }
+
+                      samplingMatrix = covMatEigenvectors.multiply(tmpMatrix);
+                  }
+          children: []
+          pos: 4221
+          length: 2373
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMeans
+              children: []
+              pos: 6700
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6684
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return MathArrays.copyOf(means);
+                children: []
+                pos: 6721
+                length: 32
+              pos: 6711
+              length: 48
+          children: []
+          pos: 6684
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCovariances
+              children: []
+              pos: 6879
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6861
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return covarianceMatrix.copy();
+                children: []
+                pos: 6906
+                length: 31
+              pos: 6896
+              length: 47
+          children: []
+          pos: 6861
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: density
+              children: []
+              pos: 6988
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double[] vals
+                children: []
+                pos: 6996
+                length: 19
+              pos: 6974
+              length: 393
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int dim = getDimension();
+                children: []
+                pos: 7061
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: vals.length
+                            children: []
+                            pos: 7105
+                            length: 11
+                          right:
+                            type: identifier
+                            fields:
+                              text: dim
+                            children: []
+                            pos: 7120
+                            length: 3
+                        children: []
+                        pos: 7105
+                        length: 18
+                    children: []
+                    pos: 7104
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new DimensionMismatchException(vals.length, dim);
+                    children: []
+                    pos: 7139
+                    length: 55
+                  pos: 7125
+                  length: 79
+                pos: 7101
+                length: 103
+              - type: return_statement
+                fields:
+                  text: |-
+                    return FastMath.pow(2 * FastMath.PI, -0.5 * dim) *
+                                FastMath.pow(covarianceMatrixDeterminant, -0.5) *
+                                getExponentTerm(vals);
+                children: []
+                pos: 7214
+                length: 147
+              pos: 7051
+              length: 316
+          children: []
+          pos: 6974
+          length: 393
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getStandardDeviations
+              children: []
+              pos: 7545
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7529
+              length: 305
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int dim = getDimension();
+                children: []
+                pos: 7579
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] std = new double[dim];
+                children: []
+                pos: 7619
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: final double[][] s = covarianceMatrix.getData();
+                children: []
+                pos: 7665
+                length: 48
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < dim; i++) {
+                                std[i] = FastMath.sqrt(s[i][i]);
+                            }
+                children: []
+                pos: 7722
+                length: 86
+              - type: return_statement
+                fields:
+                  text: return std;
+                children: []
+                pos: 7817
+                length: 11
+              pos: 7569
+              length: 265
+          children: []
+          pos: 7529
+          length: 305
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sample
+              children: []
+              pos: 7881
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7865
+              length: 400
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int dim = getDimension();
+                children: []
+                pos: 7900
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] normalVals = new double[dim];
+                children: []
+                pos: 7940
+                length: 44
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < dim; i++) {
+                                normalVals[i] = random.nextGaussian();
+                            }
+                children: []
+                pos: 7994
+                length: 92
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] vals = samplingMatrix.operate(normalVals);
+                children: []
+                pos: 8096
+                length: 57
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < dim; i++) {
+                                vals[i] += means[i];
+                            }
+                children: []
+                pos: 8163
+                length: 74
+              - type: return_statement
+                fields:
+                  text: return vals;
+                children: []
+                pos: 8247
+                length: 12
+              pos: 7890
+              length: 375
+          children: []
+          pos: 7865
+          length: 400
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExponentTerm
+              children: []
+              pos: 8516
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double[] values
+                children: []
+                pos: 8532
+                length: 21
+              pos: 8501
+              length: 506
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] centered = new double[values.length];
+                children: []
+                pos: 8565
+                length: 52
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < centered.length; i++) {
+                                centered[i] = values[i] - getMeans()[i];
+                            }
+                children: []
+                pos: 8626
+                length: 106
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] preMultiplied = covarianceMatrixInverse.preMultiply(centered);
+                children: []
+                pos: 8741
+                length: 77
+              - type: local_variable_declaration
+                fields:
+                  text: double sum = 0;
+                children: []
+                pos: 8827
+                length: 15
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < preMultiplied.length; i++) {
+                                sum += preMultiplied[i] * centered[i];
+                            }
+                children: []
+                pos: 8851
+                length: 109
+              - type: return_statement
+                fields:
+                  text: return FastMath.exp(-0.5 * sum);
+                children: []
+                pos: 8969
+                length: 32
+              pos: 8555
+              length: 452
+          children: []
+          pos: 8501
+          length: 506
+        pos: 1819
+        length: 7190
+    children: []
+    pos: 1819
+    length: 7190
+  pos: 0
+  length: 9010
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MultivariateNormalDistribution
+        children: []
+        pos: 1832
+        length: 30
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final double[] means;
+          children: []
+          pos: 1946
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix covarianceMatrix;
+          children: []
+          pos: 2010
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix covarianceMatrixInverse;
+          children: []
+          pos: 2113
+          length: 49
+        - type: field_declaration
+          fields:
+            text: private final double covarianceMatrixDeterminant;
+          children: []
+          pos: 2220
+          length: 49
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix samplingMatrix;
+          children: []
+          pos: 2324
+          length: 40
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultivariateNormalDistribution(final double[] means,
+                                                        final double[][] covariances)
+                      throws SingularMatrixException,
+                             DimensionMismatchException,
+                             NonPositiveDefiniteMatrixException {
+                      this(new Well19937c(), means, covariances);
+                  }
+          children: []
+          pos: 3109
+          length: 324
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultivariateNormalDistribution(RandomGenerator rng,
+                                                        final double[] means,
+                                                        final double[][] covariances)
+                          throws SingularMatrixException,
+                                 DimensionMismatchException,
+                                 NonPositiveDefiniteMatrixException {
+                      super(rng, means.length);
+
+                      final int dim = means.length;
+
+                      if (covariances.length != dim) {
+                          throw new DimensionMismatchException(covariances.length, dim);
+                      }
+
+                      for (int i = 0; i < dim; i++) {
+                          if (dim != covariances[i].length) {
+                              throw new DimensionMismatchException(covariances[i].length, dim);
+                          }
+                      }
+
+                      this.means = MathArrays.copyOf(means);
+
+                      covarianceMatrix = new Array2DRowRealMatrix(covariances);
+
+                      // Covariance matrix eigen decomposition.
+                      final EigenDecomposition covMatDec = new EigenDecomposition(covarianceMatrix);
+
+                      // Compute and store the inverse.
+                      covarianceMatrixInverse = covMatDec.getSolver().getInverse();
+                      // Compute and store the determinant.
+                      covarianceMatrixDeterminant = covMatDec.getDeterminant();
+
+                      // Eigenvalues of the covariance matrix.
+                      final double[] covMatEigenvalues = covMatDec.getRealEigenvalues();
+
+                      for (int i = 0; i < covMatEigenvalues.length; i++) {
+                          if (covMatEigenvalues[i] < 0) {
+                              throw new NonPositiveDefiniteMatrixException(covMatEigenvalues[i], i, 0);
+                          }
+                      }
+
+                      // Matrix where each column is an eigenvector of the covariance matrix.
+                      final Array2DRowRealMatrix covMatEigenvectors = new Array2DRowRealMatrix(dim, dim);
+                      for (int v = 0; v < dim; v++) {
+                          final double[] evec = covMatDec.getEigenvector(v).toArray();
+                          covMatEigenvectors.setColumn(v, evec);
+                      }
+
+                      final RealMatrix tmpMatrix = covMatEigenvectors.transpose();
+
+                      // Scale each eigenvector by the square root of its eigenvalue.
+                      for (int row = 0; row < dim; row++) {
+                          final double factor = FastMath.sqrt(covMatEigenvalues[row]);
+                          for (int col = 0; col < dim; col++) {
+                              tmpMatrix.multiplyEntry(row, col, factor);
+                          }
+                      }
+
+                      samplingMatrix = covMatEigenvectors.multiply(tmpMatrix);
+                  }
+          children: []
+          pos: 4221
+          length: 2373
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMeans
+              children: []
+              pos: 6700
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6684
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return MathArrays.copyOf(means);
+                children: []
+                pos: 6721
+                length: 32
+              pos: 6711
+              length: 48
+          children: []
+          pos: 6684
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCovariances
+              children: []
+              pos: 6879
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6861
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return covarianceMatrix.copy();
+                children: []
+                pos: 6906
+                length: 31
+              pos: 6896
+              length: 47
+          children: []
+          pos: 6861
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: density
+              children: []
+              pos: 6988
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double[] vals
+                children: []
+                pos: 6996
+                length: 19
+              pos: 6974
+              length: 391
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int dim = getDimension();
+                children: []
+                pos: 7061
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: vals.length
+                            children: []
+                            pos: 7105
+                            length: 11
+                          right:
+                            type: identifier
+                            fields:
+                              text: dim
+                            children: []
+                            pos: 7120
+                            length: 3
+                        children: []
+                        pos: 7105
+                        length: 18
+                    children: []
+                    pos: 7104
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new DimensionMismatchException(vals.length, dim);
+                    children: []
+                    pos: 7139
+                    length: 55
+                  pos: 7125
+                  length: 79
+                pos: 7101
+                length: 103
+              - type: return_statement
+                fields:
+                  text: |-
+                    return FastMath.pow(2 * FastMath.PI, -dim / 2) *
+                                FastMath.pow(covarianceMatrixDeterminant, -0.5) *
+                                getExponentTerm(vals);
+                children: []
+                pos: 7214
+                length: 145
+              pos: 7051
+              length: 314
+          children: []
+          pos: 6974
+          length: 391
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getStandardDeviations
+              children: []
+              pos: 7543
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7527
+              length: 305
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int dim = getDimension();
+                children: []
+                pos: 7577
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] std = new double[dim];
+                children: []
+                pos: 7617
+                length: 37
+              - type: local_variable_declaration
+                fields:
+                  text: final double[][] s = covarianceMatrix.getData();
+                children: []
+                pos: 7663
+                length: 48
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < dim; i++) {
+                                std[i] = FastMath.sqrt(s[i][i]);
+                            }
+                children: []
+                pos: 7720
+                length: 86
+              - type: return_statement
+                fields:
+                  text: return std;
+                children: []
+                pos: 7815
+                length: 11
+              pos: 7567
+              length: 265
+          children: []
+          pos: 7527
+          length: 305
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sample
+              children: []
+              pos: 7879
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7863
+              length: 400
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int dim = getDimension();
+                children: []
+                pos: 7898
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] normalVals = new double[dim];
+                children: []
+                pos: 7938
+                length: 44
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < dim; i++) {
+                                normalVals[i] = random.nextGaussian();
+                            }
+                children: []
+                pos: 7992
+                length: 92
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] vals = samplingMatrix.operate(normalVals);
+                children: []
+                pos: 8094
+                length: 57
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < dim; i++) {
+                                vals[i] += means[i];
+                            }
+                children: []
+                pos: 8161
+                length: 74
+              - type: return_statement
+                fields:
+                  text: return vals;
+                children: []
+                pos: 8245
+                length: 12
+              pos: 7888
+              length: 375
+          children: []
+          pos: 7863
+          length: 400
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExponentTerm
+              children: []
+              pos: 8514
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double[] values
+                children: []
+                pos: 8530
+                length: 21
+              pos: 8499
+              length: 506
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] centered = new double[values.length];
+                children: []
+                pos: 8563
+                length: 52
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < centered.length; i++) {
+                                centered[i] = values[i] - getMeans()[i];
+                            }
+                children: []
+                pos: 8624
+                length: 106
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] preMultiplied = covarianceMatrixInverse.preMultiply(centered);
+                children: []
+                pos: 8739
+                length: 77
+              - type: local_variable_declaration
+                fields:
+                  text: double sum = 0;
+                children: []
+                pos: 8825
+                length: 15
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < preMultiplied.length; i++) {
+                                sum += preMultiplied[i] * centered[i];
+                            }
+                children: []
+                pos: 8849
+                length: 109
+              - type: return_statement
+                fields:
+                  text: return FastMath.exp(-0.5 * sum);
+                children: []
+                pos: 8967
+                length: 32
+              pos: 8553
+              length: 452
+          children: []
+          pos: 8499
+          length: 506
+        pos: 1819
+        length: 7188
+    children: []
+    pos: 1819
+    length: 7188
+  pos: 0
+  length: 9008
 text_diff: "--- before\n+++ after\n@@ -180,7 +180,7 @@\n             throw new DimensionMismatchException(vals.length,
   dim);\n         }\n \n-        return FastMath.pow(2 * FastMath.PI, -0.5 * dim)
   *\n+        return FastMath.pow(2 * FastMath.PI, -dim / 2) *\n             FastMath.pow(covarianceMatrixDeterminant,

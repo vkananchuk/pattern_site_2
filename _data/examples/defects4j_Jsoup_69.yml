@@ -1,5 +1,519 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: FormElement
+        children: []
+        pos: 441
+        length: 11
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final Elements elements = new Elements();
+          children: []
+          pos: 475
+          length: 49
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public FormElement(Tag tag, String baseUri, Attributes attributes) {
+                      super(tag, baseUri, attributes);
+                  }
+          children: []
+          pos: 726
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: elements
+              children: []
+              pos: 1010
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 994
+              length: 59
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return elements;
+                children: []
+                pos: 1031
+                length: 16
+              pos: 1021
+              length: 32
+          children: []
+          pos: 994
+          length: 59
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addElement
+              children: []
+              pos: 1231
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Element element
+                children: []
+                pos: 1242
+                length: 15
+              pos: 1212
+              length: 106
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: elements.add(element);
+                children: []
+                pos: 1269
+                length: 22
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 1300
+                length: 12
+              pos: 1259
+              length: 59
+          children: []
+          pos: 1212
+          length: 106
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeChild
+              children: []
+              pos: 1353
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node out
+                children: []
+                pos: 1365
+                length: 8
+              pos: 1324
+              length: 120
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: super.removeChild(out);
+                children: []
+                pos: 1385
+                length: 23
+              - type: expression_statement
+                fields:
+                  text: elements.remove(out);
+                children: []
+                pos: 1417
+                length: 21
+              pos: 1375
+              length: 69
+          children: []
+          pos: 1324
+          length: 120
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: submit
+              children: []
+              pos: 1919
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1901
+              length: 486
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: 'String action = hasAttr("action") ? absUrl("action") : baseUri();'
+                children: []
+                pos: 1938
+                length: 65
+              - type: expression_statement
+                fields:
+                  text: Validate.notEmpty(action, "Could not determine a form action
+                    URL for submit. Ensure you set a base URI when parsing.");
+                children: []
+                pos: 2012
+                length: 119
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    Connection.Method method = attr("method").toUpperCase().equals("POST") ?
+                                    Connection.Method.POST : Connection.Method.GET;
+                children: []
+                pos: 2140
+                length: 136
+              - type: return_statement
+                fields:
+                  text: |-
+                    return Jsoup.connect(action)
+                                    .data(formData())
+                                    .method(method);
+                children: []
+                pos: 2286
+                length: 95
+              pos: 1928
+              length: 459
+          children: []
+          pos: 1901
+          length: 486
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formData
+              children: []
+              pos: 2640
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2609
+              length: 1640
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<Connection.KeyVal> data = new ArrayList<>();
+                children: []
+                pos: 2661
+                length: 54
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Element el: elements) {
+                                if (!el.tag().isFormSubmittable()) continue; // contents are form listable, superset of submitable
+                                if (el.hasAttr("disabled")) continue; // skip disabled form inputs
+                                String name = el.attr("name");
+                                if (name.length() == 0) continue;
+                                String type = el.attr("type");
+
+                                if ("select".equals(el.tagName())) {
+                                    Elements options = el.select("option[selected]");
+                                    boolean set = false;
+                                    for (Element option: options) {
+                                        data.add(HttpConnection.KeyVal.create(name, option.val()));
+                                        set = true;
+                                    }
+                                    if (!set) {
+                                        Element option = el.select("option").first();
+                                        if (option != null)
+                                            data.add(HttpConnection.KeyVal.create(name, option.val()));
+                                    }
+                                } else if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                                    // only add checkbox or radio if they have the checked attribute
+                                    if (el.hasAttr("checked")) {
+                                        final String val = el.val().length() >  0 ? el.val() : "on";
+                                        data.add(HttpConnection.KeyVal.create(name, val));
+                                    }
+                                } else {
+                                    data.add(HttpConnection.KeyVal.create(name, el.val()));
+                                }
+                            }
+                children: []
+                pos: 2798
+                length: 1424
+              - type: return_statement
+                fields:
+                  text: return data;
+                children: []
+                pos: 4231
+                length: 12
+              pos: 2651
+              length: 1598
+          children: []
+          pos: 2609
+          length: 1640
+        pos: 428
+        length: 3823
+    children: []
+    pos: 428
+    length: 3823
+  pos: 0
+  length: 4252
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: FormElement
+        children: []
+        pos: 441
+        length: 11
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final Elements elements = new Elements();
+          children: []
+          pos: 475
+          length: 49
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public FormElement(Tag tag, String baseUri, Attributes attributes) {
+                      super(tag, baseUri, attributes);
+                  }
+          children: []
+          pos: 726
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: elements
+              children: []
+              pos: 1010
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 994
+              length: 59
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return elements;
+                children: []
+                pos: 1031
+                length: 16
+              pos: 1021
+              length: 32
+          children: []
+          pos: 994
+          length: 59
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addElement
+              children: []
+              pos: 1231
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Element element
+                children: []
+                pos: 1242
+                length: 15
+              pos: 1212
+              length: 106
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: elements.add(element);
+                children: []
+                pos: 1269
+                length: 22
+              - type: return_statement
+                fields:
+                  text: return this;
+                children: []
+                pos: 1300
+                length: 12
+              pos: 1259
+              length: 59
+          children: []
+          pos: 1212
+          length: 106
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: submit
+              children: []
+              pos: 1794
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1776
+              length: 486
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: 'String action = hasAttr("action") ? absUrl("action") : baseUri();'
+                children: []
+                pos: 1813
+                length: 65
+              - type: expression_statement
+                fields:
+                  text: Validate.notEmpty(action, "Could not determine a form action
+                    URL for submit. Ensure you set a base URI when parsing.");
+                children: []
+                pos: 1887
+                length: 119
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    Connection.Method method = attr("method").toUpperCase().equals("POST") ?
+                                    Connection.Method.POST : Connection.Method.GET;
+                children: []
+                pos: 2015
+                length: 136
+              - type: return_statement
+                fields:
+                  text: |-
+                    return Jsoup.connect(action)
+                                    .data(formData())
+                                    .method(method);
+                children: []
+                pos: 2161
+                length: 95
+              pos: 1803
+              length: 459
+          children: []
+          pos: 1776
+          length: 486
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formData
+              children: []
+              pos: 2515
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2484
+              length: 1640
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ArrayList<Connection.KeyVal> data = new ArrayList<>();
+                children: []
+                pos: 2536
+                length: 54
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Element el: elements) {
+                                if (!el.tag().isFormSubmittable()) continue; // contents are form listable, superset of submitable
+                                if (el.hasAttr("disabled")) continue; // skip disabled form inputs
+                                String name = el.attr("name");
+                                if (name.length() == 0) continue;
+                                String type = el.attr("type");
+
+                                if ("select".equals(el.tagName())) {
+                                    Elements options = el.select("option[selected]");
+                                    boolean set = false;
+                                    for (Element option: options) {
+                                        data.add(HttpConnection.KeyVal.create(name, option.val()));
+                                        set = true;
+                                    }
+                                    if (!set) {
+                                        Element option = el.select("option").first();
+                                        if (option != null)
+                                            data.add(HttpConnection.KeyVal.create(name, option.val()));
+                                    }
+                                } else if ("checkbox".equalsIgnoreCase(type) || "radio".equalsIgnoreCase(type)) {
+                                    // only add checkbox or radio if they have the checked attribute
+                                    if (el.hasAttr("checked")) {
+                                        final String val = el.val().length() >  0 ? el.val() : "on";
+                                        data.add(HttpConnection.KeyVal.create(name, val));
+                                    }
+                                } else {
+                                    data.add(HttpConnection.KeyVal.create(name, el.val()));
+                                }
+                            }
+                children: []
+                pos: 2673
+                length: 1424
+              - type: return_statement
+                fields:
+                  text: return data;
+                children: []
+                pos: 4106
+                length: 12
+              pos: 2526
+              length: 1598
+          children: []
+          pos: 2484
+          length: 1640
+        pos: 428
+        length: 3698
+    children: []
+    pos: 428
+    length: 3698
+  pos: 0
+  length: 4127
 text_diff: "--- before\n+++ after\n@@ -46,11 +46,6 @@\n         return this;\n     }\n
   \n-    @Override\n-    protected void removeChild(Node out) {\n-        super.removeChild(out);\n-
   \       elements.remove(out);\n-    }\n \n     /**\n      * Prepare to submit this

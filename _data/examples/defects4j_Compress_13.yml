@@ -1,5 +1,4848 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ZipArchiveEntry
+        children: []
+        pos: 2041
+        length: 15
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: public static final int PLATFORM_UNIX = 3;
+          children: []
+          pos: 2134
+          length: 42
+        - type: field_declaration
+          fields:
+            text: public static final int PLATFORM_FAT  = 0;
+          children: []
+          pos: 2181
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private static final int SHORT_MASK = 0xFFFF;
+          children: []
+          pos: 2228
+          length: 45
+        - type: field_declaration
+          fields:
+            text: private static final int SHORT_SHIFT = 16;
+          children: []
+          pos: 2278
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private int method = -1;
+          children: []
+          pos: 2730
+          length: 24
+        - type: field_declaration
+          fields:
+            text: private long size = SIZE_UNKNOWN;
+          children: []
+          pos: 3019
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private int internalAttributes = 0;
+          children: []
+          pos: 3058
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private int platform = PLATFORM_FAT;
+          children: []
+          pos: 3098
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private long externalAttributes = 0;
+          children: []
+          pos: 3139
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private LinkedHashMap<ZipShort, ZipExtraField> extraFields = null;
+          children: []
+          pos: 3180
+          length: 66
+        - type: field_declaration
+          fields:
+            text: private UnparseableExtraFieldData unparseableExtra = null;
+          children: []
+          pos: 3251
+          length: 58
+        - type: field_declaration
+          fields:
+            text: private String name = null;
+          children: []
+          pos: 3314
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private byte[] rawName = null;
+          children: []
+          pos: 3346
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private GeneralPurposeBit gpb = new GeneralPurposeBit();
+          children: []
+          pos: 3381
+          length: 56
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveEntry(String name) {
+                      super(name);
+                      setName(name);
+                  }
+          children: []
+          pos: 3687
+          length: 87
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveEntry(java.util.zip.ZipEntry entry) throws ZipException {
+                      super(entry);
+                      setName(entry.getName());
+                      byte[] extra = entry.getExtra();
+                      if (extra != null) {
+                          setExtraFields(ExtraFieldUtils.parse(extra, true,
+                                                               ExtraFieldUtils
+                                                               .UnparseableExtraField.READ));
+                      } else {
+                          // initializes extra data to an empty byte array
+                          setExtra();
+                      }
+                      setMethod(entry.getMethod());
+                      this.size = entry.getSize();
+                  }
+          children: []
+          pos: 4092
+          length: 600
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveEntry(ZipArchiveEntry entry) throws ZipException {
+                      this((java.util.zip.ZipEntry) entry);
+                      setInternalAttributes(entry.getInternalAttributes());
+                      setExternalAttributes(entry.getExternalAttributes());
+                      setExtraFields(entry.getExtraFields(true));
+                  }
+          children: []
+          pos: 5010
+          length: 295
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected ZipArchiveEntry() {
+                      this("");
+                  }
+          children: []
+          pos: 5327
+          length: 53
+        - type: constructor_declaration
+          fields:
+            text: "public ZipArchiveEntry(File inputFile, String entryName) {\n        this(inputFile.isDirectory()
+              && !entryName.endsWith(\"/\") ? \n             entryName + \"/\" : entryName);\n
+              \       if (inputFile.isFile()){\n            setSize(inputFile.length());\n
+              \       }\n        setTime(inputFile.lastModified());\n        // TODO
+              are there any other fields we can set here?\n    }"
+          children: []
+          pos: 5746
+          length: 362
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clone
+              children: []
+              pos: 6235
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6207
+              length: 287
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ZipArchiveEntry e = (ZipArchiveEntry) super.clone();
+                children: []
+                pos: 6253
+                length: 52
+              - type: expression_statement
+                fields:
+                  text: e.setInternalAttributes(getInternalAttributes());
+                children: []
+                pos: 6315
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: e.setExternalAttributes(getExternalAttributes());
+                children: []
+                pos: 6373
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: e.setExtraFields(getExtraFields(true));
+                children: []
+                pos: 6431
+                length: 39
+              - type: return_statement
+                fields:
+                  text: return e;
+                children: []
+                pos: 6479
+                length: 9
+              pos: 6243
+              length: 251
+          children: []
+          pos: 6207
+          length: 287
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMethod
+              children: []
+              pos: 6747
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6722
+              length: 67
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return method;
+                children: []
+                pos: 6769
+                length: 14
+              pos: 6759
+              length: 30
+          children: []
+          pos: 6722
+          length: 67
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMethod
+              children: []
+              pos: 6983
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int method
+                children: []
+                pos: 6993
+                length: 10
+              pos: 6957
+              length: 247
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: method
+                            children: []
+                            pos: 7019
+                            length: 6
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 7028
+                            length: 1
+                        children: []
+                        pos: 7019
+                        length: 10
+                    children: []
+                    pos: 7018
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new IllegalArgumentException(
+                                            "ZIP compression method can not be negative: " + method);
+                    children: []
+                    pos: 7045
+                    length: 113
+                  pos: 7031
+                  length: 137
+                pos: 7015
+                length: 153
+              - type: expression_statement
+                fields:
+                  text: this.method = method;
+                children: []
+                pos: 7177
+                length: 21
+              pos: 7005
+              length: 199
+          children: []
+          pos: 6957
+          length: 247
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInternalAttributes
+              children: []
+              pos: 7335
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7324
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return internalAttributes;
+                children: []
+                pos: 7369
+                length: 26
+              pos: 7359
+              length: 42
+          children: []
+          pos: 7324
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setInternalAttributes
+              children: []
+              pos: 7523
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int value
+                children: []
+                pos: 7545
+                length: 9
+              pos: 7511
+              length: 88
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: internalAttributes = value;
+                children: []
+                pos: 7566
+                length: 27
+              pos: 7556
+              length: 43
+          children: []
+          pos: 7511
+          length: 88
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExternalAttributes
+              children: []
+              pos: 7724
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7712
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return externalAttributes;
+                children: []
+                pos: 7758
+                length: 26
+              pos: 7748
+              length: 42
+          children: []
+          pos: 7712
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExternalAttributes
+              children: []
+              pos: 7913
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long value
+                children: []
+                pos: 7935
+                length: 10
+              pos: 7901
+              length: 89
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: externalAttributes = value;
+                children: []
+                pos: 7957
+                length: 27
+              pos: 7947
+              length: 43
+          children: []
+          pos: 7901
+          length: 89
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setUnixMode
+              children: []
+              pos: 8162
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int mode
+                children: []
+                pos: 8174
+                length: 8
+              pos: 8150
+              length: 460
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    setExternalAttributes((mode << SHORT_SHIFT)
+                                                  // MS-DOS read-only attribute
+                                                  | ((mode & 0200) == 0 ? 1 : 0)
+                                                  // MS-DOS directory flag
+                                                  | (isDirectory() ? 0x10 : 0));
+                children: []
+                pos: 8248
+                length: 280
+              - type: expression_statement
+                fields:
+                  text: platform = PLATFORM_UNIX;
+                children: []
+                pos: 8579
+                length: 25
+              pos: 8184
+              length: 426
+          children: []
+          pos: 8150
+          length: 460
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUnixMode
+              children: []
+              pos: 8703
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8692
+              length: 154
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return platform != PLATFORM_UNIX ? 0 :
+                                (int) ((getExternalAttributes() >> SHORT_SHIFT) & SHORT_MASK);
+                children: []
+                pos: 8727
+                length: 113
+              pos: 8717
+              length: 129
+          children: []
+          pos: 8692
+          length: 154
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPlatform
+              children: []
+              pos: 9137
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9126
+              length: 57
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return platform;
+                children: []
+                pos: 9161
+                length: 16
+              pos: 9151
+              length: 32
+          children: []
+          pos: 9126
+          length: 57
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPlatform
+              children: []
+              pos: 9330
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int platform
+                children: []
+                pos: 9342
+                length: 12
+              pos: 9315
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.platform = platform;
+                children: []
+                pos: 9366
+                length: 25
+              pos: 9356
+              length: 41
+          children: []
+          pos: 9315
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExtraFields
+              children: []
+              pos: 9549
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField[] fields
+                children: []
+                pos: 9564
+                length: 22
+              pos: 9537
+              length: 450
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: extraFields = new LinkedHashMap<ZipShort, ZipExtraField>();
+                children: []
+                pos: 9598
+                length: 59
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < fields.length; i++) {
+                                if (fields[i] instanceof UnparseableExtraFieldData) {
+                                    unparseableExtra = (UnparseableExtraFieldData) fields[i];
+                                } else {
+                                    extraFields.put(fields[i].getHeaderId(), fields[i]);
+                                }
+                            }
+                children: []
+                pos: 9666
+                length: 295
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 9970
+                length: 11
+              pos: 9588
+              length: 399
+          children: []
+          pos: 9537
+          length: 450
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExtraFields
+              children: []
+              pos: 10146
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10123
+              length: 85
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getExtraFields(false);
+                children: []
+                pos: 10173
+                length: 29
+              pos: 10163
+              length: 45
+          children: []
+          pos: 10123
+          length: 85
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExtraFields
+              children: []
+              pos: 10530
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean includeUnparseable
+                children: []
+                pos: 10545
+                length: 26
+              pos: 10507
+              length: 552
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 10587
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10602
+                            length: 4
+                        children: []
+                        pos: 10587
+                        length: 19
+                    children: []
+                    pos: 10586
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return !includeUnparseable || unparseableExtra == null
+                                        ? new ZipExtraField[0]
+                                        : new ZipExtraField[] { unparseableExtra };
+                    children: []
+                    pos: 10622
+                    length: 153
+                  pos: 10608
+                  length: 177
+                pos: 10583
+                length: 202
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    List<ZipExtraField> result =
+                                new ArrayList<ZipExtraField>(extraFields.values());
+                children: []
+                pos: 10794
+                length: 92
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: includeUnparseable
+                            children: []
+                            pos: 10899
+                            length: 18
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: unparseableExtra
+                                children: []
+                                pos: 10921
+                                length: 16
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 10941
+                                length: 4
+                            children: []
+                            pos: 10921
+                            length: 24
+                        children: []
+                        pos: 10899
+                        length: 46
+                    children: []
+                    pos: 10898
+                    length: 48
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result.add(unparseableExtra);
+                    children: []
+                    pos: 10961
+                    length: 29
+                  pos: 10947
+                  length: 53
+                pos: 10895
+                length: 105
+              - type: return_statement
+                fields:
+                  text: return result.toArray(new ZipExtraField[0]);
+                children: []
+                pos: 11009
+                length: 44
+              pos: 10573
+              length: 486
+          children: []
+          pos: 10507
+          length: 552
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addExtraField
+              children: []
+              pos: 11330
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField ze
+                children: []
+                pos: 11344
+                length: 16
+              pos: 11318
+              length: 396
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: ze instanceof UnparseableExtraFieldData
+                        children: []
+                        pos: 11376
+                        length: 39
+                    children: []
+                    pos: 11375
+                    length: 41
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: unparseableExtra = (UnparseableExtraFieldData) ze;
+                    children: []
+                    pos: 11431
+                    length: 50
+                  pos: 11417
+                  length: 74
+                pos: 11372
+                length: 316
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 11697
+                length: 11
+              pos: 11362
+              length: 352
+          children: []
+          pos: 11318
+          length: 396
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addAsFirstExtraField
+              children: []
+              pos: 11939
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField ze
+                children: []
+                pos: 11960
+                length: 16
+              pos: 11927
+              length: 552
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: ze instanceof UnparseableExtraFieldData
+                        children: []
+                        pos: 11992
+                        length: 39
+                    children: []
+                    pos: 11991
+                    length: 41
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: unparseableExtra = (UnparseableExtraFieldData) ze;
+                    children: []
+                    pos: 12047
+                    length: 50
+                  pos: 12033
+                  length: 74
+                pos: 11988
+                length: 465
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 12462
+                length: 11
+              pos: 11978
+              length: 501
+          children: []
+          pos: 11927
+          length: 552
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeExtraField
+              children: []
+              pos: 12596
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipShort type
+                children: []
+                pos: 12613
+                length: 13
+              pos: 12584
+              length: 290
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 12642
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12657
+                            length: 4
+                        children: []
+                        pos: 12642
+                        length: 19
+                    children: []
+                    pos: 12641
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new java.util.NoSuchElementException();
+                    children: []
+                    pos: 12677
+                    length: 45
+                  pos: 12663
+                  length: 69
+                pos: 12638
+                length: 94
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: extraFields.remove(type)
+                            children: []
+                            pos: 12745
+                            length: 24
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12773
+                            length: 4
+                        children: []
+                        pos: 12745
+                        length: 32
+                    children: []
+                    pos: 12744
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new java.util.NoSuchElementException();
+                    children: []
+                    pos: 12793
+                    length: 45
+                  pos: 12779
+                  length: 69
+                pos: 12741
+                length: 107
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 12857
+                length: 11
+              pos: 12628
+              length: 246
+          children: []
+          pos: 12584
+          length: 290
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeUnparseableExtraFieldData
+              children: []
+              pos: 13002
+              length: 31
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12990
+              length: 214
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: unparseableExtra
+                            children: []
+                            pos: 13050
+                            length: 16
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13070
+                            length: 4
+                        children: []
+                        pos: 13050
+                        length: 24
+                    children: []
+                    pos: 13049
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new java.util.NoSuchElementException();
+                    children: []
+                    pos: 13090
+                    length: 45
+                  pos: 13076
+                  length: 69
+                pos: 13046
+                length: 99
+              - type: expression_statement
+                fields:
+                  text: unparseableExtra = null;
+                children: []
+                pos: 13154
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 13187
+                length: 11
+              pos: 13036
+              length: 168
+          children: []
+          pos: 12990
+          length: 214
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExtraField
+              children: []
+              pos: 13348
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipShort type
+                children: []
+                pos: 13362
+                length: 13
+              pos: 13327
+              length: 165
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 13391
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13406
+                            length: 4
+                        children: []
+                        pos: 13391
+                        length: 19
+                    children: []
+                    pos: 13390
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return extraFields.get(type);
+                    children: []
+                    pos: 13426
+                    length: 29
+                  pos: 13412
+                  length: 53
+                pos: 13387
+                length: 78
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 13474
+                length: 12
+              pos: 13377
+              length: 115
+          children: []
+          pos: 13327
+          length: 165
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUnparseableExtraFieldData
+              children: []
+              pos: 13716
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13683
+              length: 104
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return unparseableExtra;
+                children: []
+                pos: 13757
+                length: 24
+              pos: 13747
+              length: 40
+          children: []
+          pos: 13683
+          length: 104
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExtra
+              children: []
+              pos: 14155
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] extra
+                children: []
+                pos: 14164
+                length: 12
+              pos: 14129
+              length: 585
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          ZipExtraField[] local =
+                                          ExtraFieldUtils.parse(extra, true,
+                                                                ExtraFieldUtils.UnparseableExtraField.READ);
+                      children: []
+                      pos: 14230
+                      length: 157
+                    - type: expression_statement
+                      fields:
+                        text: mergeExtraFields(local, true);
+                      children: []
+                      pos: 14400
+                      length: 30
+                    pos: 14216
+                    length: 224
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ZipException e) {
+                                      // actually this is not possible as of Commons Compress 1.1
+                                      throw new RuntimeException("Error parsing extra fields for entry: "
+                                                                 + getName() + " - " + e.getMessage(), e);
+                                  }
+                      children: []
+                      pos: 14441
+                      length: 267
+                    pos: 14212
+                    length: 496
+                children: []
+                pos: 14212
+                length: 496
+              pos: 14202
+              length: 512
+          children: []
+          pos: 14129
+          length: 585
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExtra
+              children: []
+              pos: 14981
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14966
+              length: 119
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: super.setExtra(ExtraFieldUtils.mergeLocalFileDataData(getExtraFields(true)));
+                children: []
+                pos: 15002
+                length: 77
+              pos: 14992
+              length: 93
+          children: []
+          pos: 14966
+          length: 119
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setCentralDirectoryExtra
+              children: []
+              pos: 15175
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] b
+                children: []
+                pos: 15200
+                length: 8
+              pos: 15163
+              length: 387
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          ZipExtraField[] central =
+                                          ExtraFieldUtils.parse(b, false,
+                                                                ExtraFieldUtils.UnparseableExtraField.READ);
+                      children: []
+                      pos: 15238
+                      length: 156
+                    - type: expression_statement
+                      fields:
+                        text: mergeExtraFields(central, false);
+                      children: []
+                      pos: 15407
+                      length: 33
+                    pos: 15224
+                    length: 226
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ZipException e) {
+                                      throw new RuntimeException(e.getMessage(), e);
+                                  }
+                      children: []
+                      pos: 15451
+                      length: 93
+                    pos: 15220
+                    length: 324
+                children: []
+                pos: 15220
+                length: 324
+              pos: 15210
+              length: 340
+          children: []
+          pos: 15163
+          length: 387
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLocalFileDataExtra
+              children: []
+              pos: 15688
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15674
+              length: 132
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] extra = getExtra();
+                children: []
+                pos: 15722
+                length: 26
+              - type: return_statement
+                fields:
+                  text: 'return extra != null ? extra : new byte[0];'
+                children: []
+                pos: 15757
+                length: 43
+              pos: 15712
+              length: 94
+          children: []
+          pos: 15674
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCentralDirectoryExtra
+              children: []
+              pos: 15949
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15935
+              length: 128
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return ExtraFieldUtils.mergeCentralDirectoryData(getExtraFields(true));
+                children: []
+                pos: 15986
+                length: 71
+              pos: 15976
+              length: 87
+          children: []
+          pos: 15935
+          length: 128
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getName
+              children: []
+              pos: 16177
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16149
+              length: 99
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return name == null ? super.getName() : name;'
+                children: []
+                pos: 16197
+                length: 45
+              pos: 16187
+              length: 61
+          children: []
+          pos: 16149
+          length: 99
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isDirectory
+              children: []
+              pos: 16381
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16352
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getName().endsWith("/");
+                children: []
+                pos: 16405
+                length: 31
+              pos: 16395
+              length: 47
+          children: []
+          pos: 16352
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setName
+              children: []
+              pos: 16548
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 16556
+                length: 11
+              pos: 16533
+              length: 223
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: and
+                            fields:
+                              left:
+                                type: not_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: name
+                                    children: []
+                                    pos: 16583
+                                    length: 4
+                                  right:
+                                    type: null_literal
+                                    fields: {}
+                                    children: []
+                                    pos: 16591
+                                    length: 4
+                                children: []
+                                pos: 16583
+                                length: 12
+                              right:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: method_invocation
+                                    fields:
+                                      text: getPlatform()
+                                    children: []
+                                    pos: 16599
+                                    length: 13
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: PLATFORM_FAT
+                                    children: []
+                                    pos: 16616
+                                    length: 12
+                                children: []
+                                pos: 16599
+                                length: 29
+                            children: []
+                            pos: 16583
+                            length: 45
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: name.indexOf("/")
+                                children: []
+                                pos: 16644
+                                length: 17
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "-1"
+                                children: []
+                                pos: 16665
+                                length: 2
+                            children: []
+                            pos: 16644
+                            length: 23
+                        children: []
+                        pos: 16583
+                        length: 84
+                    children: []
+                    pos: 16582
+                    length: 86
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: name = name.replace('\\', '/');
+                    children: []
+                    pos: 16683
+                    length: 31
+                  pos: 16669
+                  length: 55
+                pos: 16579
+                length: 145
+              - type: expression_statement
+                fields:
+                  text: this.name = name;
+                children: []
+                pos: 16733
+                length: 17
+              pos: 16569
+              length: 187
+          children: []
+          pos: 16533
+          length: 223
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSize
+              children: []
+              pos: 16887
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16861
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return size;
+                children: []
+                pos: 16907
+                length: 12
+              pos: 16897
+              length: 28
+          children: []
+          pos: 16861
+          length: 64
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setSize
+              children: []
+              pos: 17174
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long size
+                children: []
+                pos: 17182
+                length: 9
+              pos: 17148
+              length: 182
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: size
+                            children: []
+                            pos: 17207
+                            length: 4
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 17214
+                            length: 1
+                        children: []
+                        pos: 17207
+                        length: 8
+                    children: []
+                    pos: 17206
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("invalid entry size");
+                    children: []
+                    pos: 17231
+                    length: 57
+                  pos: 17217
+                  length: 81
+                pos: 17203
+                length: 95
+              - type: expression_statement
+                fields:
+                  text: this.size = size;
+                children: []
+                pos: 17307
+                length: 17
+              pos: 17193
+              length: 137
+          children: []
+          pos: 17148
+          length: 182
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setName
+              children: []
+              pos: 17724
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 17732
+                length: 11
+              pos: 17709
+              length: 114
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setName(name);
+                children: []
+                pos: 17771
+                length: 14
+              - type: expression_statement
+                fields:
+                  text: this.rawName = rawName;
+                children: []
+                pos: 17794
+                length: 23
+              pos: 17761
+              length: 62
+          children: []
+          pos: 17709
+          length: 114
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRawName
+              children: []
+              pos: 18146
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 18132
+              length: 231
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: rawName
+                            children: []
+                            pos: 18173
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18184
+                            length: 4
+                        children: []
+                        pos: 18173
+                        length: 15
+                    children: []
+                    pos: 18172
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: byte[] b = new byte[rawName.length];
+                    children: []
+                    pos: 18204
+                    length: 36
+                  - type: expression_statement
+                    fields:
+                      text: System.arraycopy(rawName, 0, b, 0, rawName.length);
+                    children: []
+                    pos: 18253
+                    length: 51
+                  - type: return_statement
+                    fields:
+                      text: return b;
+                    children: []
+                    pos: 18317
+                    length: 9
+                  pos: 18190
+                  length: 146
+                pos: 18169
+                length: 167
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 18345
+                length: 12
+              pos: 18159
+              length: 204
+          children: []
+          pos: 18132
+          length: 231
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 18518
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 18493
+              length: 387
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getName().hashCode();
+                children: []
+                pos: 18846
+                length: 28
+              pos: 18529
+              length: 351
+          children: []
+          pos: 18493
+          length: 387
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getGeneralPurposeBit
+              children: []
+              pos: 19009
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 18984
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return gpb;
+                children: []
+                pos: 19042
+                length: 11
+              pos: 19032
+              length: 27
+          children: []
+          pos: 18984
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setGeneralPurposeBit
+              children: []
+              pos: 19175
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: GeneralPurposeBit b
+                children: []
+                pos: 19196
+                length: 19
+              pos: 19163
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: gpb = b;
+                children: []
+                pos: 19227
+                length: 8
+              pos: 19217
+              length: 24
+          children: []
+          pos: 19163
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mergeExtraFields
+              children: []
+              pos: 19611
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField[] f
+                children: []
+                pos: 19628
+                length: 17
+              pos: 19598
+              length: 1034
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 19704
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 19719
+                            length: 4
+                        children: []
+                        pos: 19704
+                        length: 19
+                    children: []
+                    pos: 19703
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: setExtraFields(f);
+                    children: []
+                    pos: 19739
+                    length: 18
+                  pos: 19725
+                  length: 42
+                pos: 19700
+                length: 926
+              pos: 19690
+              length: 942
+          children: []
+          pos: 19598
+          length: 1034
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLastModifiedDate
+              children: []
+              pos: 20675
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 20663
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Date(getTime());
+                children: []
+                pos: 20707
+                length: 27
+              pos: 20697
+              length: 43
+          children: []
+          pos: 20663
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 20858
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object obj
+                children: []
+                pos: 20865
+                length: 10
+              pos: 20829
+              length: 1549
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 20891
+                            length: 4
+                          right:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 20899
+                            length: 3
+                        children: []
+                        pos: 20891
+                        length: 11
+                    children: []
+                    pos: 20890
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 20918
+                    length: 12
+                  pos: 20904
+                  length: 36
+                pos: 20887
+                length: 53
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: obj
+                                children: []
+                                pos: 20953
+                                length: 3
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 20960
+                                length: 4
+                            children: []
+                            pos: 20953
+                            length: 11
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: getClass()
+                                children: []
+                                pos: 20968
+                                length: 10
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: obj.getClass()
+                                children: []
+                                pos: 20982
+                                length: 14
+                            children: []
+                            pos: 20968
+                            length: 28
+                        children: []
+                        pos: 20953
+                        length: 43
+                    children: []
+                    pos: 20952
+                    length: 45
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 21012
+                    length: 13
+                  pos: 20998
+                  length: 37
+                pos: 20949
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: ZipArchiveEntry other = (ZipArchiveEntry) obj;
+                children: []
+                pos: 21044
+                length: 46
+              - type: local_variable_declaration
+                fields:
+                  text: String myName = getName();
+                children: []
+                pos: 21099
+                length: 26
+              - type: local_variable_declaration
+                fields:
+                  text: String otherName = other.getName();
+                children: []
+                pos: 21134
+                length: 35
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: myName
+                            children: []
+                            pos: 21182
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 21192
+                            length: 4
+                        children: []
+                        pos: 21182
+                        length: 14
+                    children: []
+                    pos: 21181
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: otherName
+                                children: []
+                                pos: 21216
+                                length: 9
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 21229
+                                length: 4
+                            children: []
+                            pos: 21216
+                            length: 17
+                        children: []
+                        pos: 21215
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return false;
+                        children: []
+                        pos: 21253
+                        length: 13
+                      pos: 21235
+                      length: 45
+                    pos: 21212
+                    length: 68
+                  pos: 21198
+                  length: 92
+                pos: 21178
+                length: 186
+              - type: local_variable_declaration
+                fields:
+                  text: String myComment = getComment();
+                children: []
+                pos: 21373
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: String otherComment = other.getComment();
+                children: []
+                pos: 21414
+                length: 41
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: myComment
+                            children: []
+                            pos: 21468
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 21481
+                            length: 4
+                        children: []
+                        pos: 21468
+                        length: 17
+                    children: []
+                    pos: 21467
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: otherComment
+                                children: []
+                                pos: 21505
+                                length: 12
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 21521
+                                length: 4
+                            children: []
+                            pos: 21505
+                            length: 20
+                        children: []
+                        pos: 21504
+                        length: 22
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return false;
+                        children: []
+                        pos: 21545
+                        length: 13
+                      pos: 21527
+                      length: 45
+                    pos: 21501
+                    length: 71
+                  pos: 21487
+                  length: 95
+                pos: 21464
+                length: 198
+              - type: return_statement
+                fields:
+                  text: |-
+                    return getTime() == other.getTime()
+                                && getInternalAttributes() == other.getInternalAttributes()
+                                && getPlatform() == other.getPlatform()
+                                && getExternalAttributes() == other.getExternalAttributes()
+                                && getMethod() == other.getMethod()
+                                && getSize() == other.getSize()
+                                && getCrc() == other.getCrc()
+                                && getCompressedSize() == other.getCompressedSize()
+                                && Arrays.equals(getCentralDirectoryExtra(),
+                                                 other.getCentralDirectoryExtra())
+                                && Arrays.equals(getLocalFileDataExtra(),
+                                                 other.getLocalFileDataExtra())
+                                && gpb.equals(other.gpb);
+                children: []
+                pos: 21671
+                length: 701
+              pos: 20877
+              length: 1501
+          children: []
+          pos: 20829
+          length: 1549
+        pos: 2028
+        length: 20352
+    children: []
+    pos: 2028
+    length: 20352
+  pos: 0
+  length: 22381
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ZipArchiveEntry
+        children: []
+        pos: 2041
+        length: 15
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: public static final int PLATFORM_UNIX = 3;
+          children: []
+          pos: 2134
+          length: 42
+        - type: field_declaration
+          fields:
+            text: public static final int PLATFORM_FAT  = 0;
+          children: []
+          pos: 2181
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private static final int SHORT_MASK = 0xFFFF;
+          children: []
+          pos: 2228
+          length: 45
+        - type: field_declaration
+          fields:
+            text: private static final int SHORT_SHIFT = 16;
+          children: []
+          pos: 2278
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private int method = -1;
+          children: []
+          pos: 2730
+          length: 24
+        - type: field_declaration
+          fields:
+            text: private long size = SIZE_UNKNOWN;
+          children: []
+          pos: 3019
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private int internalAttributes = 0;
+          children: []
+          pos: 3058
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private int platform = PLATFORM_FAT;
+          children: []
+          pos: 3098
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private long externalAttributes = 0;
+          children: []
+          pos: 3139
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private LinkedHashMap<ZipShort, ZipExtraField> extraFields = null;
+          children: []
+          pos: 3180
+          length: 66
+        - type: field_declaration
+          fields:
+            text: private UnparseableExtraFieldData unparseableExtra = null;
+          children: []
+          pos: 3251
+          length: 58
+        - type: field_declaration
+          fields:
+            text: private String name = null;
+          children: []
+          pos: 3314
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private byte[] rawName = null;
+          children: []
+          pos: 3346
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private GeneralPurposeBit gpb = new GeneralPurposeBit();
+          children: []
+          pos: 3381
+          length: 56
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveEntry(String name) {
+                      super(name);
+                      setName(name);
+                  }
+          children: []
+          pos: 3687
+          length: 87
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveEntry(java.util.zip.ZipEntry entry) throws ZipException {
+                      super(entry);
+                      setName(entry.getName());
+                      byte[] extra = entry.getExtra();
+                      if (extra != null) {
+                          setExtraFields(ExtraFieldUtils.parse(extra, true,
+                                                               ExtraFieldUtils
+                                                               .UnparseableExtraField.READ));
+                      } else {
+                          // initializes extra data to an empty byte array
+                          setExtra();
+                      }
+                      setMethod(entry.getMethod());
+                      this.size = entry.getSize();
+                  }
+          children: []
+          pos: 4092
+          length: 600
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveEntry(ZipArchiveEntry entry) throws ZipException {
+                      this((java.util.zip.ZipEntry) entry);
+                      setInternalAttributes(entry.getInternalAttributes());
+                      setExternalAttributes(entry.getExternalAttributes());
+                      setExtraFields(entry.getExtraFields(true));
+                  }
+          children: []
+          pos: 5010
+          length: 295
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected ZipArchiveEntry() {
+                      this("");
+                  }
+          children: []
+          pos: 5327
+          length: 53
+        - type: constructor_declaration
+          fields:
+            text: "public ZipArchiveEntry(File inputFile, String entryName) {\n        this(inputFile.isDirectory()
+              && !entryName.endsWith(\"/\") ? \n             entryName + \"/\" : entryName);\n
+              \       if (inputFile.isFile()){\n            setSize(inputFile.length());\n
+              \       }\n        setTime(inputFile.lastModified());\n        // TODO
+              are there any other fields we can set here?\n    }"
+          children: []
+          pos: 5746
+          length: 362
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clone
+              children: []
+              pos: 6235
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6207
+              length: 287
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ZipArchiveEntry e = (ZipArchiveEntry) super.clone();
+                children: []
+                pos: 6253
+                length: 52
+              - type: expression_statement
+                fields:
+                  text: e.setInternalAttributes(getInternalAttributes());
+                children: []
+                pos: 6315
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: e.setExternalAttributes(getExternalAttributes());
+                children: []
+                pos: 6373
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: e.setExtraFields(getExtraFields(true));
+                children: []
+                pos: 6431
+                length: 39
+              - type: return_statement
+                fields:
+                  text: return e;
+                children: []
+                pos: 6479
+                length: 9
+              pos: 6243
+              length: 251
+          children: []
+          pos: 6207
+          length: 287
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMethod
+              children: []
+              pos: 6747
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6722
+              length: 67
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return method;
+                children: []
+                pos: 6769
+                length: 14
+              pos: 6759
+              length: 30
+          children: []
+          pos: 6722
+          length: 67
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMethod
+              children: []
+              pos: 6983
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int method
+                children: []
+                pos: 6993
+                length: 10
+              pos: 6957
+              length: 247
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: method
+                            children: []
+                            pos: 7019
+                            length: 6
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 7028
+                            length: 1
+                        children: []
+                        pos: 7019
+                        length: 10
+                    children: []
+                    pos: 7018
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new IllegalArgumentException(
+                                            "ZIP compression method can not be negative: " + method);
+                    children: []
+                    pos: 7045
+                    length: 113
+                  pos: 7031
+                  length: 137
+                pos: 7015
+                length: 153
+              - type: expression_statement
+                fields:
+                  text: this.method = method;
+                children: []
+                pos: 7177
+                length: 21
+              pos: 7005
+              length: 199
+          children: []
+          pos: 6957
+          length: 247
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInternalAttributes
+              children: []
+              pos: 7335
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7324
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return internalAttributes;
+                children: []
+                pos: 7369
+                length: 26
+              pos: 7359
+              length: 42
+          children: []
+          pos: 7324
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setInternalAttributes
+              children: []
+              pos: 7523
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int value
+                children: []
+                pos: 7545
+                length: 9
+              pos: 7511
+              length: 88
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: internalAttributes = value;
+                children: []
+                pos: 7566
+                length: 27
+              pos: 7556
+              length: 43
+          children: []
+          pos: 7511
+          length: 88
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExternalAttributes
+              children: []
+              pos: 7724
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7712
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return externalAttributes;
+                children: []
+                pos: 7758
+                length: 26
+              pos: 7748
+              length: 42
+          children: []
+          pos: 7712
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExternalAttributes
+              children: []
+              pos: 7913
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long value
+                children: []
+                pos: 7935
+                length: 10
+              pos: 7901
+              length: 89
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: externalAttributes = value;
+                children: []
+                pos: 7957
+                length: 27
+              pos: 7947
+              length: 43
+          children: []
+          pos: 7901
+          length: 89
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setUnixMode
+              children: []
+              pos: 8162
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int mode
+                children: []
+                pos: 8174
+                length: 8
+              pos: 8150
+              length: 460
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    setExternalAttributes((mode << SHORT_SHIFT)
+                                                  // MS-DOS read-only attribute
+                                                  | ((mode & 0200) == 0 ? 1 : 0)
+                                                  // MS-DOS directory flag
+                                                  | (isDirectory() ? 0x10 : 0));
+                children: []
+                pos: 8248
+                length: 280
+              - type: expression_statement
+                fields:
+                  text: platform = PLATFORM_UNIX;
+                children: []
+                pos: 8579
+                length: 25
+              pos: 8184
+              length: 426
+          children: []
+          pos: 8150
+          length: 460
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUnixMode
+              children: []
+              pos: 8703
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8692
+              length: 154
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return platform != PLATFORM_UNIX ? 0 :
+                                (int) ((getExternalAttributes() >> SHORT_SHIFT) & SHORT_MASK);
+                children: []
+                pos: 8727
+                length: 113
+              pos: 8717
+              length: 129
+          children: []
+          pos: 8692
+          length: 154
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPlatform
+              children: []
+              pos: 9137
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9126
+              length: 57
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return platform;
+                children: []
+                pos: 9161
+                length: 16
+              pos: 9151
+              length: 32
+          children: []
+          pos: 9126
+          length: 57
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPlatform
+              children: []
+              pos: 9330
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int platform
+                children: []
+                pos: 9342
+                length: 12
+              pos: 9315
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.platform = platform;
+                children: []
+                pos: 9366
+                length: 25
+              pos: 9356
+              length: 41
+          children: []
+          pos: 9315
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExtraFields
+              children: []
+              pos: 9549
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField[] fields
+                children: []
+                pos: 9564
+                length: 22
+              pos: 9537
+              length: 450
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: extraFields = new LinkedHashMap<ZipShort, ZipExtraField>();
+                children: []
+                pos: 9598
+                length: 59
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < fields.length; i++) {
+                                if (fields[i] instanceof UnparseableExtraFieldData) {
+                                    unparseableExtra = (UnparseableExtraFieldData) fields[i];
+                                } else {
+                                    extraFields.put(fields[i].getHeaderId(), fields[i]);
+                                }
+                            }
+                children: []
+                pos: 9666
+                length: 295
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 9970
+                length: 11
+              pos: 9588
+              length: 399
+          children: []
+          pos: 9537
+          length: 450
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExtraFields
+              children: []
+              pos: 10146
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10123
+              length: 85
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getExtraFields(false);
+                children: []
+                pos: 10173
+                length: 29
+              pos: 10163
+              length: 45
+          children: []
+          pos: 10123
+          length: 85
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExtraFields
+              children: []
+              pos: 10530
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: boolean includeUnparseable
+                children: []
+                pos: 10545
+                length: 26
+              pos: 10507
+              length: 552
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 10587
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10602
+                            length: 4
+                        children: []
+                        pos: 10587
+                        length: 19
+                    children: []
+                    pos: 10586
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return !includeUnparseable || unparseableExtra == null
+                                        ? new ZipExtraField[0]
+                                        : new ZipExtraField[] { unparseableExtra };
+                    children: []
+                    pos: 10622
+                    length: 153
+                  pos: 10608
+                  length: 177
+                pos: 10583
+                length: 202
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    List<ZipExtraField> result =
+                                new ArrayList<ZipExtraField>(extraFields.values());
+                children: []
+                pos: 10794
+                length: 92
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: includeUnparseable
+                            children: []
+                            pos: 10899
+                            length: 18
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: unparseableExtra
+                                children: []
+                                pos: 10921
+                                length: 16
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 10941
+                                length: 4
+                            children: []
+                            pos: 10921
+                            length: 24
+                        children: []
+                        pos: 10899
+                        length: 46
+                    children: []
+                    pos: 10898
+                    length: 48
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result.add(unparseableExtra);
+                    children: []
+                    pos: 10961
+                    length: 29
+                  pos: 10947
+                  length: 53
+                pos: 10895
+                length: 105
+              - type: return_statement
+                fields:
+                  text: return result.toArray(new ZipExtraField[0]);
+                children: []
+                pos: 11009
+                length: 44
+              pos: 10573
+              length: 486
+          children: []
+          pos: 10507
+          length: 552
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addExtraField
+              children: []
+              pos: 11330
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField ze
+                children: []
+                pos: 11344
+                length: 16
+              pos: 11318
+              length: 396
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: ze instanceof UnparseableExtraFieldData
+                        children: []
+                        pos: 11376
+                        length: 39
+                    children: []
+                    pos: 11375
+                    length: 41
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: unparseableExtra = (UnparseableExtraFieldData) ze;
+                    children: []
+                    pos: 11431
+                    length: 50
+                  pos: 11417
+                  length: 74
+                pos: 11372
+                length: 316
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 11697
+                length: 11
+              pos: 11362
+              length: 352
+          children: []
+          pos: 11318
+          length: 396
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addAsFirstExtraField
+              children: []
+              pos: 11939
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField ze
+                children: []
+                pos: 11960
+                length: 16
+              pos: 11927
+              length: 552
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: ze instanceof UnparseableExtraFieldData
+                        children: []
+                        pos: 11992
+                        length: 39
+                    children: []
+                    pos: 11991
+                    length: 41
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: unparseableExtra = (UnparseableExtraFieldData) ze;
+                    children: []
+                    pos: 12047
+                    length: 50
+                  pos: 12033
+                  length: 74
+                pos: 11988
+                length: 465
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 12462
+                length: 11
+              pos: 11978
+              length: 501
+          children: []
+          pos: 11927
+          length: 552
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeExtraField
+              children: []
+              pos: 12596
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipShort type
+                children: []
+                pos: 12613
+                length: 13
+              pos: 12584
+              length: 290
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 12642
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12657
+                            length: 4
+                        children: []
+                        pos: 12642
+                        length: 19
+                    children: []
+                    pos: 12641
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new java.util.NoSuchElementException();
+                    children: []
+                    pos: 12677
+                    length: 45
+                  pos: 12663
+                  length: 69
+                pos: 12638
+                length: 94
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: extraFields.remove(type)
+                            children: []
+                            pos: 12745
+                            length: 24
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 12773
+                            length: 4
+                        children: []
+                        pos: 12745
+                        length: 32
+                    children: []
+                    pos: 12744
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new java.util.NoSuchElementException();
+                    children: []
+                    pos: 12793
+                    length: 45
+                  pos: 12779
+                  length: 69
+                pos: 12741
+                length: 107
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 12857
+                length: 11
+              pos: 12628
+              length: 246
+          children: []
+          pos: 12584
+          length: 290
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeUnparseableExtraFieldData
+              children: []
+              pos: 13002
+              length: 31
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12990
+              length: 214
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: unparseableExtra
+                            children: []
+                            pos: 13050
+                            length: 16
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13070
+                            length: 4
+                        children: []
+                        pos: 13050
+                        length: 24
+                    children: []
+                    pos: 13049
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new java.util.NoSuchElementException();
+                    children: []
+                    pos: 13090
+                    length: 45
+                  pos: 13076
+                  length: 69
+                pos: 13046
+                length: 99
+              - type: expression_statement
+                fields:
+                  text: unparseableExtra = null;
+                children: []
+                pos: 13154
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: setExtra();
+                children: []
+                pos: 13187
+                length: 11
+              pos: 13036
+              length: 168
+          children: []
+          pos: 12990
+          length: 214
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getExtraField
+              children: []
+              pos: 13348
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipShort type
+                children: []
+                pos: 13362
+                length: 13
+              pos: 13327
+              length: 165
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 13391
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 13406
+                            length: 4
+                        children: []
+                        pos: 13391
+                        length: 19
+                    children: []
+                    pos: 13390
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return extraFields.get(type);
+                    children: []
+                    pos: 13426
+                    length: 29
+                  pos: 13412
+                  length: 53
+                pos: 13387
+                length: 78
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 13474
+                length: 12
+              pos: 13377
+              length: 115
+          children: []
+          pos: 13327
+          length: 165
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUnparseableExtraFieldData
+              children: []
+              pos: 13716
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13683
+              length: 104
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return unparseableExtra;
+                children: []
+                pos: 13757
+                length: 24
+              pos: 13747
+              length: 40
+          children: []
+          pos: 13683
+          length: 104
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExtra
+              children: []
+              pos: 14155
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] extra
+                children: []
+                pos: 14164
+                length: 12
+              pos: 14129
+              length: 585
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          ZipExtraField[] local =
+                                          ExtraFieldUtils.parse(extra, true,
+                                                                ExtraFieldUtils.UnparseableExtraField.READ);
+                      children: []
+                      pos: 14230
+                      length: 157
+                    - type: expression_statement
+                      fields:
+                        text: mergeExtraFields(local, true);
+                      children: []
+                      pos: 14400
+                      length: 30
+                    pos: 14216
+                    length: 224
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ZipException e) {
+                                      // actually this is not possible as of Commons Compress 1.1
+                                      throw new RuntimeException("Error parsing extra fields for entry: "
+                                                                 + getName() + " - " + e.getMessage(), e);
+                                  }
+                      children: []
+                      pos: 14441
+                      length: 267
+                    pos: 14212
+                    length: 496
+                children: []
+                pos: 14212
+                length: 496
+              pos: 14202
+              length: 512
+          children: []
+          pos: 14129
+          length: 585
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setExtra
+              children: []
+              pos: 14981
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 14966
+              length: 119
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: super.setExtra(ExtraFieldUtils.mergeLocalFileDataData(getExtraFields(true)));
+                children: []
+                pos: 15002
+                length: 77
+              pos: 14992
+              length: 93
+          children: []
+          pos: 14966
+          length: 119
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setCentralDirectoryExtra
+              children: []
+              pos: 15175
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] b
+                children: []
+                pos: 15200
+                length: 8
+              pos: 15163
+              length: 387
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          ZipExtraField[] central =
+                                          ExtraFieldUtils.parse(b, false,
+                                                                ExtraFieldUtils.UnparseableExtraField.READ);
+                      children: []
+                      pos: 15238
+                      length: 156
+                    - type: expression_statement
+                      fields:
+                        text: mergeExtraFields(central, false);
+                      children: []
+                      pos: 15407
+                      length: 33
+                    pos: 15224
+                    length: 226
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ZipException e) {
+                                      throw new RuntimeException(e.getMessage(), e);
+                                  }
+                      children: []
+                      pos: 15451
+                      length: 93
+                    pos: 15220
+                    length: 324
+                children: []
+                pos: 15220
+                length: 324
+              pos: 15210
+              length: 340
+          children: []
+          pos: 15163
+          length: 387
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLocalFileDataExtra
+              children: []
+              pos: 15688
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15674
+              length: 132
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] extra = getExtra();
+                children: []
+                pos: 15722
+                length: 26
+              - type: return_statement
+                fields:
+                  text: 'return extra != null ? extra : new byte[0];'
+                children: []
+                pos: 15757
+                length: 43
+              pos: 15712
+              length: 94
+          children: []
+          pos: 15674
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCentralDirectoryExtra
+              children: []
+              pos: 15949
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15935
+              length: 128
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return ExtraFieldUtils.mergeCentralDirectoryData(getExtraFields(true));
+                children: []
+                pos: 15986
+                length: 71
+              pos: 15976
+              length: 87
+          children: []
+          pos: 15935
+          length: 128
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getName
+              children: []
+              pos: 16177
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16149
+              length: 99
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return name == null ? super.getName() : name;'
+                children: []
+                pos: 16197
+                length: 45
+              pos: 16187
+              length: 61
+          children: []
+          pos: 16149
+          length: 99
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isDirectory
+              children: []
+              pos: 16381
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16352
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getName().endsWith("/");
+                children: []
+                pos: 16405
+                length: 31
+              pos: 16395
+              length: 47
+          children: []
+          pos: 16352
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setName
+              children: []
+              pos: 16548
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 16556
+                length: 11
+              pos: 16533
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.name = name;
+                children: []
+                pos: 16579
+                length: 17
+              pos: 16569
+              length: 33
+          children: []
+          pos: 16533
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSize
+              children: []
+              pos: 16733
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16707
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return size;
+                children: []
+                pos: 16753
+                length: 12
+              pos: 16743
+              length: 28
+          children: []
+          pos: 16707
+          length: 64
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setSize
+              children: []
+              pos: 17020
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long size
+                children: []
+                pos: 17028
+                length: 9
+              pos: 16994
+              length: 182
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: size
+                            children: []
+                            pos: 17053
+                            length: 4
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 17060
+                            length: 1
+                        children: []
+                        pos: 17053
+                        length: 8
+                    children: []
+                    pos: 17052
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("invalid entry size");
+                    children: []
+                    pos: 17077
+                    length: 57
+                  pos: 17063
+                  length: 81
+                pos: 17049
+                length: 95
+              - type: expression_statement
+                fields:
+                  text: this.size = size;
+                children: []
+                pos: 17153
+                length: 17
+              pos: 17039
+              length: 137
+          children: []
+          pos: 16994
+          length: 182
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setName
+              children: []
+              pos: 17570
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 17578
+                length: 11
+              pos: 17555
+              length: 114
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setName(name);
+                children: []
+                pos: 17617
+                length: 14
+              - type: expression_statement
+                fields:
+                  text: this.rawName = rawName;
+                children: []
+                pos: 17640
+                length: 23
+              pos: 17607
+              length: 62
+          children: []
+          pos: 17555
+          length: 114
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRawName
+              children: []
+              pos: 17992
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17978
+              length: 231
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: rawName
+                            children: []
+                            pos: 18019
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18030
+                            length: 4
+                        children: []
+                        pos: 18019
+                        length: 15
+                    children: []
+                    pos: 18018
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: byte[] b = new byte[rawName.length];
+                    children: []
+                    pos: 18050
+                    length: 36
+                  - type: expression_statement
+                    fields:
+                      text: System.arraycopy(rawName, 0, b, 0, rawName.length);
+                    children: []
+                    pos: 18099
+                    length: 51
+                  - type: return_statement
+                    fields:
+                      text: return b;
+                    children: []
+                    pos: 18163
+                    length: 9
+                  pos: 18036
+                  length: 146
+                pos: 18015
+                length: 167
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 18191
+                length: 12
+              pos: 18005
+              length: 204
+          children: []
+          pos: 17978
+          length: 231
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 18364
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 18339
+              length: 387
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getName().hashCode();
+                children: []
+                pos: 18692
+                length: 28
+              pos: 18375
+              length: 351
+          children: []
+          pos: 18339
+          length: 387
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getGeneralPurposeBit
+              children: []
+              pos: 18855
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 18830
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return gpb;
+                children: []
+                pos: 18888
+                length: 11
+              pos: 18878
+              length: 27
+          children: []
+          pos: 18830
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setGeneralPurposeBit
+              children: []
+              pos: 19021
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: GeneralPurposeBit b
+                children: []
+                pos: 19042
+                length: 19
+              pos: 19009
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: gpb = b;
+                children: []
+                pos: 19073
+                length: 8
+              pos: 19063
+              length: 24
+          children: []
+          pos: 19009
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mergeExtraFields
+              children: []
+              pos: 19457
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ZipExtraField[] f
+                children: []
+                pos: 19474
+                length: 17
+              pos: 19444
+              length: 1034
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: extraFields
+                            children: []
+                            pos: 19550
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 19565
+                            length: 4
+                        children: []
+                        pos: 19550
+                        length: 19
+                    children: []
+                    pos: 19549
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: setExtraFields(f);
+                    children: []
+                    pos: 19585
+                    length: 18
+                  pos: 19571
+                  length: 42
+                pos: 19546
+                length: 926
+              pos: 19536
+              length: 942
+          children: []
+          pos: 19444
+          length: 1034
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLastModifiedDate
+              children: []
+              pos: 20521
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 20509
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Date(getTime());
+                children: []
+                pos: 20553
+                length: 27
+              pos: 20543
+              length: 43
+          children: []
+          pos: 20509
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 20704
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object obj
+                children: []
+                pos: 20711
+                length: 10
+              pos: 20675
+              length: 1549
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 20737
+                            length: 4
+                          right:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 20745
+                            length: 3
+                        children: []
+                        pos: 20737
+                        length: 11
+                    children: []
+                    pos: 20736
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 20764
+                    length: 12
+                  pos: 20750
+                  length: 36
+                pos: 20733
+                length: 53
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: obj
+                                children: []
+                                pos: 20799
+                                length: 3
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 20806
+                                length: 4
+                            children: []
+                            pos: 20799
+                            length: 11
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: getClass()
+                                children: []
+                                pos: 20814
+                                length: 10
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: obj.getClass()
+                                children: []
+                                pos: 20828
+                                length: 14
+                            children: []
+                            pos: 20814
+                            length: 28
+                        children: []
+                        pos: 20799
+                        length: 43
+                    children: []
+                    pos: 20798
+                    length: 45
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 20858
+                    length: 13
+                  pos: 20844
+                  length: 37
+                pos: 20795
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: ZipArchiveEntry other = (ZipArchiveEntry) obj;
+                children: []
+                pos: 20890
+                length: 46
+              - type: local_variable_declaration
+                fields:
+                  text: String myName = getName();
+                children: []
+                pos: 20945
+                length: 26
+              - type: local_variable_declaration
+                fields:
+                  text: String otherName = other.getName();
+                children: []
+                pos: 20980
+                length: 35
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: myName
+                            children: []
+                            pos: 21028
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 21038
+                            length: 4
+                        children: []
+                        pos: 21028
+                        length: 14
+                    children: []
+                    pos: 21027
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: otherName
+                                children: []
+                                pos: 21062
+                                length: 9
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 21075
+                                length: 4
+                            children: []
+                            pos: 21062
+                            length: 17
+                        children: []
+                        pos: 21061
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return false;
+                        children: []
+                        pos: 21099
+                        length: 13
+                      pos: 21081
+                      length: 45
+                    pos: 21058
+                    length: 68
+                  pos: 21044
+                  length: 92
+                pos: 21024
+                length: 186
+              - type: local_variable_declaration
+                fields:
+                  text: String myComment = getComment();
+                children: []
+                pos: 21219
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: String otherComment = other.getComment();
+                children: []
+                pos: 21260
+                length: 41
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: myComment
+                            children: []
+                            pos: 21314
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 21327
+                            length: 4
+                        children: []
+                        pos: 21314
+                        length: 17
+                    children: []
+                    pos: 21313
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: otherComment
+                                children: []
+                                pos: 21351
+                                length: 12
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 21367
+                                length: 4
+                            children: []
+                            pos: 21351
+                            length: 20
+                        children: []
+                        pos: 21350
+                        length: 22
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return false;
+                        children: []
+                        pos: 21391
+                        length: 13
+                      pos: 21373
+                      length: 45
+                    pos: 21347
+                    length: 71
+                  pos: 21333
+                  length: 95
+                pos: 21310
+                length: 198
+              - type: return_statement
+                fields:
+                  text: |-
+                    return getTime() == other.getTime()
+                                && getInternalAttributes() == other.getInternalAttributes()
+                                && getPlatform() == other.getPlatform()
+                                && getExternalAttributes() == other.getExternalAttributes()
+                                && getMethod() == other.getMethod()
+                                && getSize() == other.getSize()
+                                && getCrc() == other.getCrc()
+                                && getCompressedSize() == other.getCompressedSize()
+                                && Arrays.equals(getCentralDirectoryExtra(),
+                                                 other.getCentralDirectoryExtra())
+                                && Arrays.equals(getLocalFileDataExtra(),
+                                                 other.getLocalFileDataExtra())
+                                && gpb.equals(other.gpb);
+                children: []
+                pos: 21517
+                length: 701
+              pos: 20723
+              length: 1501
+          children: []
+          pos: 20675
+          length: 1549
+        pos: 2028
+        length: 20198
+    children: []
+    pos: 2028
+    length: 20198
+  pos: 0
+  length: 22227
 text_diff: "--- before\n+++ after\n@@ -509,10 +509,6 @@\n      * @param name the name
   to use\n      */\n     protected void setName(String name) {\n-        if (name
   != null && getPlatform() == PLATFORM_FAT\n-            && name.indexOf(\"/\") ==

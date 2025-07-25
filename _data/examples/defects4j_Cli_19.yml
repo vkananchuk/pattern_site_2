@@ -1,5 +1,1015 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: PosixParser
+        children: []
+        pos: 1182
+        length: 11
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private List tokens = new ArrayList();
+          children: []
+          pos: 1255
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private boolean eatTheRest;
+          children: []
+          pos: 1348
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private Option currentOption;
+          children: []
+          pos: 1422
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private Options options;
+          children: []
+          pos: 1493
+          length: 24
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: init
+              children: []
+              pos: 1745
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1732
+              length: 113
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: eatTheRest = false;
+                children: []
+                pos: 1766
+                length: 19
+              - type: expression_statement
+                fields:
+                  text: tokens.clear();
+                children: []
+                pos: 1794
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: currentOption = null;
+                children: []
+                pos: 1818
+                length: 21
+              pos: 1756
+              length: 89
+          children: []
+          pos: 1732
+          length: 113
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: flatten
+              children: []
+              pos: 3997
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Options options
+                children: []
+                pos: 4005
+                length: 15
+              pos: 3978
+              length: 1793
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: init();
+                children: []
+                pos: 4081
+                length: 7
+              - type: expression_statement
+                fields:
+                  text: this.options = options;
+                children: []
+                pos: 4097
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator iter = Arrays.asList(arguments).iterator();
+                children: []
+                pos: 4181
+                length: 52
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (iter.hasNext())
+                            {
+                                // get the next command line token
+                                String token = (String) iter.next();
+
+                                // handle SPECIAL TOKEN
+                                if (token.startsWith("--"))
+                                {
+                                    if (token.indexOf('=') != -1)
+                                    {
+                                        tokens.add(token.substring(0, token.indexOf('=')));
+                                        tokens.add(token.substring(token.indexOf('=') + 1, token.length()));
+                                    }
+                                    else
+                                    {
+                                        tokens.add(token);
+                                    }
+                                }
+
+                                // single hyphen
+                                else if ("-".equals(token))
+                                {
+                                    tokens.add(token);
+                                }
+                                else if (token.startsWith("-"))
+                                {
+                                    if (token.length() == 2)
+                                    {
+                                        processOptionToken(token, stopAtNonOption);
+                                    }
+                                    else if (options.hasOption(token))
+                                    {
+                                        tokens.add(token);
+                                    }
+                                    // requires bursting
+                                    else
+                                    {
+                                        burstToken(token, stopAtNonOption);
+                                    }
+                                }
+                                else if (stopAtNonOption)
+                                {
+                                    process(token);
+                                }
+                                else
+                                {
+                                    tokens.add(token);
+                                }
+
+                                gobble(iter);
+                            }
+                children: []
+                pos: 4286
+                length: 1409
+              - type: return_statement
+                fields:
+                  text: return (String[]) tokens.toArray(new String[tokens.size()]);
+                children: []
+                pos: 5705
+                length: 60
+              pos: 4071
+              length: 1700
+          children: []
+          pos: 3978
+          length: 1793
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: gobble
+              children: []
+              pos: 5933
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Iterator iter
+                children: []
+                pos: 5940
+                length: 13
+              pos: 5920
+              length: 194
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: eatTheRest
+                        children: []
+                        pos: 5973
+                        length: 10
+                    children: []
+                    pos: 5972
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: while_statement
+                    fields:
+                      text: |-
+                        while (iter.hasNext())
+                                    {
+                                        tokens.add(iter.next());
+                                    }
+                    children: []
+                    pos: 6007
+                    length: 91
+                  pos: 5993
+                  length: 115
+                pos: 5969
+                length: 139
+              pos: 5959
+              length: 155
+          children: []
+          pos: 5920
+          length: 194
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 6768
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String value
+                children: []
+                pos: 6776
+                length: 12
+              pos: 6755
+              length: 502
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: currentOption
+                                children: []
+                                pos: 6808
+                                length: 13
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6825
+                                length: 4
+                            children: []
+                            pos: 6808
+                            length: 21
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: currentOption.hasArg()
+                            children: []
+                            pos: 6833
+                            length: 22
+                        children: []
+                        pos: 6808
+                        length: 47
+                    children: []
+                    pos: 6807
+                    length: 49
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: currentOption.hasArg()
+                            children: []
+                            pos: 6883
+                            length: 22
+                        children: []
+                        pos: 6882
+                        length: 24
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: tokens.add(value);
+                        children: []
+                        pos: 6937
+                        length: 18
+                      - type: expression_statement
+                        fields:
+                          text: currentOption = null;
+                        children: []
+                        pos: 6972
+                        length: 21
+                      pos: 6919
+                      length: 88
+                    pos: 6879
+                    length: 237
+                  pos: 6865
+                  length: 261
+                pos: 6804
+                length: 447
+              pos: 6794
+              length: 463
+          children: []
+          pos: 6755
+          length: 502
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: processOptionToken
+              children: []
+              pos: 7805
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String token
+                children: []
+                pos: 7824
+                length: 12
+              pos: 7792
+              length: 307
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: options.hasOption(token)
+                        children: []
+                        pos: 7881
+                        length: 24
+                    children: []
+                    pos: 7880
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: currentOption = options.getOption(token);
+                    children: []
+                    pos: 7929
+                    length: 41
+                  pos: 7915
+                  length: 65
+                pos: 7877
+                length: 188
+              - type: expression_statement
+                fields:
+                  text: tokens.add(token);
+                children: []
+                pos: 8075
+                length: 18
+              pos: 7867
+              length: 232
+          children: []
+          pos: 7792
+          length: 307
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: burstToken
+              children: []
+              pos: 9427
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String token
+                children: []
+                pos: 9438
+                length: 12
+              pos: 9412
+              length: 796
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1; i < token.length(); i++)
+                            {
+                                String ch = String.valueOf(token.charAt(i));
+
+                                if (options.hasOption(ch))
+                                {
+                                    tokens.add("-" + ch);
+                                    currentOption = options.getOption(ch);
+
+                                    if (currentOption.hasArg() && (token.length() != (i + 1)))
+                                    {
+                                        tokens.add(token.substring(i + 1));
+
+                                        break;
+                                    }
+                                }
+                                else if (stopAtNonOption)
+                                {
+                                    process(token.substring(i));
+                                    break;
+                                }
+                                else
+                                {
+                                    tokens.add(token);
+                                    break;
+                                }
+                            }
+                children: []
+                pos: 9491
+                length: 711
+              pos: 9481
+              length: 727
+          children: []
+          pos: 9412
+          length: 796
+        pos: 1169
+        length: 9041
+    children: []
+    pos: 1169
+    length: 9041
+  pos: 0
+  length: 10211
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: PosixParser
+        children: []
+        pos: 1182
+        length: 11
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private List tokens = new ArrayList();
+          children: []
+          pos: 1255
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private boolean eatTheRest;
+          children: []
+          pos: 1348
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private Option currentOption;
+          children: []
+          pos: 1422
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private Options options;
+          children: []
+          pos: 1493
+          length: 24
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: init
+              children: []
+              pos: 1745
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1732
+              length: 113
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: eatTheRest = false;
+                children: []
+                pos: 1766
+                length: 19
+              - type: expression_statement
+                fields:
+                  text: tokens.clear();
+                children: []
+                pos: 1794
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: currentOption = null;
+                children: []
+                pos: 1818
+                length: 21
+              pos: 1756
+              length: 89
+          children: []
+          pos: 1732
+          length: 113
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: flatten
+              children: []
+              pos: 3997
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Options options
+                children: []
+                pos: 4005
+                length: 15
+              pos: 3978
+              length: 1793
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: init();
+                children: []
+                pos: 4081
+                length: 7
+              - type: expression_statement
+                fields:
+                  text: this.options = options;
+                children: []
+                pos: 4097
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: Iterator iter = Arrays.asList(arguments).iterator();
+                children: []
+                pos: 4181
+                length: 52
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (iter.hasNext())
+                            {
+                                // get the next command line token
+                                String token = (String) iter.next();
+
+                                // handle SPECIAL TOKEN
+                                if (token.startsWith("--"))
+                                {
+                                    if (token.indexOf('=') != -1)
+                                    {
+                                        tokens.add(token.substring(0, token.indexOf('=')));
+                                        tokens.add(token.substring(token.indexOf('=') + 1, token.length()));
+                                    }
+                                    else
+                                    {
+                                        tokens.add(token);
+                                    }
+                                }
+
+                                // single hyphen
+                                else if ("-".equals(token))
+                                {
+                                    tokens.add(token);
+                                }
+                                else if (token.startsWith("-"))
+                                {
+                                    if (token.length() == 2)
+                                    {
+                                        processOptionToken(token, stopAtNonOption);
+                                    }
+                                    else if (options.hasOption(token))
+                                    {
+                                        tokens.add(token);
+                                    }
+                                    // requires bursting
+                                    else
+                                    {
+                                        burstToken(token, stopAtNonOption);
+                                    }
+                                }
+                                else if (stopAtNonOption)
+                                {
+                                    process(token);
+                                }
+                                else
+                                {
+                                    tokens.add(token);
+                                }
+
+                                gobble(iter);
+                            }
+                children: []
+                pos: 4286
+                length: 1409
+              - type: return_statement
+                fields:
+                  text: return (String[]) tokens.toArray(new String[tokens.size()]);
+                children: []
+                pos: 5705
+                length: 60
+              pos: 4071
+              length: 1700
+          children: []
+          pos: 3978
+          length: 1793
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: gobble
+              children: []
+              pos: 5933
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Iterator iter
+                children: []
+                pos: 5940
+                length: 13
+              pos: 5920
+              length: 194
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: eatTheRest
+                        children: []
+                        pos: 5973
+                        length: 10
+                    children: []
+                    pos: 5972
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: while_statement
+                    fields:
+                      text: |-
+                        while (iter.hasNext())
+                                    {
+                                        tokens.add(iter.next());
+                                    }
+                    children: []
+                    pos: 6007
+                    length: 91
+                  pos: 5993
+                  length: 115
+                pos: 5969
+                length: 139
+              pos: 5959
+              length: 155
+          children: []
+          pos: 5920
+          length: 194
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 6768
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String value
+                children: []
+                pos: 6776
+                length: 12
+              pos: 6755
+              length: 502
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: currentOption
+                                children: []
+                                pos: 6808
+                                length: 13
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6825
+                                length: 4
+                            children: []
+                            pos: 6808
+                            length: 21
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: currentOption.hasArg()
+                            children: []
+                            pos: 6833
+                            length: 22
+                        children: []
+                        pos: 6808
+                        length: 47
+                    children: []
+                    pos: 6807
+                    length: 49
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: currentOption.hasArg()
+                            children: []
+                            pos: 6883
+                            length: 22
+                        children: []
+                        pos: 6882
+                        length: 24
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: tokens.add(value);
+                        children: []
+                        pos: 6937
+                        length: 18
+                      - type: expression_statement
+                        fields:
+                          text: currentOption = null;
+                        children: []
+                        pos: 6972
+                        length: 21
+                      pos: 6919
+                      length: 88
+                    pos: 6879
+                    length: 237
+                  pos: 6865
+                  length: 261
+                pos: 6804
+                length: 447
+              pos: 6794
+              length: 463
+          children: []
+          pos: 6755
+          length: 502
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: processOptionToken
+              children: []
+              pos: 7805
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String token
+                children: []
+                pos: 7824
+                length: 12
+              pos: 7792
+              length: 341
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: options.hasOption(token)
+                        children: []
+                        pos: 7881
+                        length: 24
+                    children: []
+                    pos: 7880
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: currentOption = options.getOption(token);
+                    children: []
+                    pos: 7929
+                    length: 41
+                  - type: expression_statement
+                    fields:
+                      text: tokens.add(token);
+                    children: []
+                    pos: 7983
+                    length: 18
+                  pos: 7915
+                  length: 96
+                pos: 7877
+                length: 250
+              pos: 7867
+              length: 266
+          children: []
+          pos: 7792
+          length: 341
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: burstToken
+              children: []
+              pos: 9461
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String token
+                children: []
+                pos: 9472
+                length: 12
+              pos: 9446
+              length: 796
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1; i < token.length(); i++)
+                            {
+                                String ch = String.valueOf(token.charAt(i));
+
+                                if (options.hasOption(ch))
+                                {
+                                    tokens.add("-" + ch);
+                                    currentOption = options.getOption(ch);
+
+                                    if (currentOption.hasArg() && (token.length() != (i + 1)))
+                                    {
+                                        tokens.add(token.substring(i + 1));
+
+                                        break;
+                                    }
+                                }
+                                else if (stopAtNonOption)
+                                {
+                                    process(token.substring(i));
+                                    break;
+                                }
+                                else
+                                {
+                                    tokens.add(token);
+                                    break;
+                                }
+                            }
+                children: []
+                pos: 9525
+                length: 711
+              pos: 9515
+              length: 727
+          children: []
+          pos: 9446
+          length: 796
+        pos: 1169
+        length: 9075
+    children: []
+    pos: 1169
+    length: 9075
+  pos: 0
+  length: 10245
 text_diff: "--- before\n+++ after\n@@ -229,13 +229,13 @@\n         if (options.hasOption(token))\n
   \        {\n             currentOption = options.getOption(token);\n+            tokens.add(token);\n
   \        }\n         else if (stopAtNonOption)\n         {\n             eatTheRest

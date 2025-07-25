@@ -1,5 +1,1151 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: BrentOptimizer
+        children: []
+        pos: 1919
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final double GOLDEN_SECTION = 0.5 * (3 - FastMath.sqrt(5));
+          children: []
+          pos: 2019
+          length: 74
+        - type: field_declaration
+          fields:
+            text: private static final double MIN_RELATIVE_TOLERANCE = 2 * FastMath.ulp(1d);
+          children: []
+          pos: 2149
+          length: 74
+        - type: field_declaration
+          fields:
+            text: private final double relativeThreshold;
+          children: []
+          pos: 2271
+          length: 39
+        - type: field_declaration
+          fields:
+            text: private final double absoluteThreshold;
+          children: []
+          pos: 2358
+          length: 39
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public BrentOptimizer(double rel,
+                                        double abs,
+                                        ConvergenceChecker<UnivariatePointValuePair> checker) {
+                      super(checker);
+
+                      if (rel < MIN_RELATIVE_TOLERANCE) {
+                          throw new NumberIsTooSmallException(rel, MIN_RELATIVE_TOLERANCE, true);
+                      }
+                      if (abs <= 0) {
+                          throw new NotStrictlyPositiveException(abs);
+                      }
+
+                      relativeThreshold = rel;
+                      absoluteThreshold = abs;
+                  }
+          children: []
+          pos: 3145
+          length: 480
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public BrentOptimizer(double rel,
+                                        double abs) {
+                      this(rel, abs, null);
+                  }
+          children: []
+          pos: 4293
+          length: 109
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doOptimize
+              children: []
+              pos: 4482
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4433
+              length: 5665
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean isMinim = getGoalType() == GoalType.MINIMIZE;
+                children: []
+                pos: 4505
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: final double lo = getMin();
+                children: []
+                pos: 4573
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: final double mid = getStartValue();
+                children: []
+                pos: 4609
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: final double hi = getMax();
+                children: []
+                pos: 4653
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final ConvergenceChecker<UnivariatePointValuePair> checker
+                                = getConvergenceChecker();
+                children: []
+                pos: 4743
+                length: 97
+              - type: local_variable_declaration
+                fields:
+                  text: double a;
+                children: []
+                pos: 4850
+                length: 9
+              - type: local_variable_declaration
+                fields:
+                  text: double b;
+                children: []
+                pos: 4868
+                length: 9
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: lo
+                            children: []
+                            pos: 4890
+                            length: 2
+                          right:
+                            type: identifier
+                            fields:
+                              text: hi
+                            children: []
+                            pos: 4895
+                            length: 2
+                        children: []
+                        pos: 4890
+                        length: 7
+                    children: []
+                    pos: 4889
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: a = lo;
+                    children: []
+                    pos: 4913
+                    length: 7
+                  - type: expression_statement
+                    fields:
+                      text: b = hi;
+                    children: []
+                    pos: 4933
+                    length: 7
+                  pos: 4899
+                  length: 51
+                pos: 4886
+                length: 121
+              - type: local_variable_declaration
+                fields:
+                  text: double x = mid;
+                children: []
+                pos: 5017
+                length: 15
+              - type: local_variable_declaration
+                fields:
+                  text: double v = x;
+                children: []
+                pos: 5041
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double w = x;
+                children: []
+                pos: 5063
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double d = 0;
+                children: []
+                pos: 5085
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double e = 0;
+                children: []
+                pos: 5107
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double fx = computeObjectiveValue(x);
+                children: []
+                pos: 5129
+                length: 37
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!isMinim"
+                        children: []
+                        pos: 5179
+                        length: 8
+                    children: []
+                    pos: 5178
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: fx = -fx;
+                    children: []
+                    pos: 5203
+                    length: 9
+                  pos: 5189
+                  length: 33
+                pos: 5175
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: double fv = fx;
+                children: []
+                pos: 5231
+                length: 15
+              - type: local_variable_declaration
+                fields:
+                  text: double fw = fx;
+                children: []
+                pos: 5255
+                length: 15
+              - type: local_variable_declaration
+                fields:
+                  text: UnivariatePointValuePair previous = null;
+                children: []
+                pos: 5280
+                length: 41
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    UnivariatePointValuePair current
+                                = new UnivariatePointValuePair(x, isMinim ? fx : -fx);
+                children: []
+                pos: 5330
+                length: 99
+              - type: local_variable_declaration
+                fields:
+                  text: UnivariatePointValuePair best = current;
+                children: []
+                pos: 5509
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: int iter = 0;
+                children: []
+                pos: 5559
+                length: 13
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (true) {
+                                final double m = 0.5 * (a + b);
+                                final double tol1 = relativeThreshold * FastMath.abs(x) + absoluteThreshold;
+                                final double tol2 = 2 * tol1;
+
+                                // Default stopping criterion.
+                                final boolean stop = FastMath.abs(x - m) <= tol2 - 0.5 * (b - a);
+                                if (!stop) {
+                                    double p = 0;
+                                    double q = 0;
+                                    double r = 0;
+                                    double u = 0;
+
+                                    if (FastMath.abs(e) > tol1) { // Fit parabola.
+                                        r = (x - w) * (fx - fv);
+                                        q = (x - v) * (fx - fw);
+                                        p = (x - v) * q - (x - w) * r;
+                                        q = 2 * (q - r);
+
+                                        if (q > 0) {
+                                            p = -p;
+                                        } else {
+                                            q = -q;
+                                        }
+
+                                        r = e;
+                                        e = d;
+
+                                        if (p > q * (a - x) &&
+                                            p < q * (b - x) &&
+                                            FastMath.abs(p) < FastMath.abs(0.5 * q * r)) {
+                                            // Parabolic interpolation step.
+                                            d = p / q;
+                                            u = x + d;
+
+                                            // f must not be evaluated too close to a or b.
+                                            if (u - a < tol2 || b - u < tol2) {
+                                                if (x <= m) {
+                                                    d = tol1;
+                                                } else {
+                                                    d = -tol1;
+                                                }
+                                            }
+                                        } else {
+                                            // Golden section step.
+                                            if (x < m) {
+                                                e = b - x;
+                                            } else {
+                                                e = a - x;
+                                            }
+                                            d = GOLDEN_SECTION * e;
+                                        }
+                                    } else {
+                                        // Golden section step.
+                                        if (x < m) {
+                                            e = b - x;
+                                        } else {
+                                            e = a - x;
+                                        }
+                                        d = GOLDEN_SECTION * e;
+                                    }
+
+                                    // Update by at least "tol1".
+                                    if (FastMath.abs(d) < tol1) {
+                                        if (d >= 0) {
+                                            u = x + tol1;
+                                        } else {
+                                            u = x - tol1;
+                                        }
+                                    } else {
+                                        u = x + d;
+                                    }
+
+                                    double fu = computeObjectiveValue(u);
+                                    if (!isMinim) {
+                                        fu = -fu;
+                                    }
+
+                                    // User-defined convergence checker.
+                                    previous = current;
+                                    current = new UnivariatePointValuePair(u, isMinim ? fu : -fu);
+                                    best = best(best,
+                                                best(current,
+                                                     previous,
+                                                     isMinim),
+                                                isMinim);
+
+                                    if (checker != null) {
+                                        if (checker.converged(iter, previous, current)) {
+                                            return best;
+                                        }
+                                    }
+
+                                    // Update a, b, v, w and x.
+                                    if (fu <= fx) {
+                                        if (u < x) {
+                                            b = x;
+                                        } else {
+                                            a = x;
+                                        }
+                                        v = w;
+                                        fv = fw;
+                                        w = x;
+                                        fw = fx;
+                                        x = u;
+                                        fx = fu;
+                                    } else {
+                                        if (u < x) {
+                                            a = u;
+                                        } else {
+                                            b = u;
+                                        }
+                                        if (fu <= fw ||
+                                            Precision.equals(w, x)) {
+                                            v = w;
+                                            fv = fw;
+                                            w = u;
+                                            fw = fu;
+                                        } else if (fu <= fv ||
+                                                   Precision.equals(v, x) ||
+                                                   Precision.equals(v, w)) {
+                                            v = u;
+                                            fv = fu;
+                                        }
+                                    }
+                                } else { // Default termination (Brent's criterion).
+                                    return best(best,
+                                                best(current,
+                                                     previous,
+                                                     isMinim),
+                                                isMinim);
+                                }
+                                ++iter;
+                            }
+                children: []
+                pos: 5581
+                length: 4511
+              pos: 4495
+              length: 5603
+          children: []
+          pos: 4433
+          length: 5665
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: best
+              children: []
+              pos: 10561
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: UnivariatePointValuePair a
+                children: []
+                pos: 10566
+                length: 26
+              pos: 10528
+              length: 481
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: a
+                            children: []
+                            pos: 10737
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10742
+                            length: 4
+                        children: []
+                        pos: 10737
+                        length: 9
+                    children: []
+                    pos: 10736
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return b;
+                    children: []
+                    pos: 10762
+                    length: 9
+                  pos: 10748
+                  length: 33
+                pos: 10733
+                length: 48
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: b
+                            children: []
+                            pos: 10794
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10799
+                            length: 4
+                        children: []
+                        pos: 10794
+                        length: 9
+                    children: []
+                    pos: 10793
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return a;
+                    children: []
+                    pos: 10819
+                    length: 9
+                  pos: 10805
+                  length: 33
+                pos: 10790
+                length: 48
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: isMinim
+                        children: []
+                        pos: 10852
+                        length: 7
+                    children: []
+                    pos: 10851
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: 'return a.getValue() <= b.getValue() ? a : b;'
+                    children: []
+                    pos: 10875
+                    length: 44
+                  pos: 10861
+                  length: 68
+                pos: 10848
+                length: 155
+              pos: 10723
+              length: 286
+          children: []
+          pos: 10528
+          length: 481
+        pos: 1906
+        length: 9105
+    children: []
+    pos: 1906
+    length: 9105
+  pos: 0
+  length: 11012
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: BrentOptimizer
+        children: []
+        pos: 1919
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final double GOLDEN_SECTION = 0.5 * (3 - FastMath.sqrt(5));
+          children: []
+          pos: 2019
+          length: 74
+        - type: field_declaration
+          fields:
+            text: private static final double MIN_RELATIVE_TOLERANCE = 2 * FastMath.ulp(1d);
+          children: []
+          pos: 2149
+          length: 74
+        - type: field_declaration
+          fields:
+            text: private final double relativeThreshold;
+          children: []
+          pos: 2271
+          length: 39
+        - type: field_declaration
+          fields:
+            text: private final double absoluteThreshold;
+          children: []
+          pos: 2358
+          length: 39
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public BrentOptimizer(double rel,
+                                        double abs,
+                                        ConvergenceChecker<UnivariatePointValuePair> checker) {
+                      super(checker);
+
+                      if (rel < MIN_RELATIVE_TOLERANCE) {
+                          throw new NumberIsTooSmallException(rel, MIN_RELATIVE_TOLERANCE, true);
+                      }
+                      if (abs <= 0) {
+                          throw new NotStrictlyPositiveException(abs);
+                      }
+
+                      relativeThreshold = rel;
+                      absoluteThreshold = abs;
+                  }
+          children: []
+          pos: 3145
+          length: 480
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public BrentOptimizer(double rel,
+                                        double abs) {
+                      this(rel, abs, null);
+                  }
+          children: []
+          pos: 4293
+          length: 109
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: doOptimize
+              children: []
+              pos: 4482
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4433
+              length: 5390
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean isMinim = getGoalType() == GoalType.MINIMIZE;
+                children: []
+                pos: 4505
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: final double lo = getMin();
+                children: []
+                pos: 4573
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: final double mid = getStartValue();
+                children: []
+                pos: 4609
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: final double hi = getMax();
+                children: []
+                pos: 4653
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final ConvergenceChecker<UnivariatePointValuePair> checker
+                                = getConvergenceChecker();
+                children: []
+                pos: 4743
+                length: 97
+              - type: local_variable_declaration
+                fields:
+                  text: double a;
+                children: []
+                pos: 4850
+                length: 9
+              - type: local_variable_declaration
+                fields:
+                  text: double b;
+                children: []
+                pos: 4868
+                length: 9
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: lo
+                            children: []
+                            pos: 4890
+                            length: 2
+                          right:
+                            type: identifier
+                            fields:
+                              text: hi
+                            children: []
+                            pos: 4895
+                            length: 2
+                        children: []
+                        pos: 4890
+                        length: 7
+                    children: []
+                    pos: 4889
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: a = lo;
+                    children: []
+                    pos: 4913
+                    length: 7
+                  - type: expression_statement
+                    fields:
+                      text: b = hi;
+                    children: []
+                    pos: 4933
+                    length: 7
+                  pos: 4899
+                  length: 51
+                pos: 4886
+                length: 121
+              - type: local_variable_declaration
+                fields:
+                  text: double x = mid;
+                children: []
+                pos: 5017
+                length: 15
+              - type: local_variable_declaration
+                fields:
+                  text: double v = x;
+                children: []
+                pos: 5041
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double w = x;
+                children: []
+                pos: 5063
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double d = 0;
+                children: []
+                pos: 5085
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double e = 0;
+                children: []
+                pos: 5107
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: double fx = computeObjectiveValue(x);
+                children: []
+                pos: 5129
+                length: 37
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!isMinim"
+                        children: []
+                        pos: 5179
+                        length: 8
+                    children: []
+                    pos: 5178
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: fx = -fx;
+                    children: []
+                    pos: 5203
+                    length: 9
+                  pos: 5189
+                  length: 33
+                pos: 5175
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: double fv = fx;
+                children: []
+                pos: 5231
+                length: 15
+              - type: local_variable_declaration
+                fields:
+                  text: double fw = fx;
+                children: []
+                pos: 5255
+                length: 15
+              - type: local_variable_declaration
+                fields:
+                  text: UnivariatePointValuePair previous = null;
+                children: []
+                pos: 5280
+                length: 41
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    UnivariatePointValuePair current
+                                = new UnivariatePointValuePair(x, isMinim ? fx : -fx);
+                children: []
+                pos: 5330
+                length: 99
+              - type: local_variable_declaration
+                fields:
+                  text: int iter = 0;
+                children: []
+                pos: 5510
+                length: 13
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (true) {
+                                final double m = 0.5 * (a + b);
+                                final double tol1 = relativeThreshold * FastMath.abs(x) + absoluteThreshold;
+                                final double tol2 = 2 * tol1;
+
+                                // Default stopping criterion.
+                                final boolean stop = FastMath.abs(x - m) <= tol2 - 0.5 * (b - a);
+                                if (!stop) {
+                                    double p = 0;
+                                    double q = 0;
+                                    double r = 0;
+                                    double u = 0;
+
+                                    if (FastMath.abs(e) > tol1) { // Fit parabola.
+                                        r = (x - w) * (fx - fv);
+                                        q = (x - v) * (fx - fw);
+                                        p = (x - v) * q - (x - w) * r;
+                                        q = 2 * (q - r);
+
+                                        if (q > 0) {
+                                            p = -p;
+                                        } else {
+                                            q = -q;
+                                        }
+
+                                        r = e;
+                                        e = d;
+
+                                        if (p > q * (a - x) &&
+                                            p < q * (b - x) &&
+                                            FastMath.abs(p) < FastMath.abs(0.5 * q * r)) {
+                                            // Parabolic interpolation step.
+                                            d = p / q;
+                                            u = x + d;
+
+                                            // f must not be evaluated too close to a or b.
+                                            if (u - a < tol2 || b - u < tol2) {
+                                                if (x <= m) {
+                                                    d = tol1;
+                                                } else {
+                                                    d = -tol1;
+                                                }
+                                            }
+                                        } else {
+                                            // Golden section step.
+                                            if (x < m) {
+                                                e = b - x;
+                                            } else {
+                                                e = a - x;
+                                            }
+                                            d = GOLDEN_SECTION * e;
+                                        }
+                                    } else {
+                                        // Golden section step.
+                                        if (x < m) {
+                                            e = b - x;
+                                        } else {
+                                            e = a - x;
+                                        }
+                                        d = GOLDEN_SECTION * e;
+                                    }
+
+                                    // Update by at least "tol1".
+                                    if (FastMath.abs(d) < tol1) {
+                                        if (d >= 0) {
+                                            u = x + tol1;
+                                        } else {
+                                            u = x - tol1;
+                                        }
+                                    } else {
+                                        u = x + d;
+                                    }
+
+                                    double fu = computeObjectiveValue(u);
+                                    if (!isMinim) {
+                                        fu = -fu;
+                                    }
+
+                                    // User-defined convergence checker.
+                                    previous = current;
+                                    current = new UnivariatePointValuePair(u, isMinim ? fu : -fu);
+
+                                    if (checker != null) {
+                                        if (checker.converged(iter, previous, current)) {
+                                            return best(current, previous, isMinim);
+                                        }
+                                    }
+
+                                    // Update a, b, v, w and x.
+                                    if (fu <= fx) {
+                                        if (u < x) {
+                                            b = x;
+                                        } else {
+                                            a = x;
+                                        }
+                                        v = w;
+                                        fv = fw;
+                                        w = x;
+                                        fw = fx;
+                                        x = u;
+                                        fx = fu;
+                                    } else {
+                                        if (u < x) {
+                                            a = u;
+                                        } else {
+                                            b = u;
+                                        }
+                                        if (fu <= fw ||
+                                            Precision.equals(w, x)) {
+                                            v = w;
+                                            fv = fw;
+                                            w = u;
+                                            fw = fu;
+                                        } else if (fu <= fv ||
+                                                   Precision.equals(v, x) ||
+                                                   Precision.equals(v, w)) {
+                                            v = u;
+                                            fv = fu;
+                                        }
+                                    }
+                                } else { // Default termination (Brent's criterion).
+                                    return
+                                                best(current,
+                                                     previous,
+                                                isMinim);
+                                }
+                                ++iter;
+                            }
+                children: []
+                pos: 5532
+                length: 4285
+              pos: 4495
+              length: 5328
+          children: []
+          pos: 4433
+          length: 5390
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: best
+              children: []
+              pos: 10286
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: UnivariatePointValuePair a
+                children: []
+                pos: 10291
+                length: 26
+              pos: 10253
+              length: 481
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: a
+                            children: []
+                            pos: 10462
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10467
+                            length: 4
+                        children: []
+                        pos: 10462
+                        length: 9
+                    children: []
+                    pos: 10461
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return b;
+                    children: []
+                    pos: 10487
+                    length: 9
+                  pos: 10473
+                  length: 33
+                pos: 10458
+                length: 48
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: b
+                            children: []
+                            pos: 10519
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10524
+                            length: 4
+                        children: []
+                        pos: 10519
+                        length: 9
+                    children: []
+                    pos: 10518
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return a;
+                    children: []
+                    pos: 10544
+                    length: 9
+                  pos: 10530
+                  length: 33
+                pos: 10515
+                length: 48
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: isMinim
+                        children: []
+                        pos: 10577
+                        length: 7
+                    children: []
+                    pos: 10576
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: 'return a.getValue() <= b.getValue() ? a : b;'
+                    children: []
+                    pos: 10600
+                    length: 44
+                  pos: 10586
+                  length: 68
+                pos: 10573
+                length: 155
+              pos: 10448
+              length: 286
+          children: []
+          pos: 10253
+          length: 481
+        pos: 1906
+        length: 8830
+    children: []
+    pos: 1906
+    length: 8830
+  pos: 0
+  length: 10737
 text_diff: "--- before\n+++ after\n@@ -148,7 +148,6 @@\n         UnivariatePointValuePair
   current\n             = new UnivariatePointValuePair(x, isMinim ? fx : -fx);\n         //
   Best point encountered so far (which is the initial guess).\n-        UnivariatePointValuePair

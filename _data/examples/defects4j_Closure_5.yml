@@ -1,5 +1,1884 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: InlineObjectLiterals
+        children: []
+        pos: 1730
+        length: 20
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: public static final String VAR_PREFIX = "JSCompiler_object_inline_";
+          children: []
+          pos: 1780
+          length: 68
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1852
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final Supplier<String> safeNameIdSupplier;
+          children: []
+          pos: 1896
+          length: 50
+        - type: constructor_declaration
+          fields:
+            text: |-
+              InlineObjectLiterals(
+                    AbstractCompiler compiler,
+                    Supplier<String> safeNameIdSupplier) {
+                  this.compiler = compiler;
+                  this.safeNameIdSupplier = safeNameIdSupplier;
+                }
+          children: []
+          pos: 1950
+          length: 183
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 2161
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 2169
+                length: 12
+              pos: 2137
+              length: 218
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    ReferenceCollectingCallback callback = new ReferenceCollectingCallback(
+                            compiler, new InliningBehavior());
+                children: []
+                pos: 2200
+                length: 114
+              - type: expression_statement
+                fields:
+                  text: callback.process(externs, root);
+                children: []
+                pos: 2319
+                length: 32
+              pos: 2194
+              length: 161
+          children: []
+          pos: 2137
+          length: 218
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: InliningBehavior
+              children: []
+              pos: 2540
+              length: 16
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final Set<Var> staleVars = Sets.newHashSet();
+                children: []
+                pos: 2740
+                length: 53
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: afterExitScope
+                    children: []
+                    pos: 2825
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 2840
+                      length: 15
+                    pos: 2799
+                    length: 906
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Iterator<Var> it = t.getScope().getVars(); it.hasNext();) {
+                                  Var v = it.next();
+
+                                  if (isVarInlineForbidden(v)) {
+                                    continue;
+                                  }
+
+                                  ReferenceCollection referenceInfo = referenceMap.getReferences(v);
+
+                                  if (isInlinableObject(referenceInfo.references)) {
+                                    // Blacklist the object itself, as well as any other values
+                                    // that it refers to, since they will have been moved around.
+                                    staleVars.add(v);
+
+                                    Reference declaration = referenceInfo.references.get(0);
+                                    Reference init = referenceInfo.getInitializingReference();
+
+                                    // Split up the object into individual variables if the object
+                                    // is never referenced directly in full.
+                                    splitObject(v, declaration, init, referenceInfo);
+                                  }
+                                }
+                      children: []
+                      pos: 2892
+                      length: 807
+                    pos: 2884
+                    length: 821
+                children: []
+                pos: 2799
+                length: 906
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: blacklistVarReferencesInTree
+                    children: []
+                    pos: 3983
+                    length: 28
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node root
+                      children: []
+                      pos: 4012
+                      length: 9
+                    pos: 3970
+                    length: 347
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          NodeUtil.visitPreOrder(root, new NodeUtil.Visitor() {
+                                  @Override
+                                  public void visit(Node node) {
+                                    if (node.isName()) {
+                                      staleVars.add(scope.getVar(node.getString()));
+                                    }
+                                  }
+                                }, NodeUtil.MATCH_NOT_FUNCTION);
+                      children: []
+                      pos: 4050
+                      length: 261
+                    pos: 4042
+                    length: 275
+                children: []
+                pos: 3970
+                length: 347
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isVarInlineForbidden
+                    children: []
+                    pos: 4422
+                    length: 20
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var var
+                      children: []
+                      pos: 4443
+                      length: 7
+                    pos: 4406
+                    length: 767
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return var.isGlobal()
+                                    || var.isExtern()
+                                    || compiler.getCodingConvention().isExported(var.name)
+                                    || RenameProperties.RENAME_PROPERTY_FUNCTION_NAME.equals(var.name)
+                                    || staleVars.contains(var);
+                      children: []
+                      pos: 4938
+                      length: 229
+                    pos: 4452
+                    length: 721
+                children: []
+                pos: 4406
+                length: 767
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isInlinableObject
+                    children: []
+                    pos: 5402
+                    length: 17
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: List<Reference> refs
+                      children: []
+                      pos: 5420
+                      length: 20
+                    pos: 5386
+                    length: 3712
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: boolean ret = false;
+                      children: []
+                      pos: 5450
+                      length: 20
+                    - type: local_variable_declaration
+                      fields:
+                        text: Set<String> validProperties = Sets.newHashSet();
+                      children: []
+                      pos: 5477
+                      length: 48
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Reference ref : refs) {
+                                  Node name = ref.getNode();
+                                  Node parent = ref.getParent();
+                                  Node gramps = ref.getGrandparent();
+
+                                  // Ignore most indirect references, like x.y (but not x.y(),
+                                  // since the function referenced by y might reference 'this').
+                                  //
+                                  if (parent.isGetProp()) {
+                                    Preconditions.checkState(parent.getFirstChild() == name);
+                                    // A call target may be using the object as a 'this' value.
+                                    if (gramps.isCall()
+                                        && gramps.getFirstChild() == parent) {
+                                      return false;
+                                    }
+
+                                    // Deleting a property has different semantics from deleting
+                                    // a variable, so deleted properties should not be inlined.
+                                    if (gramps.isDelProp()) {
+                                      return false;
+                                    }
+
+                                    // NOTE(nicksantos): This pass's object-splitting algorithm has
+                                    // a blind spot. It assumes that if a property isn't defined on an
+                                    // object, then the value is undefined. This is not true, because
+                                    // Object.prototype can have arbitrary properties on it.
+                                    //
+                                    // We short-circuit this problem by bailing out if we see a reference
+                                    // to a property that isn't defined on the object literal. This
+                                    // isn't a perfect algorithm, but it should catch most cases.
+                                    String propName = parent.getLastChild().getString();
+                                    if (!validProperties.contains(propName)) {
+                                      if (NodeUtil.isVarOrSimpleAssignLhs(parent, gramps)) {
+                                        validProperties.add(propName);
+                                      } else {
+                                        return false;
+                                      }
+                                    }
+                                    continue;
+                                  }
+
+                                  // Only rewrite VAR declarations or simple assignment statements
+                                  if (!isVarOrAssignExprLhs(name)) {
+                                     return false;
+                                  }
+
+                                  Node val = ref.getAssignedValue();
+                                  if (val == null) {
+                                    // A var with no assignment.
+                                    continue;
+                                  }
+
+                                  // We're looking for object literal assignments only.
+                                  if (!val.isObjectLit()) {
+                                    return false;
+                                  }
+
+                                  // Make sure that the value is not self-referential. IOW,
+                                  // disallow things like x = {b: x.a}.
+                                  //
+                                  // TODO: Only exclude unorderable self-referential
+                                  // assignments. i.e. x = {a: x.b, b: x.a} is not orderable,
+                                  // but x = {a: 1, b: x.a} is.
+                                  //
+                                  // Also, ES5 getters/setters aren't handled by this pass.
+                                  for (Node child = val.getFirstChild(); child != null;
+                                       child = child.getNext()) {
+                                    if (child.isGetterDef() ||
+                                        child.isSetterDef()) {
+                                      // ES5 get/set not supported.
+                                      return false;
+                                    }
+
+                                    validProperties.add(child.getString());
+
+                                    Node childVal = child.getFirstChild();
+                                    // Check if childVal is the parent of any of the passed in
+                                    // references, as that is how self-referential assignments
+                                    // will happen.
+                                    for (Reference t : refs) {
+                                      Node refNode = t.getParent();
+                                      while (!NodeUtil.isStatementBlock(refNode)) {
+                                        if (refNode == childVal) {
+                                          // There's a self-referential assignment
+                                          return false;
+                                        }
+                                        refNode = refNode.getParent();
+                                      }
+                                    }
+                                  }
+
+
+                                  // We have found an acceptable object literal assignment. As
+                                  // long as there are no other assignments that mess things up,
+                                  // we can inline.
+                                  ret = true;
+                                }
+                      children: []
+                      pos: 5532
+                      length: 3542
+                    - type: return_statement
+                      fields:
+                        text: return ret;
+                      children: []
+                      pos: 9081
+                      length: 11
+                    pos: 5442
+                    length: 3656
+                children: []
+                pos: 5386
+                length: 3712
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isVarOrAssignExprLhs
+                    children: []
+                    pos: 9120
+                    length: 20
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 9141
+                      length: 6
+                    pos: 9104
+                    length: 245
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node parent = n.getParent();
+                      children: []
+                      pos: 9157
+                      length: 28
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return parent.isVar() ||
+                                    (parent.isAssign()
+                                        && parent.getFirstChild() == n
+                                        && parent.getParent().isExprResult());
+                      children: []
+                      pos: 9192
+                      length: 151
+                    pos: 9149
+                    length: 200
+                children: []
+                pos: 9104
+                length: 245
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: computeVarList
+                    children: []
+                    pos: 9551
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var v
+                      children: []
+                      pos: 9575
+                      length: 5
+                    pos: 9523
+                    length: 1396
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Map<String, String> varmap = Maps.newLinkedHashMap();
+                      children: []
+                      pos: 9625
+                      length: 53
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Reference ref : referenceInfo.references) {
+                                  if (ref.isLvalue() || ref.isInitializingDeclaration()) {
+                                    Node val = ref.getAssignedValue();
+                                    if (val != null) {
+                                      Preconditions.checkState(val.isObjectLit());
+                                      for (Node child = val.getFirstChild(); child != null;
+                                           child = child.getNext()) {
+                                        String varname = child.getString();
+                                        if (varmap.containsKey(varname)) {
+                                          continue;
+                                        }
+
+                                        String var = VAR_PREFIX + varname + "_" +
+                                          safeNameIdSupplier.get();
+                                        varmap.put(varname, var);
+                                      }
+                                    }
+                                  } else if (ref.getParent().isVar()) {
+                                    // This is the var. There is no value.
+                                  } else {
+                                    Node getprop = ref.getParent();
+                                    Preconditions.checkState(getprop.isGetProp());
+
+                                    // The key being looked up in the original map.
+                                    String varname = getprop.getLastChild().getString();
+                                    if (varmap.containsKey(varname)) {
+                                      continue;
+                                    }
+
+                                    String var = VAR_PREFIX + varname + "_" + safeNameIdSupplier.get();
+                                    varmap.put(varname, var);
+                                  }
+                                }
+                      children: []
+                      pos: 9686
+                      length: 1205
+                    - type: return_statement
+                      fields:
+                        text: return varmap;
+                      children: []
+                      pos: 10899
+                      length: 14
+                    pos: 9617
+                    length: 1302
+                children: []
+                pos: 9523
+                length: 1396
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: fillInitialValues
+                    children: []
+                    pos: 11107
+                    length: 17
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Reference init
+                      children: []
+                      pos: 11125
+                      length: 14
+                    pos: 11094
+                    length: 345
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node object = init.getAssignedValue();
+                      children: []
+                      pos: 11177
+                      length: 38
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(object.isObjectLit());
+                      children: []
+                      pos: 11222
+                      length: 47
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node key = object.getFirstChild(); key != null;
+                                     key = key.getNext()) {
+                                  initvals.put(key.getString(), key.removeFirstChild());
+                                }
+                      children: []
+                      pos: 11276
+                      length: 157
+                    pos: 11169
+                    length: 270
+                children: []
+                pos: 11094
+                length: 345
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: replaceAssignmentExpression
+                    children: []
+                    pos: 11659
+                    length: 27
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var v
+                      children: []
+                      pos: 11687
+                      length: 5
+                    pos: 11646
+                    length: 2247
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: List<Node> nodes = Lists.newArrayList();
+                      children: []
+                      pos: 11840
+                      length: 40
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node val = ref.getAssignedValue();
+                      children: []
+                      pos: 11887
+                      length: 34
+                    - type: expression_statement
+                      fields:
+                        text: blacklistVarReferencesInTree(val, v.scope);
+                      children: []
+                      pos: 11928
+                      length: 43
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(val.isObjectLit());
+                      children: []
+                      pos: 11978
+                      length: 44
+                    - type: local_variable_declaration
+                      fields:
+                        text: Set<String> all = Sets.newLinkedHashSet(varmap.keySet());
+                      children: []
+                      pos: 12029
+                      length: 57
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node key = val.getFirstChild(); key != null;
+                                     key = key.getNext()) {
+                                  String var = key.getString();
+                                  Node value = key.removeFirstChild();
+                                  // TODO(user): Copy type information.
+                                  nodes.add(
+                                      IR.assign(
+                                          IR.name(varmap.get(var)),
+                                          value));
+                                  all.remove(var);
+                                }
+                      children: []
+                      pos: 12093
+                      length: 354
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (String var : all) {
+                                  nodes.add(
+                                      IR.assign(
+                                          IR.name(varmap.get(var)),
+                                          NodeUtil.newUndefinedNode(null)));
+                                }
+                      children: []
+                      pos: 12503
+                      length: 167
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node replacement;
+                      children: []
+                      pos: 12678
+                      length: 17
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: nodes.isEmpty()
+                              children: []
+                              pos: 12706
+                              length: 15
+                          children: []
+                          pos: 12705
+                          length: 17
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: replacement = IR.trueNode();
+                          children: []
+                          pos: 12733
+                          length: 28
+                        pos: 12723
+                        length: 46
+                      pos: 12702
+                      length: 879
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node replace = ref.getParent();
+                      children: []
+                      pos: 13589
+                      length: 31
+                    - type: expression_statement
+                      fields:
+                        text: replacement.copyInformationFromForTree(replace);
+                      children: []
+                      pos: 13627
+                      length: 48
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: replace.isVar()
+                              children: []
+                              pos: 13687
+                              length: 15
+                          children: []
+                          pos: 13686
+                          length: 17
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: |-
+                              replace.getParent().replaceChild(
+                                          replace, NodeUtil.newExpr(replacement));
+                          children: []
+                          pos: 13714
+                          length: 86
+                        pos: 13704
+                        length: 104
+                      pos: 13683
+                      length: 204
+                    pos: 11782
+                    length: 2111
+                children: []
+                pos: 11646
+                length: 2247
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: splitObject
+                    children: []
+                    pos: 14020
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var v
+                      children: []
+                      pos: 14032
+                      length: 5
+                    pos: 14007
+                    length: 2924
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Map<String, String> varmap = computeVarList(v, referenceInfo);
+                      children: []
+                      pos: 14296
+                      length: 62
+                    - type: local_variable_declaration
+                      fields:
+                        text: Map<String, Node> initvals = Maps.newHashMap();
+                      children: []
+                      pos: 14366
+                      length: 47
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node vnode;
+                      children: []
+                      pos: 14612
+                      length: 11
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          boolean defined = referenceInfo.isWellDefined() &&
+                                    init.getParent().isVar();
+                      children: []
+                      pos: 14630
+                      length: 86
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: defined
+                              children: []
+                              pos: 14727
+                              length: 7
+                          children: []
+                          pos: 14726
+                          length: 9
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: vnode = init.getParent();
+                          children: []
+                          pos: 14746
+                          length: 25
+                        - type: expression_statement
+                          fields:
+                            text: fillInitialValues(init, initvals);
+                          children: []
+                          pos: 14780
+                          length: 34
+                        pos: 14736
+                        length: 86
+                      pos: 14723
+                      length: 299
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Map.Entry<String, String> entry : varmap.entrySet()) {
+                                  Node val = initvals.get(entry.getKey());
+                                  Node varnode = NodeUtil.newVarNode(entry.getValue(), val);
+                                  if (val == null) {
+                                    // is this right?
+                                    varnode.copyInformationFromForTree(vnode);
+                                  } else {
+                                    blacklistVarReferencesInTree(val, v.scope);
+                                  }
+                                  vnode.getParent().addChildBefore(varnode, vnode);
+                                }
+                      children: []
+                      pos: 15030
+                      length: 430
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: defined
+                              children: []
+                              pos: 15472
+                              length: 7
+                          children: []
+                          pos: 15471
+                          length: 9
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: vnode.getParent().removeChild(vnode);
+                          children: []
+                          pos: 15491
+                          length: 37
+                        pos: 15481
+                        length: 55
+                      pos: 15468
+                      length: 68
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Reference ref : referenceInfo.references) {
+                                  // The init/decl have already been converted.
+                                  if (defined && ref == init) continue;
+
+                                  if (ref.isLvalue()) {
+                                    // Assignments have to be handled specially, since they
+                                    // expand out into multiple assignments.
+                                    replaceAssignmentExpression(v, ref, varmap);
+                                  } else if (ref.getParent().isVar()) {
+                                    // The old variable declaration. It didn't have a
+                                    // value. Remove it entirely as it should now be unused.
+                                    ref.getGrandparent().removeChild(ref.getParent());
+                                  } else {
+                                    // Make sure that the reference is a GETPROP as we expect it to be.
+                                    Node getprop = ref.getParent();
+                                    Preconditions.checkState(getprop.isGetProp());
+
+                                    // The key being looked up in the original map.
+                                    String var = getprop.getChildAtIndex(1).getString();
+
+                                    // If the variable hasn't already been declared, add an empty
+                                    // declaration near all the other declarations.
+                                    Preconditions.checkState(varmap.containsKey(var));
+
+                                    // Replace the GETPROP node with a NAME.
+                                    Node replacement = IR.name(varmap.get(var));
+                                    replacement.copyInformationFrom(getprop);
+                                    ref.getGrandparent().replaceChild(ref.getParent(), replacement);
+                                  }
+                                }
+                      children: []
+                      pos: 15544
+                      length: 1345
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 16897
+                      length: 28
+                    pos: 14171
+                    length: 2760
+                children: []
+                pos: 14007
+                length: 2924
+              pos: 2526
+              length: 14409
+          children: []
+          pos: 2526
+          length: 14409
+        pos: 1724
+        length: 15213
+    children: []
+    pos: 1724
+    length: 15213
+  pos: 0
+  length: 16938
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: InlineObjectLiterals
+        children: []
+        pos: 1730
+        length: 20
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: public static final String VAR_PREFIX = "JSCompiler_object_inline_";
+          children: []
+          pos: 1780
+          length: 68
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1852
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final Supplier<String> safeNameIdSupplier;
+          children: []
+          pos: 1896
+          length: 50
+        - type: constructor_declaration
+          fields:
+            text: |-
+              InlineObjectLiterals(
+                    AbstractCompiler compiler,
+                    Supplier<String> safeNameIdSupplier) {
+                  this.compiler = compiler;
+                  this.safeNameIdSupplier = safeNameIdSupplier;
+                }
+          children: []
+          pos: 1950
+          length: 183
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 2161
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 2169
+                length: 12
+              pos: 2137
+              length: 218
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    ReferenceCollectingCallback callback = new ReferenceCollectingCallback(
+                            compiler, new InliningBehavior());
+                children: []
+                pos: 2200
+                length: 114
+              - type: expression_statement
+                fields:
+                  text: callback.process(externs, root);
+                children: []
+                pos: 2319
+                length: 32
+              pos: 2194
+              length: 161
+          children: []
+          pos: 2137
+          length: 218
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: InliningBehavior
+              children: []
+              pos: 2540
+              length: 16
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final Set<Var> staleVars = Sets.newHashSet();
+                children: []
+                pos: 2740
+                length: 53
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: afterExitScope
+                    children: []
+                    pos: 2825
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 2840
+                      length: 15
+                    pos: 2799
+                    length: 906
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Iterator<Var> it = t.getScope().getVars(); it.hasNext();) {
+                                  Var v = it.next();
+
+                                  if (isVarInlineForbidden(v)) {
+                                    continue;
+                                  }
+
+                                  ReferenceCollection referenceInfo = referenceMap.getReferences(v);
+
+                                  if (isInlinableObject(referenceInfo.references)) {
+                                    // Blacklist the object itself, as well as any other values
+                                    // that it refers to, since they will have been moved around.
+                                    staleVars.add(v);
+
+                                    Reference declaration = referenceInfo.references.get(0);
+                                    Reference init = referenceInfo.getInitializingReference();
+
+                                    // Split up the object into individual variables if the object
+                                    // is never referenced directly in full.
+                                    splitObject(v, declaration, init, referenceInfo);
+                                  }
+                                }
+                      children: []
+                      pos: 2892
+                      length: 807
+                    pos: 2884
+                    length: 821
+                children: []
+                pos: 2799
+                length: 906
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: blacklistVarReferencesInTree
+                    children: []
+                    pos: 3983
+                    length: 28
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node root
+                      children: []
+                      pos: 4012
+                      length: 9
+                    pos: 3970
+                    length: 347
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          NodeUtil.visitPreOrder(root, new NodeUtil.Visitor() {
+                                  @Override
+                                  public void visit(Node node) {
+                                    if (node.isName()) {
+                                      staleVars.add(scope.getVar(node.getString()));
+                                    }
+                                  }
+                                }, NodeUtil.MATCH_NOT_FUNCTION);
+                      children: []
+                      pos: 4050
+                      length: 261
+                    pos: 4042
+                    length: 275
+                children: []
+                pos: 3970
+                length: 347
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isVarInlineForbidden
+                    children: []
+                    pos: 4422
+                    length: 20
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var var
+                      children: []
+                      pos: 4443
+                      length: 7
+                    pos: 4406
+                    length: 767
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return var.isGlobal()
+                                    || var.isExtern()
+                                    || compiler.getCodingConvention().isExported(var.name)
+                                    || RenameProperties.RENAME_PROPERTY_FUNCTION_NAME.equals(var.name)
+                                    || staleVars.contains(var);
+                      children: []
+                      pos: 4938
+                      length: 229
+                    pos: 4452
+                    length: 721
+                children: []
+                pos: 4406
+                length: 767
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isInlinableObject
+                    children: []
+                    pos: 5402
+                    length: 17
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: List<Reference> refs
+                      children: []
+                      pos: 5420
+                      length: 20
+                    pos: 5386
+                    length: 3638
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: boolean ret = false;
+                      children: []
+                      pos: 5450
+                      length: 20
+                    - type: local_variable_declaration
+                      fields:
+                        text: Set<String> validProperties = Sets.newHashSet();
+                      children: []
+                      pos: 5477
+                      length: 48
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Reference ref : refs) {
+                                  Node name = ref.getNode();
+                                  Node parent = ref.getParent();
+                                  Node gramps = ref.getGrandparent();
+
+                                  // Ignore most indirect references, like x.y (but not x.y(),
+                                  // since the function referenced by y might reference 'this').
+                                  //
+                                  if (parent.isGetProp()) {
+                                    Preconditions.checkState(parent.getFirstChild() == name);
+                                    // A call target may be using the object as a 'this' value.
+                                    if (gramps.isCall()
+                                        && gramps.getFirstChild() == parent) {
+                                      return false;
+                                    }
+
+                                    // Deleting a property has different semantics from deleting
+                                    // a variable, so deleted properties should not be inlined.
+
+                                    // NOTE(nicksantos): This pass's object-splitting algorithm has
+                                    // a blind spot. It assumes that if a property isn't defined on an
+                                    // object, then the value is undefined. This is not true, because
+                                    // Object.prototype can have arbitrary properties on it.
+                                    //
+                                    // We short-circuit this problem by bailing out if we see a reference
+                                    // to a property that isn't defined on the object literal. This
+                                    // isn't a perfect algorithm, but it should catch most cases.
+                                    String propName = parent.getLastChild().getString();
+                                    if (!validProperties.contains(propName)) {
+                                      if (NodeUtil.isVarOrSimpleAssignLhs(parent, gramps)) {
+                                        validProperties.add(propName);
+                                      } else {
+                                        return false;
+                                      }
+                                    }
+                                    continue;
+                                  }
+
+                                  // Only rewrite VAR declarations or simple assignment statements
+                                  if (!isVarOrAssignExprLhs(name)) {
+                                     return false;
+                                  }
+
+                                  Node val = ref.getAssignedValue();
+                                  if (val == null) {
+                                    // A var with no assignment.
+                                    continue;
+                                  }
+
+                                  // We're looking for object literal assignments only.
+                                  if (!val.isObjectLit()) {
+                                    return false;
+                                  }
+
+                                  // Make sure that the value is not self-referential. IOW,
+                                  // disallow things like x = {b: x.a}.
+                                  //
+                                  // TODO: Only exclude unorderable self-referential
+                                  // assignments. i.e. x = {a: x.b, b: x.a} is not orderable,
+                                  // but x = {a: 1, b: x.a} is.
+                                  //
+                                  // Also, ES5 getters/setters aren't handled by this pass.
+                                  for (Node child = val.getFirstChild(); child != null;
+                                       child = child.getNext()) {
+                                    if (child.isGetterDef() ||
+                                        child.isSetterDef()) {
+                                      // ES5 get/set not supported.
+                                      return false;
+                                    }
+
+                                    validProperties.add(child.getString());
+
+                                    Node childVal = child.getFirstChild();
+                                    // Check if childVal is the parent of any of the passed in
+                                    // references, as that is how self-referential assignments
+                                    // will happen.
+                                    for (Reference t : refs) {
+                                      Node refNode = t.getParent();
+                                      while (!NodeUtil.isStatementBlock(refNode)) {
+                                        if (refNode == childVal) {
+                                          // There's a self-referential assignment
+                                          return false;
+                                        }
+                                        refNode = refNode.getParent();
+                                      }
+                                    }
+                                  }
+
+
+                                  // We have found an acceptable object literal assignment. As
+                                  // long as there are no other assignments that mess things up,
+                                  // we can inline.
+                                  ret = true;
+                                }
+                      children: []
+                      pos: 5532
+                      length: 3468
+                    - type: return_statement
+                      fields:
+                        text: return ret;
+                      children: []
+                      pos: 9007
+                      length: 11
+                    pos: 5442
+                    length: 3582
+                children: []
+                pos: 5386
+                length: 3638
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isVarOrAssignExprLhs
+                    children: []
+                    pos: 9046
+                    length: 20
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 9067
+                      length: 6
+                    pos: 9030
+                    length: 245
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node parent = n.getParent();
+                      children: []
+                      pos: 9083
+                      length: 28
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return parent.isVar() ||
+                                    (parent.isAssign()
+                                        && parent.getFirstChild() == n
+                                        && parent.getParent().isExprResult());
+                      children: []
+                      pos: 9118
+                      length: 151
+                    pos: 9075
+                    length: 200
+                children: []
+                pos: 9030
+                length: 245
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: computeVarList
+                    children: []
+                    pos: 9477
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var v
+                      children: []
+                      pos: 9501
+                      length: 5
+                    pos: 9449
+                    length: 1396
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Map<String, String> varmap = Maps.newLinkedHashMap();
+                      children: []
+                      pos: 9551
+                      length: 53
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Reference ref : referenceInfo.references) {
+                                  if (ref.isLvalue() || ref.isInitializingDeclaration()) {
+                                    Node val = ref.getAssignedValue();
+                                    if (val != null) {
+                                      Preconditions.checkState(val.isObjectLit());
+                                      for (Node child = val.getFirstChild(); child != null;
+                                           child = child.getNext()) {
+                                        String varname = child.getString();
+                                        if (varmap.containsKey(varname)) {
+                                          continue;
+                                        }
+
+                                        String var = VAR_PREFIX + varname + "_" +
+                                          safeNameIdSupplier.get();
+                                        varmap.put(varname, var);
+                                      }
+                                    }
+                                  } else if (ref.getParent().isVar()) {
+                                    // This is the var. There is no value.
+                                  } else {
+                                    Node getprop = ref.getParent();
+                                    Preconditions.checkState(getprop.isGetProp());
+
+                                    // The key being looked up in the original map.
+                                    String varname = getprop.getLastChild().getString();
+                                    if (varmap.containsKey(varname)) {
+                                      continue;
+                                    }
+
+                                    String var = VAR_PREFIX + varname + "_" + safeNameIdSupplier.get();
+                                    varmap.put(varname, var);
+                                  }
+                                }
+                      children: []
+                      pos: 9612
+                      length: 1205
+                    - type: return_statement
+                      fields:
+                        text: return varmap;
+                      children: []
+                      pos: 10825
+                      length: 14
+                    pos: 9543
+                    length: 1302
+                children: []
+                pos: 9449
+                length: 1396
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: fillInitialValues
+                    children: []
+                    pos: 11033
+                    length: 17
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Reference init
+                      children: []
+                      pos: 11051
+                      length: 14
+                    pos: 11020
+                    length: 345
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node object = init.getAssignedValue();
+                      children: []
+                      pos: 11103
+                      length: 38
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(object.isObjectLit());
+                      children: []
+                      pos: 11148
+                      length: 47
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node key = object.getFirstChild(); key != null;
+                                     key = key.getNext()) {
+                                  initvals.put(key.getString(), key.removeFirstChild());
+                                }
+                      children: []
+                      pos: 11202
+                      length: 157
+                    pos: 11095
+                    length: 270
+                children: []
+                pos: 11020
+                length: 345
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: replaceAssignmentExpression
+                    children: []
+                    pos: 11585
+                    length: 27
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var v
+                      children: []
+                      pos: 11613
+                      length: 5
+                    pos: 11572
+                    length: 2247
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: List<Node> nodes = Lists.newArrayList();
+                      children: []
+                      pos: 11766
+                      length: 40
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node val = ref.getAssignedValue();
+                      children: []
+                      pos: 11813
+                      length: 34
+                    - type: expression_statement
+                      fields:
+                        text: blacklistVarReferencesInTree(val, v.scope);
+                      children: []
+                      pos: 11854
+                      length: 43
+                    - type: expression_statement
+                      fields:
+                        text: Preconditions.checkState(val.isObjectLit());
+                      children: []
+                      pos: 11904
+                      length: 44
+                    - type: local_variable_declaration
+                      fields:
+                        text: Set<String> all = Sets.newLinkedHashSet(varmap.keySet());
+                      children: []
+                      pos: 11955
+                      length: 57
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node key = val.getFirstChild(); key != null;
+                                     key = key.getNext()) {
+                                  String var = key.getString();
+                                  Node value = key.removeFirstChild();
+                                  // TODO(user): Copy type information.
+                                  nodes.add(
+                                      IR.assign(
+                                          IR.name(varmap.get(var)),
+                                          value));
+                                  all.remove(var);
+                                }
+                      children: []
+                      pos: 12019
+                      length: 354
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (String var : all) {
+                                  nodes.add(
+                                      IR.assign(
+                                          IR.name(varmap.get(var)),
+                                          NodeUtil.newUndefinedNode(null)));
+                                }
+                      children: []
+                      pos: 12429
+                      length: 167
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node replacement;
+                      children: []
+                      pos: 12604
+                      length: 17
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: nodes.isEmpty()
+                              children: []
+                              pos: 12632
+                              length: 15
+                          children: []
+                          pos: 12631
+                          length: 17
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: replacement = IR.trueNode();
+                          children: []
+                          pos: 12659
+                          length: 28
+                        pos: 12649
+                        length: 46
+                      pos: 12628
+                      length: 879
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node replace = ref.getParent();
+                      children: []
+                      pos: 13515
+                      length: 31
+                    - type: expression_statement
+                      fields:
+                        text: replacement.copyInformationFromForTree(replace);
+                      children: []
+                      pos: 13553
+                      length: 48
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: replace.isVar()
+                              children: []
+                              pos: 13613
+                              length: 15
+                          children: []
+                          pos: 13612
+                          length: 17
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: |-
+                              replace.getParent().replaceChild(
+                                          replace, NodeUtil.newExpr(replacement));
+                          children: []
+                          pos: 13640
+                          length: 86
+                        pos: 13630
+                        length: 104
+                      pos: 13609
+                      length: 204
+                    pos: 11708
+                    length: 2111
+                children: []
+                pos: 11572
+                length: 2247
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: splitObject
+                    children: []
+                    pos: 13946
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Var v
+                      children: []
+                      pos: 13958
+                      length: 5
+                    pos: 13933
+                    length: 2924
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Map<String, String> varmap = computeVarList(v, referenceInfo);
+                      children: []
+                      pos: 14222
+                      length: 62
+                    - type: local_variable_declaration
+                      fields:
+                        text: Map<String, Node> initvals = Maps.newHashMap();
+                      children: []
+                      pos: 14292
+                      length: 47
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node vnode;
+                      children: []
+                      pos: 14538
+                      length: 11
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          boolean defined = referenceInfo.isWellDefined() &&
+                                    init.getParent().isVar();
+                      children: []
+                      pos: 14556
+                      length: 86
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: defined
+                              children: []
+                              pos: 14653
+                              length: 7
+                          children: []
+                          pos: 14652
+                          length: 9
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: vnode = init.getParent();
+                          children: []
+                          pos: 14672
+                          length: 25
+                        - type: expression_statement
+                          fields:
+                            text: fillInitialValues(init, initvals);
+                          children: []
+                          pos: 14706
+                          length: 34
+                        pos: 14662
+                        length: 86
+                      pos: 14649
+                      length: 299
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Map.Entry<String, String> entry : varmap.entrySet()) {
+                                  Node val = initvals.get(entry.getKey());
+                                  Node varnode = NodeUtil.newVarNode(entry.getValue(), val);
+                                  if (val == null) {
+                                    // is this right?
+                                    varnode.copyInformationFromForTree(vnode);
+                                  } else {
+                                    blacklistVarReferencesInTree(val, v.scope);
+                                  }
+                                  vnode.getParent().addChildBefore(varnode, vnode);
+                                }
+                      children: []
+                      pos: 14956
+                      length: 430
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: defined
+                              children: []
+                              pos: 15398
+                              length: 7
+                          children: []
+                          pos: 15397
+                          length: 9
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: vnode.getParent().removeChild(vnode);
+                          children: []
+                          pos: 15417
+                          length: 37
+                        pos: 15407
+                        length: 55
+                      pos: 15394
+                      length: 68
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Reference ref : referenceInfo.references) {
+                                  // The init/decl have already been converted.
+                                  if (defined && ref == init) continue;
+
+                                  if (ref.isLvalue()) {
+                                    // Assignments have to be handled specially, since they
+                                    // expand out into multiple assignments.
+                                    replaceAssignmentExpression(v, ref, varmap);
+                                  } else if (ref.getParent().isVar()) {
+                                    // The old variable declaration. It didn't have a
+                                    // value. Remove it entirely as it should now be unused.
+                                    ref.getGrandparent().removeChild(ref.getParent());
+                                  } else {
+                                    // Make sure that the reference is a GETPROP as we expect it to be.
+                                    Node getprop = ref.getParent();
+                                    Preconditions.checkState(getprop.isGetProp());
+
+                                    // The key being looked up in the original map.
+                                    String var = getprop.getChildAtIndex(1).getString();
+
+                                    // If the variable hasn't already been declared, add an empty
+                                    // declaration near all the other declarations.
+                                    Preconditions.checkState(varmap.containsKey(var));
+
+                                    // Replace the GETPROP node with a NAME.
+                                    Node replacement = IR.name(varmap.get(var));
+                                    replacement.copyInformationFrom(getprop);
+                                    ref.getGrandparent().replaceChild(ref.getParent(), replacement);
+                                  }
+                                }
+                      children: []
+                      pos: 15470
+                      length: 1345
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 16823
+                      length: 28
+                    pos: 14097
+                    length: 2760
+                children: []
+                pos: 13933
+                length: 2924
+              pos: 2526
+              length: 14335
+          children: []
+          pos: 2526
+          length: 14335
+        pos: 1724
+        length: 15139
+    children: []
+    pos: 1724
+    length: 15139
+  pos: 0
+  length: 16864
 text_diff: "--- before\n+++ after\n@@ -173,9 +173,6 @@\n \n           // Deleting
   a property has different semantics from deleting\n           // a variable, so deleted
   properties should not be inlined.\n-          if (gramps.isDelProp()) {\n-            return

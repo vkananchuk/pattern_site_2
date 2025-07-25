@@ -1,5 +1,1897 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: UnreachableCodeElimination
+        children: []
+        pos: 2113
+        length: 26
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: |-
+              private static final Logger logger =
+                  Logger.getLogger(UnreachableCodeElimination.class.getName());
+          children: []
+          pos: 2168
+          length: 102
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 2273
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final boolean removeNoOpStatements;
+          children: []
+          pos: 2316
+          length: 43
+        - type: field_declaration
+          fields:
+            text: private boolean codeChanged;
+          children: []
+          pos: 2362
+          length: 28
+        - type: constructor_declaration
+          fields:
+            text: |-
+              UnreachableCodeElimination(AbstractCompiler compiler,
+                    boolean removeNoOpStatements) {
+                  this.compiler = compiler;
+                  this.removeNoOpStatements = removeNoOpStatements;
+                }
+          children: []
+          pos: 2394
+          length: 179
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 2601
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 2609
+                length: 12
+              pos: 2577
+              length: 846
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    NodeTraversal.traverseChangedFunctions(compiler, new FunctionCallback() {
+                            @Override
+                            public void visit(AbstractCompiler compiler, Node root) {
+                              // Computes the control flow graph.
+                              ControlFlowAnalysis cfa =
+                                  new ControlFlowAnalysis(compiler, false, false);
+                              cfa.process(null, root);
+                              ControlFlowGraph<Node> cfg = cfa.getCfg();
+                              new GraphReachability<Node, ControlFlowGraph.Branch>(cfg)
+                                  .compute(cfg.getEntry().getValue());
+                              if (root.isFunction()) {
+                                root = root.getLastChild();
+                              }
+                              do {
+                                codeChanged = false;
+                                NodeTraversal.traverse(compiler, root, new EliminationPass(cfg));
+                              } while (codeChanged);
+                            }
+                          });
+                children: []
+                pos: 2644
+                length: 775
+              pos: 2638
+              length: 785
+          children: []
+          pos: 2577
+          length: 846
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: EliminationPass
+              children: []
+              pos: 3441
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final ControlFlowGraph<Node> cfg;
+                children: []
+                pos: 3495
+                length: 41
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private EliminationPass(ControlFlowGraph<Node> cfg) {
+                          this.cfg = cfg;
+                        }
+                children: []
+                pos: 3541
+                length: 81
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 3654
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3660
+                      length: 15
+                    pos: 3628
+                    length: 553
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: or
+                                  fields:
+                                    left:
+                                      type: equals
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: parent
+                                          children: []
+                                          pos: 3710
+                                          length: 6
+                                        right:
+                                          type: null_literal
+                                          fields: {}
+                                          children: []
+                                          pos: 3720
+                                          length: 4
+                                      children: []
+                                      pos: 3710
+                                      length: 14
+                                    right:
+                                      type: method_invocation
+                                      fields:
+                                        text: n.isFunction()
+                                      children: []
+                                      pos: 3728
+                                      length: 14
+                                  children: []
+                                  pos: 3710
+                                  length: 32
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isScript()
+                                  children: []
+                                  pos: 3746
+                                  length: 12
+                              children: []
+                              pos: 3710
+                              length: 48
+                          children: []
+                          pos: 3709
+                          length: 50
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 3770
+                          length: 7
+                        pos: 3760
+                        length: 25
+                      pos: 3706
+                      length: 79
+                    - type: local_variable_declaration
+                      fields:
+                        text: DiGraphNode<Node, Branch> gNode = cfg.getDirectedGraphNode(n);
+                      children: []
+                      pos: 3792
+                      length: 62
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: gNode
+                                  children: []
+                                  pos: 3865
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 3874
+                                  length: 4
+                              children: []
+                              pos: 3865
+                              length: 13
+                          children: []
+                          pos: 3864
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 3905
+                          length: 7
+                        pos: 3880
+                        length: 40
+                      pos: 3861
+                      length: 59
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: gNode.getAnnotation()
+                                      children: []
+                                      pos: 3931
+                                      length: 21
+                                    right:
+                                      type: field_access
+                                      fields:
+                                        text: GraphReachability.REACHABLE
+                                      children: []
+                                      pos: 3956
+                                      length: 27
+                                  children: []
+                                  pos: 3931
+                                  length: 52
+                                right:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: and
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: removeNoOpStatements
+                                          children: []
+                                          pos: 3998
+                                          length: 20
+                                        right:
+                                          type: unary_expression
+                                          fields:
+                                            text: "!NodeUtil.mayHaveSideEffects(n,
+                                              compiler)"
+                                          children: []
+                                          pos: 4022
+                                          length: 41
+                                      children: []
+                                      pos: 3998
+                                      length: 65
+                                  children: []
+                                  pos: 3997
+                                  length: 67
+                              children: []
+                              pos: 3931
+                              length: 133
+                          children: []
+                          pos: 3930
+                          length: 135
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: removeDeadExprStatementSafely(n);
+                          children: []
+                          pos: 4076
+                          length: 33
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 4118
+                          length: 7
+                        pos: 4066
+                        length: 67
+                      pos: 3927
+                      length: 206
+                    - type: expression_statement
+                      fields:
+                        text: tryRemoveUnconditionalBranching(n);
+                      children: []
+                      pos: 4140
+                      length: 35
+                    pos: 3698
+                    length: 483
+                children: []
+                pos: 3628
+                length: 553
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: tryRemoveUnconditionalBranching
+                    children: []
+                    pos: 5199
+                    length: 31
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 5231
+                      length: 6
+                    pos: 5149
+                    length: 1796
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: "n"
+                                  children: []
+                                  pos: 5772
+                                  length: 1
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 5777
+                                  length: 4
+                              children: []
+                              pos: 5772
+                              length: 9
+                          children: []
+                          pos: 5771
+                          length: 11
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 5794
+                          length: 7
+                        pos: 5783
+                        length: 26
+                      pos: 5768
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: DiGraphNode<Node, Branch> gNode = cfg.getDirectedGraphNode(n);
+                      children: []
+                      pos: 5817
+                      length: 62
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: gNode
+                                  children: []
+                                  pos: 5891
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 5900
+                                  length: 4
+                              children: []
+                              pos: 5891
+                              length: 13
+                          children: []
+                          pos: 5890
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 5916
+                          length: 7
+                        pos: 5906
+                        length: 25
+                      pos: 5887
+                      length: 44
+                    - type: switch_expression
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.getType()
+                              children: []
+                              pos: 5947
+                              length: 11
+                          children: []
+                          pos: 5946
+                          length: 13
+                        body:
+                          type: switch_block
+                          fields:
+                            text: |-
+                              {
+                                      case Token.RETURN:
+                                        if (n.hasChildren()) {
+                                          break;
+                                        }
+                                      case Token.BREAK:
+                                      case Token.CONTINUE:
+                                        // We are looking for a control flow changing statement that always
+                                        // branches to the same node. If after removing it control still
+                                        // branches to the same node, it is safe to remove.
+                                        List<DiGraphEdge<Node, Branch>> outEdges = gNode.getOutEdges();
+                                        if (outEdges.size() == 1 &&
+                                            // If there is a next node, this jump is not useless.
+                                            (n.getNext() == null || n.getNext().isFunction())) {
+
+                                          Preconditions.checkState(
+                                              outEdges.get(0).getValue() == Branch.UNCOND);
+                                          Node fallThrough = computeFollowing(n);
+                                          Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+                                          if (nextCfgNode == fallThrough && !inFinally(n.getParent(), n)) {
+                                            removeNode(n);
+                                          }
+                                        }
+                                    }
+                          children: []
+                          pos: 5960
+                          length: 979
+                      children: []
+                      pos: 5939
+                      length: 1000
+                    pos: 5239
+                    length: 1706
+                children: []
+                pos: 5149
+                length: 1796
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: inFinally
+                    children: []
+                    pos: 6967
+                    length: 9
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node parent
+                      children: []
+                      pos: 6977
+                      length: 11
+                    pos: 6951
+                    length: 290
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: parent
+                                      children: []
+                                      pos: 7014
+                                      length: 6
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 7024
+                                      length: 4
+                                  children: []
+                                  pos: 7014
+                                  length: 14
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: parent.isFunction()
+                                  children: []
+                                  pos: 7032
+                                  length: 19
+                              children: []
+                              pos: 7014
+                              length: 37
+                          children: []
+                          pos: 7013
+                          length: 39
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 7063
+                          length: 13
+                        pos: 7053
+                        length: 31
+                      pos: 7010
+                      length: 225
+                    pos: 7002
+                    length: 239
+                children: []
+                pos: 6951
+                length: 290
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: computeFollowing
+                    children: []
+                    pos: 7260
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 7277
+                      length: 6
+                    pos: 7247
+                    length: 320
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node next = ControlFlowAnalysis.computeFollowNode(n);
+                      children: []
+                      pos: 7293
+                      length: 53
+                    - type: while_statement
+                      fields:
+                        text: |-
+                          while (next != null && next.isBlock()) {
+                                  if (next.hasChildren()) {
+                                    next = next.getFirstChild();
+                                  } else {
+                                    next = computeFollowing(next);
+                                  }
+                                }
+                      children: []
+                      pos: 7353
+                      length: 189
+                    - type: return_statement
+                      fields:
+                        text: return next;
+                      children: []
+                      pos: 7549
+                      length: 12
+                    pos: 7285
+                    length: 282
+                children: []
+                pos: 7247
+                length: 320
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: removeDeadExprStatementSafely
+                    children: []
+                    pos: 7586
+                    length: 29
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 7616
+                      length: 6
+                    pos: 7573
+                    length: 1732
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node parent = n.getParent();
+                      children: []
+                      pos: 7632
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isEmpty()
+                                  children: []
+                                  pos: 7671
+                                  length: 11
+                                right:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: and
+                                      fields:
+                                        left:
+                                          type: method_invocation
+                                          fields:
+                                            text: n.isBlock()
+                                          children: []
+                                          pos: 7687
+                                          length: 11
+                                        right:
+                                          type: unary_expression
+                                          fields:
+                                            text: "!n.hasChildren()"
+                                          children: []
+                                          pos: 7702
+                                          length: 16
+                                      children: []
+                                      pos: 7687
+                                      length: 31
+                                  children: []
+                                  pos: 7686
+                                  length: 33
+                              children: []
+                              pos: 7671
+                              length: 48
+                          children: []
+                          pos: 7670
+                          length: 50
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 7812
+                          length: 7
+                        pos: 7721
+                        length: 106
+                      pos: 7667
+                      length: 160
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: NodeUtil.isForIn(parent)
+                              children: []
+                              pos: 7985
+                              length: 24
+                          children: []
+                          pos: 7984
+                          length: 26
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 8021
+                          length: 7
+                        pos: 8011
+                        length: 25
+                      pos: 7981
+                      length: 55
+                    - type: switch_expression
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.getType()
+                              children: []
+                              pos: 8052
+                              length: 11
+                          children: []
+                          pos: 8051
+                          length: 13
+                        body:
+                          type: switch_block
+                          fields:
+                            text: |-
+                              {
+                                      // Removing an unreachable DO node is messy b/c it means we still have
+                                      // to execute one iteration. If the DO's body has breaks in the middle,
+                                      // it can get even more tricky and code size might actually increase.
+                                      case Token.DO:
+                                        return;
+
+                                      case Token.BLOCK:
+                                        // BLOCKs are used in several ways including wrapping CATCH
+                                        // blocks in TRYs
+                                        if (parent.isTry() && NodeUtil.isTryCatchNodeContainer(n)) {
+                                          return;
+                                        }
+                                        break;
+
+                                      case Token.CATCH:
+                                        Node tryNode = parent.getParent();
+                                        NodeUtil.maybeAddFinally(tryNode);
+                                        break;
+                                    }
+                          children: []
+                          pos: 8065
+                          length: 666
+                      children: []
+                      pos: 8044
+                      length: 687
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isVar()
+                                  children: []
+                                  pos: 8743
+                                  length: 9
+                                right:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!n.getFirstChild().hasChildren()"
+                                  children: []
+                                  pos: 8756
+                                  length: 32
+                              children: []
+                              pos: 8743
+                              length: 45
+                          children: []
+                          pos: 8742
+                          length: 47
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 9262
+                          length: 7
+                        pos: 8790
+                        length: 487
+                      pos: 8739
+                      length: 538
+                    - type: expression_statement
+                      fields:
+                        text: removeNode(n);
+                      children: []
+                      pos: 9285
+                      length: 14
+                    pos: 7624
+                    length: 1681
+                children: []
+                pos: 7573
+                length: 1732
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: removeNode
+                    children: []
+                    pos: 9324
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 9335
+                      length: 6
+                    pos: 9311
+                    length: 291
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: codeChanged = true;
+                      children: []
+                      pos: 9351
+                      length: 19
+                    - type: expression_statement
+                      fields:
+                        text: NodeUtil.redeclareVarsInsideBranch(n);
+                      children: []
+                      pos: 9377
+                      length: 38
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 9422
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: logger.isLoggable(Level.FINE)
+                              children: []
+                              pos: 9461
+                              length: 29
+                          children: []
+                          pos: 9460
+                          length: 31
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: logger.fine("Removing " + n.toString());
+                          children: []
+                          pos: 9502
+                          length: 40
+                        pos: 9492
+                        length: 58
+                      pos: 9457
+                      length: 93
+                    - type: expression_statement
+                      fields:
+                        text: NodeUtil.removeChild(n.getParent(), n);
+                      children: []
+                      pos: 9557
+                      length: 39
+                    pos: 9343
+                    length: 259
+                children: []
+                pos: 9311
+                length: 291
+              pos: 3427
+              length: 6179
+          children: []
+          pos: 3427
+          length: 6179
+        pos: 2107
+        length: 7501
+    children: []
+    pos: 2107
+    length: 7501
+  pos: 0
+  length: 9609
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: UnreachableCodeElimination
+        children: []
+        pos: 2113
+        length: 26
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: |-
+              private static final Logger logger =
+                  Logger.getLogger(UnreachableCodeElimination.class.getName());
+          children: []
+          pos: 2168
+          length: 102
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 2273
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final boolean removeNoOpStatements;
+          children: []
+          pos: 2316
+          length: 43
+        - type: field_declaration
+          fields:
+            text: private boolean codeChanged;
+          children: []
+          pos: 2362
+          length: 28
+        - type: constructor_declaration
+          fields:
+            text: |-
+              UnreachableCodeElimination(AbstractCompiler compiler,
+                    boolean removeNoOpStatements) {
+                  this.compiler = compiler;
+                  this.removeNoOpStatements = removeNoOpStatements;
+                }
+          children: []
+          pos: 2394
+          length: 179
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 2601
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 2609
+                length: 12
+              pos: 2577
+              length: 846
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    NodeTraversal.traverseChangedFunctions(compiler, new FunctionCallback() {
+                            @Override
+                            public void visit(AbstractCompiler compiler, Node root) {
+                              // Computes the control flow graph.
+                              ControlFlowAnalysis cfa =
+                                  new ControlFlowAnalysis(compiler, false, false);
+                              cfa.process(null, root);
+                              ControlFlowGraph<Node> cfg = cfa.getCfg();
+                              new GraphReachability<Node, ControlFlowGraph.Branch>(cfg)
+                                  .compute(cfg.getEntry().getValue());
+                              if (root.isFunction()) {
+                                root = root.getLastChild();
+                              }
+                              do {
+                                codeChanged = false;
+                                NodeTraversal.traverse(compiler, root, new EliminationPass(cfg));
+                              } while (codeChanged);
+                            }
+                          });
+                children: []
+                pos: 2644
+                length: 775
+              pos: 2638
+              length: 785
+          children: []
+          pos: 2577
+          length: 846
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: EliminationPass
+              children: []
+              pos: 3441
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final ControlFlowGraph<Node> cfg;
+                children: []
+                pos: 3495
+                length: 41
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private EliminationPass(ControlFlowGraph<Node> cfg) {
+                          this.cfg = cfg;
+                        }
+                children: []
+                pos: 3541
+                length: 81
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 3654
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3660
+                      length: 15
+                    pos: 3628
+                    length: 553
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: or
+                                  fields:
+                                    left:
+                                      type: equals
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: parent
+                                          children: []
+                                          pos: 3710
+                                          length: 6
+                                        right:
+                                          type: null_literal
+                                          fields: {}
+                                          children: []
+                                          pos: 3720
+                                          length: 4
+                                      children: []
+                                      pos: 3710
+                                      length: 14
+                                    right:
+                                      type: method_invocation
+                                      fields:
+                                        text: n.isFunction()
+                                      children: []
+                                      pos: 3728
+                                      length: 14
+                                  children: []
+                                  pos: 3710
+                                  length: 32
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isScript()
+                                  children: []
+                                  pos: 3746
+                                  length: 12
+                              children: []
+                              pos: 3710
+                              length: 48
+                          children: []
+                          pos: 3709
+                          length: 50
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 3770
+                          length: 7
+                        pos: 3760
+                        length: 25
+                      pos: 3706
+                      length: 79
+                    - type: local_variable_declaration
+                      fields:
+                        text: DiGraphNode<Node, Branch> gNode = cfg.getDirectedGraphNode(n);
+                      children: []
+                      pos: 3792
+                      length: 62
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: gNode
+                                  children: []
+                                  pos: 3865
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 3874
+                                  length: 4
+                              children: []
+                              pos: 3865
+                              length: 13
+                          children: []
+                          pos: 3864
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 3905
+                          length: 7
+                        pos: 3880
+                        length: 40
+                      pos: 3861
+                      length: 59
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: gNode.getAnnotation()
+                                      children: []
+                                      pos: 3931
+                                      length: 21
+                                    right:
+                                      type: field_access
+                                      fields:
+                                        text: GraphReachability.REACHABLE
+                                      children: []
+                                      pos: 3956
+                                      length: 27
+                                  children: []
+                                  pos: 3931
+                                  length: 52
+                                right:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: and
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: removeNoOpStatements
+                                          children: []
+                                          pos: 3998
+                                          length: 20
+                                        right:
+                                          type: unary_expression
+                                          fields:
+                                            text: "!NodeUtil.mayHaveSideEffects(n,
+                                              compiler)"
+                                          children: []
+                                          pos: 4022
+                                          length: 41
+                                      children: []
+                                      pos: 3998
+                                      length: 65
+                                  children: []
+                                  pos: 3997
+                                  length: 67
+                              children: []
+                              pos: 3931
+                              length: 133
+                          children: []
+                          pos: 3930
+                          length: 135
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: removeDeadExprStatementSafely(n);
+                          children: []
+                          pos: 4076
+                          length: 33
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 4118
+                          length: 7
+                        pos: 4066
+                        length: 67
+                      pos: 3927
+                      length: 206
+                    - type: expression_statement
+                      fields:
+                        text: tryRemoveUnconditionalBranching(n);
+                      children: []
+                      pos: 4140
+                      length: 35
+                    pos: 3698
+                    length: 483
+                children: []
+                pos: 3628
+                length: 553
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: tryRemoveUnconditionalBranching
+                    children: []
+                    pos: 5199
+                    length: 31
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 5231
+                      length: 6
+                    pos: 5149
+                    length: 1764
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: "n"
+                                  children: []
+                                  pos: 5772
+                                  length: 1
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 5777
+                                  length: 4
+                              children: []
+                              pos: 5772
+                              length: 9
+                          children: []
+                          pos: 5771
+                          length: 11
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 5794
+                          length: 7
+                        pos: 5783
+                        length: 26
+                      pos: 5768
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: DiGraphNode<Node, Branch> gNode = cfg.getDirectedGraphNode(n);
+                      children: []
+                      pos: 5817
+                      length: 62
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: gNode
+                                  children: []
+                                  pos: 5891
+                                  length: 5
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 5900
+                                  length: 4
+                              children: []
+                              pos: 5891
+                              length: 13
+                          children: []
+                          pos: 5890
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 5916
+                          length: 7
+                        pos: 5906
+                        length: 25
+                      pos: 5887
+                      length: 44
+                    - type: switch_expression
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.getType()
+                              children: []
+                              pos: 5947
+                              length: 11
+                          children: []
+                          pos: 5946
+                          length: 13
+                        body:
+                          type: switch_block
+                          fields:
+                            text: |-
+                              {
+                                      case Token.RETURN:
+                                        if (n.hasChildren()) {
+                                          break;
+                                        }
+                                      case Token.BREAK:
+                                      case Token.CONTINUE:
+                                        // We are looking for a control flow changing statement that always
+                                        // branches to the same node. If after removing it control still
+                                        // branches to the same node, it is safe to remove.
+                                        List<DiGraphEdge<Node, Branch>> outEdges = gNode.getOutEdges();
+                                        if (outEdges.size() == 1 &&
+                                            // If there is a next node, this jump is not useless.
+                                            (n.getNext() == null || n.getNext().isFunction())) {
+
+                                          Preconditions.checkState(
+                                              outEdges.get(0).getValue() == Branch.UNCOND);
+                                          Node fallThrough = computeFollowing(n);
+                                          Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+                                          if (nextCfgNode == fallThrough) {
+                                            removeNode(n);
+                                          }
+                                        }
+                                    }
+                          children: []
+                          pos: 5960
+                          length: 947
+                      children: []
+                      pos: 5939
+                      length: 968
+                    pos: 5239
+                    length: 1674
+                children: []
+                pos: 5149
+                length: 1764
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: computeFollowing
+                    children: []
+                    pos: 6933
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 6950
+                      length: 6
+                    pos: 6920
+                    length: 320
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node next = ControlFlowAnalysis.computeFollowNode(n);
+                      children: []
+                      pos: 6966
+                      length: 53
+                    - type: while_statement
+                      fields:
+                        text: |-
+                          while (next != null && next.isBlock()) {
+                                  if (next.hasChildren()) {
+                                    next = next.getFirstChild();
+                                  } else {
+                                    next = computeFollowing(next);
+                                  }
+                                }
+                      children: []
+                      pos: 7026
+                      length: 189
+                    - type: return_statement
+                      fields:
+                        text: return next;
+                      children: []
+                      pos: 7222
+                      length: 12
+                    pos: 6958
+                    length: 282
+                children: []
+                pos: 6920
+                length: 320
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: removeDeadExprStatementSafely
+                    children: []
+                    pos: 7259
+                    length: 29
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 7289
+                      length: 6
+                    pos: 7246
+                    length: 1732
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node parent = n.getParent();
+                      children: []
+                      pos: 7305
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isEmpty()
+                                  children: []
+                                  pos: 7344
+                                  length: 11
+                                right:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: and
+                                      fields:
+                                        left:
+                                          type: method_invocation
+                                          fields:
+                                            text: n.isBlock()
+                                          children: []
+                                          pos: 7360
+                                          length: 11
+                                        right:
+                                          type: unary_expression
+                                          fields:
+                                            text: "!n.hasChildren()"
+                                          children: []
+                                          pos: 7375
+                                          length: 16
+                                      children: []
+                                      pos: 7360
+                                      length: 31
+                                  children: []
+                                  pos: 7359
+                                  length: 33
+                              children: []
+                              pos: 7344
+                              length: 48
+                          children: []
+                          pos: 7343
+                          length: 50
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 7485
+                          length: 7
+                        pos: 7394
+                        length: 106
+                      pos: 7340
+                      length: 160
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: NodeUtil.isForIn(parent)
+                              children: []
+                              pos: 7658
+                              length: 24
+                          children: []
+                          pos: 7657
+                          length: 26
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 7694
+                          length: 7
+                        pos: 7684
+                        length: 25
+                      pos: 7654
+                      length: 55
+                    - type: switch_expression
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.getType()
+                              children: []
+                              pos: 7725
+                              length: 11
+                          children: []
+                          pos: 7724
+                          length: 13
+                        body:
+                          type: switch_block
+                          fields:
+                            text: |-
+                              {
+                                      // Removing an unreachable DO node is messy b/c it means we still have
+                                      // to execute one iteration. If the DO's body has breaks in the middle,
+                                      // it can get even more tricky and code size might actually increase.
+                                      case Token.DO:
+                                        return;
+
+                                      case Token.BLOCK:
+                                        // BLOCKs are used in several ways including wrapping CATCH
+                                        // blocks in TRYs
+                                        if (parent.isTry() && NodeUtil.isTryCatchNodeContainer(n)) {
+                                          return;
+                                        }
+                                        break;
+
+                                      case Token.CATCH:
+                                        Node tryNode = parent.getParent();
+                                        NodeUtil.maybeAddFinally(tryNode);
+                                        break;
+                                    }
+                          children: []
+                          pos: 7738
+                          length: 666
+                      children: []
+                      pos: 7717
+                      length: 687
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isVar()
+                                  children: []
+                                  pos: 8416
+                                  length: 9
+                                right:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!n.getFirstChild().hasChildren()"
+                                  children: []
+                                  pos: 8429
+                                  length: 32
+                              children: []
+                              pos: 8416
+                              length: 45
+                          children: []
+                          pos: 8415
+                          length: 47
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 8935
+                          length: 7
+                        pos: 8463
+                        length: 487
+                      pos: 8412
+                      length: 538
+                    - type: expression_statement
+                      fields:
+                        text: removeNode(n);
+                      children: []
+                      pos: 8958
+                      length: 14
+                    pos: 7297
+                    length: 1681
+                children: []
+                pos: 7246
+                length: 1732
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: removeNode
+                    children: []
+                    pos: 8997
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 9008
+                      length: 6
+                    pos: 8984
+                    length: 291
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: codeChanged = true;
+                      children: []
+                      pos: 9024
+                      length: 19
+                    - type: expression_statement
+                      fields:
+                        text: NodeUtil.redeclareVarsInsideBranch(n);
+                      children: []
+                      pos: 9050
+                      length: 38
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 9095
+                      length: 28
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: logger.isLoggable(Level.FINE)
+                              children: []
+                              pos: 9134
+                              length: 29
+                          children: []
+                          pos: 9133
+                          length: 31
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: logger.fine("Removing " + n.toString());
+                          children: []
+                          pos: 9175
+                          length: 40
+                        pos: 9165
+                        length: 58
+                      pos: 9130
+                      length: 93
+                    - type: expression_statement
+                      fields:
+                        text: NodeUtil.removeChild(n.getParent(), n);
+                      children: []
+                      pos: 9230
+                      length: 39
+                    pos: 9016
+                    length: 259
+                children: []
+                pos: 8984
+                length: 291
+              pos: 3427
+              length: 5852
+          children: []
+          pos: 3427
+          length: 5852
+        pos: 2107
+        length: 7174
+    children: []
+    pos: 2107
+    length: 7174
+  pos: 0
+  length: 9282
 text_diff: "--- before\n+++ after\n@@ -167,22 +167,13 @@\n                 outEdges.get(0).getValue()
   == Branch.UNCOND);\n             Node fallThrough = computeFollowing(n);\n             Node
   nextCfgNode = outEdges.get(0).getDestination().getValue();\n-            if (nextCfgNode

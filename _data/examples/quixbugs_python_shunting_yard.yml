@@ -1,16 +1,182 @@
 ---
 language: python
-text_diff: "--- before\n+++ after\n@@ -15,34 +15,10 @@\n         else:\n             while
+before_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: shunting_yard
+        children: []
+        pos: 4
+        length: 13
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: tokens
+          children: []
+          pos: 18
+          length: 6
+        pos: 0
+        length: 467
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: |-
+              precedence = {
+                      '+': 1,
+                      '-': 1,
+                      '*': 2,
+                      '/': 2
+                  }
+          children: []
+          pos: 31
+          length: 83
+        - type: expression_statement
+          fields:
+            text: rpntokens = []
+          children: []
+          pos: 120
+          length: 14
+        - type: expression_statement
+          fields:
+            text: opstack = []
+          children: []
+          pos: 139
+          length: 12
+        - type: for_statement
+          fields:
+            text: |-
+              for token in tokens:
+                      if isinstance(token, int):
+                          rpntokens.append(token)
+                      else:
+                          while opstack and precedence[token] <= precedence[opstack[-1]]:
+                              rpntokens.append(opstack.pop())
+          children: []
+          pos: 156
+          length: 229
+        - type: while_statement
+          fields:
+            text: |-
+              while opstack:
+                      rpntokens.append(opstack.pop())
+          children: []
+          pos: 391
+          length: 54
+        - type: return_statement
+          fields:
+            text: return rpntokens
+          children: []
+          pos: 451
+          length: 16
+        pos: 31
+        length: 436
+    children: []
+    pos: 0
+    length: 467
+  pos: 0
+  length: 468
+after_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: shunting_yard
+        children: []
+        pos: 4
+        length: 13
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: tokens
+          children: []
+          pos: 18
+          length: 6
+        pos: 0
+        length: 501
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: |-
+              precedence = {
+                      '+': 1,
+                      '-': 1,
+                      '*': 2,
+                      '/': 2
+                  }
+          children: []
+          pos: 31
+          length: 83
+        - type: expression_statement
+          fields:
+            text: rpntokens = []
+          children: []
+          pos: 120
+          length: 14
+        - type: expression_statement
+          fields:
+            text: opstack = []
+          children: []
+          pos: 139
+          length: 12
+        - type: for_statement
+          fields:
+            text: |-
+              for token in tokens:
+                      if isinstance(token, int):
+                          rpntokens.append(token)
+                      else:
+                          while opstack and precedence[token] <= precedence[opstack[-1]]:
+                              rpntokens.append(opstack.pop())
+                          opstack.append(token)
+          children: []
+          pos: 156
+          length: 263
+        - type: while_statement
+          fields:
+            text: |-
+              while opstack:
+                      rpntokens.append(opstack.pop())
+          children: []
+          pos: 425
+          length: 54
+        - type: return_statement
+          fields:
+            text: return rpntokens
+          children: []
+          pos: 485
+          length: 16
+        pos: 31
+        length: 470
+    children: []
+    pos: 0
+    length: 501
+  pos: 0
+  length: 503
+text_diff: "--- before\n+++ after\n@@ -14,8 +14,10 @@\n         else:\n             while
   opstack and precedence[token] <= precedence[opstack[-1]]:\n                 rpntokens.append(opstack.pop())\n+
   \           opstack.append(token)\n \n     while opstack:\n         rpntokens.append(opstack.pop())\n
-  \n     return rpntokens\n \n-\n-\"\"\"\n-Infix to RPN Conversion\n-shunting-yard\n-\n-\n-Uses
-  Dijkstra's shunting-yard algorithm to transform infix notation into equivalent Reverse
-  Polish Notation.\n-\n-Input:\n-    tokens: A list of tokens in infix notation\n-\n-Precondition:\n-
-  \   all(isinstance(token, int) or token in '+-*/' for token in tokens)\n-\n-Output:\n-
-  \   The input tokens reordered into Reverse Polish Notation\n-\n-Examples:\n-    >>>
-  shunting_yard([10, '-', 5, '-', 2])\n-    [10, 5, '-', 2, '-']\n-    >>> shunting_yard([34,
-  '-', 12, '/', 5])\n-    [34, 12, 5, '/' ,'-']\n-    >>> shunting_yard([4, '+', 9,
-  '*', 9, '-', 10, '+', 13])\n-    [4, 9, 9, '*', '+', 10, '-', 13, '+']\n-\"\"\"\n"
+  \n     return rpntokens\n+\n"
 tree_diff: |+
   New cluster:
   UPDATE from for token in tokens:
@@ -34,7 +200,7 @@ tree_diff: |+
               rpntokens.append(token)
           else:
               while opstack and precedence[token] <= precedence[opstack[-1]]:
-                  rpntokens.append(opstack.pop()) [157,386]
+                  rpntokens.append(opstack.pop()) [156,385]
   replace for token in tokens:
           if isinstance(token, int):
               rpntokens.append(token)
@@ -47,64 +213,5 @@ tree_diff: |+
               while opstack and precedence[token] <= precedence[opstack[-1]]:
                   rpntokens.append(opstack.pop())
               opstack.append(token)
-
-  New cluster:
-  ===
-  delete-node
-  ---
-  expression_statement: """
-  Infix to RPN Conversion
-  shunting-yard
-
-
-  Uses Dijkstra's shunting-yard algorithm to transform infix notation into equivalent Reverse Polish Notation.
-
-  Input:
-      tokens: A list of tokens in infix notation
-
-  Precondition:
-      all(isinstance(token, int) or token in '+-*/' for token in tokens)
-
-  Output:
-      The input tokens reordered into Reverse Polish Notation
-
-  Examples:
-      >>> shunting_yard([10, '-', 5, '-', 2])
-      [10, 5, '-', 2, '-']
-      >>> shunting_yard([34, '-', 12, '/', 5])
-      [34, 12, 5, '/' ,'-']
-      >>> shunting_yard([4, '+', 9, '*', 9, '-', 10, '+', 13])
-      [4, 9, 9, '*', '+', 10, '-', 13, '+']
-  """ [471,1091]
-  ===
-  ------------
-  ===
-  delete-node
-  ---
-  expression_statement: """
-  Infix to RPN Conversion
-  shunting-yard
-
-
-  Uses Dijkstra's shunting-yard algorithm to transform infix notation into equivalent Reverse Polish Notation.
-
-  Input:
-      tokens: A list of tokens in infix notation
-
-  Precondition:
-      all(isinstance(token, int) or token in '+-*/' for token in tokens)
-
-  Output:
-      The input tokens reordered into Reverse Polish Notation
-
-  Examples:
-      >>> shunting_yard([10, '-', 5, '-', 2])
-      [10, 5, '-', 2, '-']
-      >>> shunting_yard([34, '-', 12, '/', 5])
-      [34, 12, 5, '/' ,'-']
-      >>> shunting_yard([4, '+', 9, '*', 9, '-', 10, '+', 13])
-      [4, 9, 9, '*', '+', 10, '-', 13, '+']
-  """ [471,1091]
-  ===
 
 ...

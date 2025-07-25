@@ -1,5 +1,1180 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ClosureReverseAbstractInterpreter
+        children: []
+        pos: 1790
+        length: 33
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToArrayVisitor =
+                    new RestrictByTrueTypeOfResultVisitor() {
+                      @Override
+                      protected JSType caseTopType(JSType topType) {
+                        return topType.isAllType() ?
+                            getNativeType(ARRAY_TYPE) : topType;
+                      }
+
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        JSType arrayType = getNativeType(ARRAY_TYPE);
+                        return arrayType.isSubtype(type) ? arrayType : null;
+                      }
+                    };
+          children: []
+          pos: 1938
+          length: 488
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToNotArrayVisitor =
+                    new RestrictByFalseTypeOfResultVisitor() {
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        return type.isSubtype(getNativeType(ARRAY_TYPE)) ? null : type;
+                      }
+                    };
+          children: []
+          pos: 2492
+          length: 273
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToObjectVisitor =
+                    new RestrictByTrueTypeOfResultVisitor() {
+                      @Override
+                      protected JSType caseTopType(JSType topType) {
+                        return getNativeType(NO_OBJECT_TYPE);
+                      }
+
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        return type;
+                      }
+
+                      @Override
+                      public JSType caseFunctionType(FunctionType type) {
+                        return type;
+                      }
+                    };
+          children: []
+          pos: 2883
+          length: 463
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToNotObjectVisitor =
+                    new RestrictByFalseTypeOfResultVisitor() {
+
+                      @Override
+                      public JSType caseAllType() {
+                        return typeRegistry.createUnionType(
+                            getNativeType(NUMBER_STRING_BOOLEAN), getNativeType(NULL_VOID));
+                      }
+
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        return null;
+                      }
+
+                      @Override
+                      public JSType caseFunctionType(FunctionType type) {
+                        return null;
+                      }
+                    };
+          children: []
+          pos: 3413
+          length: 529
+        - type: field_declaration
+          fields:
+            text: private Map<String, Function<TypeRestriction, JSType>> restricters;
+          children: []
+          pos: 3989
+          length: 67
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ClosureReverseAbstractInterpreter(CodingConvention convention,
+                    final JSTypeRegistry typeRegistry) {
+                  super(convention, typeRegistry);
+                  this.restricters =
+                    new ImmutableMap.Builder<String, Function<TypeRestriction, JSType>>()
+                    .put("isDef", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.outcome) {
+                          return getRestrictedWithoutUndefined(p.type);
+                        } else {
+                          return  p.type != null ?
+                              getNativeType(VOID_TYPE).getGreatestSubtype(p.type) : null;
+                        }
+                       }
+                    })
+                    .put("isNull", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.outcome) {
+                          return p.type != null ?
+                              getNativeType(NULL_TYPE).getGreatestSubtype(p.type) : null;
+                        } else {
+                          return getRestrictedWithoutNull(p.type);
+                        }
+                      }
+                    })
+                    .put("isDefAndNotNull", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.outcome) {
+                          return getRestrictedWithoutUndefined(
+                              getRestrictedWithoutNull(p.type));
+                        } else {
+                          return p.type != null ?
+                              getNativeType(NULL_VOID).getGreatestSubtype(p.type) : null;
+                        }
+                      }
+                    })
+                    .put("isString", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "string", p.outcome);
+                      }
+                    })
+                    .put("isBoolean", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "boolean", p.outcome);
+                      }
+                    })
+                    .put("isNumber", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "number", p.outcome);
+                      }
+                    })
+                    .put("isFunction", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "function", p.outcome);
+                      }
+                    })
+                    .put("isArray", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.type == null) {
+                          return p.outcome ? getNativeType(ARRAY_TYPE) : null;
+                        }
+
+                        Visitor<JSType> visitor = p.outcome ? restrictToArrayVisitor :
+                            restrictToNotArrayVisitor;
+                        return p.type.visit(visitor);
+                      }
+                    })
+                    .put("isObject", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.type == null) {
+                          return p.outcome ? getNativeType(OBJECT_TYPE) : null;
+                        }
+
+                        Visitor<JSType> visitor = p.outcome ? restrictToObjectVisitor :
+                            restrictToNotObjectVisitor;
+                        return p.type.visit(visitor);
+                      }
+                    })
+                    .build();
+                }
+          children: []
+          pos: 4130
+          length: 3189
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPreciserScopeKnowingConditionOutcome
+              children: []
+              pos: 7352
+              length: 39
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node condition
+                children: []
+                pos: 7392
+                length: 14
+              pos: 7323
+              length: 979
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: condition.isCall()
+                            children: []
+                            pos: 7463
+                            length: 18
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: condition.getChildCount()
+                                children: []
+                                pos: 7485
+                                length: 25
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '2'
+                                children: []
+                                pos: 7514
+                                length: 1
+                            children: []
+                            pos: 7485
+                            length: 30
+                        children: []
+                        pos: 7463
+                        length: 52
+                    children: []
+                    pos: 7462
+                    length: 54
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node callee = condition.getFirstChild();
+                    children: []
+                    pos: 7525
+                    length: 40
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node param = condition.getLastChild();
+                    children: []
+                    pos: 7572
+                    length: 38
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: callee.isGetProp()
+                                children: []
+                                pos: 7621
+                                length: 18
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: param.isQualifiedName()
+                                children: []
+                                pos: 7643
+                                length: 23
+                            children: []
+                            pos: 7621
+                            length: 45
+                        children: []
+                        pos: 7620
+                        length: 47
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: JSType paramType =  getTypeIfRefinable(param, blindScope);
+                        children: []
+                        pos: 7678
+                        length: 58
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node left = callee.getFirstChild();
+                        children: []
+                        pos: 7745
+                        length: 35
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node right = callee.getLastChild();
+                        children: []
+                        pos: 7789
+                        length: 35
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: and
+                                fields:
+                                  left:
+                                    type: and
+                                    fields:
+                                      left:
+                                        type: method_invocation
+                                        fields:
+                                          text: left.isName()
+                                        children: []
+                                        pos: 7837
+                                        length: 13
+                                      right:
+                                        type: method_invocation
+                                        fields:
+                                          text: '"goog".equals(left.getString())'
+                                        children: []
+                                        pos: 7854
+                                        length: 31
+                                    children: []
+                                    pos: 7837
+                                    length: 48
+                                  right:
+                                    type: method_invocation
+                                    fields:
+                                      text: right.isString()
+                                    children: []
+                                    pos: 7901
+                                    length: 16
+                                children: []
+                                pos: 7837
+                                length: 80
+                            children: []
+                            pos: 7836
+                            length: 82
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: local_variable_declaration
+                            fields:
+                              text: |-
+                                Function<TypeRestriction, JSType> restricter =
+                                              restricters.get(right.getString());
+                            children: []
+                            pos: 7931
+                            length: 96
+                          - type: if_statement
+                            fields:
+                              condition:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: not_equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: restricter
+                                        children: []
+                                        pos: 8042
+                                        length: 10
+                                      right:
+                                        type: null_literal
+                                        fields: {}
+                                        children: []
+                                        pos: 8056
+                                        length: 4
+                                    children: []
+                                    pos: 8042
+                                    length: 18
+                                children: []
+                                pos: 8041
+                                length: 20
+                            children:
+                            - type: block
+                              fields: {}
+                              children:
+                              - type: return_statement
+                                fields:
+                                  text: |-
+                                    return restrictParameter(param, paramType, blindScope, restricter,
+                                                    outcome);
+                                children: []
+                                pos: 8076
+                                length: 92
+                              pos: 8062
+                              length: 118
+                            pos: 8038
+                            length: 142
+                          pos: 7919
+                          length: 271
+                        pos: 7833
+                        length: 357
+                      pos: 7668
+                      length: 530
+                    pos: 7617
+                    length: 581
+                  pos: 7517
+                  length: 687
+                pos: 7459
+                length: 745
+              - type: return_statement
+                fields:
+                  text: |-
+                    return nextPreciserScopeKnowingConditionOutcome(
+                            condition, blindScope, outcome);
+                children: []
+                pos: 8209
+                length: 89
+              pos: 7453
+              length: 849
+          children: []
+          pos: 7323
+          length: 979
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: restrictParameter
+              children: []
+              pos: 8324
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node parameter
+                children: []
+                pos: 8342
+                length: 14
+              pos: 8306
+              length: 486
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: type = restriction.apply(new TypeRestriction(type, outcome));
+                children: []
+                pos: 8494
+                length: 61
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: type
+                            children: []
+                            pos: 8591
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8599
+                            length: 4
+                        children: []
+                        pos: 8591
+                        length: 12
+                    children: []
+                    pos: 8590
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: FlowScope informed = blindScope.createChildFlowScope();
+                    children: []
+                    pos: 8613
+                    length: 55
+                  - type: expression_statement
+                    fields:
+                      text: declareNameInScope(informed, parameter, type);
+                    children: []
+                    pos: 8675
+                    length: 46
+                  - type: return_statement
+                    fields:
+                      text: return informed;
+                    children: []
+                    pos: 8728
+                    length: 16
+                  pos: 8605
+                  length: 145
+                pos: 8587
+                length: 201
+              pos: 8469
+              length: 323
+          children: []
+          pos: 8306
+          length: 486
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: TypeRestriction
+              children: []
+              pos: 8817
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final JSType type;
+                children: []
+                pos: 8839
+                length: 26
+              - type: field_declaration
+                fields:
+                  text: private final boolean outcome;
+                children: []
+                pos: 8870
+                length: 30
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private TypeRestriction(JSType type, boolean outcome) {
+                          this.type = type;
+                          this.outcome = outcome;
+                        }
+                children: []
+                pos: 8906
+                length: 115
+              pos: 8796
+              length: 229
+          children: []
+          pos: 8796
+          length: 229
+        pos: 1777
+        length: 7250
+    children: []
+    pos: 1777
+    length: 7250
+  pos: 0
+  length: 9028
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ClosureReverseAbstractInterpreter
+        children: []
+        pos: 1790
+        length: 33
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToArrayVisitor =
+                    new RestrictByTrueTypeOfResultVisitor() {
+                      @Override
+                      protected JSType caseTopType(JSType topType) {
+                        return topType;
+                      }
+
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        JSType arrayType = getNativeType(ARRAY_TYPE);
+                        return arrayType.isSubtype(type) ? arrayType : null;
+                      }
+                    };
+          children: []
+          pos: 1938
+          length: 424
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToNotArrayVisitor =
+                    new RestrictByFalseTypeOfResultVisitor() {
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        return type.isSubtype(getNativeType(ARRAY_TYPE)) ? null : type;
+                      }
+                    };
+          children: []
+          pos: 2428
+          length: 273
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToObjectVisitor =
+                    new RestrictByTrueTypeOfResultVisitor() {
+                      @Override
+                      protected JSType caseTopType(JSType topType) {
+                        return getNativeType(NO_OBJECT_TYPE);
+                      }
+
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        return type;
+                      }
+
+                      @Override
+                      public JSType caseFunctionType(FunctionType type) {
+                        return type;
+                      }
+                    };
+          children: []
+          pos: 2819
+          length: 463
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictToNotObjectVisitor =
+                    new RestrictByFalseTypeOfResultVisitor() {
+
+                      @Override
+                      public JSType caseAllType() {
+                        return typeRegistry.createUnionType(
+                            getNativeType(NUMBER_STRING_BOOLEAN), getNativeType(NULL_VOID));
+                      }
+
+                      @Override
+                      public JSType caseObjectType(ObjectType type) {
+                        return null;
+                      }
+
+                      @Override
+                      public JSType caseFunctionType(FunctionType type) {
+                        return null;
+                      }
+                    };
+          children: []
+          pos: 3349
+          length: 529
+        - type: field_declaration
+          fields:
+            text: private Map<String, Function<TypeRestriction, JSType>> restricters;
+          children: []
+          pos: 3925
+          length: 67
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ClosureReverseAbstractInterpreter(CodingConvention convention,
+                    final JSTypeRegistry typeRegistry) {
+                  super(convention, typeRegistry);
+                  this.restricters =
+                    new ImmutableMap.Builder<String, Function<TypeRestriction, JSType>>()
+                    .put("isDef", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.outcome) {
+                          return getRestrictedWithoutUndefined(p.type);
+                        } else {
+                          return  p.type != null ?
+                              getNativeType(VOID_TYPE).getGreatestSubtype(p.type) : null;
+                        }
+                       }
+                    })
+                    .put("isNull", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.outcome) {
+                          return p.type != null ?
+                              getNativeType(NULL_TYPE).getGreatestSubtype(p.type) : null;
+                        } else {
+                          return getRestrictedWithoutNull(p.type);
+                        }
+                      }
+                    })
+                    .put("isDefAndNotNull", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.outcome) {
+                          return getRestrictedWithoutUndefined(
+                              getRestrictedWithoutNull(p.type));
+                        } else {
+                          return p.type != null ?
+                              getNativeType(NULL_VOID).getGreatestSubtype(p.type) : null;
+                        }
+                      }
+                    })
+                    .put("isString", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "string", p.outcome);
+                      }
+                    })
+                    .put("isBoolean", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "boolean", p.outcome);
+                      }
+                    })
+                    .put("isNumber", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "number", p.outcome);
+                      }
+                    })
+                    .put("isFunction", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        return getRestrictedByTypeOfResult(p.type, "function", p.outcome);
+                      }
+                    })
+                    .put("isArray", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.type == null) {
+                          return p.outcome ? getNativeType(ARRAY_TYPE) : null;
+                        }
+
+                        Visitor<JSType> visitor = p.outcome ? restrictToArrayVisitor :
+                            restrictToNotArrayVisitor;
+                        return p.type.visit(visitor);
+                      }
+                    })
+                    .put("isObject", new Function<TypeRestriction, JSType>() {
+                      @Override
+                      public JSType apply(TypeRestriction p) {
+                        if (p.type == null) {
+                          return p.outcome ? getNativeType(OBJECT_TYPE) : null;
+                        }
+
+                        Visitor<JSType> visitor = p.outcome ? restrictToObjectVisitor :
+                            restrictToNotObjectVisitor;
+                        return p.type.visit(visitor);
+                      }
+                    })
+                    .build();
+                }
+          children: []
+          pos: 4066
+          length: 3189
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPreciserScopeKnowingConditionOutcome
+              children: []
+              pos: 7288
+              length: 39
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node condition
+                children: []
+                pos: 7328
+                length: 14
+              pos: 7259
+              length: 979
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: condition.isCall()
+                            children: []
+                            pos: 7399
+                            length: 18
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: condition.getChildCount()
+                                children: []
+                                pos: 7421
+                                length: 25
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '2'
+                                children: []
+                                pos: 7450
+                                length: 1
+                            children: []
+                            pos: 7421
+                            length: 30
+                        children: []
+                        pos: 7399
+                        length: 52
+                    children: []
+                    pos: 7398
+                    length: 54
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node callee = condition.getFirstChild();
+                    children: []
+                    pos: 7461
+                    length: 40
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node param = condition.getLastChild();
+                    children: []
+                    pos: 7508
+                    length: 38
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: callee.isGetProp()
+                                children: []
+                                pos: 7557
+                                length: 18
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: param.isQualifiedName()
+                                children: []
+                                pos: 7579
+                                length: 23
+                            children: []
+                            pos: 7557
+                            length: 45
+                        children: []
+                        pos: 7556
+                        length: 47
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: JSType paramType =  getTypeIfRefinable(param, blindScope);
+                        children: []
+                        pos: 7614
+                        length: 58
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node left = callee.getFirstChild();
+                        children: []
+                        pos: 7681
+                        length: 35
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node right = callee.getLastChild();
+                        children: []
+                        pos: 7725
+                        length: 35
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: and
+                                fields:
+                                  left:
+                                    type: and
+                                    fields:
+                                      left:
+                                        type: method_invocation
+                                        fields:
+                                          text: left.isName()
+                                        children: []
+                                        pos: 7773
+                                        length: 13
+                                      right:
+                                        type: method_invocation
+                                        fields:
+                                          text: '"goog".equals(left.getString())'
+                                        children: []
+                                        pos: 7790
+                                        length: 31
+                                    children: []
+                                    pos: 7773
+                                    length: 48
+                                  right:
+                                    type: method_invocation
+                                    fields:
+                                      text: right.isString()
+                                    children: []
+                                    pos: 7837
+                                    length: 16
+                                children: []
+                                pos: 7773
+                                length: 80
+                            children: []
+                            pos: 7772
+                            length: 82
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: local_variable_declaration
+                            fields:
+                              text: |-
+                                Function<TypeRestriction, JSType> restricter =
+                                              restricters.get(right.getString());
+                            children: []
+                            pos: 7867
+                            length: 96
+                          - type: if_statement
+                            fields:
+                              condition:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: not_equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: restricter
+                                        children: []
+                                        pos: 7978
+                                        length: 10
+                                      right:
+                                        type: null_literal
+                                        fields: {}
+                                        children: []
+                                        pos: 7992
+                                        length: 4
+                                    children: []
+                                    pos: 7978
+                                    length: 18
+                                children: []
+                                pos: 7977
+                                length: 20
+                            children:
+                            - type: block
+                              fields: {}
+                              children:
+                              - type: return_statement
+                                fields:
+                                  text: |-
+                                    return restrictParameter(param, paramType, blindScope, restricter,
+                                                    outcome);
+                                children: []
+                                pos: 8012
+                                length: 92
+                              pos: 7998
+                              length: 118
+                            pos: 7974
+                            length: 142
+                          pos: 7855
+                          length: 271
+                        pos: 7769
+                        length: 357
+                      pos: 7604
+                      length: 530
+                    pos: 7553
+                    length: 581
+                  pos: 7453
+                  length: 687
+                pos: 7395
+                length: 745
+              - type: return_statement
+                fields:
+                  text: |-
+                    return nextPreciserScopeKnowingConditionOutcome(
+                            condition, blindScope, outcome);
+                children: []
+                pos: 8145
+                length: 89
+              pos: 7389
+              length: 849
+          children: []
+          pos: 7259
+          length: 979
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: restrictParameter
+              children: []
+              pos: 8260
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node parameter
+                children: []
+                pos: 8278
+                length: 14
+              pos: 8242
+              length: 486
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: type = restriction.apply(new TypeRestriction(type, outcome));
+                children: []
+                pos: 8430
+                length: 61
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: type
+                            children: []
+                            pos: 8527
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8535
+                            length: 4
+                        children: []
+                        pos: 8527
+                        length: 12
+                    children: []
+                    pos: 8526
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: FlowScope informed = blindScope.createChildFlowScope();
+                    children: []
+                    pos: 8549
+                    length: 55
+                  - type: expression_statement
+                    fields:
+                      text: declareNameInScope(informed, parameter, type);
+                    children: []
+                    pos: 8611
+                    length: 46
+                  - type: return_statement
+                    fields:
+                      text: return informed;
+                    children: []
+                    pos: 8664
+                    length: 16
+                  pos: 8541
+                  length: 145
+                pos: 8523
+                length: 201
+              pos: 8405
+              length: 323
+          children: []
+          pos: 8242
+          length: 486
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: TypeRestriction
+              children: []
+              pos: 8753
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final JSType type;
+                children: []
+                pos: 8775
+                length: 26
+              - type: field_declaration
+                fields:
+                  text: private final boolean outcome;
+                children: []
+                pos: 8806
+                length: 30
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private TypeRestriction(JSType type, boolean outcome) {
+                          this.type = type;
+                          this.outcome = outcome;
+                        }
+                children: []
+                pos: 8842
+                length: 115
+              pos: 8732
+              length: 229
+          children: []
+          pos: 8732
+          length: 229
+        pos: 1777
+        length: 7186
+    children: []
+    pos: 1777
+    length: 7186
+  pos: 0
+  length: 8964
 text_diff: "--- before\n+++ after\n@@ -51,8 +51,7 @@\n       new RestrictByTrueTypeOfResultVisitor()
   {\n         @Override\n         protected JSType caseTopType(JSType topType) {\n-
   \         return topType.isAllType() ?\n-              getNativeType(ARRAY_TYPE)

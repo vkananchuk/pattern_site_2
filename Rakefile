@@ -1,5 +1,6 @@
 require "minitest/test_task"
 require 'yaml'
+require 'json'
 require 'rake/clean'
 require 'tempfile'
 require 'open3'
@@ -20,9 +21,12 @@ namespace :examples do
     text_diff = `diff -u -Lbefore -Lafter #{before} #{after}`
 
     tree_diff = nil
+    before_tree = nil
+    after_tree = nil
+    t = Translator.new
     Tempfile.create do |xml_before|
       Tempfile.create do |xml_after|
-        out, err, status = Open3.capture3("bundle exec rake translate:#{language}[#{before}] > #{xml_before.path}")
+        out, err, status = Open3.capture3("bundle exec rake translate:#{language}:json[#{before}]")
         if err.include?("TranslationError")
           puts "Skipping: #{err}"
           next
@@ -36,19 +40,25 @@ namespace :examples do
           raise "Error"
         end
 
-        out, err, status = Open3.capture3("bundle exec rake translate:#{language}[#{after}] > #{xml_after.path}")
+        before_tree = JSON.parse(out, symbolize_names: true)
+        File.write(xml_before.path, t.tree_to_xml_doc(before_tree).to_xml)
+
+        out, err, status = Open3.capture3("bundle exec rake translate:#{language}:json[#{after}]")
         if err.include?("TranslationError")
           puts "Skipping: #{err}"
           next
         end
         unless status.success?
-          raise "ERROR translating #{after}"
+          puts "ERROR translating #{after}"
           puts "STDOUT:"
           puts out
           puts "STDERR:"
           puts err
           raise "Error"
         end
+
+        after_tree = JSON.parse(out, symbolize_names: true)
+        File.write(xml_after.path, t.tree_to_xml_doc(after_tree).to_xml)
 
         tree_diff = `gumtree cluster -g xml #{xml_before.path} #{xml_after.path}`
       end
@@ -58,6 +68,8 @@ namespace :examples do
 
     yaml = {
       language: language.to_s,
+      before_tree:,
+      after_tree:,
       text_diff:,
       tree_diff:
     }
@@ -69,6 +81,7 @@ namespace :examples do
     D4J_EXAMPLE_DIRS = FileList['inputs/defects4j/**/*.java.after']
     D4J_EXAMPLE_DATA = D4J_EXAMPLE_DIRS.pathmap('%-3d').gsub('/', '_').map { |s| "_data/examples/#{s}.yml" }
 
+    desc 'Generate Defects4J example files'
     task generate: ['_data/examples', *D4J_EXAMPLE_DATA]
 
     rule(/_data\/examples\/defects4j_.*.yml$/) do |t|
@@ -113,6 +126,49 @@ namespace :examples do
   end
 end
 
+namespace :construct_usages do
+  directory '_data/construct_usages'
+  CLEAN.include('_data/construct_usages')
+
+  def visit_tree_db(example, version, db, node)
+    type = node[:type]
+    fields = {}
+    node[:fields].each do |k, v|
+      fields[k] = [] unless fields.key?(k)
+      fields[k] << (v.is_a?(String) ? 'String' : v[:type])
+    end
+
+    children = node[:children].map { |x| x[:type] }
+
+    db[type] = [] unless db.key?(type)
+    db[type] << { example:, version:, fields:, children: }
+    db[type].uniq! { |val| [val[:fields], val[:children]] }
+
+    node[:fields].each do |k, v|
+      visit_tree_db(example, version, db, v) unless v.is_a?(String)
+    end
+    node[:children].each do |child|
+      visit_tree_db(example, version, db, child)
+    end
+  end
+
+  task generate: ['_data/construct_usages'] do
+    db = {}
+    files = Dir.glob('_data/examples/*.yml') do |filename|
+      puts "Parsing #{filename}"
+      example = YAML.safe_load_file(filename, symbolize_names: true)
+
+      example_name = filename.pathmap('%n')
+      visit_tree_db(example_name, 'before', db, example[:before_tree])
+      visit_tree_db(example_name, 'after', db, example[:after_tree])
+    end
+
+    db.each do |k, v|
+      File.write("_data/construct_usages/#{k}.yml", v.to_yaml(stringify_names: true))
+    end
+  end
+end
+
 namespace :grammars do
   desc 'Compile all tree-sitter grammars'
   task all: [:translation, :java, :python]
@@ -134,21 +190,26 @@ namespace :grammars do
 end
 
 namespace :translate do
-  desc 'Print the Gumtree XML for the given Java file'
-  task :java, [:name] do |t, args|
-    begin
-      puts Translator.new.translate(:java, args[:name]).to_xml
-    rescue Translator::TranslationError => e
-      STDERR.puts "SKIP TranslationError #{e}"
+  namespace :java do
+    desc 'Print the translation JSON for the given Java file'
+    task :json, [:name] do |t, args|
+      begin
+        puts Translator.new.translate(:java, args[:name]).to_json
+      rescue Translator::TranslationError => e
+        STDERR.puts "SKIP TranslationError #{e}"
+      end
     end
   end
 
-  desc 'Print the Gumtree XML for given Python file'
-  task :python, [:name] do |t, args|
-    begin
-      puts Translator.new.translate(:python, args[:name]).to_xml
-    rescue Translator::TranslationError => e
-      STDERR.puts "SKIP TranslationError #{e}"
+  namespace :python do
+    desc 'Print the translation JSON for the given Python file'
+    task :json, [:name] do |t, args|
+      begin
+        puts Translator.new.translate(:python, args[:name]).to_json
+      rescue Translator::TranslationError => e
+        STDERR.puts "SKIP TranslationError #{e}"
+      end
     end
   end
+
 end

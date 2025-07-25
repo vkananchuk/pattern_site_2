@@ -1,5 +1,1368 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: CollapseVariableDeclarations
+        children: []
+        pos: 1751
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1842
+          length: 40
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Collapse
+              children: []
+              pos: 1983
+              length: 8
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final Node startNode;
+                children: []
+                pos: 2103
+                length: 21
+              - type: field_declaration
+                fields:
+                  text: final Node endNode;
+                children: []
+                pos: 2214
+                length: 19
+              - type: field_declaration
+                fields:
+                  text: final Node parent;
+                children: []
+                pos: 2286
+                length: 18
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    Collapse(Node startNode, Node endNode, Node parent) {
+                          this.startNode = startNode;
+                          this.endNode = endNode;
+                          this.parent = parent;
+                        }
+                children: []
+                pos: 2310
+                length: 151
+              pos: 1962
+              length: 503
+          children: []
+          pos: 1962
+          length: 503
+        - type: field_declaration
+          fields:
+            text: private final List<Collapse> collapses = Lists.newArrayList();
+          children: []
+          pos: 2516
+          length: 62
+        - type: field_declaration
+          fields:
+            text: private final Set<Node> nodesToCollapse = Sets.newHashSet();
+          children: []
+          pos: 2800
+          length: 60
+        - type: constructor_declaration
+          fields:
+            text: |-
+              CollapseVariableDeclarations(AbstractCompiler compiler) {
+                  Preconditions.checkState(!compiler.getLifeCycleStage().isNormalized());
+                  this.compiler = compiler;
+                }
+          children: []
+          pos: 2864
+          length: 167
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 3059
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 3067
+                length: 12
+              pos: 3035
+              length: 280
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: collapses.clear();
+                children: []
+                pos: 3098
+                length: 18
+              - type: expression_statement
+                fields:
+                  text: nodesToCollapse.clear();
+                children: []
+                pos: 3121
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: NodeTraversal.traverse(compiler, root, new GatherCollapses());
+                children: []
+                pos: 3151
+                length: 62
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!collapses.isEmpty()"
+                        children: []
+                        pos: 3223
+                        length: 20
+                    children: []
+                    pos: 3222
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: applyCollapses();
+                    children: []
+                    pos: 3253
+                    length: 17
+                  - type: expression_statement
+                    fields:
+                      text: compiler.reportCodeChange();
+                    children: []
+                    pos: 3277
+                    length: 28
+                  pos: 3245
+                  length: 66
+                pos: 3219
+                length: 92
+              pos: 3092
+              length: 223
+          children: []
+          pos: 3035
+          length: 280
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: GatherCollapses
+              children: []
+              pos: 3584
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final Set<Var> blacklistedVars = Sets.newHashSet();
+                children: []
+                pos: 3811
+                length: 59
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 3902
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3908
+                      length: 15
+                    pos: 3876
+                    length: 1109
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isVar()
+                              children: []
+                              pos: 3958
+                              length: 9
+                          children: []
+                          pos: 3957
+                          length: 11
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: blacklistStubVars(t, n);
+                          children: []
+                          pos: 3979
+                          length: 24
+                        pos: 3969
+                        length: 42
+                      pos: 3954
+                      length: 57
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!n.isVar()"
+                                  children: []
+                                  pos: 4058
+                                  length: 10
+                                right:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!canBeRedeclared(n, t.getScope())"
+                                  children: []
+                                  pos: 4072
+                                  length: 33
+                              children: []
+                              pos: 4058
+                              length: 47
+                          children: []
+                          pos: 4057
+                          length: 49
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 4107
+                        length: 7
+                      pos: 4054
+                      length: 60
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: nodesToCollapse.contains(n)
+                              children: []
+                              pos: 4181
+                              length: 27
+                          children: []
+                          pos: 4180
+                          length: 29
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 4210
+                        length: 7
+                      pos: 4177
+                      length: 40
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: parent.isIf()
+                              children: []
+                              pos: 4332
+                              length: 13
+                          children: []
+                          pos: 4331
+                          length: 15
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 4347
+                        length: 7
+                      pos: 4328
+                      length: 26
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node varNode = n;
+                      children: []
+                      pos: 4362
+                      length: 17
+                    - type: local_variable_declaration
+                      fields:
+                        text: boolean hasVar = n.isVar();
+                      children: []
+                      pos: 4387
+                      length: 27
+                    - type: expression_statement
+                      fields:
+                        text: n = n.getNext();
+                      children: []
+                      pos: 4488
+                      length: 16
+                    - type: local_variable_declaration
+                      fields:
+                        text: boolean hasNodesToCollapse = false;
+                      children: []
+                      pos: 4512
+                      length: 35
+                    - type: while_statement
+                      fields:
+                        text: |-
+                          while (n != null &&
+                                    (n.isVar() || canBeRedeclared(n, t.getScope()))) {
+
+                                  if (n.isVar()) {
+                                    blacklistStubVars(t, n);
+                                    hasVar = true;
+                                  }
+
+                                  nodesToCollapse.add(n);
+                                  hasNodesToCollapse = true;
+
+                                  n = n.getNext();
+                                }
+                      children: []
+                      pos: 4555
+                      length: 278
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: hasNodesToCollapse
+                                  children: []
+                                  pos: 4845
+                                  length: 18
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: hasVar
+                                  children: []
+                                  pos: 4867
+                                  length: 6
+                              children: []
+                              pos: 4845
+                              length: 28
+                          children: []
+                          pos: 4844
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: nodesToCollapse.add(varNode);
+                          children: []
+                          pos: 4885
+                          length: 29
+                        - type: expression_statement
+                          fields:
+                            text: collapses.add(new Collapse(varNode, n, parent));
+                          children: []
+                          pos: 4923
+                          length: 48
+                        pos: 4875
+                        length: 104
+                      pos: 4841
+                      length: 138
+                    pos: 3946
+                    length: 1039
+                children: []
+                pos: 3876
+                length: 1109
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: blacklistStubVars
+                    children: []
+                    pos: 5004
+                    length: 17
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 5022
+                      length: 15
+                    pos: 4991
+                    length: 305
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node child = varNode.getFirstChild();
+                                     child != null; child = child.getNext()) {
+                                  if (child.getFirstChild() == null) {
+                                    blacklistedVars.add(t.getScope().getVar(child.getString()));
+                                  }
+                                }
+                      children: []
+                      pos: 5061
+                      length: 229
+                    pos: 5053
+                    length: 243
+                children: []
+                pos: 4991
+                length: 305
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: canBeRedeclared
+                    children: []
+                    pos: 5318
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 5334
+                      length: 6
+                    pos: 5302
+                    length: 446
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!NodeUtil.isExprAssign(n)"
+                              children: []
+                              pos: 5363
+                              length: 25
+                          children: []
+                          pos: 5362
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 5400
+                          length: 13
+                        pos: 5390
+                        length: 31
+                      pos: 5359
+                      length: 62
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node assign = n.getFirstChild();
+                      children: []
+                      pos: 5428
+                      length: 32
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node lhs = assign.getFirstChild();
+                      children: []
+                      pos: 5467
+                      length: 34
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!lhs.isName()"
+                              children: []
+                              pos: 5513
+                              length: 13
+                          children: []
+                          pos: 5512
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 5538
+                          length: 13
+                        pos: 5528
+                        length: 31
+                      pos: 5509
+                      length: 50
+                    - type: local_variable_declaration
+                      fields:
+                        text: Var var = s.getVar(lhs.getString());
+                      children: []
+                      pos: 5567
+                      length: 36
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return var != null
+                                    && var.getScope() == s
+                                    && !isNamedParameter(var)
+                                    && !blacklistedVars.contains(var);
+                      children: []
+                      pos: 5610
+                      length: 132
+                    pos: 5351
+                    length: 397
+                children: []
+                pos: 5302
+                length: 446
+              pos: 3570
+              length: 2182
+          children: []
+          pos: 3570
+          length: 2182
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isNamedParameter
+              children: []
+              pos: 5772
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Var v
+                children: []
+                pos: 5789
+                length: 5
+              pos: 5756
+              length: 89
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return v.getParentNode().isParamList();
+                children: []
+                pos: 5802
+                length: 39
+              pos: 5796
+              length: 49
+          children: []
+          pos: 5756
+          length: 89
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: applyCollapses
+              children: []
+              pos: 5862
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5849
+              length: 1129
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Collapse collapse : collapses) {
+
+                          Node var = new Node(Token.VAR);
+                          var.copyInformationFrom(collapse.startNode);
+                          collapse.parent.addChildBefore(var, collapse.startNode);
+
+                          boolean redeclaration = false;
+                          for (Node n = collapse.startNode; n != collapse.endNode;) {
+                            Node next = n.getNext();
+
+                            Preconditions.checkState(var.getNext() == n);
+                            collapse.parent.removeChildAfter(var);
+
+                            if (n.isVar()) {
+                              while(n.hasChildren()) {
+                                var.addChildToBack(n.removeFirstChild());
+                              }
+                            } else {
+                              Node assign = n.getFirstChild();
+                              Node lhs = assign.getFirstChild();
+                              Preconditions.checkState(lhs.isName());
+                              Node rhs = assign.getLastChild();
+                              lhs.addChildToBack(rhs.detachFromParent());
+                              var.addChildToBack(lhs.detachFromParent());
+                              redeclaration = true;
+                            }
+                            n = next;
+                          }
+
+                          if (redeclaration) {
+                            JSDocInfo info = new JSDocInfo();
+                            info.addSuppression("duplicate");
+                            var.setJSDocInfo(info);
+                          }
+                        }
+                children: []
+                pos: 5885
+                length: 1089
+              pos: 5879
+              length: 1099
+          children: []
+          pos: 5849
+          length: 1129
+        pos: 1745
+        length: 5235
+    children: []
+    pos: 1745
+    length: 5235
+  pos: 0
+  length: 6981
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: CollapseVariableDeclarations
+        children: []
+        pos: 1751
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1842
+          length: 40
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Collapse
+              children: []
+              pos: 1983
+              length: 8
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final Node startNode;
+                children: []
+                pos: 2103
+                length: 21
+              - type: field_declaration
+                fields:
+                  text: final Node endNode;
+                children: []
+                pos: 2214
+                length: 19
+              - type: field_declaration
+                fields:
+                  text: final Node parent;
+                children: []
+                pos: 2286
+                length: 18
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    Collapse(Node startNode, Node endNode, Node parent) {
+                          this.startNode = startNode;
+                          this.endNode = endNode;
+                          this.parent = parent;
+                        }
+                children: []
+                pos: 2310
+                length: 151
+              pos: 1962
+              length: 503
+          children: []
+          pos: 1962
+          length: 503
+        - type: field_declaration
+          fields:
+            text: private final List<Collapse> collapses = Lists.newArrayList();
+          children: []
+          pos: 2516
+          length: 62
+        - type: field_declaration
+          fields:
+            text: private final Set<Node> nodesToCollapse = Sets.newHashSet();
+          children: []
+          pos: 2800
+          length: 60
+        - type: constructor_declaration
+          fields:
+            text: |-
+              CollapseVariableDeclarations(AbstractCompiler compiler) {
+                  Preconditions.checkState(!compiler.getLifeCycleStage().isNormalized());
+                  this.compiler = compiler;
+                }
+          children: []
+          pos: 2864
+          length: 167
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 3059
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 3067
+                length: 12
+              pos: 3035
+              length: 280
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: collapses.clear();
+                children: []
+                pos: 3098
+                length: 18
+              - type: expression_statement
+                fields:
+                  text: nodesToCollapse.clear();
+                children: []
+                pos: 3121
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: NodeTraversal.traverse(compiler, root, new GatherCollapses());
+                children: []
+                pos: 3151
+                length: 62
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!collapses.isEmpty()"
+                        children: []
+                        pos: 3223
+                        length: 20
+                    children: []
+                    pos: 3222
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: applyCollapses();
+                    children: []
+                    pos: 3253
+                    length: 17
+                  - type: expression_statement
+                    fields:
+                      text: compiler.reportCodeChange();
+                    children: []
+                    pos: 3277
+                    length: 28
+                  pos: 3245
+                  length: 66
+                pos: 3219
+                length: 92
+              pos: 3092
+              length: 223
+          children: []
+          pos: 3035
+          length: 280
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: GatherCollapses
+              children: []
+              pos: 3584
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final Set<Var> blacklistedVars = Sets.newHashSet();
+                children: []
+                pos: 3811
+                length: 59
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 3902
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 3908
+                      length: 15
+                    pos: 3876
+                    length: 1109
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isVar()
+                              children: []
+                              pos: 3958
+                              length: 9
+                          children: []
+                          pos: 3957
+                          length: 11
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: blacklistStubVars(t, n);
+                          children: []
+                          pos: 3979
+                          length: 24
+                        pos: 3969
+                        length: 42
+                      pos: 3954
+                      length: 57
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!n.isVar()"
+                                  children: []
+                                  pos: 4058
+                                  length: 10
+                                right:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!canBeRedeclared(n, t.getScope())"
+                                  children: []
+                                  pos: 4072
+                                  length: 33
+                              children: []
+                              pos: 4058
+                              length: 47
+                          children: []
+                          pos: 4057
+                          length: 49
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 4107
+                        length: 7
+                      pos: 4054
+                      length: 60
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: nodesToCollapse.contains(n)
+                              children: []
+                              pos: 4181
+                              length: 27
+                          children: []
+                          pos: 4180
+                          length: 29
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 4210
+                        length: 7
+                      pos: 4177
+                      length: 40
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: parent.isIf()
+                              children: []
+                              pos: 4332
+                              length: 13
+                          children: []
+                          pos: 4331
+                          length: 15
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 4347
+                        length: 7
+                      pos: 4328
+                      length: 26
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node varNode = n;
+                      children: []
+                      pos: 4362
+                      length: 17
+                    - type: local_variable_declaration
+                      fields:
+                        text: boolean hasVar = n.isVar();
+                      children: []
+                      pos: 4387
+                      length: 27
+                    - type: expression_statement
+                      fields:
+                        text: n = n.getNext();
+                      children: []
+                      pos: 4488
+                      length: 16
+                    - type: local_variable_declaration
+                      fields:
+                        text: boolean hasNodesToCollapse = false;
+                      children: []
+                      pos: 4512
+                      length: 35
+                    - type: while_statement
+                      fields:
+                        text: |-
+                          while (n != null &&
+                                    (n.isVar() || canBeRedeclared(n, t.getScope()))) {
+
+                                  if (n.isVar()) {
+                                    blacklistStubVars(t, n);
+                                    hasVar = true;
+                                  }
+
+                                  nodesToCollapse.add(n);
+                                  hasNodesToCollapse = true;
+
+                                  n = n.getNext();
+                                }
+                      children: []
+                      pos: 4555
+                      length: 278
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: hasNodesToCollapse
+                                  children: []
+                                  pos: 4845
+                                  length: 18
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: hasVar
+                                  children: []
+                                  pos: 4867
+                                  length: 6
+                              children: []
+                              pos: 4845
+                              length: 28
+                          children: []
+                          pos: 4844
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: nodesToCollapse.add(varNode);
+                          children: []
+                          pos: 4885
+                          length: 29
+                        - type: expression_statement
+                          fields:
+                            text: collapses.add(new Collapse(varNode, n, parent));
+                          children: []
+                          pos: 4923
+                          length: 48
+                        pos: 4875
+                        length: 104
+                      pos: 4841
+                      length: 138
+                    pos: 3946
+                    length: 1039
+                children: []
+                pos: 3876
+                length: 1109
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: blacklistStubVars
+                    children: []
+                    pos: 5004
+                    length: 17
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 5022
+                      length: 15
+                    pos: 4991
+                    length: 305
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (Node child = varNode.getFirstChild();
+                                     child != null; child = child.getNext()) {
+                                  if (child.getFirstChild() == null) {
+                                    blacklistedVars.add(t.getScope().getVar(child.getString()));
+                                  }
+                                }
+                      children: []
+                      pos: 5061
+                      length: 229
+                    pos: 5053
+                    length: 243
+                children: []
+                pos: 4991
+                length: 305
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: canBeRedeclared
+                    children: []
+                    pos: 5318
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 5334
+                      length: 6
+                    pos: 5302
+                    length: 410
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!NodeUtil.isExprAssign(n)"
+                              children: []
+                              pos: 5363
+                              length: 25
+                          children: []
+                          pos: 5362
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 5400
+                          length: 13
+                        pos: 5390
+                        length: 31
+                      pos: 5359
+                      length: 62
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node assign = n.getFirstChild();
+                      children: []
+                      pos: 5428
+                      length: 32
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node lhs = assign.getFirstChild();
+                      children: []
+                      pos: 5467
+                      length: 34
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!lhs.isName()"
+                              children: []
+                              pos: 5513
+                              length: 13
+                          children: []
+                          pos: 5512
+                          length: 15
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 5538
+                          length: 13
+                        pos: 5528
+                        length: 31
+                      pos: 5509
+                      length: 50
+                    - type: local_variable_declaration
+                      fields:
+                        text: Var var = s.getVar(lhs.getString());
+                      children: []
+                      pos: 5567
+                      length: 36
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return var != null
+                                    && var.getScope() == s
+                                    && !blacklistedVars.contains(var);
+                      children: []
+                      pos: 5610
+                      length: 96
+                    pos: 5351
+                    length: 361
+                children: []
+                pos: 5302
+                length: 410
+              pos: 3570
+              length: 2146
+          children: []
+          pos: 3570
+          length: 2146
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: applyCollapses
+              children: []
+              pos: 5734
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5721
+              length: 1129
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Collapse collapse : collapses) {
+
+                          Node var = new Node(Token.VAR);
+                          var.copyInformationFrom(collapse.startNode);
+                          collapse.parent.addChildBefore(var, collapse.startNode);
+
+                          boolean redeclaration = false;
+                          for (Node n = collapse.startNode; n != collapse.endNode;) {
+                            Node next = n.getNext();
+
+                            Preconditions.checkState(var.getNext() == n);
+                            collapse.parent.removeChildAfter(var);
+
+                            if (n.isVar()) {
+                              while(n.hasChildren()) {
+                                var.addChildToBack(n.removeFirstChild());
+                              }
+                            } else {
+                              Node assign = n.getFirstChild();
+                              Node lhs = assign.getFirstChild();
+                              Preconditions.checkState(lhs.isName());
+                              Node rhs = assign.getLastChild();
+                              lhs.addChildToBack(rhs.detachFromParent());
+                              var.addChildToBack(lhs.detachFromParent());
+                              redeclaration = true;
+                            }
+                            n = next;
+                          }
+
+                          if (redeclaration) {
+                            JSDocInfo info = new JSDocInfo();
+                            info.addSuppression("duplicate");
+                            var.setJSDocInfo(info);
+                          }
+                        }
+                children: []
+                pos: 5757
+                length: 1089
+              pos: 5751
+              length: 1099
+          children: []
+          pos: 5721
+          length: 1129
+        pos: 1745
+        length: 5107
+    children: []
+    pos: 1745
+    length: 5107
+  pos: 0
+  length: 6853
 text_diff: "--- before\n+++ after\n@@ -201,14 +201,10 @@\n       Var var = s.getVar(lhs.getString());\n
   \      return var != null\n           && var.getScope() == s\n-          && !isNamedParameter(var)\n
   \          && !blacklistedVars.contains(var);\n     }\n   }\n \n-  private boolean

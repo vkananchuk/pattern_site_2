@@ -1,5 +1,2412 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: AbstractIntegrator
+        children: []
+        pos: 2060
+        length: 18
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected Collection<StepHandler> stepHandlers;
+          children: []
+          pos: 2143
+          length: 47
+        - type: field_declaration
+          fields:
+            text: protected double stepStart;
+          children: []
+          pos: 2232
+          length: 27
+        - type: field_declaration
+          fields:
+            text: protected double stepSize;
+          children: []
+          pos: 2294
+          length: 26
+        - type: field_declaration
+          fields:
+            text: protected boolean isLastStep;
+          children: []
+          pos: 2362
+          length: 29
+        - type: field_declaration
+          fields:
+            text: protected boolean resetOccurred;
+          children: []
+          pos: 2480
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private Collection<EventState> eventsStates;
+          children: []
+          pos: 2544
+          length: 44
+        - type: field_declaration
+          fields:
+            text: private boolean statesInitialized;
+          children: []
+          pos: 2648
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private final String name;
+          children: []
+          pos: 2719
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private Incrementor evaluations;
+          children: []
+          pos: 2797
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private transient ExpandableStatefulODE expandable;
+          children: []
+          pos: 2883
+          length: 51
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public AbstractIntegrator(final String name) {
+                      this.name = name;
+                      stepHandlers = new ArrayList<StepHandler>();
+                      stepStart = Double.NaN;
+                      stepSize  = Double.NaN;
+                      eventsStates = new ArrayList<EventState>();
+                      statesInitialized = false;
+                      evaluations = new Incrementor();
+                      setMaxEvaluations(-1);
+                      evaluations.resetCount();
+                  }
+          children: []
+          pos: 3013
+          length: 388
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected AbstractIntegrator() {
+                      this(null);
+                  }
+          children: []
+          pos: 3459
+          length: 58
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getName
+              children: []
+              pos: 3562
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3548
+              length: 52
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return name;
+                children: []
+                pos: 3582
+                length: 12
+              pos: 3572
+              length: 28
+          children: []
+          pos: 3548
+          length: 52
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addStepHandler
+              children: []
+              pos: 3643
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StepHandler handler
+                children: []
+                pos: 3658
+                length: 25
+              pos: 3631
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: stepHandlers.add(handler);
+                children: []
+                pos: 3695
+                length: 26
+              pos: 3685
+              length: 42
+          children: []
+          pos: 3631
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getStepHandlers
+              children: []
+              pos: 3789
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3758
+              length: 121
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return Collections.unmodifiableCollection(stepHandlers);
+                children: []
+                pos: 3817
+                length: 56
+              pos: 3807
+              length: 72
+          children: []
+          pos: 3758
+          length: 121
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clearStepHandlers
+              children: []
+              pos: 3922
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3910
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: stepHandlers.clear();
+                children: []
+                pos: 3952
+                length: 21
+              pos: 3942
+              length: 37
+          children: []
+          pos: 3910
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addEventHandler
+              children: []
+              pos: 4022
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final EventHandler handler
+                children: []
+                pos: 4038
+                length: 26
+              pos: 4010
+              length: 428
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    addEventHandler(handler, maxCheckInterval, convergence,
+                                            maxIterationCount,
+                                            new BracketingNthOrderBrentSolver(convergence, 5));
+                children: []
+                pos: 4258
+                length: 174
+              pos: 4248
+              length: 190
+          children: []
+          pos: 4010
+          length: 428
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addEventHandler
+              children: []
+              pos: 4481
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final EventHandler handler
+                children: []
+                pos: 4497
+                length: 26
+              pos: 4469
+              length: 457
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    eventsStates.add(new EventState(handler, maxCheckInterval, convergence,
+                                                            maxIterationCount, solver));
+                children: []
+                pos: 4780
+                length: 140
+              pos: 4770
+              length: 156
+          children: []
+          pos: 4469
+          length: 457
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEventHandlers
+              children: []
+              pos: 4989
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4957
+              length: 291
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final List<EventHandler> list = new ArrayList<EventHandler>();
+                children: []
+                pos: 5018
+                length: 62
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (EventState state : eventsStates) {
+                                list.add(state.getEventHandler());
+                            }
+                children: []
+                pos: 5089
+                length: 96
+              - type: return_statement
+                fields:
+                  text: return Collections.unmodifiableCollection(list);
+                children: []
+                pos: 5194
+                length: 48
+              pos: 5008
+              length: 240
+          children: []
+          pos: 4957
+          length: 291
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clearEventHandlers
+              children: []
+              pos: 5291
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5279
+              length: 70
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: eventsStates.clear();
+                children: []
+                pos: 5322
+                length: 21
+              pos: 5312
+              length: 37
+          children: []
+          pos: 5279
+          length: 70
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCurrentStepStart
+              children: []
+              pos: 5394
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5380
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return stepStart;
+                children: []
+                pos: 5426
+                length: 17
+              pos: 5416
+              length: 33
+          children: []
+          pos: 5380
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCurrentSignedStepsize
+              children: []
+              pos: 5494
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5480
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return stepSize;
+                children: []
+                pos: 5531
+                length: 16
+              pos: 5521
+              length: 32
+          children: []
+          pos: 5480
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMaxEvaluations
+              children: []
+              pos: 5596
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int maxEvaluations
+                children: []
+                pos: 5614
+                length: 18
+              pos: 5584
+              length: 153
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: 'evaluations.setMaximalCount((maxEvaluations < 0) ? Integer.MAX_VALUE
+                    : maxEvaluations);'
+                children: []
+                pos: 5644
+                length: 87
+              pos: 5634
+              length: 103
+          children: []
+          pos: 5584
+          length: 153
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxEvaluations
+              children: []
+              pos: 5779
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5768
+              length: 84
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return evaluations.getMaximalCount();
+                children: []
+                pos: 5809
+                length: 37
+              pos: 5799
+              length: 53
+          children: []
+          pos: 5768
+          length: 84
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEvaluations
+              children: []
+              pos: 5894
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5883
+              length: 74
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return evaluations.getCount();
+                children: []
+                pos: 5921
+                length: 30
+              pos: 5911
+              length: 46
+          children: []
+          pos: 5883
+          length: 74
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: initIntegration
+              children: []
+              pos: 6218
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t0
+                children: []
+                pos: 6234
+                length: 15
+              pos: 6203
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: evaluations.resetCount();
+                children: []
+                pos: 6297
+                length: 25
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final EventState state : eventsStates) {
+                                state.getEventHandler().init(t0, y0, t);
+                            }
+                children: []
+                pos: 6332
+                length: 108
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (StepHandler handler : stepHandlers) {
+                                handler.init(t0, y0, t);
+                            }
+                children: []
+                pos: 6450
+                length: 89
+              - type: expression_statement
+                fields:
+                  text: setStateInitialized(false);
+                children: []
+                pos: 6549
+                length: 27
+              pos: 6286
+              length: 297
+          children: []
+          pos: 6203
+          length: 380
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setEquations
+              children: []
+              pos: 6680
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final ExpandableStatefulODE equations
+                children: []
+                pos: 6693
+                length: 37
+              pos: 6665
+              length: 111
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.expandable = equations;
+                children: []
+                pos: 6742
+                length: 28
+              pos: 6732
+              length: 44
+          children: []
+          pos: 6665
+          length: 111
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: integrate
+              children: []
+              pos: 6821
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final FirstOrderDifferentialEquations equations
+                children: []
+                pos: 6831
+                length: 47
+              pos: 6807
+              length: 1078
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: y0.length
+                            children: []
+                            pos: 7127
+                            length: 9
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: equations.getDimension()
+                            children: []
+                            pos: 7140
+                            length: 24
+                        children: []
+                        pos: 7127
+                        length: 37
+                    children: []
+                    pos: 7126
+                    length: 39
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new DimensionMismatchException(y0.length, equations.getDimension());
+                    children: []
+                    pos: 7180
+                    length: 74
+                  pos: 7166
+                  length: 98
+                pos: 7123
+                length: 141
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: y.length
+                            children: []
+                            pos: 7277
+                            length: 8
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: equations.getDimension()
+                            children: []
+                            pos: 7289
+                            length: 24
+                        children: []
+                        pos: 7277
+                        length: 36
+                    children: []
+                    pos: 7276
+                    length: 38
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new DimensionMismatchException(y.length, equations.getDimension());
+                    children: []
+                    pos: 7329
+                    length: 73
+                  pos: 7315
+                  length: 97
+                pos: 7273
+                length: 139
+              - type: local_variable_declaration
+                fields:
+                  text: final ExpandableStatefulODE expandableODE = new ExpandableStatefulODE(equations);
+                children: []
+                pos: 7471
+                length: 81
+              - type: expression_statement
+                fields:
+                  text: expandableODE.setTime(t0);
+                children: []
+                pos: 7561
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: expandableODE.setPrimaryState(y0);
+                children: []
+                pos: 7596
+                length: 34
+              - type: expression_statement
+                fields:
+                  text: integrate(expandableODE, t);
+                children: []
+                pos: 7671
+                length: 28
+              - type: expression_statement
+                fields:
+                  text: System.arraycopy(expandableODE.getPrimaryState(), 0, y, 0,
+                    y.length);
+                children: []
+                pos: 7769
+                length: 69
+              - type: return_statement
+                fields:
+                  text: return expandableODE.getTime();
+                children: []
+                pos: 7847
+                length: 31
+              pos: 7112
+              length: 773
+          children: []
+          pos: 6807
+          length: 1078
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: integrate
+              children: []
+              pos: 9222
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ExpandableStatefulODE equations
+                children: []
+                pos: 9232
+                length: 31
+              pos: 9201
+              length: 208
+          children: []
+          pos: 9201
+          length: 208
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeDerivatives
+              children: []
+              pos: 9928
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t
+                children: []
+                pos: 9947
+                length: 14
+              pos: 9916
+              length: 251
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: evaluations.incrementCount();
+                children: []
+                pos: 10081
+                length: 29
+              - type: expression_statement
+                fields:
+                  text: expandable.computeDerivatives(t, y, yDot);
+                children: []
+                pos: 10119
+                length: 42
+              pos: 10071
+              length: 96
+          children: []
+          pos: 9916
+          length: 251
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setStateInitialized
+              children: []
+              pos: 10510
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final boolean stateInitialized
+                children: []
+                pos: 10530
+                length: 30
+              pos: 10495
+              length: 125
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.statesInitialized = stateInitialized;
+                children: []
+                pos: 10572
+                length: 42
+              pos: 10562
+              length: 58
+          children: []
+          pos: 10495
+          length: 125
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: acceptStep
+              children: []
+              pos: 11414
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final AbstractStepInterpolator interpolator
+                children: []
+                pos: 11425
+                length: 43
+              pos: 11397
+              length: 4696
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double previousT = interpolator.getGlobalPreviousTime();
+                children: []
+                pos: 11667
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: final double currentT = interpolator.getGlobalCurrentTime();
+                children: []
+                pos: 11736
+                length: 60
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "! statesInitialized"
+                        children: []
+                        pos: 11868
+                        length: 19
+                    children: []
+                    pos: 11867
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (EventState state : eventsStates) {
+                                            state.reinitializeBegin(interpolator);
+                                        }
+                    children: []
+                    pos: 11907
+                    length: 116
+                  - type: expression_statement
+                    fields:
+                      text: statesInitialized = true;
+                    children: []
+                    pos: 12040
+                    length: 25
+                  pos: 11889
+                  length: 190
+                pos: 11864
+                length: 215
+              - type: local_variable_declaration
+                fields:
+                  text: 'final int orderingSign = interpolator.isForward() ? +1 :
+                    -1;'
+                children: []
+                pos: 12162
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    SortedSet<EventState> occuringEvents = new TreeSet<EventState>(new Comparator<EventState>() {
+
+                                    /** {@inheritDoc} */
+                                    public int compare(EventState es0, EventState es1) {
+                                        return orderingSign * Double.compare(es0.getEventTime(), es1.getEventTime());
+                                    }
+
+                                });
+                children: []
+                pos: 12235
+                length: 333
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final EventState state : eventsStates) {
+                                    if (state.evaluateStep(interpolator)) {
+                                        // the event occurs during the current step
+                                        occuringEvents.add(state);
+                                    }
+                                }
+                children: []
+                pos: 12582
+                length: 244
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!occuringEvents.isEmpty()) {
+
+                                    // handle the chronologically first event
+                                    final Iterator<EventState> iterator = occuringEvents.iterator();
+                                    final EventState currentEvent = iterator.next();
+                                    iterator.remove();
+
+                                    // restrict the interpolator to the first part of the step, up to the event
+                                    final double eventT = currentEvent.getEventTime();
+                                    interpolator.setSoftPreviousTime(previousT);
+                                    interpolator.setSoftCurrentTime(eventT);
+
+                                    // get state at event time
+                                    interpolator.setInterpolatedTime(eventT);
+                                    final double[] eventY = interpolator.getInterpolatedState().clone();
+
+                                    // advance all event states to current time
+                                    for (final EventState state : eventsStates) {
+                                        state.stepAccepted(eventT, eventY);
+                                        isLastStep = isLastStep || state.stop();
+                                    }
+
+                                    // handle the first part of the step, up to the event
+                                    for (final StepHandler handler : stepHandlers) {
+                                        handler.handleStep(interpolator, isLastStep);
+                                    }
+
+                                    if (isLastStep) {
+                                        // the event asked to stop integration
+                                        System.arraycopy(eventY, 0, y, 0, y.length);
+                                        return eventT;
+                                    }
+
+                                    boolean needReset = false;
+                                    for (final EventState state : eventsStates) {
+                                        needReset =  needReset || state.reset(eventT, eventY);
+                                    }
+                                    if (needReset) {
+                                        // some event handler has triggered changes that
+                                        // invalidate the derivatives, we need to recompute them
+                                        System.arraycopy(eventY, 0, y, 0, y.length);
+                                        computeDerivatives(eventT, y, yDot);
+                                        resetOccurred = true;
+                                        return eventT;
+                                    }
+
+                                    // prepare handling of the remaining part of the step
+                                    previousT = eventT;
+                                    interpolator.setSoftPreviousTime(eventT);
+                                    interpolator.setSoftCurrentTime(currentT);
+
+                                    // check if the same event occurs again in the remaining part of the step
+                                    if (currentEvent.evaluateStep(interpolator)) {
+                                        // the event occurs during the current step
+                                        occuringEvents.add(currentEvent);
+                                    }
+
+                                }
+                children: []
+                pos: 12840
+                length: 2554
+              - type: expression_statement
+                fields:
+                  text: interpolator.setInterpolatedTime(currentT);
+                children: []
+                pos: 15467
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] currentY = interpolator.getInterpolatedState();
+                children: []
+                pos: 15523
+                length: 62
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final EventState state : eventsStates) {
+                                    state.stepAccepted(currentT, currentY);
+                                    isLastStep = isLastStep || state.stop();
+                                }
+                children: []
+                pos: 15598
+                length: 172
+              - type: expression_statement
+                fields:
+                  text: isLastStep = isLastStep || Precision.equals(currentT, tEnd,
+                    1);
+                children: []
+                pos: 15783
+                length: 63
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (StepHandler handler : stepHandlers) {
+                                    handler.handleStep(interpolator, isLastStep);
+                                }
+                children: []
+                pos: 15938
+                length: 118
+              - type: return_statement
+                fields:
+                  text: return currentT;
+                children: []
+                pos: 16070
+                length: 16
+              pos: 11652
+              length: 4441
+          children: []
+          pos: 11397
+          length: 4696
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sanityChecks
+              children: []
+              pos: 16494
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final ExpandableStatefulODE equations
+                children: []
+                pos: 16507
+                length: 37
+              pos: 16479
+              length: 621
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final double threshold = 1000 * FastMath.ulp(FastMath.max(FastMath.abs(equations.getTime()),
+                                                                                      FastMath.abs(t)));
+                children: []
+                pos: 16642
+                length: 177
+              - type: local_variable_declaration
+                fields:
+                  text: final double dt = FastMath.abs(equations.getTime() - t);
+                children: []
+                pos: 16828
+                length: 56
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: dt
+                            children: []
+                            pos: 16897
+                            length: 2
+                          right:
+                            type: identifier
+                            fields:
+                              text: threshold
+                            children: []
+                            pos: 16903
+                            length: 9
+                        children: []
+                        pos: 16897
+                        length: 15
+                    children: []
+                    pos: 16896
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new NumberIsTooSmallException(LocalizedFormats.TOO_SMALL_INTEGRATION_INTERVAL,
+                                                                        dt, threshold, false);
+                    children: []
+                    pos: 16928
+                    length: 155
+                  pos: 16914
+                  length: 179
+                pos: 16893
+                length: 200
+              pos: 16631
+              length: 469
+          children: []
+          pos: 16479
+          length: 621
+        pos: 2038
+        length: 15065
+    children: []
+    pos: 2038
+    length: 15065
+  pos: 0
+  length: 17104
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: AbstractIntegrator
+        children: []
+        pos: 2060
+        length: 18
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected Collection<StepHandler> stepHandlers;
+          children: []
+          pos: 2143
+          length: 47
+        - type: field_declaration
+          fields:
+            text: protected double stepStart;
+          children: []
+          pos: 2232
+          length: 27
+        - type: field_declaration
+          fields:
+            text: protected double stepSize;
+          children: []
+          pos: 2294
+          length: 26
+        - type: field_declaration
+          fields:
+            text: protected boolean isLastStep;
+          children: []
+          pos: 2362
+          length: 29
+        - type: field_declaration
+          fields:
+            text: protected boolean resetOccurred;
+          children: []
+          pos: 2480
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private Collection<EventState> eventsStates;
+          children: []
+          pos: 2544
+          length: 44
+        - type: field_declaration
+          fields:
+            text: private boolean statesInitialized;
+          children: []
+          pos: 2648
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private final String name;
+          children: []
+          pos: 2719
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private Incrementor evaluations;
+          children: []
+          pos: 2797
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private transient ExpandableStatefulODE expandable;
+          children: []
+          pos: 2883
+          length: 51
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public AbstractIntegrator(final String name) {
+                      this.name = name;
+                      stepHandlers = new ArrayList<StepHandler>();
+                      stepStart = Double.NaN;
+                      stepSize  = Double.NaN;
+                      eventsStates = new ArrayList<EventState>();
+                      statesInitialized = false;
+                      evaluations = new Incrementor();
+                      setMaxEvaluations(-1);
+                      evaluations.resetCount();
+                  }
+          children: []
+          pos: 3013
+          length: 388
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected AbstractIntegrator() {
+                      this(null);
+                  }
+          children: []
+          pos: 3459
+          length: 58
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getName
+              children: []
+              pos: 3562
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3548
+              length: 52
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return name;
+                children: []
+                pos: 3582
+                length: 12
+              pos: 3572
+              length: 28
+          children: []
+          pos: 3548
+          length: 52
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addStepHandler
+              children: []
+              pos: 3643
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StepHandler handler
+                children: []
+                pos: 3658
+                length: 25
+              pos: 3631
+              length: 96
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: stepHandlers.add(handler);
+                children: []
+                pos: 3695
+                length: 26
+              pos: 3685
+              length: 42
+          children: []
+          pos: 3631
+          length: 96
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getStepHandlers
+              children: []
+              pos: 3789
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3758
+              length: 121
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return Collections.unmodifiableCollection(stepHandlers);
+                children: []
+                pos: 3817
+                length: 56
+              pos: 3807
+              length: 72
+          children: []
+          pos: 3758
+          length: 121
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clearStepHandlers
+              children: []
+              pos: 3922
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3910
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: stepHandlers.clear();
+                children: []
+                pos: 3952
+                length: 21
+              pos: 3942
+              length: 37
+          children: []
+          pos: 3910
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addEventHandler
+              children: []
+              pos: 4022
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final EventHandler handler
+                children: []
+                pos: 4038
+                length: 26
+              pos: 4010
+              length: 428
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    addEventHandler(handler, maxCheckInterval, convergence,
+                                            maxIterationCount,
+                                            new BracketingNthOrderBrentSolver(convergence, 5));
+                children: []
+                pos: 4258
+                length: 174
+              pos: 4248
+              length: 190
+          children: []
+          pos: 4010
+          length: 428
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addEventHandler
+              children: []
+              pos: 4481
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final EventHandler handler
+                children: []
+                pos: 4497
+                length: 26
+              pos: 4469
+              length: 457
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    eventsStates.add(new EventState(handler, maxCheckInterval, convergence,
+                                                            maxIterationCount, solver));
+                children: []
+                pos: 4780
+                length: 140
+              pos: 4770
+              length: 156
+          children: []
+          pos: 4469
+          length: 457
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEventHandlers
+              children: []
+              pos: 4989
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4957
+              length: 291
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final List<EventHandler> list = new ArrayList<EventHandler>();
+                children: []
+                pos: 5018
+                length: 62
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (EventState state : eventsStates) {
+                                list.add(state.getEventHandler());
+                            }
+                children: []
+                pos: 5089
+                length: 96
+              - type: return_statement
+                fields:
+                  text: return Collections.unmodifiableCollection(list);
+                children: []
+                pos: 5194
+                length: 48
+              pos: 5008
+              length: 240
+          children: []
+          pos: 4957
+          length: 291
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clearEventHandlers
+              children: []
+              pos: 5291
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5279
+              length: 70
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: eventsStates.clear();
+                children: []
+                pos: 5322
+                length: 21
+              pos: 5312
+              length: 37
+          children: []
+          pos: 5279
+          length: 70
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCurrentStepStart
+              children: []
+              pos: 5394
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5380
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return stepStart;
+                children: []
+                pos: 5426
+                length: 17
+              pos: 5416
+              length: 33
+          children: []
+          pos: 5380
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCurrentSignedStepsize
+              children: []
+              pos: 5494
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5480
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return stepSize;
+                children: []
+                pos: 5531
+                length: 16
+              pos: 5521
+              length: 32
+          children: []
+          pos: 5480
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMaxEvaluations
+              children: []
+              pos: 5596
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int maxEvaluations
+                children: []
+                pos: 5614
+                length: 18
+              pos: 5584
+              length: 153
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: 'evaluations.setMaximalCount((maxEvaluations < 0) ? Integer.MAX_VALUE
+                    : maxEvaluations);'
+                children: []
+                pos: 5644
+                length: 87
+              pos: 5634
+              length: 103
+          children: []
+          pos: 5584
+          length: 153
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxEvaluations
+              children: []
+              pos: 5779
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5768
+              length: 84
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return evaluations.getMaximalCount();
+                children: []
+                pos: 5809
+                length: 37
+              pos: 5799
+              length: 53
+          children: []
+          pos: 5768
+          length: 84
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEvaluations
+              children: []
+              pos: 5894
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5883
+              length: 74
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return evaluations.getCount();
+                children: []
+                pos: 5921
+                length: 30
+              pos: 5911
+              length: 46
+          children: []
+          pos: 5883
+          length: 74
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: initIntegration
+              children: []
+              pos: 6218
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t0
+                children: []
+                pos: 6234
+                length: 15
+              pos: 6203
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: evaluations.resetCount();
+                children: []
+                pos: 6297
+                length: 25
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final EventState state : eventsStates) {
+                                state.getEventHandler().init(t0, y0, t);
+                            }
+                children: []
+                pos: 6332
+                length: 108
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (StepHandler handler : stepHandlers) {
+                                handler.init(t0, y0, t);
+                            }
+                children: []
+                pos: 6450
+                length: 89
+              - type: expression_statement
+                fields:
+                  text: setStateInitialized(false);
+                children: []
+                pos: 6549
+                length: 27
+              pos: 6286
+              length: 297
+          children: []
+          pos: 6203
+          length: 380
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setEquations
+              children: []
+              pos: 6680
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final ExpandableStatefulODE equations
+                children: []
+                pos: 6693
+                length: 37
+              pos: 6665
+              length: 111
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.expandable = equations;
+                children: []
+                pos: 6742
+                length: 28
+              pos: 6732
+              length: 44
+          children: []
+          pos: 6665
+          length: 111
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: integrate
+              children: []
+              pos: 6821
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final FirstOrderDifferentialEquations equations
+                children: []
+                pos: 6831
+                length: 47
+              pos: 6807
+              length: 1078
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: y0.length
+                            children: []
+                            pos: 7127
+                            length: 9
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: equations.getDimension()
+                            children: []
+                            pos: 7140
+                            length: 24
+                        children: []
+                        pos: 7127
+                        length: 37
+                    children: []
+                    pos: 7126
+                    length: 39
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new DimensionMismatchException(y0.length, equations.getDimension());
+                    children: []
+                    pos: 7180
+                    length: 74
+                  pos: 7166
+                  length: 98
+                pos: 7123
+                length: 141
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: y.length
+                            children: []
+                            pos: 7277
+                            length: 8
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: equations.getDimension()
+                            children: []
+                            pos: 7289
+                            length: 24
+                        children: []
+                        pos: 7277
+                        length: 36
+                    children: []
+                    pos: 7276
+                    length: 38
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new DimensionMismatchException(y.length, equations.getDimension());
+                    children: []
+                    pos: 7329
+                    length: 73
+                  pos: 7315
+                  length: 97
+                pos: 7273
+                length: 139
+              - type: local_variable_declaration
+                fields:
+                  text: final ExpandableStatefulODE expandableODE = new ExpandableStatefulODE(equations);
+                children: []
+                pos: 7471
+                length: 81
+              - type: expression_statement
+                fields:
+                  text: expandableODE.setTime(t0);
+                children: []
+                pos: 7561
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: expandableODE.setPrimaryState(y0);
+                children: []
+                pos: 7596
+                length: 34
+              - type: expression_statement
+                fields:
+                  text: integrate(expandableODE, t);
+                children: []
+                pos: 7671
+                length: 28
+              - type: expression_statement
+                fields:
+                  text: System.arraycopy(expandableODE.getPrimaryState(), 0, y, 0,
+                    y.length);
+                children: []
+                pos: 7769
+                length: 69
+              - type: return_statement
+                fields:
+                  text: return expandableODE.getTime();
+                children: []
+                pos: 7847
+                length: 31
+              pos: 7112
+              length: 773
+          children: []
+          pos: 6807
+          length: 1078
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: integrate
+              children: []
+              pos: 9222
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ExpandableStatefulODE equations
+                children: []
+                pos: 9232
+                length: 31
+              pos: 9201
+              length: 208
+          children: []
+          pos: 9201
+          length: 208
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeDerivatives
+              children: []
+              pos: 9928
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t
+                children: []
+                pos: 9947
+                length: 14
+              pos: 9916
+              length: 251
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: evaluations.incrementCount();
+                children: []
+                pos: 10081
+                length: 29
+              - type: expression_statement
+                fields:
+                  text: expandable.computeDerivatives(t, y, yDot);
+                children: []
+                pos: 10119
+                length: 42
+              pos: 10071
+              length: 96
+          children: []
+          pos: 9916
+          length: 251
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setStateInitialized
+              children: []
+              pos: 10510
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final boolean stateInitialized
+                children: []
+                pos: 10530
+                length: 30
+              pos: 10495
+              length: 125
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.statesInitialized = stateInitialized;
+                children: []
+                pos: 10572
+                length: 42
+              pos: 10562
+              length: 58
+          children: []
+          pos: 10495
+          length: 125
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: acceptStep
+              children: []
+              pos: 11414
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final AbstractStepInterpolator interpolator
+                children: []
+                pos: 11425
+                length: 43
+              pos: 11397
+              length: 4798
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double previousT = interpolator.getGlobalPreviousTime();
+                children: []
+                pos: 11667
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: final double currentT = interpolator.getGlobalCurrentTime();
+                children: []
+                pos: 11736
+                length: 60
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "! statesInitialized"
+                        children: []
+                        pos: 11868
+                        length: 19
+                    children: []
+                    pos: 11867
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: enhanced_for_statement
+                    fields:
+                      text: |-
+                        for (EventState state : eventsStates) {
+                                            state.reinitializeBegin(interpolator);
+                                        }
+                    children: []
+                    pos: 11907
+                    length: 116
+                  - type: expression_statement
+                    fields:
+                      text: statesInitialized = true;
+                    children: []
+                    pos: 12040
+                    length: 25
+                  pos: 11889
+                  length: 190
+                pos: 11864
+                length: 215
+              - type: local_variable_declaration
+                fields:
+                  text: 'final int orderingSign = interpolator.isForward() ? +1 :
+                    -1;'
+                children: []
+                pos: 12162
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    SortedSet<EventState> occuringEvents = new TreeSet<EventState>(new Comparator<EventState>() {
+
+                                    /** {@inheritDoc} */
+                                    public int compare(EventState es0, EventState es1) {
+                                        return orderingSign * Double.compare(es0.getEventTime(), es1.getEventTime());
+                                    }
+
+                                });
+                children: []
+                pos: 12235
+                length: 333
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final EventState state : eventsStates) {
+                                    if (state.evaluateStep(interpolator)) {
+                                        // the event occurs during the current step
+                                        occuringEvents.add(state);
+                                    }
+                                }
+                children: []
+                pos: 12582
+                length: 244
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!occuringEvents.isEmpty()) {
+
+                                    // handle the chronologically first event
+                                    final Iterator<EventState> iterator = occuringEvents.iterator();
+                                    final EventState currentEvent = iterator.next();
+                                    iterator.remove();
+
+                                    // restrict the interpolator to the first part of the step, up to the event
+                                    final double eventT = currentEvent.getEventTime();
+                                    interpolator.setSoftPreviousTime(previousT);
+                                    interpolator.setSoftCurrentTime(eventT);
+
+                                    // get state at event time
+                                    interpolator.setInterpolatedTime(eventT);
+                                    final double[] eventY = interpolator.getInterpolatedState().clone();
+
+                                    // advance all event states to current time
+                                    currentEvent.stepAccepted(eventT, eventY);
+                                    isLastStep = currentEvent.stop();
+
+                                    // handle the first part of the step, up to the event
+                                    for (final StepHandler handler : stepHandlers) {
+                                        handler.handleStep(interpolator, isLastStep);
+                                    }
+
+                                    if (isLastStep) {
+                                        // the event asked to stop integration
+                                        System.arraycopy(eventY, 0, y, 0, y.length);
+                                        for (final EventState remaining : occuringEvents) {
+                                            remaining.stepAccepted(eventT, eventY);
+                                        }
+                                        return eventT;
+                                    }
+
+                                    boolean needReset = currentEvent.reset(eventT, eventY);
+                                    if (needReset) {
+                                        // some event handler has triggered changes that
+                                        // invalidate the derivatives, we need to recompute them
+                                        System.arraycopy(eventY, 0, y, 0, y.length);
+                                        computeDerivatives(eventT, y, yDot);
+                                        resetOccurred = true;
+                                        for (final EventState remaining : occuringEvents) {
+                                            remaining.stepAccepted(eventT, eventY);
+                                        }
+                                        return eventT;
+                                    }
+
+                                    // prepare handling of the remaining part of the step
+                                    previousT = eventT;
+                                    interpolator.setSoftPreviousTime(eventT);
+                                    interpolator.setSoftCurrentTime(currentT);
+
+                                    // check if the same event occurs again in the remaining part of the step
+                                    if (currentEvent.evaluateStep(interpolator)) {
+                                        // the event occurs during the current step
+                                        occuringEvents.add(currentEvent);
+                                    }
+
+                                }
+                children: []
+                pos: 12840
+                length: 2656
+              - type: expression_statement
+                fields:
+                  text: interpolator.setInterpolatedTime(currentT);
+                children: []
+                pos: 15569
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] currentY = interpolator.getInterpolatedState();
+                children: []
+                pos: 15625
+                length: 62
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final EventState state : eventsStates) {
+                                    state.stepAccepted(currentT, currentY);
+                                    isLastStep = isLastStep || state.stop();
+                                }
+                children: []
+                pos: 15700
+                length: 172
+              - type: expression_statement
+                fields:
+                  text: isLastStep = isLastStep || Precision.equals(currentT, tEnd,
+                    1);
+                children: []
+                pos: 15885
+                length: 63
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (StepHandler handler : stepHandlers) {
+                                    handler.handleStep(interpolator, isLastStep);
+                                }
+                children: []
+                pos: 16040
+                length: 118
+              - type: return_statement
+                fields:
+                  text: return currentT;
+                children: []
+                pos: 16172
+                length: 16
+              pos: 11652
+              length: 4543
+          children: []
+          pos: 11397
+          length: 4798
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sanityChecks
+              children: []
+              pos: 16596
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final ExpandableStatefulODE equations
+                children: []
+                pos: 16609
+                length: 37
+              pos: 16581
+              length: 621
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final double threshold = 1000 * FastMath.ulp(FastMath.max(FastMath.abs(equations.getTime()),
+                                                                                      FastMath.abs(t)));
+                children: []
+                pos: 16744
+                length: 177
+              - type: local_variable_declaration
+                fields:
+                  text: final double dt = FastMath.abs(equations.getTime() - t);
+                children: []
+                pos: 16930
+                length: 56
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: dt
+                            children: []
+                            pos: 16999
+                            length: 2
+                          right:
+                            type: identifier
+                            fields:
+                              text: threshold
+                            children: []
+                            pos: 17005
+                            length: 9
+                        children: []
+                        pos: 16999
+                        length: 15
+                    children: []
+                    pos: 16998
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new NumberIsTooSmallException(LocalizedFormats.TOO_SMALL_INTEGRATION_INTERVAL,
+                                                                        dt, threshold, false);
+                    children: []
+                    pos: 17030
+                    length: 155
+                  pos: 17016
+                  length: 179
+                pos: 16995
+                length: 200
+              pos: 16733
+              length: 469
+          children: []
+          pos: 16581
+          length: 621
+        pos: 2038
+        length: 15167
+    children: []
+    pos: 2038
+    length: 15167
+  pos: 0
+  length: 17206
 text_diff: "--- before\n+++ after\n@@ -343,10 +343,8 @@\n                 final double[]
   eventY = interpolator.getInterpolatedState().clone();\n \n                 // advance
   all event states to current time\n-                for (final EventState state :

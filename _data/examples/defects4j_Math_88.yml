@@ -1,5 +1,3279 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SimplexTableau
+        children: []
+        pos: 2412
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -1369660067587938365L;
+          children: []
+          pos: 2502
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final LinearObjectiveFunction f;
+          children: []
+          pos: 2613
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final Collection<LinearConstraint> constraints;
+          children: []
+          pos: 2690
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private final boolean restrictToNonNegative;
+          children: []
+          pos: 2820
+          length: 44
+        - type: field_declaration
+          fields:
+            text: protected transient RealMatrix tableau;
+          children: []
+          pos: 2897
+          length: 39
+        - type: field_declaration
+          fields:
+            text: protected final int numDecisionVariables;
+          children: []
+          pos: 2983
+          length: 41
+        - type: field_declaration
+          fields:
+            text: protected final int numSlackVariables;
+          children: []
+          pos: 3068
+          length: 38
+        - type: field_declaration
+          fields:
+            text: protected int numArtificialVariables;
+          children: []
+          pos: 3155
+          length: 37
+        - type: field_declaration
+          fields:
+            text: protected final double epsilon;
+          children: []
+          pos: 3267
+          length: 31
+        - type: constructor_declaration
+          fields:
+            text: |-
+              SimplexTableau(final LinearObjectiveFunction f,
+                                 final Collection<LinearConstraint> constraints,
+                                 final GoalType goalType, final boolean restrictToNonNegative,
+                                 final double epsilon) {
+                      this.f                      = f;
+                      this.constraints            = constraints;
+                      this.restrictToNonNegative  = restrictToNonNegative;
+                      this.epsilon                = epsilon;
+                      this.numDecisionVariables   = getNumVariables() + (restrictToNonNegative ? 0 : 1);
+                      this.numSlackVariables      = getConstraintTypeCounts(Relationship.LEQ) +
+                                                    getConstraintTypeCounts(Relationship.GEQ);
+                      this.numArtificialVariables = getConstraintTypeCounts(Relationship.EQ) +
+                                                    getConstraintTypeCounts(Relationship.GEQ);
+                      this.tableau = new RealMatrixImpl(createTableau(goalType == GoalType.MAXIMIZE));
+                      initialize();
+                  }
+          children: []
+          pos: 3746
+          length: 971
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createTableau
+              children: []
+              pos: 4903
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final boolean maximize
+                children: []
+                pos: 4917
+                length: 22
+              pos: 4882
+              length: 2922
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: List<LinearConstraint> constraints = getNormalizedConstraints();
+                children: []
+                pos: 4999
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    int width = numDecisionVariables + numSlackVariables +
+                            numArtificialVariables + getNumObjectiveFunctions() + 1;
+                children: []
+                pos: 5072
+                length: 119
+              - type: local_variable_declaration
+                fields:
+                  text: int height = constraints.size() + getNumObjectiveFunctions();
+                children: []
+                pos: 5218
+                length: 61
+              - type: local_variable_declaration
+                fields:
+                  text: double[][] matrix = new double[height][width];
+                children: []
+                pos: 5288
+                length: 46
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: getNumObjectiveFunctions()
+                            children: []
+                            pos: 5398
+                            length: 26
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '2'
+                            children: []
+                            pos: 5428
+                            length: 1
+                        children: []
+                        pos: 5398
+                        length: 31
+                    children: []
+                    pos: 5397
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: matrix[0][0] = -1;
+                    children: []
+                    pos: 5445
+                    length: 18
+                  pos: 5431
+                  length: 42
+                pos: 5394
+                length: 79
+              - type: local_variable_declaration
+                fields:
+                  text: 'int zIndex = (getNumObjectiveFunctions() == 1) ? 0 : 1;'
+                children: []
+                pos: 5482
+                length: 55
+              - type: expression_statement
+                fields:
+                  text: 'matrix[zIndex][zIndex] = maximize ? 1 : -1;'
+                children: []
+                pos: 5546
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    RealVector objectiveCoefficients =
+                                maximize ? f.getCoefficients().mapMultiply(-1) : f.getCoefficients();
+                children: []
+                pos: 5598
+                length: 116
+              - type: expression_statement
+                fields:
+                  text: copyArray(objectiveCoefficients.getData(), matrix[zIndex],
+                    getNumObjectiveFunctions());
+                children: []
+                pos: 5727
+                length: 87
+              - type: expression_statement
+                fields:
+                  text: |-
+                    matrix[zIndex][width - 1] =
+                                    maximize ? f.getConstantTerm() : -1 * f.getConstantTerm();
+                children: []
+                pos: 5827
+                length: 102
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!restrictToNonNegative"
+                        children: []
+                        pos: 5951
+                        length: 22
+                    children: []
+                    pos: 5950
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        matrix[zIndex][getSlackVariableOffset() - 1] =
+                                                getInvertedCoeffiecientSum(objectiveCoefficients);
+                    children: []
+                    pos: 5997
+                    length: 121
+                  pos: 5975
+                  length: 161
+                pos: 5947
+                length: 189
+              - type: local_variable_declaration
+                fields:
+                  text: int slackVar = 0;
+                children: []
+                pos: 6204
+                length: 17
+              - type: local_variable_declaration
+                fields:
+                  text: int artificialVar = 0;
+                children: []
+                pos: 6238
+                length: 22
+              - type: for_statement
+                fields:
+                  text: "for (int i = 0; i < constraints.size(); i++) {\n                    LinearConstraint
+                    constraint = constraints.get(i);\n                    int row
+                    = getNumObjectiveFunctions() + i;\n\n                    // decision
+                    variable coefficients\n                    copyArray(constraint.getCoefficients().getData(),
+                    matrix[row], 1);\n\n                    // x-\n                    if
+                    (!restrictToNonNegative) {\n                        matrix[row][getSlackVariableOffset()
+                    - 1] =\n                            getInvertedCoeffiecientSum(constraint.getCoefficients());\n
+                    \                   }\n\n                    // RHS\n                    matrix[row][width
+                    - 1] = constraint.getValue();\n\n                    // slack
+                    variables\n                    if (constraint.getRelationship()
+                    == Relationship.LEQ) {\n                        matrix[row][getSlackVariableOffset()
+                    + slackVar++] = 1;  // slack\n                    } else if (constraint.getRelationship()
+                    == Relationship.GEQ) {\n                        matrix[row][getSlackVariableOffset()
+                    + slackVar++] = -1; // excess\n                    }\n\n                    //
+                    artificial variables\n                    if ((constraint.getRelationship()
+                    == Relationship.EQ) ||\n                        (constraint.getRelationship()
+                    == Relationship.GEQ)) {\n                        matrix[0][getArtificialVariableOffset()
+                    + artificialVar] = 1; \n                        matrix[row][getArtificialVariableOffset()
+                    + artificialVar++] = 1; \n                    }\n                }"
+                children: []
+                pos: 6277
+                length: 1489
+              - type: return_statement
+                fields:
+                  text: return matrix;
+                children: []
+                pos: 7784
+                length: 14
+              pos: 4941
+              length: 2863
+          children: []
+          pos: 4882
+          length: 2922
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumVariables
+              children: []
+              pos: 7901
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7890
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return f.getCoefficients().getDimension();
+                children: []
+                pos: 7929
+                length: 42
+              pos: 7919
+              length: 58
+          children: []
+          pos: 7890
+          length: 87
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNormalizedConstraints
+              children: []
+              pos: 8157
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8127
+              length: 289
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: List<LinearConstraint> normalized = new ArrayList<LinearConstraint>();
+                children: []
+                pos: 8194
+                length: 70
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (LinearConstraint constraint : constraints) {
+                                normalized.add(normalize(constraint));
+                            }
+                children: []
+                pos: 8273
+                length: 110
+              - type: return_statement
+                fields:
+                  text: return normalized;
+                children: []
+                pos: 8392
+                length: 18
+              pos: 8184
+              length: 232
+          children: []
+          pos: 8127
+          length: 289
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalize
+              children: []
+              pos: 8619
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final LinearConstraint constraint
+                children: []
+                pos: 8629
+                length: 33
+              pos: 8594
+              length: 533
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: constraint.getValue()
+                            children: []
+                            pos: 8678
+                            length: 21
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 8702
+                            length: 1
+                        children: []
+                        pos: 8678
+                        length: 25
+                    children: []
+                    pos: 8677
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return new LinearConstraint(constraint.getCoefficients().mapMultiply(-1),
+                                                                constraint.getRelationship().oppositeRelationship(),
+                                                                -1 * constraint.getValue());
+                    children: []
+                    pos: 8719
+                    length: 235
+                  pos: 8705
+                  length: 259
+                pos: 8674
+                length: 290
+              - type: return_statement
+                fields:
+                  text: "return new LinearConstraint(constraint.getCoefficients(),
+                    \n                                    constraint.getRelationship(),
+                    constraint.getValue());"
+                children: []
+                pos: 8973
+                length: 148
+              pos: 8664
+              length: 463
+          children: []
+          pos: 8594
+          length: 533
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumObjectiveFunctions
+              children: []
+              pos: 9277
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9257
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return this.numArtificialVariables > 0 ? 2 : 1;'
+                children: []
+                pos: 9314
+                length: 47
+              pos: 9304
+              length: 63
+          children: []
+          pos: 9257
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConstraintTypeCounts
+              children: []
+              pos: 9595
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Relationship relationship
+                children: []
+                pos: 9619
+                length: 31
+              pos: 9583
+              length: 298
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int count = 0;
+                children: []
+                pos: 9662
+                length: 14
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final LinearConstraint constraint : constraints) {
+                                if (constraint.getRelationship() == relationship) {
+                                    ++count;
+                                }
+                            }
+                children: []
+                pos: 9685
+                length: 168
+              - type: return_statement
+                fields:
+                  text: return count;
+                children: []
+                pos: 9862
+                length: 13
+              pos: 9652
+              length: 229
+          children: []
+          pos: 9583
+          length: 298
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: initialize
+              children: []
+              pos: 10059
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10046
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int artificialVar = 0; artificialVar < numArtificialVariables; artificialVar++) {
+                                int row = getBasicRow(getArtificialVariableOffset() + artificialVar);
+                                subtractRow(0, row, 1.0);
+                            }
+                children: []
+                pos: 10082
+                length: 216
+              pos: 10072
+              length: 232
+          children: []
+          pos: 10046
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInvertedCoeffiecientSum
+              children: []
+              pos: 10545
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealVector coefficients
+                children: []
+                pos: 10572
+                length: 29
+              pos: 10521
+              length: 235
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double sum = 0;
+                children: []
+                pos: 10613
+                length: 15
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (double coefficient : coefficients.getData()) {
+                                sum -= coefficient;
+                            }
+                children: []
+                pos: 10637
+                length: 93
+              - type: return_statement
+                fields:
+                  text: return sum;
+                children: []
+                pos: 10739
+                length: 11
+              pos: 10603
+              length: 153
+          children: []
+          pos: 10521
+          length: 235
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getBasicRow
+              children: []
+              pos: 10977
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int col
+                children: []
+                pos: 10989
+                length: 13
+              pos: 10961
+              length: 404
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Integer row = null;
+                children: []
+                pos: 11014
+                length: 19
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+                                if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+                                    if (row == null) {
+                                        row = i;
+                                    } else {
+                                        return null;
+                                    }
+                                }
+                            }
+                children: []
+                pos: 11042
+                length: 297
+              - type: return_statement
+                fields:
+                  text: return row;
+                children: []
+                pos: 11348
+                length: 11
+              pos: 11004
+              length: 361
+          children: []
+          pos: 10961
+          length: 404
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: discardArtificialVariables
+              children: []
+              pos: 11492
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11477
+              length: 610
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: numArtificialVariables
+                            children: []
+                            pos: 11535
+                            length: 22
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 11561
+                            length: 1
+                        children: []
+                        pos: 11535
+                        length: 27
+                    children: []
+                    pos: 11534
+                    length: 29
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 11578
+                    length: 7
+                  pos: 11564
+                  length: 31
+                pos: 11531
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: int width = getWidth() - numArtificialVariables - 1;
+                children: []
+                pos: 11604
+                length: 52
+              - type: local_variable_declaration
+                fields:
+                  text: int height = getHeight() - 1;
+                children: []
+                pos: 11665
+                length: 29
+              - type: local_variable_declaration
+                fields:
+                  text: double[][] matrix = new double[height][width];
+                children: []
+                pos: 11703
+                length: 46
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < height; i++) {
+                                for (int j = 0; j < width - 1; j++) {
+                                    matrix[i][j] = getEntry(i + 1, j + 1);
+                                }
+                                matrix[i][width - 1] = getEntry(i + 1, getRhsOffset());
+                            }
+                children: []
+                pos: 11758
+                length: 231
+              - type: expression_statement
+                fields:
+                  text: this.tableau = new RealMatrixImpl(matrix);
+                children: []
+                pos: 11998
+                length: 42
+              - type: expression_statement
+                fields:
+                  text: this.numArtificialVariables = 0;
+                children: []
+                pos: 12049
+                length: 32
+              pos: 11521
+              length: 566
+          children: []
+          pos: 11477
+          length: 610
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: copyArray
+              children: []
+              pos: 12246
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double[] src
+                children: []
+                pos: 12256
+                length: 18
+              pos: 12233
+              length: 198
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: System.arraycopy(src, 0, dest, getNumObjectiveFunctions(),
+                    src.length);
+                children: []
+                pos: 12353
+                length: 71
+              pos: 12343
+              length: 88
+          children: []
+          pos: 12233
+          length: 198
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSolution
+              children: []
+              pos: 12652
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12623
+              length: 1082
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double[] coefficients = new double[getOriginalNumDecisionVariables()];
+                children: []
+                pos: 12676
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    Integer basicRow =
+                                getBasicRow(getNumObjectiveFunctions() + getOriginalNumDecisionVariables());
+                children: []
+                pos: 12755
+                length: 107
+              - type: local_variable_declaration
+                fields:
+                  text: 'double mostNegative = basicRow == null ? 0 : getEntry(basicRow,
+                    getRhsOffset());'
+                children: []
+                pos: 12871
+                length: 80
+              - type: local_variable_declaration
+                fields:
+                  text: Set<Integer> basicRows = new HashSet<Integer>();
+                children: []
+                pos: 12960
+                length: 48
+              - type: for_statement
+                fields:
+                  text: "for (int i = 0; i < coefficients.length; i++) {\n            basicRow
+                    = getBasicRow(getNumObjectiveFunctions() + i);\n            if
+                    (basicRows.contains(basicRow)) {\n                // if multiple
+                    variables can take a given value \n                // then we
+                    choose the first and set the rest equal to 0\n                coefficients[i]
+                    = 0;\n            } else {\n                basicRows.add(basicRow);\n
+                    \               coefficients[i] =\n                    (basicRow
+                    == null ? 0 : getEntry(basicRow, getRhsOffset())) -\n                    (restrictToNonNegative
+                    ? 0 : mostNegative);\n            }\n        }"
+                children: []
+                pos: 13017
+                length: 603
+              - type: return_statement
+                fields:
+                  text: return new RealPointValuePair(coefficients, f.getValue(coefficients));
+                children: []
+                pos: 13629
+                length: 70
+              pos: 12666
+              length: 1039
+          children: []
+          pos: 12623
+          length: 1082
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: divideRow
+              children: []
+              pos: 14033
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int dividendRow
+                children: []
+                pos: 14043
+                length: 21
+              pos: 14018
+              length: 224
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int j = 0; j < getWidth(); j++) {
+                                tableau.setEntry(dividendRow, j, tableau.getEntry(dividendRow, j) / divisor);
+                            }
+                children: []
+                pos: 14098
+                length: 138
+              pos: 14088
+              length: 154
+          children: []
+          pos: 14018
+          length: 224
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: subtractRow
+              children: []
+              pos: 14602
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int minuendRow
+                children: []
+                pos: 14614
+                length: 20
+              pos: 14587
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int j = 0; j < getWidth(); j++) {
+                                tableau.setEntry(minuendRow, j, tableau.getEntry(minuendRow, j) -
+                                                 multiple * tableau.getEntry(subtrahendRow, j));
+                            }
+                children: []
+                pos: 14725
+                length: 203
+              pos: 14715
+              length: 219
+          children: []
+          pos: 14587
+          length: 347
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getWidth
+              children: []
+              pos: 15049
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15029
+              length: 83
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getColumnDimension();
+                children: []
+                pos: 15070
+                length: 36
+              pos: 15060
+              length: 52
+          children: []
+          pos: 15029
+          length: 83
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getHeight
+              children: []
+              pos: 15229
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15209
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getRowDimension();
+                children: []
+                pos: 15251
+                length: 33
+              pos: 15241
+              length: 49
+          children: []
+          pos: 15209
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEntry
+              children: []
+              pos: 15464
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int row
+                children: []
+                pos: 15473
+                length: 13
+              pos: 15441
+              length: 118
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getEntry(row, column);
+                children: []
+                pos: 15516
+                length: 37
+              pos: 15506
+              length: 53
+          children: []
+          pos: 15441
+          length: 118
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setEntry
+              children: []
+              pos: 15727
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int row
+                children: []
+                pos: 15736
+                length: 13
+              pos: 15706
+              length: 170
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tableau.setEntry(row, column, value);
+                children: []
+                pos: 15833
+                length: 37
+              pos: 15823
+              length: 53
+          children: []
+          pos: 15706
+          length: 170
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSlackVariableOffset
+              children: []
+              pos: 16019
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15999
+              length: 118
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getNumObjectiveFunctions() + numDecisionVariables;
+                children: []
+                pos: 16054
+                length: 57
+              pos: 16044
+              length: 73
+          children: []
+          pos: 15999
+          length: 118
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getArtificialVariableOffset
+              children: []
+              pos: 16270
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16250
+              length: 143
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getNumObjectiveFunctions() + numDecisionVariables +
+                    numSlackVariables;
+                children: []
+                pos: 16310
+                length: 77
+              pos: 16300
+              length: 93
+          children: []
+          pos: 16250
+          length: 143
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRhsOffset
+              children: []
+              pos: 16526
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16506
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getWidth() - 1;
+                children: []
+                pos: 16551
+                length: 22
+              pos: 16541
+              length: 38
+          children: []
+          pos: 16506
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumDecisionVariables
+              children: []
+              pos: 16960
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16940
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numDecisionVariables;
+                children: []
+                pos: 16996
+                length: 28
+              pos: 16986
+              length: 44
+          children: []
+          pos: 16940
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOriginalNumDecisionVariables
+              children: []
+              pos: 17218
+              length: 31
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17198
+              length: 149
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return restrictToNonNegative ? numDecisionVariables : numDecisionVariables
+                    - 1;'
+                children: []
+                pos: 17262
+                length: 79
+              pos: 17252
+              length: 95
+          children: []
+          pos: 17198
+          length: 149
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumSlackVariables
+              children: []
+              pos: 17472
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17452
+              length: 84
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numSlackVariables;
+                children: []
+                pos: 17505
+                length: 25
+              pos: 17495
+              length: 41
+          children: []
+          pos: 17452
+          length: 84
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumArtificialVariables
+              children: []
+              pos: 17671
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17651
+              length: 94
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numArtificialVariables;
+                children: []
+                pos: 17709
+                length: 30
+              pos: 17699
+              length: 46
+          children: []
+          pos: 17651
+          length: 94
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getData
+              children: []
+              pos: 17851
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17824
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getData();
+                children: []
+                pos: 17871
+                length: 25
+              pos: 17861
+              length: 41
+          children: []
+          pos: 17824
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 17962
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object other
+                children: []
+                pos: 17969
+                length: 12
+              pos: 17933
+              length: 836
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 17996
+                            length: 4
+                          right:
+                            type: identifier
+                            fields:
+                              text: other
+                            children: []
+                            pos: 18004
+                            length: 5
+                        children: []
+                        pos: 17996
+                        length: 13
+                    children: []
+                    pos: 17995
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 18022
+                    length: 12
+                  pos: 18011
+                  length: 31
+                pos: 17992
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: other
+                            children: []
+                            pos: 18054
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18063
+                            length: 4
+                        children: []
+                        pos: 18054
+                        length: 13
+                    children: []
+                    pos: 18053
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 18079
+                    length: 13
+                  pos: 18069
+                  length: 31
+                pos: 18050
+                length: 50
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: SimplexTableau rhs = (SimplexTableau) other;
+                      children: []
+                      pos: 18125
+                      length: 44
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return (restrictToNonNegative  == rhs.restrictToNonNegative) &&
+                                           (numDecisionVariables   == rhs.numDecisionVariables) &&
+                                           (numSlackVariables      == rhs.numSlackVariables) &&
+                                           (numArtificialVariables == rhs.numArtificialVariables) &&
+                                           (epsilon                == rhs.epsilon) &&
+                                           f.equals(rhs.f) &&
+                                           constraints.equals(rhs.constraints) &&
+                                           tableau.equals(rhs.tableau);
+                      children: []
+                      pos: 18180
+                      length: 479
+                    pos: 18112
+                    length: 556
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                    // ignore exception
+                                    return false;
+                                }
+                      children: []
+                      pos: 18669
+                      length: 93
+                    pos: 18108
+                    length: 654
+                children: []
+                pos: 18108
+                length: 654
+              pos: 17983
+              length: 786
+          children: []
+          pos: 17933
+          length: 836
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 18829
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 18804
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return Boolean.valueOf(restrictToNonNegative).hashCode() ^
+                                   numDecisionVariables ^
+                                   numSlackVariables ^
+                                   numArtificialVariables ^
+                                   Double.valueOf(epsilon).hashCode() ^
+                                   f.hashCode() ^
+                                   constraints.hashCode() ^
+                                   tableau.hashCode();
+                children: []
+                pos: 18850
+                length: 328
+              pos: 18840
+              length: 344
+          children: []
+          pos: 18804
+          length: 380
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: writeObject
+              children: []
+              pos: 19364
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectOutputStream oos
+                children: []
+                pos: 19376
+                length: 22
+              pos: 19351
+              length: 172
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: oos.defaultWriteObject();
+                children: []
+                pos: 19437
+                length: 25
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.serializeRealMatrix(tableau, oos);
+                children: []
+                pos: 19471
+                length: 46
+              pos: 19427
+              length: 96
+          children: []
+          pos: 19351
+          length: 172
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readObject
+              children: []
+              pos: 19793
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectInputStream ois
+                children: []
+                pos: 19804
+                length: 21
+              pos: 19780
+              length: 201
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: ois.defaultReadObject();
+                children: []
+                pos: 19886
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.deserializeRealMatrix(this, "tableau", ois);
+                children: []
+                pos: 19919
+                length: 56
+              pos: 19876
+              length: 105
+          children: []
+          pos: 19780
+          length: 201
+        pos: 2406
+        length: 17577
+    children: []
+    pos: 2406
+    length: 17577
+  pos: 0
+  length: 19984
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SimplexTableau
+        children: []
+        pos: 2412
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -1369660067587938365L;
+          children: []
+          pos: 2502
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final LinearObjectiveFunction f;
+          children: []
+          pos: 2613
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final Collection<LinearConstraint> constraints;
+          children: []
+          pos: 2690
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private final boolean restrictToNonNegative;
+          children: []
+          pos: 2820
+          length: 44
+        - type: field_declaration
+          fields:
+            text: protected transient RealMatrix tableau;
+          children: []
+          pos: 2897
+          length: 39
+        - type: field_declaration
+          fields:
+            text: protected final int numDecisionVariables;
+          children: []
+          pos: 2983
+          length: 41
+        - type: field_declaration
+          fields:
+            text: protected final int numSlackVariables;
+          children: []
+          pos: 3068
+          length: 38
+        - type: field_declaration
+          fields:
+            text: protected int numArtificialVariables;
+          children: []
+          pos: 3155
+          length: 37
+        - type: field_declaration
+          fields:
+            text: protected final double epsilon;
+          children: []
+          pos: 3267
+          length: 31
+        - type: constructor_declaration
+          fields:
+            text: |-
+              SimplexTableau(final LinearObjectiveFunction f,
+                                 final Collection<LinearConstraint> constraints,
+                                 final GoalType goalType, final boolean restrictToNonNegative,
+                                 final double epsilon) {
+                      this.f                      = f;
+                      this.constraints            = constraints;
+                      this.restrictToNonNegative  = restrictToNonNegative;
+                      this.epsilon                = epsilon;
+                      this.numDecisionVariables   = getNumVariables() + (restrictToNonNegative ? 0 : 1);
+                      this.numSlackVariables      = getConstraintTypeCounts(Relationship.LEQ) +
+                                                    getConstraintTypeCounts(Relationship.GEQ);
+                      this.numArtificialVariables = getConstraintTypeCounts(Relationship.EQ) +
+                                                    getConstraintTypeCounts(Relationship.GEQ);
+                      this.tableau = new RealMatrixImpl(createTableau(goalType == GoalType.MAXIMIZE));
+                      initialize();
+                  }
+          children: []
+          pos: 3746
+          length: 971
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createTableau
+              children: []
+              pos: 4903
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final boolean maximize
+                children: []
+                pos: 4917
+                length: 22
+              pos: 4882
+              length: 2922
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: List<LinearConstraint> constraints = getNormalizedConstraints();
+                children: []
+                pos: 4999
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    int width = numDecisionVariables + numSlackVariables +
+                            numArtificialVariables + getNumObjectiveFunctions() + 1;
+                children: []
+                pos: 5072
+                length: 119
+              - type: local_variable_declaration
+                fields:
+                  text: int height = constraints.size() + getNumObjectiveFunctions();
+                children: []
+                pos: 5218
+                length: 61
+              - type: local_variable_declaration
+                fields:
+                  text: double[][] matrix = new double[height][width];
+                children: []
+                pos: 5288
+                length: 46
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: getNumObjectiveFunctions()
+                            children: []
+                            pos: 5398
+                            length: 26
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '2'
+                            children: []
+                            pos: 5428
+                            length: 1
+                        children: []
+                        pos: 5398
+                        length: 31
+                    children: []
+                    pos: 5397
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: matrix[0][0] = -1;
+                    children: []
+                    pos: 5445
+                    length: 18
+                  pos: 5431
+                  length: 42
+                pos: 5394
+                length: 79
+              - type: local_variable_declaration
+                fields:
+                  text: 'int zIndex = (getNumObjectiveFunctions() == 1) ? 0 : 1;'
+                children: []
+                pos: 5482
+                length: 55
+              - type: expression_statement
+                fields:
+                  text: 'matrix[zIndex][zIndex] = maximize ? 1 : -1;'
+                children: []
+                pos: 5546
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    RealVector objectiveCoefficients =
+                                maximize ? f.getCoefficients().mapMultiply(-1) : f.getCoefficients();
+                children: []
+                pos: 5598
+                length: 116
+              - type: expression_statement
+                fields:
+                  text: copyArray(objectiveCoefficients.getData(), matrix[zIndex],
+                    getNumObjectiveFunctions());
+                children: []
+                pos: 5727
+                length: 87
+              - type: expression_statement
+                fields:
+                  text: |-
+                    matrix[zIndex][width - 1] =
+                                    maximize ? f.getConstantTerm() : -1 * f.getConstantTerm();
+                children: []
+                pos: 5827
+                length: 102
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!restrictToNonNegative"
+                        children: []
+                        pos: 5951
+                        length: 22
+                    children: []
+                    pos: 5950
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        matrix[zIndex][getSlackVariableOffset() - 1] =
+                                                getInvertedCoeffiecientSum(objectiveCoefficients);
+                    children: []
+                    pos: 5997
+                    length: 121
+                  pos: 5975
+                  length: 161
+                pos: 5947
+                length: 189
+              - type: local_variable_declaration
+                fields:
+                  text: int slackVar = 0;
+                children: []
+                pos: 6204
+                length: 17
+              - type: local_variable_declaration
+                fields:
+                  text: int artificialVar = 0;
+                children: []
+                pos: 6238
+                length: 22
+              - type: for_statement
+                fields:
+                  text: "for (int i = 0; i < constraints.size(); i++) {\n                    LinearConstraint
+                    constraint = constraints.get(i);\n                    int row
+                    = getNumObjectiveFunctions() + i;\n\n                    // decision
+                    variable coefficients\n                    copyArray(constraint.getCoefficients().getData(),
+                    matrix[row], 1);\n\n                    // x-\n                    if
+                    (!restrictToNonNegative) {\n                        matrix[row][getSlackVariableOffset()
+                    - 1] =\n                            getInvertedCoeffiecientSum(constraint.getCoefficients());\n
+                    \                   }\n\n                    // RHS\n                    matrix[row][width
+                    - 1] = constraint.getValue();\n\n                    // slack
+                    variables\n                    if (constraint.getRelationship()
+                    == Relationship.LEQ) {\n                        matrix[row][getSlackVariableOffset()
+                    + slackVar++] = 1;  // slack\n                    } else if (constraint.getRelationship()
+                    == Relationship.GEQ) {\n                        matrix[row][getSlackVariableOffset()
+                    + slackVar++] = -1; // excess\n                    }\n\n                    //
+                    artificial variables\n                    if ((constraint.getRelationship()
+                    == Relationship.EQ) ||\n                        (constraint.getRelationship()
+                    == Relationship.GEQ)) {\n                        matrix[0][getArtificialVariableOffset()
+                    + artificialVar] = 1; \n                        matrix[row][getArtificialVariableOffset()
+                    + artificialVar++] = 1; \n                    }\n                }"
+                children: []
+                pos: 6277
+                length: 1489
+              - type: return_statement
+                fields:
+                  text: return matrix;
+                children: []
+                pos: 7784
+                length: 14
+              pos: 4941
+              length: 2863
+          children: []
+          pos: 4882
+          length: 2922
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumVariables
+              children: []
+              pos: 7901
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7890
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return f.getCoefficients().getDimension();
+                children: []
+                pos: 7929
+                length: 42
+              pos: 7919
+              length: 58
+          children: []
+          pos: 7890
+          length: 87
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNormalizedConstraints
+              children: []
+              pos: 8157
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8127
+              length: 289
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: List<LinearConstraint> normalized = new ArrayList<LinearConstraint>();
+                children: []
+                pos: 8194
+                length: 70
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (LinearConstraint constraint : constraints) {
+                                normalized.add(normalize(constraint));
+                            }
+                children: []
+                pos: 8273
+                length: 110
+              - type: return_statement
+                fields:
+                  text: return normalized;
+                children: []
+                pos: 8392
+                length: 18
+              pos: 8184
+              length: 232
+          children: []
+          pos: 8127
+          length: 289
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalize
+              children: []
+              pos: 8619
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final LinearConstraint constraint
+                children: []
+                pos: 8629
+                length: 33
+              pos: 8594
+              length: 533
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: constraint.getValue()
+                            children: []
+                            pos: 8678
+                            length: 21
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 8702
+                            length: 1
+                        children: []
+                        pos: 8678
+                        length: 25
+                    children: []
+                    pos: 8677
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: |-
+                        return new LinearConstraint(constraint.getCoefficients().mapMultiply(-1),
+                                                                constraint.getRelationship().oppositeRelationship(),
+                                                                -1 * constraint.getValue());
+                    children: []
+                    pos: 8719
+                    length: 235
+                  pos: 8705
+                  length: 259
+                pos: 8674
+                length: 290
+              - type: return_statement
+                fields:
+                  text: "return new LinearConstraint(constraint.getCoefficients(),
+                    \n                                    constraint.getRelationship(),
+                    constraint.getValue());"
+                children: []
+                pos: 8973
+                length: 148
+              pos: 8664
+              length: 463
+          children: []
+          pos: 8594
+          length: 533
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumObjectiveFunctions
+              children: []
+              pos: 9277
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9257
+              length: 110
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return this.numArtificialVariables > 0 ? 2 : 1;'
+                children: []
+                pos: 9314
+                length: 47
+              pos: 9304
+              length: 63
+          children: []
+          pos: 9257
+          length: 110
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConstraintTypeCounts
+              children: []
+              pos: 9595
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Relationship relationship
+                children: []
+                pos: 9619
+                length: 31
+              pos: 9583
+              length: 298
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int count = 0;
+                children: []
+                pos: 9662
+                length: 14
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final LinearConstraint constraint : constraints) {
+                                if (constraint.getRelationship() == relationship) {
+                                    ++count;
+                                }
+                            }
+                children: []
+                pos: 9685
+                length: 168
+              - type: return_statement
+                fields:
+                  text: return count;
+                children: []
+                pos: 9862
+                length: 13
+              pos: 9652
+              length: 229
+          children: []
+          pos: 9583
+          length: 298
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: initialize
+              children: []
+              pos: 10059
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10046
+              length: 258
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int artificialVar = 0; artificialVar < numArtificialVariables; artificialVar++) {
+                                int row = getBasicRow(getArtificialVariableOffset() + artificialVar);
+                                subtractRow(0, row, 1.0);
+                            }
+                children: []
+                pos: 10082
+                length: 216
+              pos: 10072
+              length: 232
+          children: []
+          pos: 10046
+          length: 258
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInvertedCoeffiecientSum
+              children: []
+              pos: 10545
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealVector coefficients
+                children: []
+                pos: 10572
+                length: 29
+              pos: 10521
+              length: 235
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double sum = 0;
+                children: []
+                pos: 10613
+                length: 15
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (double coefficient : coefficients.getData()) {
+                                sum -= coefficient;
+                            }
+                children: []
+                pos: 10637
+                length: 93
+              - type: return_statement
+                fields:
+                  text: return sum;
+                children: []
+                pos: 10739
+                length: 11
+              pos: 10603
+              length: 153
+          children: []
+          pos: 10521
+          length: 235
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getBasicRow
+              children: []
+              pos: 10977
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int col
+                children: []
+                pos: 10989
+                length: 13
+              pos: 10961
+              length: 404
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Integer row = null;
+                children: []
+                pos: 11014
+                length: 19
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = getNumObjectiveFunctions(); i < getHeight(); i++) {
+                                if (!MathUtils.equals(getEntry(i, col), 0.0, epsilon)) {
+                                    if (row == null) {
+                                        row = i;
+                                    } else {
+                                        return null;
+                                    }
+                                }
+                            }
+                children: []
+                pos: 11042
+                length: 297
+              - type: return_statement
+                fields:
+                  text: return row;
+                children: []
+                pos: 11348
+                length: 11
+              pos: 11004
+              length: 361
+          children: []
+          pos: 10961
+          length: 404
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: discardArtificialVariables
+              children: []
+              pos: 11492
+              length: 26
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11477
+              length: 610
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: numArtificialVariables
+                            children: []
+                            pos: 11535
+                            length: 22
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 11561
+                            length: 1
+                        children: []
+                        pos: 11535
+                        length: 27
+                    children: []
+                    pos: 11534
+                    length: 29
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 11578
+                    length: 7
+                  pos: 11564
+                  length: 31
+                pos: 11531
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: int width = getWidth() - numArtificialVariables - 1;
+                children: []
+                pos: 11604
+                length: 52
+              - type: local_variable_declaration
+                fields:
+                  text: int height = getHeight() - 1;
+                children: []
+                pos: 11665
+                length: 29
+              - type: local_variable_declaration
+                fields:
+                  text: double[][] matrix = new double[height][width];
+                children: []
+                pos: 11703
+                length: 46
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < height; i++) {
+                                for (int j = 0; j < width - 1; j++) {
+                                    matrix[i][j] = getEntry(i + 1, j + 1);
+                                }
+                                matrix[i][width - 1] = getEntry(i + 1, getRhsOffset());
+                            }
+                children: []
+                pos: 11758
+                length: 231
+              - type: expression_statement
+                fields:
+                  text: this.tableau = new RealMatrixImpl(matrix);
+                children: []
+                pos: 11998
+                length: 42
+              - type: expression_statement
+                fields:
+                  text: this.numArtificialVariables = 0;
+                children: []
+                pos: 12049
+                length: 32
+              pos: 11521
+              length: 566
+          children: []
+          pos: 11477
+          length: 610
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: copyArray
+              children: []
+              pos: 12246
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double[] src
+                children: []
+                pos: 12256
+                length: 18
+              pos: 12233
+              length: 198
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: System.arraycopy(src, 0, dest, getNumObjectiveFunctions(),
+                    src.length);
+                children: []
+                pos: 12353
+                length: 71
+              pos: 12343
+              length: 88
+          children: []
+          pos: 12233
+          length: 198
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSolution
+              children: []
+              pos: 12652
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12623
+              length: 1162
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double[] coefficients = new double[getOriginalNumDecisionVariables()];
+                children: []
+                pos: 12676
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    Integer basicRow =
+                                getBasicRow(getNumObjectiveFunctions() + getOriginalNumDecisionVariables());
+                children: []
+                pos: 12755
+                length: 107
+              - type: local_variable_declaration
+                fields:
+                  text: 'double mostNegative = basicRow == null ? 0 : getEntry(basicRow,
+                    getRhsOffset());'
+                children: []
+                pos: 12871
+                length: 80
+              - type: for_statement
+                fields:
+                  text: "for (int i = 0; i < coefficients.length; i++) {\n            basicRow
+                    = getBasicRow(getNumObjectiveFunctions() + i);\n                //
+                    if multiple variables can take a given value \n                //
+                    then we choose the first and set the rest equal to 0\n                coefficients[i]
+                    =\n                    (basicRow == null ? 0 : getEntry(basicRow,
+                    getRhsOffset())) -\n                    (restrictToNonNegative
+                    ? 0 : mostNegative);\n            if (basicRow != null) {\n                for
+                    (int j = getNumObjectiveFunctions(); j < getNumObjectiveFunctions()
+                    + i; j++) {\n                    if (tableau.getEntry(basicRow,
+                    j) == 1) {\n                         coefficients[i] = 0;\n                    }\n
+                    \               }\n            }\n        }"
+                children: []
+                pos: 12960
+                length: 740
+              - type: return_statement
+                fields:
+                  text: return new RealPointValuePair(coefficients, f.getValue(coefficients));
+                children: []
+                pos: 13709
+                length: 70
+              pos: 12666
+              length: 1119
+          children: []
+          pos: 12623
+          length: 1162
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: divideRow
+              children: []
+              pos: 14113
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int dividendRow
+                children: []
+                pos: 14123
+                length: 21
+              pos: 14098
+              length: 224
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int j = 0; j < getWidth(); j++) {
+                                tableau.setEntry(dividendRow, j, tableau.getEntry(dividendRow, j) / divisor);
+                            }
+                children: []
+                pos: 14178
+                length: 138
+              pos: 14168
+              length: 154
+          children: []
+          pos: 14098
+          length: 224
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: subtractRow
+              children: []
+              pos: 14682
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int minuendRow
+                children: []
+                pos: 14694
+                length: 20
+              pos: 14667
+              length: 347
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int j = 0; j < getWidth(); j++) {
+                                tableau.setEntry(minuendRow, j, tableau.getEntry(minuendRow, j) -
+                                                 multiple * tableau.getEntry(subtrahendRow, j));
+                            }
+                children: []
+                pos: 14805
+                length: 203
+              pos: 14795
+              length: 219
+          children: []
+          pos: 14667
+          length: 347
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getWidth
+              children: []
+              pos: 15129
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15109
+              length: 83
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getColumnDimension();
+                children: []
+                pos: 15150
+                length: 36
+              pos: 15140
+              length: 52
+          children: []
+          pos: 15109
+          length: 83
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getHeight
+              children: []
+              pos: 15309
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15289
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getRowDimension();
+                children: []
+                pos: 15331
+                length: 33
+              pos: 15321
+              length: 49
+          children: []
+          pos: 15289
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEntry
+              children: []
+              pos: 15544
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int row
+                children: []
+                pos: 15553
+                length: 13
+              pos: 15521
+              length: 118
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getEntry(row, column);
+                children: []
+                pos: 15596
+                length: 37
+              pos: 15586
+              length: 53
+          children: []
+          pos: 15521
+          length: 118
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setEntry
+              children: []
+              pos: 15807
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int row
+                children: []
+                pos: 15816
+                length: 13
+              pos: 15786
+              length: 170
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tableau.setEntry(row, column, value);
+                children: []
+                pos: 15913
+                length: 37
+              pos: 15903
+              length: 53
+          children: []
+          pos: 15786
+          length: 170
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSlackVariableOffset
+              children: []
+              pos: 16099
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16079
+              length: 118
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getNumObjectiveFunctions() + numDecisionVariables;
+                children: []
+                pos: 16134
+                length: 57
+              pos: 16124
+              length: 73
+          children: []
+          pos: 16079
+          length: 118
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getArtificialVariableOffset
+              children: []
+              pos: 16350
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16330
+              length: 143
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getNumObjectiveFunctions() + numDecisionVariables +
+                    numSlackVariables;
+                children: []
+                pos: 16390
+                length: 77
+              pos: 16380
+              length: 93
+          children: []
+          pos: 16330
+          length: 143
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRhsOffset
+              children: []
+              pos: 16606
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16586
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getWidth() - 1;
+                children: []
+                pos: 16631
+                length: 22
+              pos: 16621
+              length: 38
+          children: []
+          pos: 16586
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumDecisionVariables
+              children: []
+              pos: 17040
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17020
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numDecisionVariables;
+                children: []
+                pos: 17076
+                length: 28
+              pos: 17066
+              length: 44
+          children: []
+          pos: 17020
+          length: 90
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOriginalNumDecisionVariables
+              children: []
+              pos: 17298
+              length: 31
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17278
+              length: 149
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return restrictToNonNegative ? numDecisionVariables : numDecisionVariables
+                    - 1;'
+                children: []
+                pos: 17342
+                length: 79
+              pos: 17332
+              length: 95
+          children: []
+          pos: 17278
+          length: 149
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumSlackVariables
+              children: []
+              pos: 17552
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17532
+              length: 84
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numSlackVariables;
+                children: []
+                pos: 17585
+                length: 25
+              pos: 17575
+              length: 41
+          children: []
+          pos: 17532
+          length: 84
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNumArtificialVariables
+              children: []
+              pos: 17751
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17731
+              length: 94
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return numArtificialVariables;
+                children: []
+                pos: 17789
+                length: 30
+              pos: 17779
+              length: 46
+          children: []
+          pos: 17731
+          length: 94
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getData
+              children: []
+              pos: 17931
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 17904
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return tableau.getData();
+                children: []
+                pos: 17951
+                length: 25
+              pos: 17941
+              length: 41
+          children: []
+          pos: 17904
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 18042
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object other
+                children: []
+                pos: 18049
+                length: 12
+              pos: 18013
+              length: 836
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 18076
+                            length: 4
+                          right:
+                            type: identifier
+                            fields:
+                              text: other
+                            children: []
+                            pos: 18084
+                            length: 5
+                        children: []
+                        pos: 18076
+                        length: 13
+                    children: []
+                    pos: 18075
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 18102
+                    length: 12
+                  pos: 18091
+                  length: 31
+                pos: 18072
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: other
+                            children: []
+                            pos: 18134
+                            length: 5
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18143
+                            length: 4
+                        children: []
+                        pos: 18134
+                        length: 13
+                    children: []
+                    pos: 18133
+                    length: 15
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 18159
+                    length: 13
+                  pos: 18149
+                  length: 31
+                pos: 18130
+                length: 50
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: SimplexTableau rhs = (SimplexTableau) other;
+                      children: []
+                      pos: 18205
+                      length: 44
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return (restrictToNonNegative  == rhs.restrictToNonNegative) &&
+                                           (numDecisionVariables   == rhs.numDecisionVariables) &&
+                                           (numSlackVariables      == rhs.numSlackVariables) &&
+                                           (numArtificialVariables == rhs.numArtificialVariables) &&
+                                           (epsilon                == rhs.epsilon) &&
+                                           f.equals(rhs.f) &&
+                                           constraints.equals(rhs.constraints) &&
+                                           tableau.equals(rhs.tableau);
+                      children: []
+                      pos: 18260
+                      length: 479
+                    pos: 18192
+                    length: 556
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException ex) {
+                                    // ignore exception
+                                    return false;
+                                }
+                      children: []
+                      pos: 18749
+                      length: 93
+                    pos: 18188
+                    length: 654
+                children: []
+                pos: 18188
+                length: 654
+              pos: 18063
+              length: 786
+          children: []
+          pos: 18013
+          length: 836
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 18909
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 18884
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return Boolean.valueOf(restrictToNonNegative).hashCode() ^
+                                   numDecisionVariables ^
+                                   numSlackVariables ^
+                                   numArtificialVariables ^
+                                   Double.valueOf(epsilon).hashCode() ^
+                                   f.hashCode() ^
+                                   constraints.hashCode() ^
+                                   tableau.hashCode();
+                children: []
+                pos: 18930
+                length: 328
+              pos: 18920
+              length: 344
+          children: []
+          pos: 18884
+          length: 380
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: writeObject
+              children: []
+              pos: 19444
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectOutputStream oos
+                children: []
+                pos: 19456
+                length: 22
+              pos: 19431
+              length: 172
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: oos.defaultWriteObject();
+                children: []
+                pos: 19517
+                length: 25
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.serializeRealMatrix(tableau, oos);
+                children: []
+                pos: 19551
+                length: 46
+              pos: 19507
+              length: 96
+          children: []
+          pos: 19431
+          length: 172
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readObject
+              children: []
+              pos: 19873
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ObjectInputStream ois
+                children: []
+                pos: 19884
+                length: 21
+              pos: 19860
+              length: 201
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: ois.defaultReadObject();
+                children: []
+                pos: 19966
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.deserializeRealMatrix(this, "tableau", ois);
+                children: []
+                pos: 19999
+                length: 56
+              pos: 19956
+              length: 105
+          children: []
+          pos: 19860
+          length: 201
+        pos: 2406
+        length: 17657
+    children: []
+    pos: 2406
+    length: 17657
+  pos: 0
+  length: 20064
 text_diff: "--- before\n+++ after\n@@ -326,18 +326,19 @@\n         Integer basicRow
   =\n             getBasicRow(getNumObjectiveFunctions() + getOriginalNumDecisionVariables());\n
   \        double mostNegative = basicRow == null ? 0 : getEntry(basicRow, getRhsOffset());\n-

@@ -1,5 +1,1383 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: InvocationMatcher
+        children: []
+        pos: 655
+        length: 17
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -3047126096857467610L;
+          children: []
+          pos: 785
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final Invocation invocation;
+          children: []
+          pos: 857
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private final List<Matcher> matchers;
+          children: []
+          pos: 898
+          length: 37
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public InvocationMatcher(Invocation invocation, List<Matcher> matchers) {
+                      this.invocation = invocation;
+                      if (matchers.isEmpty()) {
+                          this.matchers = invocation.argumentsToMatchers();
+                      } else {
+                          this.matchers = matchers;
+                      }
+                  }
+          children: []
+          pos: 941
+          length: 278
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public InvocationMatcher(Invocation invocation) {
+                      this(invocation, Collections.<Matcher>emptyList());
+                  }
+          children: []
+          pos: 1229
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMethod
+              children: []
+              pos: 1364
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1350
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.getMethod();
+                children: []
+                pos: 1386
+                length: 30
+              pos: 1376
+              length: 46
+          children: []
+          pos: 1350
+          length: 72
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInvocation
+              children: []
+              pos: 1450
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1432
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.invocation;
+                children: []
+                pos: 1476
+                length: 23
+              pos: 1466
+              length: 39
+          children: []
+          pos: 1432
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMatchers
+              children: []
+              pos: 1536
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1515
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.matchers;
+                children: []
+                pos: 1560
+                length: 21
+              pos: 1550
+              length: 37
+          children: []
+          pos: 1515
+          length: 72
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 1611
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1597
+              length: 99
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.toString(matchers, new PrintSettings());
+                children: []
+                pos: 1632
+                length: 58
+              pos: 1622
+              length: 74
+          children: []
+          pos: 1597
+          length: 99
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matches
+              children: []
+              pos: 1717
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation actual
+                children: []
+                pos: 1725
+                length: 17
+              pos: 1702
+              length: 226
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return invocation.getMock().equals(actual.getMock())
+                                    && hasSameMethod(actual)
+                                    && new ArgumentsComparator().argumentsMatch(this, actual);
+                children: []
+                pos: 1754
+                length: 168
+              pos: 1744
+              length: 184
+          children: []
+          pos: 1702
+          length: 226
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: safelyArgumentsMatch
+              children: []
+              pos: 1950
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object[] actualArgs
+                children: []
+                pos: 1971
+                length: 19
+              pos: 1934
+              length: 226
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new ArgumentsComparator().argumentsMatch(this,
+                          actualArgs);
+                      children: []
+                      pos: 2020
+                      length: 66
+                    pos: 2006
+                    length: 90
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Throwable t) {
+                                      return false;
+                                  }
+                      children: []
+                      pos: 2097
+                      length: 57
+                    pos: 2002
+                    length: 152
+                children: []
+                pos: 2002
+                length: 152
+              pos: 1992
+              length: 168
+          children: []
+          pos: 1934
+          length: 226
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasSimilarMethod
+              children: []
+              pos: 2322
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation candidate
+                children: []
+                pos: 2339
+                length: 20
+              pos: 2307
+              length: 750
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String wantedMethodName = getMethod().getName();
+                children: []
+                pos: 2371
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: String currentMethodName = candidate.getMethod().getName();
+                children: []
+                pos: 2428
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean methodNameEquals = wantedMethodName.equals(currentMethodName);
+                children: []
+                pos: 2505
+                length: 76
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean isUnverified = !candidate.isVerified();
+                children: []
+                pos: 2590
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean mockIsTheSame = getInvocation().getMock() ==
+                    candidate.getMock();
+                children: []
+                pos: 2652
+                length: 79
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean methodEquals = hasSameMethod(candidate);
+                children: []
+                pos: 2740
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: or
+                            fields:
+                              left:
+                                type: unary_expression
+                                fields:
+                                  text: "!methodNameEquals"
+                                children: []
+                                pos: 2808
+                                length: 17
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!isUnverified"
+                                children: []
+                                pos: 2829
+                                length: 13
+                            children: []
+                            pos: 2808
+                            length: 34
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!mockIsTheSame"
+                            children: []
+                            pos: 2846
+                            length: 14
+                        children: []
+                        pos: 2808
+                        length: 52
+                    children: []
+                    pos: 2807
+                    length: 54
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 2876
+                    length: 13
+                  pos: 2862
+                  length: 37
+                pos: 2804
+                length: 95
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean overloadedButSameArgs = !methodEquals && safelyArgumentsMatch(candidate.getArguments());
+                children: []
+                pos: 2909
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return !overloadedButSameArgs;
+                children: []
+                pos: 3021
+                length: 30
+              pos: 2361
+              length: 696
+          children: []
+          pos: 2307
+          length: 750
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasSameMethod
+              children: []
+              pos: 3078
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation candidate
+                children: []
+                pos: 3092
+                length: 20
+              pos: 3063
+              length: 808
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Method m1 = invocation.getMethod();
+                children: []
+                pos: 3305
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: Method m2 = candidate.getMethod();
+                children: []
+                pos: 3349
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: m1.getName()
+                                children: []
+                                pos: 3405
+                                length: 12
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 3421
+                                length: 4
+                            children: []
+                            pos: 3405
+                            length: 20
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: m1.getName().equals(m2.getName())
+                            children: []
+                            pos: 3429
+                            length: 33
+                        children: []
+                        pos: 3405
+                        length: 57
+                    children: []
+                    pos: 3404
+                    length: 59
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Class[] params1 = m1.getParameterTypes();
+                    children: []
+                    pos: 3516
+                    length: 41
+                  - type: local_variable_declaration
+                    fields:
+                      text: Class[] params2 = m2.getParameterTypes();
+                    children: []
+                    pos: 3567
+                    length: 41
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: field_access
+                                fields:
+                                  text: params1.length
+                                children: []
+                                pos: 3622
+                                length: 14
+                              right:
+                                type: field_access
+                                fields:
+                                  text: params2.length
+                                children: []
+                                pos: 3640
+                                length: 14
+                            children: []
+                            pos: 3622
+                            length: 32
+                        children: []
+                        pos: 3621
+                        length: 34
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: for_statement
+                        fields:
+                          text: "for (int i = 0; i < params1.length; i++) {\n        \t\tif
+                            (params1[i] != params2[i])\n        \t\t    return false;\n
+                            \       \t    }"
+                        children: []
+                        pos: 3671
+                        length: 125
+                      - type: return_statement
+                        fields:
+                          text: return true;
+                        children: []
+                        pos: 3810
+                        length: 12
+                      pos: 3656
+                      length: 177
+                    pos: 3618
+                    length: 215
+                  pos: 3464
+                  length: 379
+                pos: 3401
+                length: 442
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 3852
+                length: 13
+              pos: 3114
+              length: 757
+          children: []
+          pos: 3063
+          length: 808
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLocation
+              children: []
+              pos: 3897
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3881
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.getLocation();
+                children: []
+                pos: 3921
+                length: 32
+              pos: 3911
+              length: 48
+          children: []
+          pos: 3881
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 3979
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: PrintSettings printSettings
+                children: []
+                pos: 3988
+                length: 27
+              pos: 3965
+              length: 120
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.toString(matchers, printSettings);
+                children: []
+                pos: 4027
+                length: 52
+              pos: 4017
+              length: 68
+          children: []
+          pos: 3965
+          length: 120
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: captureArgumentsFrom
+              children: []
+              pos: 4103
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation i
+                children: []
+                pos: 4124
+                length: 12
+              pos: 4091
+              length: 306
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int k = 0;
+                children: []
+                pos: 4148
+                length: 10
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Matcher m : matchers) {
+                                if (m instanceof CapturesArguments && i.getArguments().length > k) {
+                                    ((CapturesArguments) m).captureFrom(i.getArguments()[k]);
+                                }
+                                k++;
+                            }
+                children: []
+                pos: 4167
+                length: 224
+              pos: 4138
+              length: 259
+          children: []
+          pos: 4091
+          length: 306
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createFrom
+              children: []
+              pos: 4441
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: List<Invocation> invocations
+                children: []
+                pos: 4452
+                length: 28
+              pos: 4403
+              length: 289
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: LinkedList<InvocationMatcher> out = new LinkedList<InvocationMatcher>();
+                children: []
+                pos: 4492
+                length: 72
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Invocation i : invocations) {
+                                out.add(new InvocationMatcher(i));
+                            }
+                children: []
+                pos: 4574
+                length: 91
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 4675
+                length: 11
+              pos: 4482
+              length: 210
+          children: []
+          pos: 4403
+          length: 289
+        pos: 611
+        length: 4083
+    children: []
+    pos: 611
+    length: 4083
+  pos: 0
+  length: 4694
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: InvocationMatcher
+        children: []
+        pos: 655
+        length: 17
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -3047126096857467610L;
+          children: []
+          pos: 785
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final Invocation invocation;
+          children: []
+          pos: 857
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private final List<Matcher> matchers;
+          children: []
+          pos: 898
+          length: 37
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public InvocationMatcher(Invocation invocation, List<Matcher> matchers) {
+                      this.invocation = invocation;
+                      if (matchers.isEmpty()) {
+                          this.matchers = invocation.argumentsToMatchers();
+                      } else {
+                          this.matchers = matchers;
+                      }
+                  }
+          children: []
+          pos: 941
+          length: 278
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public InvocationMatcher(Invocation invocation) {
+                      this(invocation, Collections.<Matcher>emptyList());
+                  }
+          children: []
+          pos: 1229
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMethod
+              children: []
+              pos: 1364
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1350
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.getMethod();
+                children: []
+                pos: 1386
+                length: 30
+              pos: 1376
+              length: 46
+          children: []
+          pos: 1350
+          length: 72
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getInvocation
+              children: []
+              pos: 1450
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1432
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.invocation;
+                children: []
+                pos: 1476
+                length: 23
+              pos: 1466
+              length: 39
+          children: []
+          pos: 1432
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMatchers
+              children: []
+              pos: 1536
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1515
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.matchers;
+                children: []
+                pos: 1560
+                length: 21
+              pos: 1550
+              length: 37
+          children: []
+          pos: 1515
+          length: 72
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 1611
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 1597
+              length: 99
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.toString(matchers, new PrintSettings());
+                children: []
+                pos: 1632
+                length: 58
+              pos: 1622
+              length: 74
+          children: []
+          pos: 1597
+          length: 99
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matches
+              children: []
+              pos: 1717
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation actual
+                children: []
+                pos: 1725
+                length: 17
+              pos: 1702
+              length: 226
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return invocation.getMock().equals(actual.getMock())
+                                    && hasSameMethod(actual)
+                                    && new ArgumentsComparator().argumentsMatch(this, actual);
+                children: []
+                pos: 1754
+                length: 168
+              pos: 1744
+              length: 184
+          children: []
+          pos: 1702
+          length: 226
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: safelyArgumentsMatch
+              children: []
+              pos: 1950
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object[] actualArgs
+                children: []
+                pos: 1971
+                length: 19
+              pos: 1934
+              length: 226
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new ArgumentsComparator().argumentsMatch(this,
+                          actualArgs);
+                      children: []
+                      pos: 2020
+                      length: 66
+                    pos: 2006
+                    length: 90
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (Throwable t) {
+                                      return false;
+                                  }
+                      children: []
+                      pos: 2097
+                      length: 57
+                    pos: 2002
+                    length: 152
+                children: []
+                pos: 2002
+                length: 152
+              pos: 1992
+              length: 168
+          children: []
+          pos: 1934
+          length: 226
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasSimilarMethod
+              children: []
+              pos: 2322
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation candidate
+                children: []
+                pos: 2339
+                length: 20
+              pos: 2307
+              length: 750
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String wantedMethodName = getMethod().getName();
+                children: []
+                pos: 2371
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: String currentMethodName = candidate.getMethod().getName();
+                children: []
+                pos: 2428
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean methodNameEquals = wantedMethodName.equals(currentMethodName);
+                children: []
+                pos: 2505
+                length: 76
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean isUnverified = !candidate.isVerified();
+                children: []
+                pos: 2590
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean mockIsTheSame = getInvocation().getMock() ==
+                    candidate.getMock();
+                children: []
+                pos: 2652
+                length: 79
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean methodEquals = hasSameMethod(candidate);
+                children: []
+                pos: 2740
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: or
+                            fields:
+                              left:
+                                type: unary_expression
+                                fields:
+                                  text: "!methodNameEquals"
+                                children: []
+                                pos: 2808
+                                length: 17
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!isUnverified"
+                                children: []
+                                pos: 2829
+                                length: 13
+                            children: []
+                            pos: 2808
+                            length: 34
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!mockIsTheSame"
+                            children: []
+                            pos: 2846
+                            length: 14
+                        children: []
+                        pos: 2808
+                        length: 52
+                    children: []
+                    pos: 2807
+                    length: 54
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 2876
+                    length: 13
+                  pos: 2862
+                  length: 37
+                pos: 2804
+                length: 95
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean overloadedButSameArgs = !methodEquals && safelyArgumentsMatch(candidate.getArguments());
+                children: []
+                pos: 2909
+                length: 102
+              - type: return_statement
+                fields:
+                  text: return !overloadedButSameArgs;
+                children: []
+                pos: 3021
+                length: 30
+              pos: 2361
+              length: 696
+          children: []
+          pos: 2307
+          length: 750
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasSameMethod
+              children: []
+              pos: 3078
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation candidate
+                children: []
+                pos: 3092
+                length: 20
+              pos: 3063
+              length: 406
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Method m1 = invocation.getMethod();
+                children: []
+                pos: 3305
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: Method m2 = candidate.getMethod();
+                children: []
+                pos: 3349
+                length: 34
+              - type: return_statement
+                fields:
+                  text: return m1.equals(m2);
+                children: []
+                pos: 3442
+                length: 21
+              pos: 3114
+              length: 355
+          children: []
+          pos: 3063
+          length: 406
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLocation
+              children: []
+              pos: 3495
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3479
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.getLocation();
+                children: []
+                pos: 3519
+                length: 32
+              pos: 3509
+              length: 48
+          children: []
+          pos: 3479
+          length: 78
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 3577
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: PrintSettings printSettings
+                children: []
+                pos: 3586
+                length: 27
+              pos: 3563
+              length: 120
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return invocation.toString(matchers, printSettings);
+                children: []
+                pos: 3625
+                length: 52
+              pos: 3615
+              length: 68
+          children: []
+          pos: 3563
+          length: 120
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: captureArgumentsFrom
+              children: []
+              pos: 3701
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Invocation i
+                children: []
+                pos: 3722
+                length: 12
+              pos: 3689
+              length: 306
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int k = 0;
+                children: []
+                pos: 3746
+                length: 10
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Matcher m : matchers) {
+                                if (m instanceof CapturesArguments && i.getArguments().length > k) {
+                                    ((CapturesArguments) m).captureFrom(i.getArguments()[k]);
+                                }
+                                k++;
+                            }
+                children: []
+                pos: 3765
+                length: 224
+              pos: 3736
+              length: 259
+          children: []
+          pos: 3689
+          length: 306
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createFrom
+              children: []
+              pos: 4039
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: List<Invocation> invocations
+                children: []
+                pos: 4050
+                length: 28
+              pos: 4001
+              length: 289
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: LinkedList<InvocationMatcher> out = new LinkedList<InvocationMatcher>();
+                children: []
+                pos: 4090
+                length: 72
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Invocation i : invocations) {
+                                out.add(new InvocationMatcher(i));
+                            }
+                children: []
+                pos: 4172
+                length: 91
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 4273
+                length: 11
+              pos: 4080
+              length: 210
+          children: []
+          pos: 4001
+          length: 289
+        pos: 611
+        length: 3681
+    children: []
+    pos: 611
+    length: 3681
+  pos: 0
+  length: 4292
 text_diff: "--- before\n+++ after\n@@ -95,19 +95,8 @@\n         Method m1 = invocation.getMethod();\n
   \        Method m2 = candidate.getMethod();\n         \n-        if (m1.getName()
   != null && m1.getName().equals(m2.getName())) {\n         \t/* Avoid unnecessary

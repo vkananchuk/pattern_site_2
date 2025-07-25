@@ -1,5 +1,1126 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: TarUtils
+        children: []
+        pos: 1025
+        length: 8
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final int BYTE_MASK = 255;
+          children: []
+          pos: 1041
+          length: 41
+        - type: constructor_declaration
+          fields:
+            text: "private TarUtils(){    \n    }"
+          children: []
+          pos: 1167
+          length: 29
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseOctal
+              children: []
+              pos: 1728
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] buffer
+                children: []
+                pos: 1739
+                length: 13
+              pos: 1709
+              length: 1212
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long    result = 0;
+                children: []
+                pos: 1800
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: boolean stillPadding = true;
+                children: []
+                pos: 1828
+                length: 28
+              - type: local_variable_declaration
+                fields:
+                  text: int     end = offset + length;
+                children: []
+                pos: 1865
+                length: 30
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = offset; i < end; ++i) {
+                                final byte currentByte = buffer[i];
+                                if (currentByte == 0) { // Found trailing null
+                                    break;
+                                }
+
+                                // Ignore leading spaces ('0' can be ignored anyway)
+                                if (currentByte == (byte) ' ' || currentByte == '0') {
+                                    if (stillPadding) {
+                                        continue;
+                                    }
+
+                                    if (currentByte == (byte) ' ') { // Found trailing space
+                                        break;
+                                    }
+                                }
+
+                                stillPadding = false;
+                                // CheckStyle:MagicNumber OFF
+                                if (currentByte < '0' || currentByte > '7'){
+                                    throw new IllegalArgumentException(
+                                            "Invalid octal digit at position "+i+" in '"+new String(buffer, offset, length)+"'");
+                                }
+                                result = (result << 3) + (currentByte - '0');// TODO needs to reject invalid bytes
+                                // CheckStyle:MagicNumber ON
+                            }
+                children: []
+                pos: 1905
+                length: 986
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 2901
+                length: 14
+              pos: 1790
+              length: 1131
+          children: []
+          pos: 1709
+          length: 1212
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseName
+              children: []
+              pos: 3306
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] buffer
+                children: []
+                pos: 3316
+                length: 13
+              pos: 3285
+              length: 466
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuffer result = new StringBuffer(length);
+                children: []
+                pos: 3377
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: int          end = offset + length;
+                children: []
+                pos: 3433
+                length: 35
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = offset; i < end; ++i) {
+                                byte b = buffer[i];
+                                if (b == 0) { // Trailing null
+                                    break;
+                                }
+                                result.append((char) (b & 0xFF)); // Allow for sign-extension
+                            }
+                children: []
+                pos: 3478
+                length: 232
+              - type: return_statement
+                fields:
+                  text: return result.toString();
+                children: []
+                pos: 3720
+                length: 25
+              pos: 3367
+              length: 384
+          children: []
+          pos: 3285
+          length: 466
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatNameBytes
+              children: []
+              pos: 4425
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 4441
+                length: 11
+              pos: 4407
+              length: 460
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int i;
+                children: []
+                pos: 4512
+                length: 6
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (i = 0; i < length && i < name.length(); ++i) {
+                                buf[offset + i] = (byte) name.charAt(i);
+                            }
+                children: []
+                pos: 4585
+                length: 114
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (; i < length; ++i) {
+                                buf[offset + i] = 0;
+                            }
+                children: []
+                pos: 4760
+                length: 68
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 4838
+                length: 23
+              pos: 4502
+              length: 365
+          children: []
+          pos: 4407
+          length: 460
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatUnsignedOctalString
+              children: []
+              pos: 5273
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 5299
+                length: 16
+              pos: 5254
+              length: 941
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int remaining = length;
+                children: []
+                pos: 5390
+                length: 23
+              - type: expression_statement
+                fields:
+                  text: remaining--;
+                children: []
+                pos: 5422
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 5447
+                            length: 5
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 5456
+                            length: 1
+                        children: []
+                        pos: 5447
+                        length: 10
+                    children: []
+                    pos: 5446
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer[offset + remaining--] = (byte) '0';
+                    children: []
+                    pos: 5473
+                    length: 42
+                  pos: 5459
+                  length: 66
+                pos: 5443
+                length: 619
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (; remaining >= 0; --remaining) { // leading zeros
+                                buffer[offset + remaining] = (byte) '0';
+                            }
+                children: []
+                pos: 6072
+                length: 117
+              pos: 5380
+              length: 815
+          children: []
+          pos: 5254
+          length: 941
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatOctalBytes
+              children: []
+              pos: 6810
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 6827
+                length: 16
+              pos: 6792
+              length: 370
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int idx=length-2;
+                children: []
+                pos: 6904
+                length: 17
+              - type: expression_statement
+                fields:
+                  text: formatUnsignedOctalString(value, buf, offset, idx);
+                children: []
+                pos: 6961
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx++] = (byte) ' ';
+                children: []
+                pos: 7022
+                length: 33
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx]   = 0;
+                children: []
+                pos: 7082
+                length: 24
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 7133
+                length: 23
+              pos: 6893
+              length: 269
+          children: []
+          pos: 6792
+          length: 370
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatLongOctalBytes
+              children: []
+              pos: 7754
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 7775
+                length: 16
+              pos: 7736
+              length: 312
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int idx=length-1;
+                children: []
+                pos: 7852
+                length: 17
+              - type: expression_statement
+                fields:
+                  text: formatUnsignedOctalString(value, buf, offset, idx);
+                children: []
+                pos: 7900
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx] = (byte) ' ';
+                children: []
+                pos: 7960
+                length: 31
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 8019
+                length: 23
+              pos: 7841
+              length: 207
+          children: []
+          pos: 7736
+          length: 312
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatCheckSumOctalBytes
+              children: []
+              pos: 8665
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 8690
+                length: 16
+              pos: 8647
+              length: 372
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int idx=length-2;
+                children: []
+                pos: 8767
+                length: 17
+              - type: expression_statement
+                fields:
+                  text: formatUnsignedOctalString(value, buf, offset, idx);
+                children: []
+                pos: 8814
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx++]   = 0;
+                children: []
+                pos: 8875
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx]     = (byte) ' ';
+                children: []
+                pos: 8927
+                length: 35
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 8990
+                length: 23
+              pos: 8756
+              length: 263
+          children: []
+          pos: 8647
+          length: 372
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeCheckSum
+              children: []
+              pos: 9205
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final byte[] buf
+                children: []
+                pos: 9221
+                length: 16
+              pos: 9186
+              length: 200
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long sum = 0;
+                children: []
+                pos: 9249
+                length: 13
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < buf.length; ++i) {
+                                sum += BYTE_MASK & buf[i];
+                            }
+                children: []
+                pos: 9272
+                length: 87
+              - type: return_statement
+                fields:
+                  text: return sum;
+                children: []
+                pos: 9369
+                length: 11
+              pos: 9239
+              length: 147
+          children: []
+          pos: 9186
+          length: 200
+        pos: 1012
+        length: 8376
+    children: []
+    pos: 1012
+    length: 8376
+  pos: 0
+  length: 9389
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: TarUtils
+        children: []
+        pos: 1025
+        length: 8
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final int BYTE_MASK = 255;
+          children: []
+          pos: 1041
+          length: 41
+        - type: constructor_declaration
+          fields:
+            text: "private TarUtils(){    \n    }"
+          children: []
+          pos: 1167
+          length: 29
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseOctal
+              children: []
+              pos: 1728
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] buffer
+                children: []
+                pos: 1739
+                length: 13
+              pos: 1709
+              length: 1212
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long    result = 0;
+                children: []
+                pos: 1800
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: boolean stillPadding = true;
+                children: []
+                pos: 1828
+                length: 28
+              - type: local_variable_declaration
+                fields:
+                  text: int     end = offset + length;
+                children: []
+                pos: 1865
+                length: 30
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = offset; i < end; ++i) {
+                                final byte currentByte = buffer[i];
+                                if (currentByte == 0) { // Found trailing null
+                                    break;
+                                }
+
+                                // Ignore leading spaces ('0' can be ignored anyway)
+                                if (currentByte == (byte) ' ' || currentByte == '0') {
+                                    if (stillPadding) {
+                                        continue;
+                                    }
+
+                                    if (currentByte == (byte) ' ') { // Found trailing space
+                                        break;
+                                    }
+                                }
+
+                                stillPadding = false;
+                                // CheckStyle:MagicNumber OFF
+                                if (currentByte < '0' || currentByte > '7'){
+                                    throw new IllegalArgumentException(
+                                            "Invalid octal digit at position "+i+" in '"+new String(buffer, offset, length)+"'");
+                                }
+                                result = (result << 3) + (currentByte - '0');// TODO needs to reject invalid bytes
+                                // CheckStyle:MagicNumber ON
+                            }
+                children: []
+                pos: 1905
+                length: 986
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 2901
+                length: 14
+              pos: 1790
+              length: 1131
+          children: []
+          pos: 1709
+          length: 1212
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseName
+              children: []
+              pos: 3306
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] buffer
+                children: []
+                pos: 3316
+                length: 13
+              pos: 3285
+              length: 396
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: StringBuffer result = new StringBuffer(length);
+                children: []
+                pos: 3377
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: int          end = offset + length;
+                children: []
+                pos: 3433
+                length: 35
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = offset; i < end; ++i) {
+                                if (buffer[i] == 0) {
+                                    break;
+                                }
+                                result.append((char) buffer[i]);
+                            }
+                children: []
+                pos: 3478
+                length: 162
+              - type: return_statement
+                fields:
+                  text: return result.toString();
+                children: []
+                pos: 3650
+                length: 25
+              pos: 3367
+              length: 314
+          children: []
+          pos: 3285
+          length: 396
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatNameBytes
+              children: []
+              pos: 4355
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 4371
+                length: 11
+              pos: 4337
+              length: 460
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int i;
+                children: []
+                pos: 4442
+                length: 6
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (i = 0; i < length && i < name.length(); ++i) {
+                                buf[offset + i] = (byte) name.charAt(i);
+                            }
+                children: []
+                pos: 4515
+                length: 114
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (; i < length; ++i) {
+                                buf[offset + i] = 0;
+                            }
+                children: []
+                pos: 4690
+                length: 68
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 4768
+                length: 23
+              pos: 4432
+              length: 365
+          children: []
+          pos: 4337
+          length: 460
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatUnsignedOctalString
+              children: []
+              pos: 5203
+              length: 25
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 5229
+                length: 16
+              pos: 5184
+              length: 941
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int remaining = length;
+                children: []
+                pos: 5320
+                length: 23
+              - type: expression_statement
+                fields:
+                  text: remaining--;
+                children: []
+                pos: 5352
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 5377
+                            length: 5
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 5386
+                            length: 1
+                        children: []
+                        pos: 5377
+                        length: 10
+                    children: []
+                    pos: 5376
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer[offset + remaining--] = (byte) '0';
+                    children: []
+                    pos: 5403
+                    length: 42
+                  pos: 5389
+                  length: 66
+                pos: 5373
+                length: 619
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (; remaining >= 0; --remaining) { // leading zeros
+                                buffer[offset + remaining] = (byte) '0';
+                            }
+                children: []
+                pos: 6002
+                length: 117
+              pos: 5310
+              length: 815
+          children: []
+          pos: 5184
+          length: 941
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatOctalBytes
+              children: []
+              pos: 6740
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 6757
+                length: 16
+              pos: 6722
+              length: 370
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int idx=length-2;
+                children: []
+                pos: 6834
+                length: 17
+              - type: expression_statement
+                fields:
+                  text: formatUnsignedOctalString(value, buf, offset, idx);
+                children: []
+                pos: 6891
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx++] = (byte) ' ';
+                children: []
+                pos: 6952
+                length: 33
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx]   = 0;
+                children: []
+                pos: 7012
+                length: 24
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 7063
+                length: 23
+              pos: 6823
+              length: 269
+          children: []
+          pos: 6722
+          length: 370
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatLongOctalBytes
+              children: []
+              pos: 7684
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 7705
+                length: 16
+              pos: 7666
+              length: 312
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int idx=length-1;
+                children: []
+                pos: 7782
+                length: 17
+              - type: expression_statement
+                fields:
+                  text: formatUnsignedOctalString(value, buf, offset, idx);
+                children: []
+                pos: 7830
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx] = (byte) ' ';
+                children: []
+                pos: 7890
+                length: 31
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 7949
+                length: 23
+              pos: 7771
+              length: 207
+          children: []
+          pos: 7666
+          length: 312
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: formatCheckSumOctalBytes
+              children: []
+              pos: 8595
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final long value
+                children: []
+                pos: 8620
+                length: 16
+              pos: 8577
+              length: 372
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int idx=length-2;
+                children: []
+                pos: 8697
+                length: 17
+              - type: expression_statement
+                fields:
+                  text: formatUnsignedOctalString(value, buf, offset, idx);
+                children: []
+                pos: 8744
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx++]   = 0;
+                children: []
+                pos: 8805
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: buf[offset + idx]     = (byte) ' ';
+                children: []
+                pos: 8857
+                length: 35
+              - type: return_statement
+                fields:
+                  text: return offset + length;
+                children: []
+                pos: 8920
+                length: 23
+              pos: 8686
+              length: 263
+          children: []
+          pos: 8577
+          length: 372
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeCheckSum
+              children: []
+              pos: 9135
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final byte[] buf
+                children: []
+                pos: 9151
+                length: 16
+              pos: 9116
+              length: 200
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long sum = 0;
+                children: []
+                pos: 9179
+                length: 13
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < buf.length; ++i) {
+                                sum += BYTE_MASK & buf[i];
+                            }
+                children: []
+                pos: 9202
+                length: 87
+              - type: return_statement
+                fields:
+                  text: return sum;
+                children: []
+                pos: 9299
+                length: 11
+              pos: 9169
+              length: 147
+          children: []
+          pos: 9116
+          length: 200
+        pos: 1012
+        length: 8306
+    children: []
+    pos: 1012
+    length: 8306
+  pos: 0
+  length: 9319
 text_diff: "--- before\n+++ after\n@@ -95,11 +95,10 @@\n         int          end
   = offset + length;\n \n         for (int i = offset; i < end; ++i) {\n-            byte
   b = buffer[i];\n-            if (b == 0) { // Trailing null\n+            if (buffer[i]

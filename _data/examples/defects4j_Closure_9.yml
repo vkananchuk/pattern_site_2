@@ -1,5 +1,2505 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ProcessCommonJSModules
+        children: []
+        pos: 1432
+        length: 22
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final String MODULE_SLASH = "/";
+          children: []
+          pos: 1575
+          length: 47
+        - type: field_declaration
+          fields:
+            text: public static final String DEFAULT_FILENAME_PREFIX = "." + MODULE_SLASH;
+          children: []
+          pos: 1626
+          length: 72
+        - type: field_declaration
+          fields:
+            text: private static final String MODULE_NAME_SEPARATOR = "\\$";
+          children: []
+          pos: 1702
+          length: 58
+        - type: field_declaration
+          fields:
+            text: private static final String MODULE_NAME_PREFIX = "module$";
+          children: []
+          pos: 1763
+          length: 59
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1826
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final String filenamePrefix;
+          children: []
+          pos: 1869
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private final boolean reportDependencies;
+          children: []
+          pos: 1908
+          length: 41
+        - type: field_declaration
+          fields:
+            text: private JSModule module;
+          children: []
+          pos: 1952
+          length: 24
+        - type: constructor_declaration
+          fields:
+            text: |-
+              ProcessCommonJSModules(AbstractCompiler compiler, String filenamePrefix) {
+                  this(compiler, filenamePrefix, true);
+                }
+          children: []
+          pos: 1980
+          length: 120
+        - type: constructor_declaration
+          fields:
+            text: |-
+              ProcessCommonJSModules(AbstractCompiler compiler, String filenamePrefix,
+                    boolean reportDependencies) {
+                  this.compiler = compiler;
+                  this.filenamePrefix = filenamePrefix.endsWith(MODULE_SLASH) ?
+                      filenamePrefix : filenamePrefix + MODULE_SLASH;
+                  this.reportDependencies = reportDependencies;
+                }
+          children: []
+          pos: 2104
+          length: 314
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 2446
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 2454
+                length: 12
+              pos: 2422
+              length: 153
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    NodeTraversal
+                            .traverse(compiler, root, new ProcessCommonJsModulesCallback());
+                children: []
+                pos: 2485
+                length: 86
+              pos: 2479
+              length: 96
+          children: []
+          pos: 2422
+          length: 153
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: guessCJSModuleName
+              children: []
+              pos: 2586
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String filename
+                children: []
+                pos: 2605
+                length: 15
+              pos: 2579
+              length: 104
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return toModuleName(normalizeSourceName(filename));
+                children: []
+                pos: 2628
+                length: 51
+              pos: 2622
+              length: 61
+          children: []
+          pos: 2579
+          length: 104
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getModule
+              children: []
+              pos: 2802
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2793
+              length: 45
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return module;
+                children: []
+                pos: 2820
+                length: 14
+              pos: 2814
+              length: 24
+          children: []
+          pos: 2793
+          length: 45
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toModuleName
+              children: []
+              pos: 3099
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String filename
+                children: []
+                pos: 3112
+                length: 15
+              pos: 3078
+              length: 294
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return MODULE_NAME_PREFIX +
+                            filename.replaceAll("^\\." + Pattern.quote(MODULE_SLASH), "")
+                                .replaceAll(Pattern.quote(MODULE_SLASH), MODULE_NAME_SEPARATOR)
+                                .replaceAll("\\.js$", "").replaceAll("-", "_");
+                children: []
+                pos: 3135
+                length: 233
+              pos: 3129
+              length: 243
+          children: []
+          pos: 3078
+          length: 294
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toModuleName
+              children: []
+              pos: 3532
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String requiredFilename
+                children: []
+                pos: 3545
+                length: 23
+              pos: 3511
+              length: 605
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: requiredFilename = requiredFilename.replaceAll("\\.js$", "");
+                children: []
+                pos: 3606
+                length: 61
+              - type: expression_statement
+                fields:
+                  text: currentFilename = currentFilename.replaceAll("\\.js$", "");
+                children: []
+                pos: 3672
+                length: 59
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: requiredFilename.startsWith("." + MODULE_SLASH)
+                            children: []
+                            pos: 3741
+                            length: 47
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: requiredFilename.startsWith(".." + MODULE_SLASH)
+                            children: []
+                            pos: 3800
+                            length: 48
+                        children: []
+                        pos: 3741
+                        length: 107
+                    children: []
+                    pos: 3740
+                    length: 109
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: try_statement
+                    fields:
+                      body:
+                        type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: |-
+                              requiredFilename = (new URI(currentFilename)).resolve(new URI(requiredFilename))
+                                          .toString();
+                          children: []
+                          pos: 3872
+                          length: 105
+                        pos: 3862
+                        length: 123
+                      excepts:
+                        type: excepts
+                        fields: {}
+                        children:
+                        - type: catch_clause
+                          fields:
+                            text: |-
+                              catch (URISyntaxException e) {
+                                      throw new RuntimeException(e);
+                                    }
+                          children: []
+                          pos: 3986
+                          length: 77
+                        pos: 3858
+                        length: 205
+                    children: []
+                    pos: 3858
+                    length: 205
+                  pos: 3850
+                  length: 219
+                pos: 3737
+                length: 332
+              - type: return_statement
+                fields:
+                  text: return toModuleName(requiredFilename);
+                children: []
+                pos: 4074
+                length: 38
+              pos: 3600
+              length: 516
+          children: []
+          pos: 3511
+          length: 605
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeSourceName
+              children: []
+              pos: 4135
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String filename
+                children: []
+                pos: 4155
+                length: 15
+              pos: 4120
+              length: 335
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: filename = filename.replace("\\", "/");
+                children: []
+                pos: 4272
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: filename.indexOf(filenamePrefix)
+                            children: []
+                            pos: 4321
+                            length: 32
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4357
+                            length: 1
+                        children: []
+                        pos: 4321
+                        length: 37
+                    children: []
+                    pos: 4320
+                    length: 39
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: filename = filename.substring(filenamePrefix.length());
+                    children: []
+                    pos: 4368
+                    length: 55
+                  pos: 4360
+                  length: 69
+                pos: 4317
+                length: 112
+              - type: return_statement
+                fields:
+                  text: return filename;
+                children: []
+                pos: 4435
+                length: 16
+              pos: 4172
+              length: 283
+          children: []
+          pos: 4120
+          length: 335
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ProcessCommonJsModulesCallback
+              children: []
+              pos: 4561
+              length: 30
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private int scriptNodeCount = 0;
+                children: []
+                pos: 4639
+                length: 32
+              - type: field_declaration
+                fields:
+                  text: private Set<String> modulesWithExports = Sets.newHashSet();
+                children: []
+                pos: 4676
+                length: 59
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 4767
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 4773
+                      length: 15
+                    pos: 4741
+                    length: 503
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: and
+                                  fields:
+                                    left:
+                                      type: and
+                                      fields:
+                                        left:
+                                          type: method_invocation
+                                          fields:
+                                            text: n.isCall()
+                                          children: []
+                                          pos: 4823
+                                          length: 10
+                                        right:
+                                          type: equals
+                                          fields:
+                                            left:
+                                              type: method_invocation
+                                              fields:
+                                                text: n.getChildCount()
+                                              children: []
+                                              pos: 4837
+                                              length: 17
+                                            right:
+                                              type: decimal_integer_literal
+                                              fields:
+                                                text: '2'
+                                              children: []
+                                              pos: 4858
+                                              length: 1
+                                          children: []
+                                          pos: 4837
+                                          length: 22
+                                      children: []
+                                      pos: 4823
+                                      length: 36
+                                    right:
+                                      type: method_invocation
+                                      fields:
+                                        text: '"require".equals(n.getFirstChild().getQualifiedName())'
+                                      children: []
+                                      pos: 4873
+                                      length: 54
+                                  children: []
+                                  pos: 4823
+                                  length: 104
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getChildAtIndex(1).isString()
+                                  children: []
+                                  pos: 4941
+                                  length: 31
+                              children: []
+                              pos: 4823
+                              length: 149
+                          children: []
+                          pos: 4822
+                          length: 151
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: visitRequireCall(t, n, parent);
+                          children: []
+                          pos: 4984
+                          length: 31
+                        pos: 4974
+                        length: 49
+                      pos: 4819
+                      length: 204
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isScript()
+                              children: []
+                              pos: 5035
+                              length: 12
+                          children: []
+                          pos: 5034
+                          length: 14
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: scriptNodeCount++;
+                          children: []
+                          pos: 5059
+                          length: 18
+                        - type: expression_statement
+                          fields:
+                            text: visitScript(t, n);
+                          children: []
+                          pos: 5086
+                          length: 18
+                        pos: 5049
+                        length: 63
+                      pos: 5031
+                      length: 81
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isGetProp()
+                                  children: []
+                                  pos: 5124
+                                  length: 13
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: '"module.exports".equals(n.getQualifiedName())'
+                                  children: []
+                                  pos: 5151
+                                  length: 45
+                              children: []
+                              pos: 5124
+                              length: 72
+                          children: []
+                          pos: 5123
+                          length: 74
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: visitModuleExports(n);
+                          children: []
+                          pos: 5208
+                          length: 22
+                        pos: 5198
+                        length: 40
+                      pos: 5120
+                      length: 118
+                    pos: 4811
+                    length: 433
+                children: []
+                pos: 4741
+                length: 503
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visitRequireCall
+                    children: []
+                    pos: 5418
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 5435
+                      length: 15
+                    pos: 5405
+                    length: 711
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          String moduleName = toModuleName(require.getChildAtIndex(1).getString(),
+                                    normalizeSourceName(t.getSourceName()));
+                      children: []
+                      pos: 5487
+                      length: 123
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node moduleRef = IR.name(moduleName).srcref(require);
+                      children: []
+                      pos: 5617
+                      length: 53
+                    - type: expression_statement
+                      fields:
+                        text: parent.replaceChild(require, moduleRef);
+                      children: []
+                      pos: 5677
+                      length: 40
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node script = getCurrentScriptNode(parent);
+                      children: []
+                      pos: 5724
+                      length: 43
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: reportDependencies
+                              children: []
+                              pos: 5778
+                              length: 18
+                          children: []
+                          pos: 5777
+                          length: 20
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: t.getInput().addRequire(moduleName);
+                          children: []
+                          pos: 5808
+                          length: 36
+                        pos: 5798
+                        length: 54
+                      pos: 5774
+                      length: 78
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToFront(IR.exprResult(
+                                    IR.call(IR.getprop(IR.name("goog"), IR.string("require")),
+                                        IR.string(moduleName))).copyInformationFromForTree(require));
+                      children: []
+                      pos: 5893
+                      length: 182
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 6082
+                      length: 28
+                    pos: 5479
+                    length: 637
+                children: []
+                pos: 5405
+                length: 711
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visitScript
+                    children: []
+                    pos: 6256
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 6268
+                      length: 15
+                    pos: 6243
+                    length: 1081
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          Preconditions.checkArgument(scriptNodeCount == 1,
+                                    "ProcessCommonJSModules supports only one invocation per " +
+                                    "CompilerInput / script node");
+                      children: []
+                      pos: 6306
+                      length: 162
+                    - type: local_variable_declaration
+                      fields:
+                        text: String moduleName = guessCJSModuleName(script.getSourceFileName());
+                      children: []
+                      pos: 6475
+                      length: 67
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToFront(IR.var(IR.name(moduleName), IR.objectlit())
+                                    .copyInformationFromForTree(script));
+                      children: []
+                      pos: 6549
+                      length: 114
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: reportDependencies
+                              children: []
+                              pos: 6674
+                              length: 18
+                          children: []
+                          pos: 6673
+                          length: 20
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: CompilerInput ci = t.getInput();
+                          children: []
+                          pos: 6704
+                          length: 32
+                        - type: expression_statement
+                          fields:
+                            text: ci.addProvide(moduleName);
+                          children: []
+                          pos: 6745
+                          length: 26
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSModule m = new JSModule(moduleName);
+                          children: []
+                          pos: 6780
+                          length: 38
+                        - type: expression_statement
+                          fields:
+                            text: m.addAndOverrideModule(ci);
+                          children: []
+                          pos: 6827
+                          length: 27
+                        - type: expression_statement
+                          fields:
+                            text: module = m;
+                          children: []
+                          pos: 6863
+                          length: 11
+                        pos: 6694
+                        length: 188
+                      pos: 6670
+                      length: 212
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToFront(IR.exprResult(
+                                    IR.call(IR.getprop(IR.name("goog"), IR.string("provide")),
+                                        IR.string(moduleName))).copyInformationFromForTree(script));
+                      children: []
+                      pos: 6889
+                      length: 181
+                    - type: expression_statement
+                      fields:
+                        text: emitOptionalModuleExportsOverride(script, moduleName);
+                      children: []
+                      pos: 7078
+                      length: 54
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          NodeTraversal.traverse(compiler, script, new SuffixVarsCallback(
+                                    moduleName));
+                      children: []
+                      pos: 7194
+                      length: 88
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 7290
+                      length: 28
+                    pos: 6298
+                    length: 1026
+                children: []
+                pos: 6243
+                length: 1081
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: emitOptionalModuleExportsOverride
+                    children: []
+                    pos: 7491
+                    length: 33
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node script
+                      children: []
+                      pos: 7525
+                      length: 11
+                    pos: 7478
+                    length: 504
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!modulesWithExports.contains(moduleName)"
+                              children: []
+                              pos: 7577
+                              length: 40
+                          children: []
+                          pos: 7576
+                          length: 42
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 7629
+                          length: 7
+                        pos: 7619
+                        length: 25
+                      pos: 7573
+                      length: 71
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          Node moduleExportsProp = IR.getprop(IR.name(moduleName),
+                                    IR.string("module$exports"));
+                      children: []
+                      pos: 7652
+                      length: 96
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToBack(IR.ifNode(
+                                    moduleExportsProp,
+                                    IR.block(IR.exprResult(IR.assign(IR.name(moduleName),
+                                        moduleExportsProp.cloneTree())))).copyInformationFromForTree(
+                                    script));
+                      children: []
+                      pos: 7755
+                      length: 221
+                    pos: 7565
+                    length: 417
+                children: []
+                pos: 7478
+                length: 504
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visitModuleExports
+                    children: []
+                    pos: 8077
+                    length: 18
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node prop
+                      children: []
+                      pos: 8096
+                      length: 9
+                    pos: 8064
+                    length: 448
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: String moduleName = guessCJSModuleName(prop.getSourceFileName());
+                      children: []
+                      pos: 8115
+                      length: 65
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node module = prop.getChildAtIndex(0);
+                      children: []
+                      pos: 8187
+                      length: 38
+                    - type: expression_statement
+                      fields:
+                        text: module.putProp(Node.ORIGINALNAME_PROP, "module");
+                      children: []
+                      pos: 8232
+                      length: 49
+                    - type: expression_statement
+                      fields:
+                        text: module.setString(moduleName);
+                      children: []
+                      pos: 8288
+                      length: 29
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node exports = prop.getChildAtIndex(1);
+                      children: []
+                      pos: 8324
+                      length: 39
+                    - type: expression_statement
+                      fields:
+                        text: exports.putProp(Node.ORIGINALNAME_PROP, "exports");
+                      children: []
+                      pos: 8370
+                      length: 51
+                    - type: expression_statement
+                      fields:
+                        text: exports.setString("module$exports");
+                      children: []
+                      pos: 8428
+                      length: 36
+                    - type: expression_statement
+                      fields:
+                        text: modulesWithExports.add(moduleName);
+                      children: []
+                      pos: 8471
+                      length: 35
+                    pos: 8107
+                    length: 405
+                children: []
+                pos: 8064
+                length: 448
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getCurrentScriptNode
+                    children: []
+                    pos: 8591
+                    length: 20
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 8612
+                      length: 6
+                    pos: 8578
+                    length: 163
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: while_statement
+                      fields:
+                        text: |-
+                          while (true) {
+                                  if (n.isScript()) {
+                                    return n;
+                                  }
+                                  n = n.getParent();
+                                }
+                      children: []
+                      pos: 8628
+                      length: 107
+                    pos: 8620
+                    length: 121
+                children: []
+                pos: 8578
+                length: 163
+              pos: 4547
+              length: 4198
+          children: []
+          pos: 4547
+          length: 4198
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: SuffixVarsCallback
+              children: []
+              pos: 8853
+              length: 18
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private static final String EXPORTS = "exports";
+                children: []
+                pos: 8913
+                length: 48
+              - type: field_declaration
+                fields:
+                  text: private final String suffix;
+                children: []
+                pos: 8967
+                length: 28
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    SuffixVarsCallback(String suffix) {
+                          this.suffix = suffix;
+                        }
+                children: []
+                pos: 9001
+                length: 69
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 9102
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 9108
+                      length: 15
+                    pos: 9076
+                    length: 569
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isName()
+                              children: []
+                              pos: 9158
+                              length: 10
+                          children: []
+                          pos: 9157
+                          length: 12
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: String name = n.getString();
+                          children: []
+                          pos: 9180
+                          length: 28
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: suffix.equals(name)
+                                  children: []
+                                  pos: 9221
+                                  length: 19
+                              children: []
+                              pos: 9220
+                              length: 21
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return;
+                              children: []
+                              pos: 9254
+                              length: 7
+                            pos: 9242
+                            length: 29
+                          pos: 9217
+                          length: 54
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: EXPORTS.equals(name)
+                                  children: []
+                                  pos: 9284
+                                  length: 20
+                              children: []
+                              pos: 9283
+                              length: 22
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: n.setString(suffix);
+                              children: []
+                              pos: 9318
+                              length: 20
+                            - type: expression_statement
+                              fields:
+                                text: n.putProp(Node.ORIGINALNAME_PROP, EXPORTS);
+                              children: []
+                              pos: 9349
+                              length: 43
+                            pos: 9306
+                            length: 96
+                          pos: 9280
+                          length: 351
+                        pos: 9170
+                        length: 469
+                      pos: 9154
+                      length: 485
+                    pos: 9146
+                    length: 499
+                children: []
+                pos: 9076
+                length: 569
+              pos: 8839
+              length: 810
+          children: []
+          pos: 8839
+          length: 810
+        pos: 1419
+        length: 8232
+    children: []
+    pos: 1419
+    length: 8232
+  pos: 0
+  length: 9652
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ProcessCommonJSModules
+        children: []
+        pos: 1432
+        length: 22
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final String MODULE_SLASH = "/";
+          children: []
+          pos: 1575
+          length: 47
+        - type: field_declaration
+          fields:
+            text: public static final String DEFAULT_FILENAME_PREFIX = "." + MODULE_SLASH;
+          children: []
+          pos: 1626
+          length: 72
+        - type: field_declaration
+          fields:
+            text: private static final String MODULE_NAME_SEPARATOR = "\\$";
+          children: []
+          pos: 1702
+          length: 58
+        - type: field_declaration
+          fields:
+            text: private static final String MODULE_NAME_PREFIX = "module$";
+          children: []
+          pos: 1763
+          length: 59
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 1826
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final String filenamePrefix;
+          children: []
+          pos: 1869
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private final boolean reportDependencies;
+          children: []
+          pos: 1908
+          length: 41
+        - type: field_declaration
+          fields:
+            text: private JSModule module;
+          children: []
+          pos: 1952
+          length: 24
+        - type: constructor_declaration
+          fields:
+            text: |-
+              ProcessCommonJSModules(AbstractCompiler compiler, String filenamePrefix) {
+                  this(compiler, filenamePrefix, true);
+                }
+          children: []
+          pos: 1980
+          length: 120
+        - type: constructor_declaration
+          fields:
+            text: |-
+              ProcessCommonJSModules(AbstractCompiler compiler, String filenamePrefix,
+                    boolean reportDependencies) {
+                  this.compiler = compiler;
+                  this.filenamePrefix = filenamePrefix.endsWith(MODULE_SLASH) ?
+                      filenamePrefix : filenamePrefix + MODULE_SLASH;
+                  this.reportDependencies = reportDependencies;
+                }
+          children: []
+          pos: 2104
+          length: 314
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 2446
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 2454
+                length: 12
+              pos: 2422
+              length: 153
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: |-
+                    NodeTraversal
+                            .traverse(compiler, root, new ProcessCommonJsModulesCallback());
+                children: []
+                pos: 2485
+                length: 86
+              pos: 2479
+              length: 96
+          children: []
+          pos: 2422
+          length: 153
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: guessCJSModuleName
+              children: []
+              pos: 2586
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String filename
+                children: []
+                pos: 2605
+                length: 15
+              pos: 2579
+              length: 104
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return toModuleName(normalizeSourceName(filename));
+                children: []
+                pos: 2628
+                length: 51
+              pos: 2622
+              length: 61
+          children: []
+          pos: 2579
+          length: 104
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getModule
+              children: []
+              pos: 2802
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2793
+              length: 45
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return module;
+                children: []
+                pos: 2820
+                length: 14
+              pos: 2814
+              length: 24
+          children: []
+          pos: 2793
+          length: 45
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toModuleName
+              children: []
+              pos: 3099
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String filename
+                children: []
+                pos: 3112
+                length: 15
+              pos: 3078
+              length: 294
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return MODULE_NAME_PREFIX +
+                            filename.replaceAll("^\\." + Pattern.quote(MODULE_SLASH), "")
+                                .replaceAll(Pattern.quote(MODULE_SLASH), MODULE_NAME_SEPARATOR)
+                                .replaceAll("\\.js$", "").replaceAll("-", "_");
+                children: []
+                pos: 3135
+                length: 233
+              pos: 3129
+              length: 243
+          children: []
+          pos: 3078
+          length: 294
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toModuleName
+              children: []
+              pos: 3532
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String requiredFilename
+                children: []
+                pos: 3545
+                length: 23
+              pos: 3511
+              length: 605
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: requiredFilename = requiredFilename.replaceAll("\\.js$", "");
+                children: []
+                pos: 3606
+                length: 61
+              - type: expression_statement
+                fields:
+                  text: currentFilename = currentFilename.replaceAll("\\.js$", "");
+                children: []
+                pos: 3672
+                length: 59
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: requiredFilename.startsWith("." + MODULE_SLASH)
+                            children: []
+                            pos: 3741
+                            length: 47
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: requiredFilename.startsWith(".." + MODULE_SLASH)
+                            children: []
+                            pos: 3800
+                            length: 48
+                        children: []
+                        pos: 3741
+                        length: 107
+                    children: []
+                    pos: 3740
+                    length: 109
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: try_statement
+                    fields:
+                      body:
+                        type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: |-
+                              requiredFilename = (new URI(currentFilename)).resolve(new URI(requiredFilename))
+                                          .toString();
+                          children: []
+                          pos: 3872
+                          length: 105
+                        pos: 3862
+                        length: 123
+                      excepts:
+                        type: excepts
+                        fields: {}
+                        children:
+                        - type: catch_clause
+                          fields:
+                            text: |-
+                              catch (URISyntaxException e) {
+                                      throw new RuntimeException(e);
+                                    }
+                          children: []
+                          pos: 3986
+                          length: 77
+                        pos: 3858
+                        length: 205
+                    children: []
+                    pos: 3858
+                    length: 205
+                  pos: 3850
+                  length: 219
+                pos: 3737
+                length: 332
+              - type: return_statement
+                fields:
+                  text: return toModuleName(requiredFilename);
+                children: []
+                pos: 4074
+                length: 38
+              pos: 3600
+              length: 516
+          children: []
+          pos: 3511
+          length: 605
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: normalizeSourceName
+              children: []
+              pos: 4135
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String filename
+                children: []
+                pos: 4155
+                length: 15
+              pos: 4120
+              length: 291
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: filename.indexOf(filenamePrefix)
+                            children: []
+                            pos: 4277
+                            length: 32
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4313
+                            length: 1
+                        children: []
+                        pos: 4277
+                        length: 37
+                    children: []
+                    pos: 4276
+                    length: 39
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: filename = filename.substring(filenamePrefix.length());
+                    children: []
+                    pos: 4324
+                    length: 55
+                  pos: 4316
+                  length: 69
+                pos: 4273
+                length: 112
+              - type: return_statement
+                fields:
+                  text: return filename;
+                children: []
+                pos: 4391
+                length: 16
+              pos: 4172
+              length: 239
+          children: []
+          pos: 4120
+          length: 291
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ProcessCommonJsModulesCallback
+              children: []
+              pos: 4517
+              length: 30
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private int scriptNodeCount = 0;
+                children: []
+                pos: 4595
+                length: 32
+              - type: field_declaration
+                fields:
+                  text: private Set<String> modulesWithExports = Sets.newHashSet();
+                children: []
+                pos: 4632
+                length: 59
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 4723
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 4729
+                      length: 15
+                    pos: 4697
+                    length: 503
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: and
+                                  fields:
+                                    left:
+                                      type: and
+                                      fields:
+                                        left:
+                                          type: method_invocation
+                                          fields:
+                                            text: n.isCall()
+                                          children: []
+                                          pos: 4779
+                                          length: 10
+                                        right:
+                                          type: equals
+                                          fields:
+                                            left:
+                                              type: method_invocation
+                                              fields:
+                                                text: n.getChildCount()
+                                              children: []
+                                              pos: 4793
+                                              length: 17
+                                            right:
+                                              type: decimal_integer_literal
+                                              fields:
+                                                text: '2'
+                                              children: []
+                                              pos: 4814
+                                              length: 1
+                                          children: []
+                                          pos: 4793
+                                          length: 22
+                                      children: []
+                                      pos: 4779
+                                      length: 36
+                                    right:
+                                      type: method_invocation
+                                      fields:
+                                        text: '"require".equals(n.getFirstChild().getQualifiedName())'
+                                      children: []
+                                      pos: 4829
+                                      length: 54
+                                  children: []
+                                  pos: 4779
+                                  length: 104
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.getChildAtIndex(1).isString()
+                                  children: []
+                                  pos: 4897
+                                  length: 31
+                              children: []
+                              pos: 4779
+                              length: 149
+                          children: []
+                          pos: 4778
+                          length: 151
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: visitRequireCall(t, n, parent);
+                          children: []
+                          pos: 4940
+                          length: 31
+                        pos: 4930
+                        length: 49
+                      pos: 4775
+                      length: 204
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isScript()
+                              children: []
+                              pos: 4991
+                              length: 12
+                          children: []
+                          pos: 4990
+                          length: 14
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: scriptNodeCount++;
+                          children: []
+                          pos: 5015
+                          length: 18
+                        - type: expression_statement
+                          fields:
+                            text: visitScript(t, n);
+                          children: []
+                          pos: 5042
+                          length: 18
+                        pos: 5005
+                        length: 63
+                      pos: 4987
+                      length: 81
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: n.isGetProp()
+                                  children: []
+                                  pos: 5080
+                                  length: 13
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: '"module.exports".equals(n.getQualifiedName())'
+                                  children: []
+                                  pos: 5107
+                                  length: 45
+                              children: []
+                              pos: 5080
+                              length: 72
+                          children: []
+                          pos: 5079
+                          length: 74
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: visitModuleExports(n);
+                          children: []
+                          pos: 5164
+                          length: 22
+                        pos: 5154
+                        length: 40
+                      pos: 5076
+                      length: 118
+                    pos: 4767
+                    length: 433
+                children: []
+                pos: 4697
+                length: 503
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visitRequireCall
+                    children: []
+                    pos: 5374
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 5391
+                      length: 15
+                    pos: 5361
+                    length: 711
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          String moduleName = toModuleName(require.getChildAtIndex(1).getString(),
+                                    normalizeSourceName(t.getSourceName()));
+                      children: []
+                      pos: 5443
+                      length: 123
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node moduleRef = IR.name(moduleName).srcref(require);
+                      children: []
+                      pos: 5573
+                      length: 53
+                    - type: expression_statement
+                      fields:
+                        text: parent.replaceChild(require, moduleRef);
+                      children: []
+                      pos: 5633
+                      length: 40
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node script = getCurrentScriptNode(parent);
+                      children: []
+                      pos: 5680
+                      length: 43
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: reportDependencies
+                              children: []
+                              pos: 5734
+                              length: 18
+                          children: []
+                          pos: 5733
+                          length: 20
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: t.getInput().addRequire(moduleName);
+                          children: []
+                          pos: 5764
+                          length: 36
+                        pos: 5754
+                        length: 54
+                      pos: 5730
+                      length: 78
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToFront(IR.exprResult(
+                                    IR.call(IR.getprop(IR.name("goog"), IR.string("require")),
+                                        IR.string(moduleName))).copyInformationFromForTree(require));
+                      children: []
+                      pos: 5849
+                      length: 182
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 6038
+                      length: 28
+                    pos: 5435
+                    length: 637
+                children: []
+                pos: 5361
+                length: 711
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visitScript
+                    children: []
+                    pos: 6212
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 6224
+                      length: 15
+                    pos: 6199
+                    length: 1102
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          Preconditions.checkArgument(scriptNodeCount == 1,
+                                    "ProcessCommonJSModules supports only one invocation per " +
+                                    "CompilerInput / script node");
+                      children: []
+                      pos: 6262
+                      length: 162
+                    - type: local_variable_declaration
+                      fields:
+                        text: String moduleName = guessCJSModuleName(normalizeSourceName(script.getSourceFileName()));
+                      children: []
+                      pos: 6431
+                      length: 88
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToFront(IR.var(IR.name(moduleName), IR.objectlit())
+                                    .copyInformationFromForTree(script));
+                      children: []
+                      pos: 6526
+                      length: 114
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: reportDependencies
+                              children: []
+                              pos: 6651
+                              length: 18
+                          children: []
+                          pos: 6650
+                          length: 20
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: CompilerInput ci = t.getInput();
+                          children: []
+                          pos: 6681
+                          length: 32
+                        - type: expression_statement
+                          fields:
+                            text: ci.addProvide(moduleName);
+                          children: []
+                          pos: 6722
+                          length: 26
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSModule m = new JSModule(moduleName);
+                          children: []
+                          pos: 6757
+                          length: 38
+                        - type: expression_statement
+                          fields:
+                            text: m.addAndOverrideModule(ci);
+                          children: []
+                          pos: 6804
+                          length: 27
+                        - type: expression_statement
+                          fields:
+                            text: module = m;
+                          children: []
+                          pos: 6840
+                          length: 11
+                        pos: 6671
+                        length: 188
+                      pos: 6647
+                      length: 212
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToFront(IR.exprResult(
+                                    IR.call(IR.getprop(IR.name("goog"), IR.string("provide")),
+                                        IR.string(moduleName))).copyInformationFromForTree(script));
+                      children: []
+                      pos: 6866
+                      length: 181
+                    - type: expression_statement
+                      fields:
+                        text: emitOptionalModuleExportsOverride(script, moduleName);
+                      children: []
+                      pos: 7055
+                      length: 54
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          NodeTraversal.traverse(compiler, script, new SuffixVarsCallback(
+                                    moduleName));
+                      children: []
+                      pos: 7171
+                      length: 88
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 7267
+                      length: 28
+                    pos: 6254
+                    length: 1047
+                children: []
+                pos: 6199
+                length: 1102
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: emitOptionalModuleExportsOverride
+                    children: []
+                    pos: 7468
+                    length: 33
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node script
+                      children: []
+                      pos: 7502
+                      length: 11
+                    pos: 7455
+                    length: 504
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: unary_expression
+                              fields:
+                                text: "!modulesWithExports.contains(moduleName)"
+                              children: []
+                              pos: 7554
+                              length: 40
+                          children: []
+                          pos: 7553
+                          length: 42
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 7606
+                          length: 7
+                        pos: 7596
+                        length: 25
+                      pos: 7550
+                      length: 71
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          Node moduleExportsProp = IR.getprop(IR.name(moduleName),
+                                    IR.string("module$exports"));
+                      children: []
+                      pos: 7629
+                      length: 96
+                    - type: expression_statement
+                      fields:
+                        text: |-
+                          script.addChildToBack(IR.ifNode(
+                                    moduleExportsProp,
+                                    IR.block(IR.exprResult(IR.assign(IR.name(moduleName),
+                                        moduleExportsProp.cloneTree())))).copyInformationFromForTree(
+                                    script));
+                      children: []
+                      pos: 7732
+                      length: 221
+                    pos: 7542
+                    length: 417
+                children: []
+                pos: 7455
+                length: 504
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visitModuleExports
+                    children: []
+                    pos: 8054
+                    length: 18
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node prop
+                      children: []
+                      pos: 8073
+                      length: 9
+                    pos: 8041
+                    length: 448
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: String moduleName = guessCJSModuleName(prop.getSourceFileName());
+                      children: []
+                      pos: 8092
+                      length: 65
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node module = prop.getChildAtIndex(0);
+                      children: []
+                      pos: 8164
+                      length: 38
+                    - type: expression_statement
+                      fields:
+                        text: module.putProp(Node.ORIGINALNAME_PROP, "module");
+                      children: []
+                      pos: 8209
+                      length: 49
+                    - type: expression_statement
+                      fields:
+                        text: module.setString(moduleName);
+                      children: []
+                      pos: 8265
+                      length: 29
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node exports = prop.getChildAtIndex(1);
+                      children: []
+                      pos: 8301
+                      length: 39
+                    - type: expression_statement
+                      fields:
+                        text: exports.putProp(Node.ORIGINALNAME_PROP, "exports");
+                      children: []
+                      pos: 8347
+                      length: 51
+                    - type: expression_statement
+                      fields:
+                        text: exports.setString("module$exports");
+                      children: []
+                      pos: 8405
+                      length: 36
+                    - type: expression_statement
+                      fields:
+                        text: modulesWithExports.add(moduleName);
+                      children: []
+                      pos: 8448
+                      length: 35
+                    pos: 8084
+                    length: 405
+                children: []
+                pos: 8041
+                length: 448
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getCurrentScriptNode
+                    children: []
+                    pos: 8568
+                    length: 20
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 8589
+                      length: 6
+                    pos: 8555
+                    length: 163
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: while_statement
+                      fields:
+                        text: |-
+                          while (true) {
+                                  if (n.isScript()) {
+                                    return n;
+                                  }
+                                  n = n.getParent();
+                                }
+                      children: []
+                      pos: 8605
+                      length: 107
+                    pos: 8597
+                    length: 121
+                children: []
+                pos: 8555
+                length: 163
+              pos: 4503
+              length: 4219
+          children: []
+          pos: 4503
+          length: 4219
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: SuffixVarsCallback
+              children: []
+              pos: 8830
+              length: 18
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private static final String EXPORTS = "exports";
+                children: []
+                pos: 8890
+                length: 48
+              - type: field_declaration
+                fields:
+                  text: private final String suffix;
+                children: []
+                pos: 8944
+                length: 28
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    SuffixVarsCallback(String suffix) {
+                          this.suffix = suffix;
+                        }
+                children: []
+                pos: 8978
+                length: 69
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 9079
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 9085
+                      length: 15
+                    pos: 9053
+                    length: 569
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: n.isName()
+                              children: []
+                              pos: 9135
+                              length: 10
+                          children: []
+                          pos: 9134
+                          length: 12
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: String name = n.getString();
+                          children: []
+                          pos: 9157
+                          length: 28
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: suffix.equals(name)
+                                  children: []
+                                  pos: 9198
+                                  length: 19
+                              children: []
+                              pos: 9197
+                              length: 21
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return;
+                              children: []
+                              pos: 9231
+                              length: 7
+                            pos: 9219
+                            length: 29
+                          pos: 9194
+                          length: 54
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: EXPORTS.equals(name)
+                                  children: []
+                                  pos: 9261
+                                  length: 20
+                              children: []
+                              pos: 9260
+                              length: 22
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: n.setString(suffix);
+                              children: []
+                              pos: 9295
+                              length: 20
+                            - type: expression_statement
+                              fields:
+                                text: n.putProp(Node.ORIGINALNAME_PROP, EXPORTS);
+                              children: []
+                              pos: 9326
+                              length: 43
+                            pos: 9283
+                            length: 96
+                          pos: 9257
+                          length: 351
+                        pos: 9147
+                        length: 469
+                      pos: 9131
+                      length: 485
+                    pos: 9123
+                    length: 499
+                children: []
+                pos: 9053
+                length: 569
+              pos: 8816
+              length: 810
+          children: []
+          pos: 8816
+          length: 810
+        pos: 1419
+        length: 8209
+    children: []
+    pos: 1419
+    length: 8209
+  pos: 0
+  length: 9629
 text_diff: "--- before\n+++ after\n@@ -116,7 +116,6 @@\n   private String normalizeSourceName(String
   filename) {\n     // The DOS command shell will normalize \"/\" to \"\\\", so we
   have to\n     // wrestle it back.\n-    filename = filename.replace(\"\\\\\", \"/\");\n

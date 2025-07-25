@@ -1,5 +1,1369 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: W3CDom
+        children: []
+        pos: 931
+        length: 6
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+          children: []
+          pos: 944
+          length: 80
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: fromJsoup
+              children: []
+              pos: 1163
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: org.jsoup.nodes.Document in
+                children: []
+                pos: 1173
+                length: 27
+              pos: 1147
+              length: 495
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Validate.notNull(in);
+                children: []
+                pos: 1212
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: DocumentBuilder builder;
+                children: []
+                pos: 1242
+                length: 24
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: factory.setNamespaceAware(true);
+                      children: []
+                      pos: 1339
+                      length: 32
+                    - type: expression_statement
+                      fields:
+                        text: builder = factory.newDocumentBuilder();
+                      children: []
+                      pos: 1384
+                      length: 39
+                    - type: local_variable_declaration
+                      fields:
+                        text: Document out = builder.newDocument();
+                      children: []
+                      pos: 1436
+                      length: 37
+                    - type: expression_statement
+                      fields:
+                        text: convert(in, out);
+                      children: []
+                      pos: 1486
+                      length: 17
+                    - type: return_statement
+                      fields:
+                        text: return out;
+                      children: []
+                      pos: 1516
+                      length: 11
+                    pos: 1279
+                    length: 258
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ParserConfigurationException e) {
+                                      throw new IllegalStateException(e);
+                                  }
+                      children: []
+                      pos: 1538
+                      length: 98
+                    pos: 1275
+                    length: 361
+                children: []
+                pos: 1275
+                length: 361
+              pos: 1202
+              length: 440
+          children: []
+          pos: 1147
+          length: 495
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: convert
+              children: []
+              pos: 1948
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: org.jsoup.nodes.Document in
+                children: []
+                pos: 1956
+                length: 27
+              pos: 1936
+              length: 304
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!StringUtil.isBlank(in.location())"
+                        children: []
+                        pos: 2013
+                        length: 34
+                    children: []
+                    pos: 2012
+                    length: 36
+                children:
+                - type: expression_statement
+                  fields:
+                    text: out.setDocumentURI(in.location());
+                  children: []
+                  pos: 2061
+                  length: 34
+                pos: 2009
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: org.jsoup.nodes.Element rootEl = in.child(0);
+                children: []
+                pos: 2105
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: NodeTraversor.traverse(new W3CBuilder(out), rootEl);
+                children: []
+                pos: 2182
+                length: 52
+              pos: 1999
+              length: 241
+          children: []
+          pos: 1936
+          length: 304
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: W3CBuilder
+              children: []
+              pos: 2340
+              length: 10
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private static final String xmlnsKey = "xmlns";
+                children: []
+                pos: 2384
+                length: 47
+              - type: field_declaration
+                fields:
+                  text: private static final String xmlnsPrefix = "xmlns:";
+                children: []
+                pos: 2440
+                length: 51
+              - type: field_declaration
+                fields:
+                  text: private final Document doc;
+                children: []
+                pos: 2501
+                length: 27
+              - type: field_declaration
+                fields:
+                  text: private final Stack<HashMap<String, String>> namespacesStack
+                    = new Stack<>();
+                children: []
+                pos: 2537
+                length: 77
+              - type: field_declaration
+                fields:
+                  text: private Element dest;
+                children: []
+                pos: 2661
+                length: 21
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public W3CBuilder(Document doc) {
+                                this.doc = doc;
+                                this.namespacesStack.push(new HashMap<String, String>());
+                            }
+                children: []
+                pos: 2692
+                length: 141
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: head
+                    children: []
+                    pos: 2855
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Node source
+                      children: []
+                      pos: 2860
+                      length: 27
+                    pos: 2843
+                    length: 1894
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: namespacesStack.push(new HashMap<>(namespacesStack.peek()));
+                      children: []
+                      pos: 2914
+                      length: 60
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: instanceof_expression
+                              fields:
+                                text: source instanceof org.jsoup.nodes.Element
+                              children: []
+                              pos: 3026
+                              length: 41
+                          children: []
+                          pos: 3025
+                          length: 43
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: org.jsoup.nodes.Element sourceEl = (org.jsoup.nodes.Element)
+                              source;
+                          children: []
+                          pos: 3087
+                          length: 68
+                        - type: local_variable_declaration
+                          fields:
+                            text: String prefix = updateNamespaces(sourceEl);
+                          children: []
+                          pos: 3173
+                          length: 43
+                        - type: local_variable_declaration
+                          fields:
+                            text: String namespace = namespacesStack.peek().get(prefix);
+                          children: []
+                          pos: 3233
+                          length: 54
+                        - type: local_variable_declaration
+                          fields:
+                            text: String tagName = sourceEl.tagName();
+                          children: []
+                          pos: 3304
+                          length: 36
+                        - type: local_variable_declaration
+                          fields:
+                            text: |-
+                              Element el = namespace == null && tagName.contains(":") ?
+                                                  doc.createElementNS("", tagName) : // doesn't have a real namespace defined
+                                                  doc.createElementNS(namespace, tagName);
+                          children: []
+                          pos: 3358
+                          length: 214
+                        - type: expression_statement
+                          fields:
+                            text: copyAttributes(sourceEl, el);
+                          children: []
+                          pos: 3589
+                          length: 29
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: dest
+                                      children: []
+                                      pos: 3639
+                                      length: 4
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 3647
+                                      length: 4
+                                  children: []
+                                  pos: 3639
+                                  length: 12
+                              children: []
+                              pos: 3638
+                              length: 14
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: doc.appendChild(el);
+                              children: []
+                              pos: 3695
+                              length: 20
+                            pos: 3653
+                            length: 80
+                          pos: 3635
+                          length: 165
+                        - type: expression_statement
+                          fields:
+                            text: dest = el;
+                          children: []
+                          pos: 3817
+                          length: 10
+                        pos: 3069
+                        length: 783
+                      pos: 3022
+                      length: 1705
+                    pos: 2900
+                    length: 1837
+                children: []
+                pos: 2843
+                length: 1894
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: tail
+                    children: []
+                    pos: 4759
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Node source
+                      children: []
+                      pos: 4764
+                      length: 27
+                    pos: 4747
+                    length: 301
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: instanceof_expression
+                                  fields:
+                                    text: source instanceof org.jsoup.nodes.Element
+                                  children: []
+                                  pos: 4822
+                                  length: 41
+                                right:
+                                  type: instanceof_expression
+                                  fields:
+                                    text: dest.getParentNode() instanceof Element
+                                  children: []
+                                  pos: 4867
+                                  length: 39
+                              children: []
+                              pos: 4822
+                              length: 84
+                          children: []
+                          pos: 4821
+                          length: 86
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: dest = (Element) dest.getParentNode();
+                          children: []
+                          pos: 4926
+                          length: 38
+                        pos: 4908
+                        length: 95
+                      pos: 4818
+                      length: 185
+                    - type: expression_statement
+                      fields:
+                        text: namespacesStack.pop();
+                      children: []
+                      pos: 5016
+                      length: 22
+                    pos: 4804
+                    length: 244
+                children: []
+                pos: 4747
+                length: 301
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: copyAttributes
+                    children: []
+                    pos: 5071
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Node source
+                      children: []
+                      pos: 5086
+                      length: 27
+                    pos: 5058
+                    length: 444
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Attribute attribute : source.attributes()) {
+                                          // valid xml attribute names are: ^[a-zA-Z_:][-a-zA-Z0-9_:.]
+                                          String key = attribute.getKey().replaceAll("[^-a-zA-Z0-9_:.]", "");
+                                          if (key.matches("[a-zA-Z_:][-a-zA-Z0-9_:.]*"))
+                                              el.setAttribute(key, attribute.getValue());
+                                      }
+                      children: []
+                      pos: 5141
+                      length: 351
+                    pos: 5127
+                    length: 375
+                children: []
+                pos: 5058
+                length: 444
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: updateNamespaces
+                    children: []
+                    pos: 5632
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Element el
+                      children: []
+                      pos: 5649
+                      length: 26
+                    pos: 5617
+                    length: 881
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Attributes attributes = el.attributes();
+                      children: []
+                      pos: 5807
+                      length: 40
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Attribute attr : attributes) {
+                                          String key = attr.getKey();
+                                          String prefix;
+                                          if (key.equals(xmlnsKey)) {
+                                              prefix = "";
+                                          } else if (key.startsWith(xmlnsPrefix)) {
+                                              prefix = key.substring(xmlnsPrefix.length());
+                                          } else {
+                                              continue;
+                                          }
+                                          namespacesStack.peek().put(prefix, attr.getValue());
+                                      }
+                      children: []
+                      pos: 5860
+                      length: 467
+                    - type: local_variable_declaration
+                      fields:
+                        text: int pos = el.tagName().indexOf(":");
+                      children: []
+                      pos: 6386
+                      length: 36
+                    - type: return_statement
+                      fields:
+                        text: 'return pos > 0 ? el.tagName().substring(0, pos) : "";'
+                      children: []
+                      pos: 6435
+                      length: 53
+                    pos: 5677
+                    length: 821
+                children: []
+                pos: 5617
+                length: 881
+              pos: 2317
+              length: 4188
+          children: []
+          pos: 2317
+          length: 4188
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: asString
+              children: []
+              pos: 6647
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Document doc
+                children: []
+                pos: 6656
+                length: 12
+              pos: 6633
+              length: 548
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: DOMSource domSource = new DOMSource(doc);
+                      children: []
+                      pos: 6698
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: StringWriter writer = new StringWriter();
+                      children: []
+                      pos: 6752
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: StreamResult result = new StreamResult(writer);
+                      children: []
+                      pos: 6806
+                      length: 47
+                    - type: local_variable_declaration
+                      fields:
+                        text: TransformerFactory tf = TransformerFactory.newInstance();
+                      children: []
+                      pos: 6866
+                      length: 57
+                    - type: local_variable_declaration
+                      fields:
+                        text: Transformer transformer = tf.newTransformer();
+                      children: []
+                      pos: 6936
+                      length: 46
+                    - type: expression_statement
+                      fields:
+                        text: transformer.transform(domSource, result);
+                      children: []
+                      pos: 6995
+                      length: 41
+                    - type: return_statement
+                      fields:
+                        text: return writer.toString();
+                      children: []
+                      pos: 7049
+                      length: 25
+                    pos: 6684
+                    length: 400
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (TransformerException e) {
+                                      throw new IllegalStateException(e);
+                                  }
+                      children: []
+                      pos: 7085
+                      length: 90
+                    pos: 6680
+                    length: 495
+                children: []
+                pos: 6680
+                length: 495
+              pos: 6670
+              length: 511
+          children: []
+          pos: 6633
+          length: 548
+        pos: 918
+        length: 6265
+    children: []
+    pos: 918
+    length: 6265
+  pos: 0
+  length: 7184
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: W3CDom
+        children: []
+        pos: 931
+        length: 6
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+          children: []
+          pos: 944
+          length: 80
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: fromJsoup
+              children: []
+              pos: 1163
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: org.jsoup.nodes.Document in
+                children: []
+                pos: 1173
+                length: 27
+              pos: 1147
+              length: 495
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Validate.notNull(in);
+                children: []
+                pos: 1212
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: DocumentBuilder builder;
+                children: []
+                pos: 1242
+                length: 24
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: factory.setNamespaceAware(true);
+                      children: []
+                      pos: 1339
+                      length: 32
+                    - type: expression_statement
+                      fields:
+                        text: builder = factory.newDocumentBuilder();
+                      children: []
+                      pos: 1384
+                      length: 39
+                    - type: local_variable_declaration
+                      fields:
+                        text: Document out = builder.newDocument();
+                      children: []
+                      pos: 1436
+                      length: 37
+                    - type: expression_statement
+                      fields:
+                        text: convert(in, out);
+                      children: []
+                      pos: 1486
+                      length: 17
+                    - type: return_statement
+                      fields:
+                        text: return out;
+                      children: []
+                      pos: 1516
+                      length: 11
+                    pos: 1279
+                    length: 258
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ParserConfigurationException e) {
+                                      throw new IllegalStateException(e);
+                                  }
+                      children: []
+                      pos: 1538
+                      length: 98
+                    pos: 1275
+                    length: 361
+                children: []
+                pos: 1275
+                length: 361
+              pos: 1202
+              length: 440
+          children: []
+          pos: 1147
+          length: 495
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: convert
+              children: []
+              pos: 1948
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: org.jsoup.nodes.Document in
+                children: []
+                pos: 1956
+                length: 27
+              pos: 1936
+              length: 304
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!StringUtil.isBlank(in.location())"
+                        children: []
+                        pos: 2013
+                        length: 34
+                    children: []
+                    pos: 2012
+                    length: 36
+                children:
+                - type: expression_statement
+                  fields:
+                    text: out.setDocumentURI(in.location());
+                  children: []
+                  pos: 2061
+                  length: 34
+                pos: 2009
+                length: 86
+              - type: local_variable_declaration
+                fields:
+                  text: org.jsoup.nodes.Element rootEl = in.child(0);
+                children: []
+                pos: 2105
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: NodeTraversor.traverse(new W3CBuilder(out), rootEl);
+                children: []
+                pos: 2182
+                length: 52
+              pos: 1999
+              length: 241
+          children: []
+          pos: 1936
+          length: 304
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: W3CBuilder
+              children: []
+              pos: 2340
+              length: 10
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private static final String xmlnsKey = "xmlns";
+                children: []
+                pos: 2384
+                length: 47
+              - type: field_declaration
+                fields:
+                  text: private static final String xmlnsPrefix = "xmlns:";
+                children: []
+                pos: 2440
+                length: 51
+              - type: field_declaration
+                fields:
+                  text: private final Document doc;
+                children: []
+                pos: 2501
+                length: 27
+              - type: field_declaration
+                fields:
+                  text: private final Stack<HashMap<String, String>> namespacesStack
+                    = new Stack<>();
+                children: []
+                pos: 2537
+                length: 77
+              - type: field_declaration
+                fields:
+                  text: private Element dest;
+                children: []
+                pos: 2661
+                length: 21
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public W3CBuilder(Document doc) {
+                                this.doc = doc;
+                                this.namespacesStack.push(new HashMap<String, String>());
+                            }
+                children: []
+                pos: 2692
+                length: 141
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: head
+                    children: []
+                    pos: 2855
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Node source
+                      children: []
+                      pos: 2860
+                      length: 27
+                    pos: 2843
+                    length: 1754
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: namespacesStack.push(new HashMap<>(namespacesStack.peek()));
+                      children: []
+                      pos: 2914
+                      length: 60
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: instanceof_expression
+                              fields:
+                                text: source instanceof org.jsoup.nodes.Element
+                              children: []
+                              pos: 3026
+                              length: 41
+                          children: []
+                          pos: 3025
+                          length: 43
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: org.jsoup.nodes.Element sourceEl = (org.jsoup.nodes.Element)
+                              source;
+                          children: []
+                          pos: 3087
+                          length: 68
+                        - type: local_variable_declaration
+                          fields:
+                            text: String prefix = updateNamespaces(sourceEl);
+                          children: []
+                          pos: 3173
+                          length: 43
+                        - type: local_variable_declaration
+                          fields:
+                            text: String namespace = namespacesStack.peek().get(prefix);
+                          children: []
+                          pos: 3233
+                          length: 54
+                        - type: local_variable_declaration
+                          fields:
+                            text: String tagName = sourceEl.tagName();
+                          children: []
+                          pos: 3304
+                          length: 36
+                        - type: local_variable_declaration
+                          fields:
+                            text: "Element el = \n                    doc.createElementNS(namespace,
+                              tagName);"
+                          children: []
+                          pos: 3358
+                          length: 74
+                        - type: expression_statement
+                          fields:
+                            text: copyAttributes(sourceEl, el);
+                          children: []
+                          pos: 3449
+                          length: 29
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: dest
+                                      children: []
+                                      pos: 3499
+                                      length: 4
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 3507
+                                      length: 4
+                                  children: []
+                                  pos: 3499
+                                  length: 12
+                              children: []
+                              pos: 3498
+                              length: 14
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: doc.appendChild(el);
+                              children: []
+                              pos: 3555
+                              length: 20
+                            pos: 3513
+                            length: 80
+                          pos: 3495
+                          length: 165
+                        - type: expression_statement
+                          fields:
+                            text: dest = el;
+                          children: []
+                          pos: 3677
+                          length: 10
+                        pos: 3069
+                        length: 643
+                      pos: 3022
+                      length: 1565
+                    pos: 2900
+                    length: 1697
+                children: []
+                pos: 2843
+                length: 1754
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: tail
+                    children: []
+                    pos: 4619
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Node source
+                      children: []
+                      pos: 4624
+                      length: 27
+                    pos: 4607
+                    length: 301
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: instanceof_expression
+                                  fields:
+                                    text: source instanceof org.jsoup.nodes.Element
+                                  children: []
+                                  pos: 4682
+                                  length: 41
+                                right:
+                                  type: instanceof_expression
+                                  fields:
+                                    text: dest.getParentNode() instanceof Element
+                                  children: []
+                                  pos: 4727
+                                  length: 39
+                              children: []
+                              pos: 4682
+                              length: 84
+                          children: []
+                          pos: 4681
+                          length: 86
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: dest = (Element) dest.getParentNode();
+                          children: []
+                          pos: 4786
+                          length: 38
+                        pos: 4768
+                        length: 95
+                      pos: 4678
+                      length: 185
+                    - type: expression_statement
+                      fields:
+                        text: namespacesStack.pop();
+                      children: []
+                      pos: 4876
+                      length: 22
+                    pos: 4664
+                    length: 244
+                children: []
+                pos: 4607
+                length: 301
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: copyAttributes
+                    children: []
+                    pos: 4931
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Node source
+                      children: []
+                      pos: 4946
+                      length: 27
+                    pos: 4918
+                    length: 444
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Attribute attribute : source.attributes()) {
+                                          // valid xml attribute names are: ^[a-zA-Z_:][-a-zA-Z0-9_:.]
+                                          String key = attribute.getKey().replaceAll("[^-a-zA-Z0-9_:.]", "");
+                                          if (key.matches("[a-zA-Z_:][-a-zA-Z0-9_:.]*"))
+                                              el.setAttribute(key, attribute.getValue());
+                                      }
+                      children: []
+                      pos: 5001
+                      length: 351
+                    pos: 4987
+                    length: 375
+                children: []
+                pos: 4918
+                length: 444
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: updateNamespaces
+                    children: []
+                    pos: 5492
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: org.jsoup.nodes.Element el
+                      children: []
+                      pos: 5509
+                      length: 26
+                    pos: 5477
+                    length: 881
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Attributes attributes = el.attributes();
+                      children: []
+                      pos: 5667
+                      length: 40
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Attribute attr : attributes) {
+                                          String key = attr.getKey();
+                                          String prefix;
+                                          if (key.equals(xmlnsKey)) {
+                                              prefix = "";
+                                          } else if (key.startsWith(xmlnsPrefix)) {
+                                              prefix = key.substring(xmlnsPrefix.length());
+                                          } else {
+                                              continue;
+                                          }
+                                          namespacesStack.peek().put(prefix, attr.getValue());
+                                      }
+                      children: []
+                      pos: 5720
+                      length: 467
+                    - type: local_variable_declaration
+                      fields:
+                        text: int pos = el.tagName().indexOf(":");
+                      children: []
+                      pos: 6246
+                      length: 36
+                    - type: return_statement
+                      fields:
+                        text: 'return pos > 0 ? el.tagName().substring(0, pos) : "";'
+                      children: []
+                      pos: 6295
+                      length: 53
+                    pos: 5537
+                    length: 821
+                children: []
+                pos: 5477
+                length: 881
+              pos: 2317
+              length: 4048
+          children: []
+          pos: 2317
+          length: 4048
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: asString
+              children: []
+              pos: 6507
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Document doc
+                children: []
+                pos: 6516
+                length: 12
+              pos: 6493
+              length: 548
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: DOMSource domSource = new DOMSource(doc);
+                      children: []
+                      pos: 6558
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: StringWriter writer = new StringWriter();
+                      children: []
+                      pos: 6612
+                      length: 41
+                    - type: local_variable_declaration
+                      fields:
+                        text: StreamResult result = new StreamResult(writer);
+                      children: []
+                      pos: 6666
+                      length: 47
+                    - type: local_variable_declaration
+                      fields:
+                        text: TransformerFactory tf = TransformerFactory.newInstance();
+                      children: []
+                      pos: 6726
+                      length: 57
+                    - type: local_variable_declaration
+                      fields:
+                        text: Transformer transformer = tf.newTransformer();
+                      children: []
+                      pos: 6796
+                      length: 46
+                    - type: expression_statement
+                      fields:
+                        text: transformer.transform(domSource, result);
+                      children: []
+                      pos: 6855
+                      length: 41
+                    - type: return_statement
+                      fields:
+                        text: return writer.toString();
+                      children: []
+                      pos: 6909
+                      length: 25
+                    pos: 6544
+                    length: 400
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (TransformerException e) {
+                                      throw new IllegalStateException(e);
+                                  }
+                      children: []
+                      pos: 6945
+                      length: 90
+                    pos: 6540
+                    length: 495
+                children: []
+                pos: 6540
+                length: 495
+              pos: 6530
+              length: 511
+          children: []
+          pos: 6493
+          length: 548
+        pos: 918
+        length: 6125
+    children: []
+    pos: 918
+    length: 6125
+  pos: 0
+  length: 7044
 text_diff: "--- before\n+++ after\n@@ -88,8 +88,7 @@\n                 String namespace
   = namespacesStack.peek().get(prefix);\n                 String tagName = sourceEl.tagName();\n
   \n-                Element el = namespace == null && tagName.contains(\":\") ?\n-

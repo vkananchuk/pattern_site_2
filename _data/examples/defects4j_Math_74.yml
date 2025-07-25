@@ -1,5 +1,1504 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: EmbeddedRungeKuttaIntegrator
+        children: []
+        pos: 2639
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final boolean fsal;
+          children: []
+          pos: 2758
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private final double[] c;
+          children: []
+          pos: 2858
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private final double[][] a;
+          children: []
+          pos: 2967
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private final double[] b;
+          children: []
+          pos: 3074
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private final RungeKuttaStepInterpolator prototype;
+          children: []
+          pos: 3152
+          length: 51
+        - type: field_declaration
+          fields:
+            text: private final double exp;
+          children: []
+          pos: 3247
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private double safety;
+          children: []
+          pos: 3325
+          length: 22
+        - type: field_declaration
+          fields:
+            text: private double minReduction;
+          children: []
+          pos: 3411
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private double maxGrowth;
+          children: []
+          pos: 3500
+          length: 25
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected EmbeddedRungeKuttaIntegrator(final String name, final boolean fsal,
+                                                       final double[] c, final double[][] a, final double[] b,
+                                                       final RungeKuttaStepInterpolator prototype,
+                                                       final double minStep, final double maxStep,
+                                                       final double scalAbsoluteTolerance,
+                                                       final double scalRelativeTolerance) {
+
+                  super(name, minStep, maxStep, scalAbsoluteTolerance, scalRelativeTolerance);
+
+                  this.fsal      = fsal;
+                  this.c         = c;
+                  this.a         = a;
+                  this.b         = b;
+                  this.prototype = prototype;
+
+                  exp = -1.0 / getOrder();
+
+                  // set the default values of the algorithm control parameters
+                  setSafety(0.9);
+                  setMinReduction(0.2);
+                  setMaxGrowth(10.0);
+
+                }
+          children: []
+          pos: 4318
+          length: 886
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected EmbeddedRungeKuttaIntegrator(final String name, final boolean fsal,
+                                                       final double[] c, final double[][] a, final double[] b,
+                                                       final RungeKuttaStepInterpolator prototype,
+                                                       final double   minStep, final double maxStep,
+                                                       final double[] vecAbsoluteTolerance,
+                                                       final double[] vecRelativeTolerance) {
+
+                  super(name, minStep, maxStep, vecAbsoluteTolerance, vecRelativeTolerance);
+
+                  this.fsal      = fsal;
+                  this.c         = c;
+                  this.a         = a;
+                  this.b         = b;
+                  this.prototype = prototype;
+
+                  exp = -1.0 / getOrder();
+
+                  // set the default values of the algorithm control parameters
+                  setSafety(0.9);
+                  setMinReduction(0.2);
+                  setMaxGrowth(10.0);
+
+                }
+          children: []
+          pos: 5995
+          length: 888
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOrder
+              children: []
+              pos: 6981
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6961
+              length: 31
+          children: []
+          pos: 6961
+          length: 31
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSafety
+              children: []
+              pos: 7093
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7079
+              length: 50
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return safety;
+                children: []
+                pos: 7111
+                length: 14
+              pos: 7105
+              length: 24
+          children: []
+          pos: 7079
+          length: 50
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setSafety
+              children: []
+              pos: 7234
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double safety
+                children: []
+                pos: 7244
+                length: 19
+              pos: 7222
+              length: 74
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.safety = safety;
+                children: []
+                pos: 7271
+                length: 21
+              pos: 7265
+              length: 31
+          children: []
+          pos: 7222
+          length: 74
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: integrate
+              children: []
+              pos: 7349
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final FirstOrderDifferentialEquations equations
+                children: []
+                pos: 7359
+                length: 47
+              pos: 7323
+              length: 5938
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: sanityChecks(equations, t0, y0, t, y);
+                children: []
+                pos: 7587
+                length: 38
+              - type: expression_statement
+                fields:
+                  text: setEquations(equations);
+                children: []
+                pos: 7630
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: resetEvaluations();
+                children: []
+                pos: 7659
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean forward = t > t0;
+                children: []
+                pos: 7683
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: final int stages = c.length + 1;
+                children: []
+                pos: 7763
+                length: 32
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: "y"
+                            children: []
+                            pos: 7804
+                            length: 1
+                          right:
+                            type: identifier
+                            fields:
+                              text: y0
+                            children: []
+                            pos: 7809
+                            length: 2
+                        children: []
+                        pos: 7804
+                        length: 7
+                    children: []
+                    pos: 7803
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: System.arraycopy(y0, 0, y, 0, y0.length);
+                    children: []
+                    pos: 7821
+                    length: 41
+                  pos: 7813
+                  length: 55
+                pos: 7800
+                length: 68
+              - type: local_variable_declaration
+                fields:
+                  text: final double[][] yDotK = new double[stages][y0.length];
+                children: []
+                pos: 7873
+                length: 55
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] yTmp = new double[y0.length];
+                children: []
+                pos: 7933
+                length: 44
+              - type: local_variable_declaration
+                fields:
+                  text: AbstractStepInterpolator interpolator;
+                children: []
+                pos: 8043
+                length: 38
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: requiresDenseOutput()
+                            children: []
+                            pos: 8090
+                            length: 21
+                          right:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: unary_expression
+                                fields:
+                                  text: "! eventsHandlersManager.isEmpty()"
+                                children: []
+                                pos: 8116
+                                length: 33
+                            children: []
+                            pos: 8115
+                            length: 35
+                        children: []
+                        pos: 8090
+                        length: 60
+                    children: []
+                    pos: 8089
+                    length: 62
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final RungeKuttaStepInterpolator rki = (RungeKuttaStepInterpolator)
+                        prototype.copy();
+                    children: []
+                    pos: 8160
+                    length: 85
+                  - type: expression_statement
+                    fields:
+                      text: rki.reinitialize(this, yTmp, yDotK, forward);
+                    children: []
+                    pos: 8252
+                    length: 45
+                  - type: expression_statement
+                    fields:
+                      text: interpolator = rki;
+                    children: []
+                    pos: 8304
+                    length: 19
+                  pos: 8152
+                  length: 177
+                pos: 8086
+                length: 319
+              - type: expression_statement
+                fields:
+                  text: interpolator.storeTime(t0);
+                children: []
+                pos: 8410
+                length: 27
+              - type: expression_statement
+                fields:
+                  text: stepStart         = t0;
+                children: []
+                pos: 8485
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: double  hNew      = 0;
+                children: []
+                pos: 8513
+                length: 22
+              - type: local_variable_declaration
+                fields:
+                  text: boolean firstTime = true;
+                children: []
+                pos: 8540
+                length: 25
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (StepHandler handler : stepHandlers) {
+                            handler.reset();
+                        }
+                children: []
+                pos: 8570
+                length: 73
+              - type: local_variable_declaration
+                fields:
+                  text: CombinedEventsManager manager = addEndTimeChecker(t0, t, eventsHandlersManager);
+                children: []
+                pos: 8648
+                length: 80
+              - type: local_variable_declaration
+                fields:
+                  text: boolean lastStep = false;
+                children: []
+                pos: 8733
+                length: 25
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!lastStep) {
+
+                          interpolator.shift();
+
+                          double error = 0;
+                          for (boolean loop = true; loop;) {
+
+                            if (firstTime || !fsal) {
+                              // first stage
+                              computeDerivatives(stepStart, y, yDotK[0]);
+                            }
+
+                            if (firstTime) {
+                              final double[] scale = new double[y0.length];
+                              if (vecAbsoluteTolerance == null) {
+                                  for (int i = 0; i < scale.length; ++i) {
+                                    scale[i] = scalAbsoluteTolerance + scalRelativeTolerance * Math.abs(y[i]);
+                                  }
+                                } else {
+                                  for (int i = 0; i < scale.length; ++i) {
+                                    scale[i] = vecAbsoluteTolerance[i] + vecRelativeTolerance[i] * Math.abs(y[i]);
+                                  }
+                                }
+                              hNew = initializeStep(equations, forward, getOrder(), scale,
+                                                    stepStart, y, yDotK[0], yTmp, yDotK[1]);
+                              firstTime = false;
+                            }
+
+                            stepSize = hNew;
+
+                            // next stages
+                            for (int k = 1; k < stages; ++k) {
+
+                              for (int j = 0; j < y0.length; ++j) {
+                                double sum = a[k-1][0] * yDotK[0][j];
+                                for (int l = 1; l < k; ++l) {
+                                  sum += a[k-1][l] * yDotK[l][j];
+                                }
+                                yTmp[j] = y[j] + stepSize * sum;
+                              }
+
+                              computeDerivatives(stepStart + c[k-1] * stepSize, yTmp, yDotK[k]);
+
+                            }
+
+                            // estimate the state at the end of the step
+                            for (int j = 0; j < y0.length; ++j) {
+                              double sum    = b[0] * yDotK[0][j];
+                              for (int l = 1; l < stages; ++l) {
+                                sum    += b[l] * yDotK[l][j];
+                              }
+                              yTmp[j] = y[j] + stepSize * sum;
+                            }
+
+                            // estimate the error at the end of the step
+                            error = estimateError(yDotK, y, yTmp, stepSize);
+                            if (error <= 1.0) {
+
+                              // discrete events handling
+                              interpolator.storeTime(stepStart + stepSize);
+                              if (manager.evaluateStep(interpolator)) {
+                                  final double dt = manager.getEventTime() - stepStart;
+                                  if (Math.abs(dt) <= Math.ulp(stepStart)) {
+                                      // rejecting the step would lead to a too small next step, we accept it
+                                      loop = false;
+                                  } else {
+                                      // reject the step to match exactly the next switch time
+                                      hNew = dt;
+                                  }
+                              } else {
+                                // accept the step
+                                loop = false;
+                              }
+
+                            } else {
+                              // reject the step and attempt to reduce error by stepsize control
+                              final double factor =
+                                  Math.min(maxGrowth,
+                                           Math.max(minReduction, safety * Math.pow(error, exp)));
+                              hNew = filterStep(stepSize * factor, forward, false);
+                            }
+
+                          }
+
+                          // the step has been accepted
+                          final double nextStep = stepStart + stepSize;
+                          System.arraycopy(yTmp, 0, y, 0, y0.length);
+                          manager.stepAccepted(nextStep, y);
+                          lastStep = manager.stop();
+
+                          // provide the step data to the step handler
+                          interpolator.storeTime(nextStep);
+                          for (StepHandler handler : stepHandlers) {
+                              handler.handleStep(interpolator, lastStep);
+                          }
+                          stepStart = nextStep;
+
+                          if (fsal) {
+                            // save the last evaluation for the next step
+                            System.arraycopy(yDotK[stages - 1], 0, yDotK[0], 0, y0.length);
+                          }
+
+                          if (manager.reset(stepStart, y) && ! lastStep) {
+                            // some event handler has triggered changes that
+                            // invalidate the derivatives, we need to recompute them
+                            computeDerivatives(stepStart, y, yDotK[0]);
+                          }
+
+                          if (! lastStep) {
+                            // in some rare cases we may get here with stepSize = 0, for example
+                            // when an event occurs at integration start, reducing the first step
+                            // to zero; we have to reset the step to some safe non zero value
+                              stepSize = filterStep(stepSize, forward, true);
+
+                            // stepsize control for next step
+                            final double factor = Math.min(maxGrowth,
+                                                           Math.max(minReduction,
+                                                                    safety * Math.pow(error, exp)));
+                            final double  scaledH    = stepSize * factor;
+                            final double  nextT      = stepStart + scaledH;
+                            final boolean nextIsLast = forward ? (nextT >= t) : (nextT <= t);
+                            hNew = filterStep(scaledH, forward, nextIsLast);
+                          }
+
+                        }
+                children: []
+                pos: 8793
+                length: 4376
+              - type: local_variable_declaration
+                fields:
+                  text: final double stopTime = stepStart;
+                children: []
+                pos: 13175
+                length: 34
+              - type: expression_statement
+                fields:
+                  text: resetInternalState();
+                children: []
+                pos: 13214
+                length: 21
+              - type: return_statement
+                fields:
+                  text: return stopTime;
+                children: []
+                pos: 13240
+                length: 16
+              pos: 7580
+              length: 5681
+          children: []
+          pos: 7323
+          length: 5938
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMinReduction
+              children: []
+              pos: 13384
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13370
+              length: 62
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return minReduction;
+                children: []
+                pos: 13408
+                length: 20
+              pos: 13402
+              length: 30
+          children: []
+          pos: 13370
+          length: 62
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMinReduction
+              children: []
+              pos: 13565
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double minReduction
+                children: []
+                pos: 13581
+                length: 25
+              pos: 13553
+              length: 98
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.minReduction = minReduction;
+                children: []
+                pos: 13614
+                length: 33
+              pos: 13608
+              length: 43
+          children: []
+          pos: 13553
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxGrowth
+              children: []
+              pos: 13768
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13754
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maxGrowth;
+                children: []
+                pos: 13789
+                length: 17
+              pos: 13783
+              length: 27
+          children: []
+          pos: 13754
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMaxGrowth
+              children: []
+              pos: 13934
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double maxGrowth
+                children: []
+                pos: 13947
+                length: 22
+              pos: 13922
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.maxGrowth = maxGrowth;
+                children: []
+                pos: 13977
+                length: 27
+              pos: 13971
+              length: 37
+          children: []
+          pos: 13922
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: estimateError
+              children: []
+              pos: 14354
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: double[][] yDotK
+                children: []
+                pos: 14368
+                length: 16
+              pos: 14328
+              length: 178
+          children: []
+          pos: 14328
+          length: 178
+        pos: 2617
+        length: 11892
+    children: []
+    pos: 2617
+    length: 11892
+  pos: 0
+  length: 14510
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: EmbeddedRungeKuttaIntegrator
+        children: []
+        pos: 2639
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final boolean fsal;
+          children: []
+          pos: 2758
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private final double[] c;
+          children: []
+          pos: 2858
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private final double[][] a;
+          children: []
+          pos: 2967
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private final double[] b;
+          children: []
+          pos: 3074
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private final RungeKuttaStepInterpolator prototype;
+          children: []
+          pos: 3152
+          length: 51
+        - type: field_declaration
+          fields:
+            text: private final double exp;
+          children: []
+          pos: 3247
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private double safety;
+          children: []
+          pos: 3325
+          length: 22
+        - type: field_declaration
+          fields:
+            text: private double minReduction;
+          children: []
+          pos: 3411
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private double maxGrowth;
+          children: []
+          pos: 3500
+          length: 25
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected EmbeddedRungeKuttaIntegrator(final String name, final boolean fsal,
+                                                       final double[] c, final double[][] a, final double[] b,
+                                                       final RungeKuttaStepInterpolator prototype,
+                                                       final double minStep, final double maxStep,
+                                                       final double scalAbsoluteTolerance,
+                                                       final double scalRelativeTolerance) {
+
+                  super(name, minStep, maxStep, scalAbsoluteTolerance, scalRelativeTolerance);
+
+                  this.fsal      = fsal;
+                  this.c         = c;
+                  this.a         = a;
+                  this.b         = b;
+                  this.prototype = prototype;
+
+                  exp = -1.0 / getOrder();
+
+                  // set the default values of the algorithm control parameters
+                  setSafety(0.9);
+                  setMinReduction(0.2);
+                  setMaxGrowth(10.0);
+
+                }
+          children: []
+          pos: 4318
+          length: 886
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected EmbeddedRungeKuttaIntegrator(final String name, final boolean fsal,
+                                                       final double[] c, final double[][] a, final double[] b,
+                                                       final RungeKuttaStepInterpolator prototype,
+                                                       final double   minStep, final double maxStep,
+                                                       final double[] vecAbsoluteTolerance,
+                                                       final double[] vecRelativeTolerance) {
+
+                  super(name, minStep, maxStep, vecAbsoluteTolerance, vecRelativeTolerance);
+
+                  this.fsal      = fsal;
+                  this.c         = c;
+                  this.a         = a;
+                  this.b         = b;
+                  this.prototype = prototype;
+
+                  exp = -1.0 / getOrder();
+
+                  // set the default values of the algorithm control parameters
+                  setSafety(0.9);
+                  setMinReduction(0.2);
+                  setMaxGrowth(10.0);
+
+                }
+          children: []
+          pos: 5995
+          length: 888
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOrder
+              children: []
+              pos: 6981
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6961
+              length: 31
+          children: []
+          pos: 6961
+          length: 31
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSafety
+              children: []
+              pos: 7093
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7079
+              length: 50
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return safety;
+                children: []
+                pos: 7111
+                length: 14
+              pos: 7105
+              length: 24
+          children: []
+          pos: 7079
+          length: 50
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setSafety
+              children: []
+              pos: 7234
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double safety
+                children: []
+                pos: 7244
+                length: 19
+              pos: 7222
+              length: 74
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.safety = safety;
+                children: []
+                pos: 7271
+                length: 21
+              pos: 7265
+              length: 31
+          children: []
+          pos: 7222
+          length: 74
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: integrate
+              children: []
+              pos: 7349
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final FirstOrderDifferentialEquations equations
+                children: []
+                pos: 7359
+                length: 47
+              pos: 7323
+              length: 5742
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: sanityChecks(equations, t0, y0, t, y);
+                children: []
+                pos: 7587
+                length: 38
+              - type: expression_statement
+                fields:
+                  text: setEquations(equations);
+                children: []
+                pos: 7630
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: resetEvaluations();
+                children: []
+                pos: 7659
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean forward = t > t0;
+                children: []
+                pos: 7683
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: final int stages = c.length + 1;
+                children: []
+                pos: 7763
+                length: 32
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: "y"
+                            children: []
+                            pos: 7804
+                            length: 1
+                          right:
+                            type: identifier
+                            fields:
+                              text: y0
+                            children: []
+                            pos: 7809
+                            length: 2
+                        children: []
+                        pos: 7804
+                        length: 7
+                    children: []
+                    pos: 7803
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: System.arraycopy(y0, 0, y, 0, y0.length);
+                    children: []
+                    pos: 7821
+                    length: 41
+                  pos: 7813
+                  length: 55
+                pos: 7800
+                length: 68
+              - type: local_variable_declaration
+                fields:
+                  text: final double[][] yDotK = new double[stages][y0.length];
+                children: []
+                pos: 7873
+                length: 55
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] yTmp = new double[y0.length];
+                children: []
+                pos: 7933
+                length: 44
+              - type: local_variable_declaration
+                fields:
+                  text: AbstractStepInterpolator interpolator;
+                children: []
+                pos: 8043
+                length: 38
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: requiresDenseOutput()
+                            children: []
+                            pos: 8090
+                            length: 21
+                          right:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: unary_expression
+                                fields:
+                                  text: "! eventsHandlersManager.isEmpty()"
+                                children: []
+                                pos: 8116
+                                length: 33
+                            children: []
+                            pos: 8115
+                            length: 35
+                        children: []
+                        pos: 8090
+                        length: 60
+                    children: []
+                    pos: 8089
+                    length: 62
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final RungeKuttaStepInterpolator rki = (RungeKuttaStepInterpolator)
+                        prototype.copy();
+                    children: []
+                    pos: 8160
+                    length: 85
+                  - type: expression_statement
+                    fields:
+                      text: rki.reinitialize(this, yTmp, yDotK, forward);
+                    children: []
+                    pos: 8252
+                    length: 45
+                  - type: expression_statement
+                    fields:
+                      text: interpolator = rki;
+                    children: []
+                    pos: 8304
+                    length: 19
+                  pos: 8152
+                  length: 177
+                pos: 8086
+                length: 319
+              - type: expression_statement
+                fields:
+                  text: interpolator.storeTime(t0);
+                children: []
+                pos: 8410
+                length: 27
+              - type: expression_statement
+                fields:
+                  text: stepStart         = t0;
+                children: []
+                pos: 8485
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: double  hNew      = 0;
+                children: []
+                pos: 8513
+                length: 22
+              - type: local_variable_declaration
+                fields:
+                  text: boolean firstTime = true;
+                children: []
+                pos: 8540
+                length: 25
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (StepHandler handler : stepHandlers) {
+                            handler.reset();
+                        }
+                children: []
+                pos: 8570
+                length: 73
+              - type: local_variable_declaration
+                fields:
+                  text: CombinedEventsManager manager = addEndTimeChecker(t0, t, eventsHandlersManager);
+                children: []
+                pos: 8648
+                length: 80
+              - type: local_variable_declaration
+                fields:
+                  text: boolean lastStep = false;
+                children: []
+                pos: 8733
+                length: 25
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!lastStep) {
+
+                          interpolator.shift();
+
+                          double error = 0;
+                          for (boolean loop = true; loop;) {
+
+                            if (firstTime || !fsal) {
+                              // first stage
+                              computeDerivatives(stepStart, y, yDotK[0]);
+                            }
+
+                            if (firstTime) {
+                              final double[] scale;
+                              if (vecAbsoluteTolerance == null) {
+                                  scale = new double[y0.length];
+                                  java.util.Arrays.fill(scale, scalAbsoluteTolerance);
+                                } else {
+                                  scale = vecAbsoluteTolerance;
+                                }
+                              hNew = initializeStep(equations, forward, getOrder(), scale,
+                                                    stepStart, y, yDotK[0], yTmp, yDotK[1]);
+                              firstTime = false;
+                            }
+
+                            stepSize = hNew;
+
+                            // next stages
+                            for (int k = 1; k < stages; ++k) {
+
+                              for (int j = 0; j < y0.length; ++j) {
+                                double sum = a[k-1][0] * yDotK[0][j];
+                                for (int l = 1; l < k; ++l) {
+                                  sum += a[k-1][l] * yDotK[l][j];
+                                }
+                                yTmp[j] = y[j] + stepSize * sum;
+                              }
+
+                              computeDerivatives(stepStart + c[k-1] * stepSize, yTmp, yDotK[k]);
+
+                            }
+
+                            // estimate the state at the end of the step
+                            for (int j = 0; j < y0.length; ++j) {
+                              double sum    = b[0] * yDotK[0][j];
+                              for (int l = 1; l < stages; ++l) {
+                                sum    += b[l] * yDotK[l][j];
+                              }
+                              yTmp[j] = y[j] + stepSize * sum;
+                            }
+
+                            // estimate the error at the end of the step
+                            error = estimateError(yDotK, y, yTmp, stepSize);
+                            if (error <= 1.0) {
+
+                              // discrete events handling
+                              interpolator.storeTime(stepStart + stepSize);
+                              if (manager.evaluateStep(interpolator)) {
+                                  final double dt = manager.getEventTime() - stepStart;
+                                  if (Math.abs(dt) <= Math.ulp(stepStart)) {
+                                      // rejecting the step would lead to a too small next step, we accept it
+                                      loop = false;
+                                  } else {
+                                      // reject the step to match exactly the next switch time
+                                      hNew = dt;
+                                  }
+                              } else {
+                                // accept the step
+                                loop = false;
+                              }
+
+                            } else {
+                              // reject the step and attempt to reduce error by stepsize control
+                              final double factor =
+                                  Math.min(maxGrowth,
+                                           Math.max(minReduction, safety * Math.pow(error, exp)));
+                              hNew = filterStep(stepSize * factor, forward, false);
+                            }
+
+                          }
+
+                          // the step has been accepted
+                          final double nextStep = stepStart + stepSize;
+                          System.arraycopy(yTmp, 0, y, 0, y0.length);
+                          manager.stepAccepted(nextStep, y);
+                          lastStep = manager.stop();
+
+                          // provide the step data to the step handler
+                          interpolator.storeTime(nextStep);
+                          for (StepHandler handler : stepHandlers) {
+                              handler.handleStep(interpolator, lastStep);
+                          }
+                          stepStart = nextStep;
+
+                          if (fsal) {
+                            // save the last evaluation for the next step
+                            System.arraycopy(yDotK[stages - 1], 0, yDotK[0], 0, y0.length);
+                          }
+
+                          if (manager.reset(stepStart, y) && ! lastStep) {
+                            // some event handler has triggered changes that
+                            // invalidate the derivatives, we need to recompute them
+                            computeDerivatives(stepStart, y, yDotK[0]);
+                          }
+
+                          if (! lastStep) {
+                            // in some rare cases we may get here with stepSize = 0, for example
+                            // when an event occurs at integration start, reducing the first step
+                            // to zero; we have to reset the step to some safe non zero value
+                              stepSize = filterStep(stepSize, forward, true);
+
+                            // stepsize control for next step
+                            final double factor = Math.min(maxGrowth,
+                                                           Math.max(minReduction,
+                                                                    safety * Math.pow(error, exp)));
+                            final double  scaledH    = stepSize * factor;
+                            final double  nextT      = stepStart + scaledH;
+                            final boolean nextIsLast = forward ? (nextT >= t) : (nextT <= t);
+                            hNew = filterStep(scaledH, forward, nextIsLast);
+                          }
+
+                        }
+                children: []
+                pos: 8793
+                length: 4180
+              - type: local_variable_declaration
+                fields:
+                  text: final double stopTime = stepStart;
+                children: []
+                pos: 12979
+                length: 34
+              - type: expression_statement
+                fields:
+                  text: resetInternalState();
+                children: []
+                pos: 13018
+                length: 21
+              - type: return_statement
+                fields:
+                  text: return stopTime;
+                children: []
+                pos: 13044
+                length: 16
+              pos: 7580
+              length: 5485
+          children: []
+          pos: 7323
+          length: 5742
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMinReduction
+              children: []
+              pos: 13188
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13174
+              length: 62
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return minReduction;
+                children: []
+                pos: 13212
+                length: 20
+              pos: 13206
+              length: 30
+          children: []
+          pos: 13174
+          length: 62
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMinReduction
+              children: []
+              pos: 13369
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double minReduction
+                children: []
+                pos: 13385
+                length: 25
+              pos: 13357
+              length: 98
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.minReduction = minReduction;
+                children: []
+                pos: 13418
+                length: 33
+              pos: 13412
+              length: 43
+          children: []
+          pos: 13357
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxGrowth
+              children: []
+              pos: 13572
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13558
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maxGrowth;
+                children: []
+                pos: 13593
+                length: 17
+              pos: 13587
+              length: 27
+          children: []
+          pos: 13558
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setMaxGrowth
+              children: []
+              pos: 13738
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double maxGrowth
+                children: []
+                pos: 13751
+                length: 22
+              pos: 13726
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.maxGrowth = maxGrowth;
+                children: []
+                pos: 13781
+                length: 27
+              pos: 13775
+              length: 37
+          children: []
+          pos: 13726
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: estimateError
+              children: []
+              pos: 14158
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: double[][] yDotK
+                children: []
+                pos: 14172
+                length: 16
+              pos: 14132
+              length: 178
+          children: []
+          pos: 14132
+          length: 178
+        pos: 2617
+        length: 11696
+    children: []
+    pos: 2617
+    length: 11696
+  pos: 0
+  length: 14314
 text_diff: "--- before\n+++ after\n@@ -242,15 +242,12 @@\n         }\n \n         if
   (firstTime) {\n-          final double[] scale = new double[y0.length];\n+          final
   double[] scale;\n           if (vecAbsoluteTolerance == null) {\n-              for

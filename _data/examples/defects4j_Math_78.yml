@@ -1,5 +1,1500 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: EventState
+        children: []
+        pos: 1905
+        length: 10
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final EventHandler handler;
+          children: []
+          pos: 1949
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private final double maxCheckInterval;
+          children: []
+          pos: 2054
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private final double convergence;
+          children: []
+          pos: 2155
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final int maxIterationCount;
+          children: []
+          pos: 2264
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private double t0;
+          children: []
+          pos: 2352
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private double g0;
+          children: []
+          pos: 2445
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private boolean g0Positive;
+          children: []
+          pos: 2534
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private boolean pendingEvent;
+          children: []
+          pos: 2623
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private double pendingEventTime;
+          children: []
+          pos: 2707
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private double previousEventTime;
+          children: []
+          pos: 2795
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private boolean forward;
+          children: []
+          pos: 2868
+          length: 24
+        - type: field_declaration
+          fields:
+            text: private boolean increasing;
+          children: []
+          pos: 3027
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private int nextAction;
+          children: []
+          pos: 3094
+          length: 23
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public EventState(final EventHandler handler, final double maxCheckInterval,
+                                    final double convergence, final int maxIterationCount) {
+                      this.handler           = handler;
+                      this.maxCheckInterval  = maxCheckInterval;
+                      this.convergence       = Math.abs(convergence);
+                      this.maxIterationCount = maxIterationCount;
+
+                      // some dummy values ...
+                      t0                = Double.NaN;
+                      g0                = Double.NaN;
+                      g0Positive        = true;
+                      pendingEvent      = false;
+                      pendingEventTime  = Double.NaN;
+                      previousEventTime = Double.NaN;
+                      increasing        = true;
+                      nextAction        = EventHandler.CONTINUE;
+
+                  }
+          children: []
+          pos: 3563
+          length: 711
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEventHandler
+              children: []
+              pos: 4390
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4370
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return handler;
+                children: []
+                pos: 4418
+                length: 15
+              pos: 4408
+              length: 31
+          children: []
+          pos: 4370
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxCheckInterval
+              children: []
+              pos: 4603
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4589
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maxCheckInterval;
+                children: []
+                pos: 4635
+                length: 24
+              pos: 4625
+              length: 40
+          children: []
+          pos: 4589
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConvergence
+              children: []
+              pos: 4815
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4801
+              length: 66
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return convergence;
+                children: []
+                pos: 4842
+                length: 19
+              pos: 4832
+              length: 35
+          children: []
+          pos: 4801
+          length: 66
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxIterationCount
+              children: []
+              pos: 5040
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5029
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maxIterationCount;
+                children: []
+                pos: 5073
+                length: 25
+              pos: 5063
+              length: 41
+          children: []
+          pos: 5029
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reinitializeBegin
+              children: []
+              pos: 5509
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double tStart
+                children: []
+                pos: 5527
+                length: 19
+              pos: 5497
+              length: 202
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: t0 = tStart;
+                children: []
+                pos: 5611
+                length: 12
+              - type: expression_statement
+                fields:
+                  text: g0 = handler.g(tStart, yStart);
+                children: []
+                pos: 5632
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: g0Positive = g0 >= 0;
+                children: []
+                pos: 5672
+                length: 21
+              pos: 5601
+              length: 98
+          children: []
+          pos: 5497
+          length: 202
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: evaluateStep
+              children: []
+              pos: 6304
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StepInterpolator interpolator
+                children: []
+                pos: 6317
+                length: 35
+              pos: 6289
+              length: 5402
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: forward = interpolator.isForward();
+                      children: []
+                      pos: 6457
+                      length: 35
+                    - type: local_variable_declaration
+                      fields:
+                        text: final double t1 = interpolator.getCurrentTime();
+                      children: []
+                      pos: 6505
+                      length: 48
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int    n  = Math.max(1, (int) Math.ceil(Math.abs(t1
+                          - t0) / maxCheckInterval));
+                      children: []
+                      pos: 6566
+                      length: 85
+                    - type: local_variable_declaration
+                      fields:
+                        text: final double h  = (t1 - t0) / n;
+                      children: []
+                      pos: 6664
+                      length: 32
+                    - type: local_variable_declaration
+                      fields:
+                        text: double ta = t0;
+                      children: []
+                      pos: 6710
+                      length: 15
+                    - type: local_variable_declaration
+                      fields:
+                        text: double ga = g0;
+                      children: []
+                      pos: 6738
+                      length: 15
+                    - type: local_variable_declaration
+                      fields:
+                        text: 'double tb = t0 + (interpolator.isForward() ? convergence
+                          : -convergence);'
+                      children: []
+                      pos: 6766
+                      length: 73
+                    - type: for_statement
+                      fields:
+                        text: "for (int i = 0; i < n; ++i) {\n\n                //
+                          evaluate handler value at the end of the substep\n                tb
+                          += h;\n                interpolator.setInterpolatedTime(tb);\n
+                          \               final double gb = handler.g(tb, interpolator.getInterpolatedState());\n\n
+                          \               // check events occurrence\n                if
+                          (g0Positive ^ (gb >= 0)) {\n                    // there
+                          is a sign change: an event is expected during this step\n\n
+                          \                   if (ga * gb > 0) {\n                        //
+                          this is a corner case:\n                        // - there
+                          was an event near ta,\n                        // - there
+                          is another event between ta and tb\n                        //
+                          - when ta was computed, convergence was reached on the \"wrong
+                          side\" of the interval\n                        // this
+                          implies that the real sign of ga is the same as gb, so we
+                          need to slightly\n                        // shift ta to
+                          make sure ga and gb get opposite signs and the solver won't
+                          complain\n                        // about bracketing\n
+                          \                       final double epsilon = (forward
+                          ? 0.25 : -0.25) * convergence;\n                        for
+                          (int k = 0; (k < 4) && (ga * gb > 0); ++k) {\n                            ta
+                          += epsilon;\n                            interpolator.setInterpolatedTime(ta);\n
+                          \                           ga = handler.g(ta, interpolator.getInterpolatedState());\n
+                          \                       }\n                        if (ga
+                          * gb > 0) {\n                            // this should
+                          never happen\n                            throw MathRuntimeException.createInternalError(null);\n
+                          \                       }\n                    }\n                         \n
+                          \                   // variation direction, with respect
+                          to the integration direction\n                    increasing
+                          = gb >= ga;\n\n                    final UnivariateRealFunction
+                          f = new UnivariateRealFunction() {\n                        public
+                          double value(final double t) throws FunctionEvaluationException
+                          {\n                            try {\n                                interpolator.setInterpolatedTime(t);\n
+                          \                               return handler.g(t, interpolator.getInterpolatedState());\n
+                          \                           } catch (DerivativeException
+                          e) {\n                                throw new FunctionEvaluationException(e,
+                          t);\n                            } catch (EventException
+                          e) {\n                                throw new FunctionEvaluationException(e,
+                          t);\n                            }\n                        }\n
+                          \                   };\n                    final BrentSolver
+                          solver = new BrentSolver();\n                    solver.setAbsoluteAccuracy(convergence);\n
+                          \                   solver.setMaximalIterationCount(maxIterationCount);\n
+                          \                   final double root = (ta <= tb) ? solver.solve(f,
+                          ta, tb) : solver.solve(f, tb, ta);\n                    if
+                          ((Math.abs(root - ta) <= convergence) &&\n                         (Math.abs(root
+                          - previousEventTime) <= convergence)) {\n                        //
+                          we have either found nothing or found (again ?) a past event,
+                          we simply ignore it\n                        ta = tb;\n
+                          \                       ga = gb;\n                    }
+                          else if (Double.isNaN(previousEventTime) ||\n                               (Math.abs(previousEventTime
+                          - root) > convergence)) {\n                        pendingEventTime
+                          = root;\n                        if (pendingEvent && (Math.abs(t1
+                          - pendingEventTime) <= convergence)) {\n                            //
+                          we were already waiting for this event which was\n                            //
+                          found during a previous call for a step that was\n                            //
+                          rejected, this step must now be accepted since it\n                            //
+                          properly ends exactly at the event occurrence\n                            return
+                          false;\n                        }\n                        //
+                          either we were not waiting for the event or it has\n                        //
+                          moved in such a way the step cannot be accepted\n                        pendingEvent
+                          = true;\n                        return true;\n                    }\n\n
+                          \               } else {\n                    // no sign
+                          change: there is no event for now\n                    ta
+                          = tb;\n                    ga = gb;\n                }\n\n
+                          \           }"
+                      children: []
+                      pos: 6852
+                      length: 4259
+                    - type: expression_statement
+                      fields:
+                        text: pendingEvent     = false;
+                      children: []
+                      pos: 11171
+                      length: 25
+                    - type: expression_statement
+                      fields:
+                        text: pendingEventTime = Double.NaN;
+                      children: []
+                      pos: 11209
+                      length: 30
+                    - type: return_statement
+                      fields:
+                        text: return false;
+                      children: []
+                      pos: 11252
+                      length: 13
+                    pos: 6442
+                    length: 4834
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (FunctionEvaluationException e) {
+                                      final Throwable cause = e.getCause();
+                                      if ((cause != null) && (cause instanceof DerivativeException)) {
+                                          throw (DerivativeException) cause;
+                                      } else if ((cause != null) && (cause instanceof EventException)) {
+                                          throw (EventException) cause;
+                                      }
+                                      throw new EventException(e);
+                                  }
+                      children: []
+                      pos: 11277
+                      length: 407
+                    pos: 6438
+                    length: 5246
+                children: []
+                pos: 6438
+                length: 5246
+              pos: 6427
+              length: 5264
+          children: []
+          pos: 6289
+          length: 5402
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEventTime
+              children: []
+              pos: 11884
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11870
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return pendingEventTime;
+                children: []
+                pos: 11909
+                length: 24
+              pos: 11899
+              length: 40
+          children: []
+          pos: 11870
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stepAccepted
+              children: []
+              pos: 12327
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t
+                children: []
+                pos: 12340
+                length: 14
+              pos: 12315
+              length: 512
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: t0 = t;
+                children: []
+                pos: 12415
+                length: 7
+              - type: expression_statement
+                fields:
+                  text: g0 = handler.g(t, y);
+                children: []
+                pos: 12431
+                length: 21
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: pendingEvent
+                        children: []
+                        pos: 12466
+                        length: 12
+                    children: []
+                    pos: 12465
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: previousEventTime = t;
+                    children: []
+                    pos: 12560
+                    length: 22
+                  - type: expression_statement
+                    fields:
+                      text: g0Positive        = increasing;
+                    children: []
+                    pos: 12595
+                    length: 31
+                  - type: expression_statement
+                    fields:
+                      text: nextAction        = handler.eventOccurred(t, y, !(increasing
+                        ^ forward));
+                    children: []
+                    pos: 12639
+                    length: 73
+                  pos: 12480
+                  length: 242
+                pos: 12462
+                length: 359
+              pos: 12404
+              length: 423
+          children: []
+          pos: 12315
+          length: 512
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stop
+              children: []
+              pos: 13003
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12988
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return nextAction == EventHandler.STOP;
+                children: []
+                pos: 13020
+                length: 39
+              pos: 13010
+              length: 55
+          children: []
+          pos: 12988
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reset
+              children: []
+              pos: 13519
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t
+                children: []
+                pos: 13525
+                length: 14
+              pos: 13504
+              length: 461
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "! pendingEvent"
+                        children: []
+                        pos: 13604
+                        length: 14
+                    children: []
+                    pos: 13603
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 13634
+                    length: 13
+                  pos: 13620
+                  length: 37
+                pos: 13600
+                length: 57
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: nextAction
+                            children: []
+                            pos: 13671
+                            length: 10
+                          right:
+                            type: field_access
+                            fields:
+                              text: EventHandler.RESET_STATE
+                            children: []
+                            pos: 13685
+                            length: 24
+                        children: []
+                        pos: 13671
+                        length: 38
+                    children: []
+                    pos: 13670
+                    length: 40
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: handler.resetState(t, y);
+                    children: []
+                    pos: 13725
+                    length: 25
+                  pos: 13711
+                  length: 49
+                pos: 13667
+                length: 93
+              - type: expression_statement
+                fields:
+                  text: pendingEvent      = false;
+                children: []
+                pos: 13769
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: pendingEventTime  = Double.NaN;
+                children: []
+                pos: 13804
+                length: 31
+              - type: return_statement
+                fields:
+                  text: |-
+                    return (nextAction == EventHandler.RESET_STATE) ||
+                                   (nextAction == EventHandler.RESET_DERIVATIVES);
+                children: []
+                pos: 13845
+                length: 113
+              pos: 13589
+              length: 376
+          children: []
+          pos: 13504
+          length: 461
+        pos: 1892
+        length: 12076
+    children: []
+    pos: 1892
+    length: 12076
+  pos: 0
+  length: 13969
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: EventState
+        children: []
+        pos: 1905
+        length: 10
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final EventHandler handler;
+          children: []
+          pos: 1949
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private final double maxCheckInterval;
+          children: []
+          pos: 2054
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private final double convergence;
+          children: []
+          pos: 2155
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final int maxIterationCount;
+          children: []
+          pos: 2264
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private double t0;
+          children: []
+          pos: 2352
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private double g0;
+          children: []
+          pos: 2445
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private boolean g0Positive;
+          children: []
+          pos: 2534
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private boolean pendingEvent;
+          children: []
+          pos: 2623
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private double pendingEventTime;
+          children: []
+          pos: 2707
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private double previousEventTime;
+          children: []
+          pos: 2795
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private boolean forward;
+          children: []
+          pos: 2868
+          length: 24
+        - type: field_declaration
+          fields:
+            text: private boolean increasing;
+          children: []
+          pos: 3027
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private int nextAction;
+          children: []
+          pos: 3094
+          length: 23
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public EventState(final EventHandler handler, final double maxCheckInterval,
+                                    final double convergence, final int maxIterationCount) {
+                      this.handler           = handler;
+                      this.maxCheckInterval  = maxCheckInterval;
+                      this.convergence       = Math.abs(convergence);
+                      this.maxIterationCount = maxIterationCount;
+
+                      // some dummy values ...
+                      t0                = Double.NaN;
+                      g0                = Double.NaN;
+                      g0Positive        = true;
+                      pendingEvent      = false;
+                      pendingEventTime  = Double.NaN;
+                      previousEventTime = Double.NaN;
+                      increasing        = true;
+                      nextAction        = EventHandler.CONTINUE;
+
+                  }
+          children: []
+          pos: 3563
+          length: 711
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEventHandler
+              children: []
+              pos: 4390
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4370
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return handler;
+                children: []
+                pos: 4418
+                length: 15
+              pos: 4408
+              length: 31
+          children: []
+          pos: 4370
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxCheckInterval
+              children: []
+              pos: 4603
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4589
+              length: 76
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maxCheckInterval;
+                children: []
+                pos: 4635
+                length: 24
+              pos: 4625
+              length: 40
+          children: []
+          pos: 4589
+          length: 76
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConvergence
+              children: []
+              pos: 4815
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4801
+              length: 66
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return convergence;
+                children: []
+                pos: 4842
+                length: 19
+              pos: 4832
+              length: 35
+          children: []
+          pos: 4801
+          length: 66
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getMaxIterationCount
+              children: []
+              pos: 5040
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5029
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return maxIterationCount;
+                children: []
+                pos: 5073
+                length: 25
+              pos: 5063
+              length: 41
+          children: []
+          pos: 5029
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reinitializeBegin
+              children: []
+              pos: 5509
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double tStart
+                children: []
+                pos: 5527
+                length: 19
+              pos: 5497
+              length: 202
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: t0 = tStart;
+                children: []
+                pos: 5611
+                length: 12
+              - type: expression_statement
+                fields:
+                  text: g0 = handler.g(tStart, yStart);
+                children: []
+                pos: 5632
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: g0Positive = g0 >= 0;
+                children: []
+                pos: 5672
+                length: 21
+              pos: 5601
+              length: 98
+          children: []
+          pos: 5497
+          length: 202
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: evaluateStep
+              children: []
+              pos: 6304
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StepInterpolator interpolator
+                children: []
+                pos: 6317
+                length: 35
+              pos: 6289
+              length: 4810
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: forward = interpolator.isForward();
+                      children: []
+                      pos: 6457
+                      length: 35
+                    - type: local_variable_declaration
+                      fields:
+                        text: final double t1 = interpolator.getCurrentTime();
+                      children: []
+                      pos: 6505
+                      length: 48
+                    - type: local_variable_declaration
+                      fields:
+                        text: final int    n  = Math.max(1, (int) Math.ceil(Math.abs(t1
+                          - t0) / maxCheckInterval));
+                      children: []
+                      pos: 6566
+                      length: 85
+                    - type: local_variable_declaration
+                      fields:
+                        text: final double h  = (t1 - t0) / n;
+                      children: []
+                      pos: 6664
+                      length: 32
+                    - type: local_variable_declaration
+                      fields:
+                        text: double ta = t0;
+                      children: []
+                      pos: 6710
+                      length: 15
+                    - type: local_variable_declaration
+                      fields:
+                        text: double ga = g0;
+                      children: []
+                      pos: 6738
+                      length: 15
+                    - type: local_variable_declaration
+                      fields:
+                        text: 'double tb = t0 + (interpolator.isForward() ? convergence
+                          : -convergence);'
+                      children: []
+                      pos: 6766
+                      length: 73
+                    - type: for_statement
+                      fields:
+                        text: "for (int i = 0; i < n; ++i) {\n\n                //
+                          evaluate handler value at the end of the substep\n                tb
+                          += h;\n                interpolator.setInterpolatedTime(tb);\n
+                          \               final double gb = handler.g(tb, interpolator.getInterpolatedState());\n\n
+                          \               // check events occurrence\n                if
+                          (g0Positive ^ (gb >= 0)) {\n                    // there
+                          is a sign change: an event is expected during this step\n\n
+                          \                       // this is a corner case:\n                        //
+                          - there was an event near ta,\n                        //
+                          - there is another event between ta and tb\n                        //
+                          - when ta was computed, convergence was reached on the \"wrong
+                          side\" of the interval\n                        // this
+                          implies that the real sign of ga is the same as gb, so we
+                          need to slightly\n                        // shift ta to
+                          make sure ga and gb get opposite signs and the solver won't
+                          complain\n                        // about bracketing\n
+                          \                           // this should never happen\n
+                          \                        \n                    // variation
+                          direction, with respect to the integration direction\n                    increasing
+                          = gb >= ga;\n\n                    final UnivariateRealFunction
+                          f = new UnivariateRealFunction() {\n                        public
+                          double value(final double t) throws FunctionEvaluationException
+                          {\n                            try {\n                                interpolator.setInterpolatedTime(t);\n
+                          \                               return handler.g(t, interpolator.getInterpolatedState());\n
+                          \                           } catch (DerivativeException
+                          e) {\n                                throw new FunctionEvaluationException(e,
+                          t);\n                            } catch (EventException
+                          e) {\n                                throw new FunctionEvaluationException(e,
+                          t);\n                            }\n                        }\n
+                          \                   };\n                    final BrentSolver
+                          solver = new BrentSolver();\n                    solver.setAbsoluteAccuracy(convergence);\n
+                          \                   solver.setMaximalIterationCount(maxIterationCount);\n
+                          \                   final double root = (ta <= tb) ? solver.solve(f,
+                          ta, tb) : solver.solve(f, tb, ta);\n                    if
+                          ((Math.abs(root - ta) <= convergence) &&\n                         (Math.abs(root
+                          - previousEventTime) <= convergence)) {\n                        //
+                          we have either found nothing or found (again ?) a past event,
+                          we simply ignore it\n                        ta = tb;\n
+                          \                       ga = gb;\n                    }
+                          else if (Double.isNaN(previousEventTime) ||\n                               (Math.abs(previousEventTime
+                          - root) > convergence)) {\n                        pendingEventTime
+                          = root;\n                        if (pendingEvent && (Math.abs(t1
+                          - pendingEventTime) <= convergence)) {\n                            //
+                          we were already waiting for this event which was\n                            //
+                          found during a previous call for a step that was\n                            //
+                          rejected, this step must now be accepted since it\n                            //
+                          properly ends exactly at the event occurrence\n                            return
+                          false;\n                        }\n                        //
+                          either we were not waiting for the event or it has\n                        //
+                          moved in such a way the step cannot be accepted\n                        pendingEvent
+                          = true;\n                        return true;\n                    }\n\n
+                          \               } else {\n                    // no sign
+                          change: there is no event for now\n                    ta
+                          = tb;\n                    ga = gb;\n                }\n\n
+                          \           }"
+                      children: []
+                      pos: 6852
+                      length: 3667
+                    - type: expression_statement
+                      fields:
+                        text: pendingEvent     = false;
+                      children: []
+                      pos: 10579
+                      length: 25
+                    - type: expression_statement
+                      fields:
+                        text: pendingEventTime = Double.NaN;
+                      children: []
+                      pos: 10617
+                      length: 30
+                    - type: return_statement
+                      fields:
+                        text: return false;
+                      children: []
+                      pos: 10660
+                      length: 13
+                    pos: 6442
+                    length: 4242
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (FunctionEvaluationException e) {
+                                      final Throwable cause = e.getCause();
+                                      if ((cause != null) && (cause instanceof DerivativeException)) {
+                                          throw (DerivativeException) cause;
+                                      } else if ((cause != null) && (cause instanceof EventException)) {
+                                          throw (EventException) cause;
+                                      }
+                                      throw new EventException(e);
+                                  }
+                      children: []
+                      pos: 10685
+                      length: 407
+                    pos: 6438
+                    length: 4654
+                children: []
+                pos: 6438
+                length: 4654
+              pos: 6427
+              length: 4672
+          children: []
+          pos: 6289
+          length: 4810
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEventTime
+              children: []
+              pos: 11292
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11278
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return pendingEventTime;
+                children: []
+                pos: 11317
+                length: 24
+              pos: 11307
+              length: 40
+          children: []
+          pos: 11278
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stepAccepted
+              children: []
+              pos: 11735
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t
+                children: []
+                pos: 11748
+                length: 14
+              pos: 11723
+              length: 512
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: t0 = t;
+                children: []
+                pos: 11823
+                length: 7
+              - type: expression_statement
+                fields:
+                  text: g0 = handler.g(t, y);
+                children: []
+                pos: 11839
+                length: 21
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: pendingEvent
+                        children: []
+                        pos: 11874
+                        length: 12
+                    children: []
+                    pos: 11873
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: previousEventTime = t;
+                    children: []
+                    pos: 11968
+                    length: 22
+                  - type: expression_statement
+                    fields:
+                      text: g0Positive        = increasing;
+                    children: []
+                    pos: 12003
+                    length: 31
+                  - type: expression_statement
+                    fields:
+                      text: nextAction        = handler.eventOccurred(t, y, !(increasing
+                        ^ forward));
+                    children: []
+                    pos: 12047
+                    length: 73
+                  pos: 11888
+                  length: 242
+                pos: 11870
+                length: 359
+              pos: 11812
+              length: 423
+          children: []
+          pos: 11723
+          length: 512
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stop
+              children: []
+              pos: 12411
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12396
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return nextAction == EventHandler.STOP;
+                children: []
+                pos: 12428
+                length: 39
+              pos: 12418
+              length: 55
+          children: []
+          pos: 12396
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reset
+              children: []
+              pos: 12927
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double t
+                children: []
+                pos: 12933
+                length: 14
+              pos: 12912
+              length: 461
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "! pendingEvent"
+                        children: []
+                        pos: 13012
+                        length: 14
+                    children: []
+                    pos: 13011
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 13042
+                    length: 13
+                  pos: 13028
+                  length: 37
+                pos: 13008
+                length: 57
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: nextAction
+                            children: []
+                            pos: 13079
+                            length: 10
+                          right:
+                            type: field_access
+                            fields:
+                              text: EventHandler.RESET_STATE
+                            children: []
+                            pos: 13093
+                            length: 24
+                        children: []
+                        pos: 13079
+                        length: 38
+                    children: []
+                    pos: 13078
+                    length: 40
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: handler.resetState(t, y);
+                    children: []
+                    pos: 13133
+                    length: 25
+                  pos: 13119
+                  length: 49
+                pos: 13075
+                length: 93
+              - type: expression_statement
+                fields:
+                  text: pendingEvent      = false;
+                children: []
+                pos: 13177
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: pendingEventTime  = Double.NaN;
+                children: []
+                pos: 13212
+                length: 31
+              - type: return_statement
+                fields:
+                  text: |-
+                    return (nextAction == EventHandler.RESET_STATE) ||
+                                   (nextAction == EventHandler.RESET_DERIVATIVES);
+                children: []
+                pos: 13253
+                length: 113
+              pos: 12997
+              length: 376
+          children: []
+          pos: 12912
+          length: 461
+        pos: 1892
+        length: 11484
+    children: []
+    pos: 1892
+    length: 11484
+  pos: 0
+  length: 13377
 text_diff: "--- before\n+++ after\n@@ -188,7 +188,6 @@\n                 if (g0Positive
   ^ (gb >= 0)) {\n                     // there is a sign change: an event is expected
   during this step\n \n-                    if (ga * gb > 0) {\n                         //

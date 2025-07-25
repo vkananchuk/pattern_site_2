@@ -1,5 +1,4539 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ChainableReverseAbstractInterpreter
+        children: []
+        pos: 2468
+        length: 35
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected final CodingConvention convention;
+          children: []
+          pos: 2550
+          length: 44
+        - type: field_declaration
+          fields:
+            text: final JSTypeRegistry typeRegistry;
+          children: []
+          pos: 2597
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private ChainableReverseAbstractInterpreter firstLink;
+          children: []
+          pos: 2634
+          length: 54
+        - type: field_declaration
+          fields:
+            text: private ChainableReverseAbstractInterpreter nextLink;
+          children: []
+          pos: 2691
+          length: 53
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ChainableReverseAbstractInterpreter(CodingConvention convention,
+                    JSTypeRegistry typeRegistry) {
+                  Preconditions.checkNotNull(convention);
+                  this.convention = convention;
+                  this.typeRegistry = typeRegistry;
+                  firstLink = this;
+                  nextLink = null;
+                }
+          children: []
+          pos: 2884
+          length: 271
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: append
+              children: []
+              pos: 3515
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ChainableReverseAbstractInterpreter lastLink
+                children: []
+                pos: 3529
+                length: 44
+              pos: 3472
+              length: 260
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(lastLink.nextLink == null);
+                children: []
+                pos: 3581
+                length: 55
+              - type: expression_statement
+                fields:
+                  text: this.nextLink = lastLink;
+                children: []
+                pos: 3641
+                length: 25
+              - type: expression_statement
+                fields:
+                  text: lastLink.firstLink = this.firstLink;
+                children: []
+                pos: 3671
+                length: 36
+              - type: return_statement
+                fields:
+                  text: return lastLink;
+                children: []
+                pos: 3712
+                length: 16
+              pos: 3575
+              length: 157
+          children: []
+          pos: 3472
+          length: 260
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFirst
+              children: []
+              pos: 3831
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3788
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return firstLink;
+                children: []
+                pos: 3848
+                length: 17
+              pos: 3842
+              length: 27
+          children: []
+          pos: 3788
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: firstPreciserScopeKnowingConditionOutcome
+              children: []
+              pos: 3970
+              length: 41
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node condition
+                children: []
+                pos: 4012
+                length: 14
+              pos: 3950
+              length: 231
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return firstLink.getPreciserScopeKnowingConditionOutcome(
+                            condition, blindScope, outcome);
+                children: []
+                pos: 4079
+                length: 98
+              pos: 4073
+              length: 108
+          children: []
+          pos: 3950
+          length: 231
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: nextPreciserScopeKnowingConditionOutcome
+              children: []
+              pos: 4344
+              length: 40
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node condition
+                children: []
+                pos: 4385
+                length: 14
+              pos: 4324
+              length: 261
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return nextLink != null ? nextLink.getPreciserScopeKnowingConditionOutcome(
+                            condition, blindScope, outcome) : blindScope;
+                children: []
+                pos: 4452
+                length: 129
+              pos: 4446
+              length: 139
+          children: []
+          pos: 4324
+          length: 261
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypeIfRefinable
+              children: []
+              pos: 4828
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node node
+                children: []
+                pos: 4847
+                length: 9
+              pos: 4811
+              length: 1002
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.getType()
+                        children: []
+                        pos: 4889
+                        length: 14
+                    children: []
+                    pos: 4888
+                    length: 16
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.NAME:
+                                StaticSlot<JSType> nameVar = scope.getSlot(node.getString());
+                                if (nameVar != null) {
+                                  JSType nameVarType = nameVar.getType();
+                                  if (nameVarType == null) {
+                                    nameVarType = node.getJSType();
+                                  }
+                                  return nameVarType;
+                                }
+                                return null;
+
+                              case Token.GETPROP:
+                                String qualifiedName = node.getQualifiedName();
+                                if (qualifiedName == null) {
+                                  return null;
+                                }
+                                StaticSlot<JSType> propVar = scope.getSlot(qualifiedName);
+                                JSType propVarType = null;
+                                if (propVar != null) {
+                                  propVarType = propVar.getType();
+                                }
+                                if (propVarType == null) {
+                                  propVarType = node.getJSType();
+                                }
+                                if (propVarType == null) {
+                                  propVarType = getNativeType(UNKNOWN_TYPE);
+                                }
+                                return propVarType;
+                            }
+                    children: []
+                    pos: 4905
+                    length: 887
+                children: []
+                pos: 4881
+                length: 911
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 5797
+                length: 12
+              pos: 4875
+              length: 938
+          children: []
+          pos: 4811
+          length: 1002
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: declareNameInScope
+              children: []
+              pos: 6065
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: FlowScope scope
+                children: []
+                pos: 6084
+                length: 15
+              pos: 6050
+              length: 779
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.getType()
+                        children: []
+                        pos: 6139
+                        length: 14
+                    children: []
+                    pos: 6138
+                    length: 16
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.NAME:
+                                scope.inferSlotType(node.getString(), type);
+                                break;
+
+                              case Token.GETPROP:
+                                String qualifiedName = node.getQualifiedName();
+                                Preconditions.checkNotNull(qualifiedName);
+
+                                JSType origType = node.getJSType();
+                                origType = origType == null ? getNativeType(UNKNOWN_TYPE) : origType;
+                                scope.inferQualifiedSlot(node, qualifiedName, origType, type);
+                                break;
+
+                              case Token.THIS:
+                                // "this" references aren't currently modeled in the CFG.
+                                break;
+
+                              default:
+                                throw new IllegalArgumentException("Node cannot be refined. \n" +
+                                    node.toStringTree());
+                            }
+                    children: []
+                    pos: 6155
+                    length: 670
+                children: []
+                pos: 6131
+                length: 694
+              pos: 6125
+              length: 704
+          children: []
+          pos: 6050
+          length: 779
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictUndefinedVisitor =
+                  new Visitor<JSType>() {
+                    @Override
+                    public JSType caseEnumElementType(EnumElementType enumElementType) {
+                      JSType type = enumElementType.getPrimitiveType().visit(this);
+                      if (type != null && enumElementType.getPrimitiveType().isEquivalentTo(type)) {
+                        return enumElementType;
+                      } else {
+                        return type;
+                      }
+                    }
+
+                    @Override
+                    public JSType caseAllType() {
+                      return typeRegistry.createUnionType(OBJECT_TYPE, NUMBER_TYPE,
+                          STRING_TYPE, BOOLEAN_TYPE, NULL_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoObjectType() {
+                      return getNativeType(NO_OBJECT_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoType() {
+                      return getNativeType(NO_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseBooleanType() {
+                      return getNativeType(BOOLEAN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseFunctionType(FunctionType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseNullType() {
+                      return getNativeType(NULL_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNumberType() {
+                      return getNativeType(NUMBER_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseObjectType(ObjectType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseStringType() {
+                      return getNativeType(STRING_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseUnionType(UnionType type) {
+                      return type.getRestrictedUnion(getNativeType(VOID_TYPE));
+                    }
+
+                    @Override
+                    public JSType caseUnknownType() {
+                      return getNativeType(UNKNOWN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseVoidType() {
+                      return null;
+                    }
+
+                    @Override
+                    public JSType caseParameterizedType(ParameterizedType type) {
+                      return caseObjectType(type);
+                    }
+
+                    @Override
+                    public JSType caseTemplateType(TemplateType templateType) {
+                      return caseObjectType(templateType);
+                    }
+                  };
+          children: []
+          pos: 6894
+          length: 2055
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictNullVisitor =
+                  new Visitor<JSType>() {
+                    @Override
+                    public JSType caseEnumElementType(EnumElementType enumElementType) {
+                      JSType type = enumElementType.getPrimitiveType().visit(this);
+                      if (type != null &&
+                          enumElementType.getPrimitiveType().isEquivalentTo(type)) {
+                        return enumElementType;
+                      } else {
+                        return type;
+                      }
+                    }
+
+                    @Override
+                    public JSType caseAllType() {
+                      return typeRegistry.createUnionType(OBJECT_TYPE, NUMBER_TYPE,
+                          STRING_TYPE, BOOLEAN_TYPE, VOID_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoObjectType() {
+                      return getNativeType(NO_OBJECT_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoType() {
+                      return getNativeType(NO_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseBooleanType() {
+                      return getNativeType(BOOLEAN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseFunctionType(FunctionType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseNullType() {
+                      return null;
+                    }
+
+                    @Override
+                    public JSType caseNumberType() {
+                      return getNativeType(NUMBER_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseObjectType(ObjectType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseStringType() {
+                      return getNativeType(STRING_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseUnionType(UnionType type) {
+                      return type.getRestrictedUnion(getNativeType(NULL_TYPE));
+                    }
+
+                    @Override
+                    public JSType caseUnknownType() {
+                      return getNativeType(UNKNOWN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseVoidType() {
+                      return getNativeType(VOID_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseParameterizedType(ParameterizedType type) {
+                      return caseObjectType(type);
+                    }
+
+                    @Override
+                    public JSType caseTemplateType(TemplateType templateType) {
+                      return caseObjectType(templateType);
+                    }
+                  };
+          children: []
+          pos: 9010
+          length: 2062
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByTypeOfResultVisitor
+              children: []
+              pos: 11216
+              length: 29
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTopType
+                    children: []
+                    pos: 11578
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JSType topType
+                      children: []
+                      pos: 11590
+                      length: 14
+                    pos: 11552
+                    length: 54
+                children: []
+                pos: 11552
+                length: 54
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseAllType
+                    children: []
+                    pos: 11640
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 11612
+                    length: 100
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseTopType(getNativeType(ALL_TYPE));
+                      children: []
+                      pos: 11662
+                      length: 44
+                    pos: 11654
+                    length: 58
+                children: []
+                pos: 11612
+                length: 100
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseUnknownType
+                    children: []
+                    pos: 11746
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 11718
+                    length: 116
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseTopType(getNativeType(CHECKED_UNKNOWN_TYPE));
+                      children: []
+                      pos: 11772
+                      length: 56
+                    pos: 11764
+                    length: 70
+                children: []
+                pos: 11718
+                length: 116
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseUnionType
+                    children: []
+                    pos: 11868
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: UnionType type
+                      children: []
+                      pos: 11882
+                      length: 14
+                    pos: 11840
+                    length: 486
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: JSType restricted = null;
+                      children: []
+                      pos: 11906
+                      length: 25
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (JSType alternate : type.getAlternates()) {
+                                  JSType restrictedAlternate = alternate.visit(this);
+                                  if (restrictedAlternate != null) {
+                                    if (restricted == null) {
+                                      restricted = restrictedAlternate;
+                                    } else {
+                                      restricted = restrictedAlternate.getLeastSupertype(restricted);
+                                    }
+                                  }
+                                }
+                      children: []
+                      pos: 11938
+                      length: 357
+                    - type: return_statement
+                      fields:
+                        text: return restricted;
+                      children: []
+                      pos: 12302
+                      length: 18
+                    pos: 11898
+                    length: 428
+                children: []
+                pos: 11840
+                length: 486
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoType
+                    children: []
+                    pos: 12360
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 12332
+                    length: 85
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NO_TYPE);
+                      children: []
+                      pos: 12381
+                      length: 30
+                    pos: 12373
+                    length: 44
+                children: []
+                pos: 12332
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseEnumElementType
+                    children: []
+                    pos: 12451
+                    length: 19
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: EnumElementType enumElementType
+                      children: []
+                      pos: 12471
+                      length: 31
+                    pos: 12423
+                    length: 818
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: JSType type = enumElementType.getPrimitiveType().visit(this);
+                      children: []
+                      pos: 13003
+                      length: 61
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: type
+                                      children: []
+                                      pos: 13075
+                                      length: 4
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 13083
+                                      length: 4
+                                  children: []
+                                  pos: 13075
+                                  length: 12
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: enumElementType.getPrimitiveType().isEquivalentTo(type)
+                                  children: []
+                                  pos: 13101
+                                  length: 55
+                              children: []
+                              pos: 13075
+                              length: 81
+                          children: []
+                          pos: 13074
+                          length: 83
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return enumElementType;
+                          children: []
+                          pos: 13168
+                          length: 23
+                        pos: 13158
+                        length: 41
+                      pos: 13071
+                      length: 164
+                    pos: 12504
+                    length: 737
+                children: []
+                pos: 12423
+                length: 818
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseParameterizedType
+                    children: []
+                    pos: 13275
+                    length: 21
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ParameterizedType type
+                      children: []
+                      pos: 13297
+                      length: 22
+                    pos: 13247
+                    length: 116
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseObjectType(type);
+                      children: []
+                      pos: 13329
+                      length: 28
+                    pos: 13321
+                    length: 42
+                children: []
+                pos: 13247
+                length: 116
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTemplateType
+                    children: []
+                    pos: 13397
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: TemplateType templateType
+                      children: []
+                      pos: 13414
+                      length: 25
+                    pos: 13369
+                    length: 122
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseObjectType(templateType);
+                      children: []
+                      pos: 13449
+                      length: 36
+                    pos: 13441
+                    length: 50
+                children: []
+                pos: 13369
+                length: 122
+              pos: 11201
+              length: 2294
+          children: []
+          pos: 11201
+          length: 2294
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByTrueTypeOfResultVisitor
+              children: []
+              pos: 13756
+              length: 33
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoObjectType
+                    children: []
+                    pos: 13868
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 13840
+                    length: 73
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 13895
+                      length: 12
+                    pos: 13887
+                    length: 26
+                children: []
+                pos: 13840
+                length: 73
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseBooleanType
+                    children: []
+                    pos: 13947
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 13919
+                    length: 72
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 13973
+                      length: 12
+                    pos: 13965
+                    length: 26
+                children: []
+                pos: 13919
+                length: 72
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseFunctionType
+                    children: []
+                    pos: 14025
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: FunctionType type
+                      children: []
+                      pos: 14042
+                      length: 17
+                    pos: 13997
+                    length: 90
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14069
+                      length: 12
+                    pos: 14061
+                    length: 26
+                children: []
+                pos: 13997
+                length: 90
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNullType
+                    children: []
+                    pos: 14121
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14093
+                    length: 69
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14144
+                      length: 12
+                    pos: 14136
+                    length: 26
+                children: []
+                pos: 14093
+                length: 69
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNumberType
+                    children: []
+                    pos: 14196
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14168
+                    length: 71
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14221
+                      length: 12
+                    pos: 14213
+                    length: 26
+                children: []
+                pos: 14168
+                length: 71
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseObjectType
+                    children: []
+                    pos: 14273
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectType type
+                      children: []
+                      pos: 14288
+                      length: 15
+                    pos: 14245
+                    length: 86
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14313
+                      length: 12
+                    pos: 14305
+                    length: 26
+                children: []
+                pos: 14245
+                length: 86
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseStringType
+                    children: []
+                    pos: 14365
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14337
+                    length: 71
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14390
+                      length: 12
+                    pos: 14382
+                    length: 26
+                children: []
+                pos: 14337
+                length: 71
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseVoidType
+                    children: []
+                    pos: 14442
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14414
+                    length: 69
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14465
+                      length: 12
+                    pos: 14457
+                    length: 26
+                children: []
+                pos: 14414
+                length: 69
+              pos: 13741
+              length: 746
+          children: []
+          pos: 13741
+          length: 746
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByFalseTypeOfResultVisitor
+              children: []
+              pos: 14747
+              length: 34
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTopType
+                    children: []
+                    pos: 14863
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JSType topType
+                      children: []
+                      pos: 14875
+                      length: 14
+                    pos: 14832
+                    length: 88
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return topType;
+                      children: []
+                      pos: 14899
+                      length: 15
+                    pos: 14891
+                    length: 29
+                children: []
+                pos: 14832
+                length: 88
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoObjectType
+                    children: []
+                    pos: 14954
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14926
+                    length: 98
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NO_OBJECT_TYPE);
+                      children: []
+                      pos: 14981
+                      length: 37
+                    pos: 14973
+                    length: 51
+                children: []
+                pos: 14926
+                length: 98
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseBooleanType
+                    children: []
+                    pos: 15058
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15030
+                    length: 95
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(BOOLEAN_TYPE);
+                      children: []
+                      pos: 15084
+                      length: 35
+                    pos: 15076
+                    length: 49
+                children: []
+                pos: 15030
+                length: 95
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseFunctionType
+                    children: []
+                    pos: 15159
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: FunctionType type
+                      children: []
+                      pos: 15176
+                      length: 17
+                    pos: 15131
+                    length: 90
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return type;
+                      children: []
+                      pos: 15203
+                      length: 12
+                    pos: 15195
+                    length: 26
+                children: []
+                pos: 15131
+                length: 90
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNullType
+                    children: []
+                    pos: 15255
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15227
+                    length: 89
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NULL_TYPE);
+                      children: []
+                      pos: 15278
+                      length: 32
+                    pos: 15270
+                    length: 46
+                children: []
+                pos: 15227
+                length: 89
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNumberType
+                    children: []
+                    pos: 15350
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15322
+                    length: 93
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NUMBER_TYPE);
+                      children: []
+                      pos: 15375
+                      length: 34
+                    pos: 15367
+                    length: 48
+                children: []
+                pos: 15322
+                length: 93
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseObjectType
+                    children: []
+                    pos: 15449
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectType type
+                      children: []
+                      pos: 15464
+                      length: 15
+                    pos: 15421
+                    length: 86
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return type;
+                      children: []
+                      pos: 15489
+                      length: 12
+                    pos: 15481
+                    length: 26
+                children: []
+                pos: 15421
+                length: 86
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseStringType
+                    children: []
+                    pos: 15541
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15513
+                    length: 93
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(STRING_TYPE);
+                      children: []
+                      pos: 15566
+                      length: 34
+                    pos: 15558
+                    length: 48
+                children: []
+                pos: 15513
+                length: 93
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseVoidType
+                    children: []
+                    pos: 15640
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15612
+                    length: 89
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(VOID_TYPE);
+                      children: []
+                      pos: 15663
+                      length: 32
+                    pos: 15655
+                    length: 46
+                children: []
+                pos: 15612
+                length: 89
+              pos: 14732
+              length: 973
+          children: []
+          pos: 14732
+          length: 973
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByOneTypeOfResultVisitor
+              children: []
+              pos: 15809
+              length: 32
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final String value;
+                children: []
+                pos: 16008
+                length: 27
+              - type: field_declaration
+                fields:
+                  text: private final boolean resultEqualsValue;
+                children: []
+                pos: 16219
+                length: 40
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    RestrictByOneTypeOfResultVisitor(String value, boolean resultEqualsValue) {
+                          this.value = value;
+                          this.resultEqualsValue = resultEqualsValue;
+                        }
+                children: []
+                pos: 16265
+                length: 157
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: matchesExpectation
+                    children: []
+                    pos: 16627
+                    length: 18
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: String result
+                      children: []
+                      pos: 16646
+                      length: 13
+                    pos: 16611
+                    length: 113
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return result.equals(value) == resultEqualsValue;
+                      children: []
+                      pos: 16669
+                      length: 49
+                    pos: 16661
+                    length: 63
+                children: []
+                pos: 16611
+                length: 113
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTopType
+                    children: []
+                    pos: 16761
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JSType topType
+                      children: []
+                      pos: 16773
+                      length: 14
+                    pos: 16730
+                    length: 291
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: JSType result = topType;
+                      children: []
+                      pos: 16797
+                      length: 24
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: resultEqualsValue
+                              children: []
+                              pos: 16832
+                              length: 17
+                          children: []
+                          pos: 16831
+                          length: 19
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSType typeByName = getNativeTypeForTypeOf(value);
+                          children: []
+                          pos: 16861
+                          length: 50
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: typeByName
+                                      children: []
+                                      pos: 16924
+                                      length: 10
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 16938
+                                      length: 4
+                                  children: []
+                                  pos: 16924
+                                  length: 18
+                              children: []
+                              pos: 16923
+                              length: 20
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: result = typeByName;
+                              children: []
+                              pos: 16956
+                              length: 20
+                            pos: 16944
+                            length: 42
+                          pos: 16920
+                          length: 66
+                        pos: 16851
+                        length: 143
+                      pos: 16828
+                      length: 166
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 17001
+                      length: 14
+                    pos: 16789
+                    length: 232
+                children: []
+                pos: 16730
+                length: 291
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoObjectType
+                    children: []
+                    pos: 17055
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17027
+                    length: 191
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return (value.equals("object") || value.equals("function")) ==
+                                    resultEqualsValue ? getNativeType(NO_OBJECT_TYPE) : null;
+                      children: []
+                      pos: 17082
+                      length: 130
+                    pos: 17074
+                    length: 144
+                children: []
+                pos: 17027
+                length: 191
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseBooleanType
+                    children: []
+                    pos: 17252
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17224
+                    length: 134
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("boolean") ? getNativeType(BOOLEAN_TYPE)
+                          : null;'
+                      children: []
+                      pos: 17278
+                      length: 74
+                    pos: 17270
+                    length: 88
+                children: []
+                pos: 17224
+                length: 134
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseFunctionType
+                    children: []
+                    pos: 17392
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: FunctionType type
+                      children: []
+                      pos: 17409
+                      length: 17
+                    pos: 17364
+                    length: 130
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("function") ? type : null;'
+                      children: []
+                      pos: 17436
+                      length: 52
+                    pos: 17428
+                    length: 66
+                children: []
+                pos: 17364
+                length: 130
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNullType
+                    children: []
+                    pos: 17528
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17500
+                    length: 127
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("object") ? getNativeType(NULL_TYPE)
+                          : null;'
+                      children: []
+                      pos: 17551
+                      length: 70
+                    pos: 17543
+                    length: 84
+                children: []
+                pos: 17500
+                length: 127
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNumberType
+                    children: []
+                    pos: 17661
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17633
+                    length: 131
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("number") ? getNativeType(NUMBER_TYPE)
+                          : null;'
+                      children: []
+                      pos: 17686
+                      length: 72
+                    pos: 17678
+                    length: 86
+                children: []
+                pos: 17633
+                length: 131
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseObjectType
+                    children: []
+                    pos: 17798
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectType type
+                      children: []
+                      pos: 17813
+                      length: 15
+                    pos: 17770
+                    length: 523
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: value.equals("function")
+                              children: []
+                              pos: 17842
+                              length: 24
+                          children: []
+                          pos: 17841
+                          length: 26
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSType ctorType = getNativeType(U2U_CONSTRUCTOR_TYPE);
+                          children: []
+                          pos: 17878
+                          length: 54
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: identifier
+                                  fields:
+                                    text: resultEqualsValue
+                                  children: []
+                                  pos: 17945
+                                  length: 17
+                              children: []
+                              pos: 17944
+                              length: 19
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return ctorType.getGreatestSubtype(type);
+                              children: []
+                              pos: 18045
+                              length: 41
+                            pos: 17964
+                            length: 132
+                          pos: 17941
+                          length: 281
+                        pos: 17868
+                        length: 362
+                      pos: 17838
+                      length: 392
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("object") ? type : null;'
+                      children: []
+                      pos: 18237
+                      length: 50
+                    pos: 17830
+                    length: 463
+                children: []
+                pos: 17770
+                length: 523
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseStringType
+                    children: []
+                    pos: 18327
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 18299
+                    length: 131
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("string") ? getNativeType(STRING_TYPE)
+                          : null;'
+                      children: []
+                      pos: 18352
+                      length: 72
+                    pos: 18344
+                    length: 86
+                children: []
+                pos: 18299
+                length: 131
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseVoidType
+                    children: []
+                    pos: 18464
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 18436
+                    length: 130
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("undefined") ? getNativeType(VOID_TYPE)
+                          : null;'
+                      children: []
+                      pos: 18487
+                      length: 73
+                    pos: 18479
+                    length: 87
+                children: []
+                pos: 18436
+                length: 130
+              pos: 15795
+              length: 2775
+          children: []
+          pos: 15795
+          length: 2775
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedWithoutUndefined
+              children: []
+              pos: 18672
+              length: 29
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 18702
+                length: 11
+              pos: 18649
+              length: 142
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return type == null ? null : type.visit(restrictUndefinedVisitor);'
+                children: []
+                pos: 18721
+                length: 66
+              pos: 18715
+              length: 76
+          children: []
+          pos: 18649
+          length: 142
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedWithoutNull
+              children: []
+              pos: 18888
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 18913
+                length: 11
+              pos: 18865
+              length: 132
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return type == null ? null : type.visit(restrictNullVisitor);'
+                children: []
+                pos: 18932
+                length: 61
+              pos: 18926
+              length: 71
+          children: []
+          pos: 18865
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedByTypeOfResult
+              children: []
+              pos: 20253
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 20281
+                length: 11
+              pos: 20246
+              length: 465
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: type
+                            children: []
+                            pos: 20382
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 20390
+                            length: 4
+                        children: []
+                        pos: 20382
+                        length: 12
+                    children: []
+                    pos: 20381
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: identifier
+                            fields:
+                              text: resultEqualsValue
+                            children: []
+                            pos: 20408
+                            length: 17
+                        children: []
+                        pos: 20407
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: JSType result = getNativeTypeForTypeOf(value);
+                        children: []
+                        pos: 20437
+                        length: 46
+                      - type: return_statement
+                        fields:
+                          text: 'return result == null ? getNativeType(CHECKED_UNKNOWN_TYPE)
+                            : result;'
+                        children: []
+                        pos: 20492
+                        length: 69
+                      pos: 20427
+                      length: 142
+                    pos: 20404
+                    length: 201
+                  pos: 20396
+                  length: 215
+                pos: 20378
+                length: 233
+              - type: return_statement
+                fields:
+                  text: |-
+                    return type.visit(
+                            new RestrictByOneTypeOfResultVisitor(value, resultEqualsValue));
+                children: []
+                pos: 20616
+                length: 91
+              pos: 20372
+              length: 339
+          children: []
+          pos: 20246
+          length: 465
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNativeType
+              children: []
+              pos: 20722
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSTypeNative typeId
+                children: []
+                pos: 20736
+                length: 19
+              pos: 20715
+              length: 94
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return typeRegistry.getNativeType(typeId);
+                children: []
+                pos: 20763
+                length: 42
+              pos: 20757
+              length: 52
+          children: []
+          pos: 20715
+          length: 94
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNativeTypeForTypeOf
+              children: []
+              pos: 21206
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String value
+                children: []
+                pos: 21229
+                length: 12
+              pos: 21191
+              length: 512
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: value.equals("number")
+                        children: []
+                        pos: 21253
+                        length: 22
+                    children: []
+                    pos: 21252
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getNativeType(NUMBER_TYPE);
+                    children: []
+                    pos: 21285
+                    length: 34
+                  pos: 21277
+                  length: 48
+                pos: 21249
+                length: 450
+              pos: 21243
+              length: 460
+          children: []
+          pos: 21191
+          length: 512
+        pos: 2446
+        length: 19259
+    children: []
+    pos: 2446
+    length: 19259
+  pos: 0
+  length: 21706
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ChainableReverseAbstractInterpreter
+        children: []
+        pos: 2468
+        length: 35
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected final CodingConvention convention;
+          children: []
+          pos: 2550
+          length: 44
+        - type: field_declaration
+          fields:
+            text: final JSTypeRegistry typeRegistry;
+          children: []
+          pos: 2597
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private ChainableReverseAbstractInterpreter firstLink;
+          children: []
+          pos: 2634
+          length: 54
+        - type: field_declaration
+          fields:
+            text: private ChainableReverseAbstractInterpreter nextLink;
+          children: []
+          pos: 2691
+          length: 53
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ChainableReverseAbstractInterpreter(CodingConvention convention,
+                    JSTypeRegistry typeRegistry) {
+                  Preconditions.checkNotNull(convention);
+                  this.convention = convention;
+                  this.typeRegistry = typeRegistry;
+                  firstLink = this;
+                  nextLink = null;
+                }
+          children: []
+          pos: 2884
+          length: 271
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: append
+              children: []
+              pos: 3515
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ChainableReverseAbstractInterpreter lastLink
+                children: []
+                pos: 3529
+                length: 44
+              pos: 3472
+              length: 260
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(lastLink.nextLink == null);
+                children: []
+                pos: 3581
+                length: 55
+              - type: expression_statement
+                fields:
+                  text: this.nextLink = lastLink;
+                children: []
+                pos: 3641
+                length: 25
+              - type: expression_statement
+                fields:
+                  text: lastLink.firstLink = this.firstLink;
+                children: []
+                pos: 3671
+                length: 36
+              - type: return_statement
+                fields:
+                  text: return lastLink;
+                children: []
+                pos: 3712
+                length: 16
+              pos: 3575
+              length: 157
+          children: []
+          pos: 3472
+          length: 260
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFirst
+              children: []
+              pos: 3831
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3788
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return firstLink;
+                children: []
+                pos: 3848
+                length: 17
+              pos: 3842
+              length: 27
+          children: []
+          pos: 3788
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: firstPreciserScopeKnowingConditionOutcome
+              children: []
+              pos: 3970
+              length: 41
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node condition
+                children: []
+                pos: 4012
+                length: 14
+              pos: 3950
+              length: 231
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return firstLink.getPreciserScopeKnowingConditionOutcome(
+                            condition, blindScope, outcome);
+                children: []
+                pos: 4079
+                length: 98
+              pos: 4073
+              length: 108
+          children: []
+          pos: 3950
+          length: 231
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: nextPreciserScopeKnowingConditionOutcome
+              children: []
+              pos: 4344
+              length: 40
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node condition
+                children: []
+                pos: 4385
+                length: 14
+              pos: 4324
+              length: 261
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return nextLink != null ? nextLink.getPreciserScopeKnowingConditionOutcome(
+                            condition, blindScope, outcome) : blindScope;
+                children: []
+                pos: 4452
+                length: 129
+              pos: 4446
+              length: 139
+          children: []
+          pos: 4324
+          length: 261
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypeIfRefinable
+              children: []
+              pos: 4828
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node node
+                children: []
+                pos: 4847
+                length: 9
+              pos: 4811
+              length: 1002
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.getType()
+                        children: []
+                        pos: 4889
+                        length: 14
+                    children: []
+                    pos: 4888
+                    length: 16
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.NAME:
+                                StaticSlot<JSType> nameVar = scope.getSlot(node.getString());
+                                if (nameVar != null) {
+                                  JSType nameVarType = nameVar.getType();
+                                  if (nameVarType == null) {
+                                    nameVarType = node.getJSType();
+                                  }
+                                  return nameVarType;
+                                }
+                                return null;
+
+                              case Token.GETPROP:
+                                String qualifiedName = node.getQualifiedName();
+                                if (qualifiedName == null) {
+                                  return null;
+                                }
+                                StaticSlot<JSType> propVar = scope.getSlot(qualifiedName);
+                                JSType propVarType = null;
+                                if (propVar != null) {
+                                  propVarType = propVar.getType();
+                                }
+                                if (propVarType == null) {
+                                  propVarType = node.getJSType();
+                                }
+                                if (propVarType == null) {
+                                  propVarType = getNativeType(UNKNOWN_TYPE);
+                                }
+                                return propVarType;
+                            }
+                    children: []
+                    pos: 4905
+                    length: 887
+                children: []
+                pos: 4881
+                length: 911
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 5797
+                length: 12
+              pos: 4875
+              length: 938
+          children: []
+          pos: 4811
+          length: 1002
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: declareNameInScope
+              children: []
+              pos: 6065
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: FlowScope scope
+                children: []
+                pos: 6084
+                length: 15
+              pos: 6050
+              length: 779
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: node.getType()
+                        children: []
+                        pos: 6139
+                        length: 14
+                    children: []
+                    pos: 6138
+                    length: 16
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.NAME:
+                                scope.inferSlotType(node.getString(), type);
+                                break;
+
+                              case Token.GETPROP:
+                                String qualifiedName = node.getQualifiedName();
+                                Preconditions.checkNotNull(qualifiedName);
+
+                                JSType origType = node.getJSType();
+                                origType = origType == null ? getNativeType(UNKNOWN_TYPE) : origType;
+                                scope.inferQualifiedSlot(node, qualifiedName, origType, type);
+                                break;
+
+                              case Token.THIS:
+                                // "this" references aren't currently modeled in the CFG.
+                                break;
+
+                              default:
+                                throw new IllegalArgumentException("Node cannot be refined. \n" +
+                                    node.toStringTree());
+                            }
+                    children: []
+                    pos: 6155
+                    length: 670
+                children: []
+                pos: 6131
+                length: 694
+              pos: 6125
+              length: 704
+          children: []
+          pos: 6050
+          length: 779
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictUndefinedVisitor =
+                  new Visitor<JSType>() {
+                    @Override
+                    public JSType caseEnumElementType(EnumElementType enumElementType) {
+                      JSType type = enumElementType.getPrimitiveType().visit(this);
+                      if (type != null && enumElementType.getPrimitiveType().isEquivalentTo(type)) {
+                        return enumElementType;
+                      } else {
+                        return type;
+                      }
+                    }
+
+                    @Override
+                    public JSType caseAllType() {
+                      return typeRegistry.createUnionType(OBJECT_TYPE, NUMBER_TYPE,
+                          STRING_TYPE, BOOLEAN_TYPE, NULL_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoObjectType() {
+                      return getNativeType(NO_OBJECT_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoType() {
+                      return getNativeType(NO_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseBooleanType() {
+                      return getNativeType(BOOLEAN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseFunctionType(FunctionType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseNullType() {
+                      return getNativeType(NULL_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNumberType() {
+                      return getNativeType(NUMBER_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseObjectType(ObjectType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseStringType() {
+                      return getNativeType(STRING_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseUnionType(UnionType type) {
+                      return type.getRestrictedUnion(getNativeType(VOID_TYPE));
+                    }
+
+                    @Override
+                    public JSType caseUnknownType() {
+                      return getNativeType(UNKNOWN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseVoidType() {
+                      return null;
+                    }
+
+                    @Override
+                    public JSType caseParameterizedType(ParameterizedType type) {
+                      return caseObjectType(type);
+                    }
+
+                    @Override
+                    public JSType caseTemplateType(TemplateType templateType) {
+                      return caseObjectType(templateType);
+                    }
+                  };
+          children: []
+          pos: 6894
+          length: 2055
+        - type: field_declaration
+          fields:
+            text: |-
+              private final Visitor<JSType> restrictNullVisitor =
+                  new Visitor<JSType>() {
+                    @Override
+                    public JSType caseEnumElementType(EnumElementType enumElementType) {
+                      JSType type = enumElementType.getPrimitiveType().visit(this);
+                      if (type != null &&
+                          enumElementType.getPrimitiveType().isEquivalentTo(type)) {
+                        return enumElementType;
+                      } else {
+                        return type;
+                      }
+                    }
+
+                    @Override
+                    public JSType caseAllType() {
+                      return typeRegistry.createUnionType(OBJECT_TYPE, NUMBER_TYPE,
+                          STRING_TYPE, BOOLEAN_TYPE, VOID_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoObjectType() {
+                      return getNativeType(NO_OBJECT_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseNoType() {
+                      return getNativeType(NO_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseBooleanType() {
+                      return getNativeType(BOOLEAN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseFunctionType(FunctionType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseNullType() {
+                      return null;
+                    }
+
+                    @Override
+                    public JSType caseNumberType() {
+                      return getNativeType(NUMBER_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseObjectType(ObjectType type) {
+                      return type;
+                    }
+
+                    @Override
+                    public JSType caseStringType() {
+                      return getNativeType(STRING_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseUnionType(UnionType type) {
+                      return type.getRestrictedUnion(getNativeType(NULL_TYPE));
+                    }
+
+                    @Override
+                    public JSType caseUnknownType() {
+                      return getNativeType(UNKNOWN_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseVoidType() {
+                      return getNativeType(VOID_TYPE);
+                    }
+
+                    @Override
+                    public JSType caseParameterizedType(ParameterizedType type) {
+                      return caseObjectType(type);
+                    }
+
+                    @Override
+                    public JSType caseTemplateType(TemplateType templateType) {
+                      return caseObjectType(templateType);
+                    }
+                  };
+          children: []
+          pos: 9010
+          length: 2062
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByTypeOfResultVisitor
+              children: []
+              pos: 11216
+              length: 29
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTopType
+                    children: []
+                    pos: 11578
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JSType topType
+                      children: []
+                      pos: 11590
+                      length: 14
+                    pos: 11552
+                    length: 54
+                children: []
+                pos: 11552
+                length: 54
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseAllType
+                    children: []
+                    pos: 11640
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 11612
+                    length: 100
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseTopType(getNativeType(ALL_TYPE));
+                      children: []
+                      pos: 11662
+                      length: 44
+                    pos: 11654
+                    length: 58
+                children: []
+                pos: 11612
+                length: 100
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseUnknownType
+                    children: []
+                    pos: 11746
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 11718
+                    length: 116
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseTopType(getNativeType(CHECKED_UNKNOWN_TYPE));
+                      children: []
+                      pos: 11772
+                      length: 56
+                    pos: 11764
+                    length: 70
+                children: []
+                pos: 11718
+                length: 116
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseUnionType
+                    children: []
+                    pos: 11868
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: UnionType type
+                      children: []
+                      pos: 11882
+                      length: 14
+                    pos: 11840
+                    length: 486
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: JSType restricted = null;
+                      children: []
+                      pos: 11906
+                      length: 25
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (JSType alternate : type.getAlternates()) {
+                                  JSType restrictedAlternate = alternate.visit(this);
+                                  if (restrictedAlternate != null) {
+                                    if (restricted == null) {
+                                      restricted = restrictedAlternate;
+                                    } else {
+                                      restricted = restrictedAlternate.getLeastSupertype(restricted);
+                                    }
+                                  }
+                                }
+                      children: []
+                      pos: 11938
+                      length: 357
+                    - type: return_statement
+                      fields:
+                        text: return restricted;
+                      children: []
+                      pos: 12302
+                      length: 18
+                    pos: 11898
+                    length: 428
+                children: []
+                pos: 11840
+                length: 486
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoType
+                    children: []
+                    pos: 12360
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 12332
+                    length: 85
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NO_TYPE);
+                      children: []
+                      pos: 12381
+                      length: 30
+                    pos: 12373
+                    length: 44
+                children: []
+                pos: 12332
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseEnumElementType
+                    children: []
+                    pos: 12451
+                    length: 19
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: EnumElementType enumElementType
+                      children: []
+                      pos: 12471
+                      length: 31
+                    pos: 12423
+                    length: 818
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: JSType type = enumElementType.getPrimitiveType().visit(this);
+                      children: []
+                      pos: 13003
+                      length: 61
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: type
+                                      children: []
+                                      pos: 13075
+                                      length: 4
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 13083
+                                      length: 4
+                                  children: []
+                                  pos: 13075
+                                  length: 12
+                                right:
+                                  type: method_invocation
+                                  fields:
+                                    text: enumElementType.getPrimitiveType().isEquivalentTo(type)
+                                  children: []
+                                  pos: 13101
+                                  length: 55
+                              children: []
+                              pos: 13075
+                              length: 81
+                          children: []
+                          pos: 13074
+                          length: 83
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return enumElementType;
+                          children: []
+                          pos: 13168
+                          length: 23
+                        pos: 13158
+                        length: 41
+                      pos: 13071
+                      length: 164
+                    pos: 12504
+                    length: 737
+                children: []
+                pos: 12423
+                length: 818
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseParameterizedType
+                    children: []
+                    pos: 13275
+                    length: 21
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ParameterizedType type
+                      children: []
+                      pos: 13297
+                      length: 22
+                    pos: 13247
+                    length: 116
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseObjectType(type);
+                      children: []
+                      pos: 13329
+                      length: 28
+                    pos: 13321
+                    length: 42
+                children: []
+                pos: 13247
+                length: 116
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTemplateType
+                    children: []
+                    pos: 13397
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: TemplateType templateType
+                      children: []
+                      pos: 13414
+                      length: 25
+                    pos: 13369
+                    length: 122
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return caseObjectType(templateType);
+                      children: []
+                      pos: 13449
+                      length: 36
+                    pos: 13441
+                    length: 50
+                children: []
+                pos: 13369
+                length: 122
+              pos: 11201
+              length: 2294
+          children: []
+          pos: 11201
+          length: 2294
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByTrueTypeOfResultVisitor
+              children: []
+              pos: 13756
+              length: 33
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoObjectType
+                    children: []
+                    pos: 13868
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 13840
+                    length: 73
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 13895
+                      length: 12
+                    pos: 13887
+                    length: 26
+                children: []
+                pos: 13840
+                length: 73
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseBooleanType
+                    children: []
+                    pos: 13947
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 13919
+                    length: 72
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 13973
+                      length: 12
+                    pos: 13965
+                    length: 26
+                children: []
+                pos: 13919
+                length: 72
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseFunctionType
+                    children: []
+                    pos: 14025
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: FunctionType type
+                      children: []
+                      pos: 14042
+                      length: 17
+                    pos: 13997
+                    length: 90
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14069
+                      length: 12
+                    pos: 14061
+                    length: 26
+                children: []
+                pos: 13997
+                length: 90
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNullType
+                    children: []
+                    pos: 14121
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14093
+                    length: 69
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14144
+                      length: 12
+                    pos: 14136
+                    length: 26
+                children: []
+                pos: 14093
+                length: 69
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNumberType
+                    children: []
+                    pos: 14196
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14168
+                    length: 71
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14221
+                      length: 12
+                    pos: 14213
+                    length: 26
+                children: []
+                pos: 14168
+                length: 71
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseObjectType
+                    children: []
+                    pos: 14273
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectType type
+                      children: []
+                      pos: 14288
+                      length: 15
+                    pos: 14245
+                    length: 86
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14313
+                      length: 12
+                    pos: 14305
+                    length: 26
+                children: []
+                pos: 14245
+                length: 86
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseStringType
+                    children: []
+                    pos: 14365
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14337
+                    length: 71
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14390
+                      length: 12
+                    pos: 14382
+                    length: 26
+                children: []
+                pos: 14337
+                length: 71
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseVoidType
+                    children: []
+                    pos: 14442
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14414
+                    length: 69
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return null;
+                      children: []
+                      pos: 14465
+                      length: 12
+                    pos: 14457
+                    length: 26
+                children: []
+                pos: 14414
+                length: 69
+              pos: 13741
+              length: 746
+          children: []
+          pos: 13741
+          length: 746
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByFalseTypeOfResultVisitor
+              children: []
+              pos: 14747
+              length: 34
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTopType
+                    children: []
+                    pos: 14863
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JSType topType
+                      children: []
+                      pos: 14875
+                      length: 14
+                    pos: 14832
+                    length: 88
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return topType;
+                      children: []
+                      pos: 14899
+                      length: 15
+                    pos: 14891
+                    length: 29
+                children: []
+                pos: 14832
+                length: 88
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoObjectType
+                    children: []
+                    pos: 14954
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14926
+                    length: 98
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NO_OBJECT_TYPE);
+                      children: []
+                      pos: 14981
+                      length: 37
+                    pos: 14973
+                    length: 51
+                children: []
+                pos: 14926
+                length: 98
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseBooleanType
+                    children: []
+                    pos: 15058
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15030
+                    length: 95
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(BOOLEAN_TYPE);
+                      children: []
+                      pos: 15084
+                      length: 35
+                    pos: 15076
+                    length: 49
+                children: []
+                pos: 15030
+                length: 95
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseFunctionType
+                    children: []
+                    pos: 15159
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: FunctionType type
+                      children: []
+                      pos: 15176
+                      length: 17
+                    pos: 15131
+                    length: 90
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return type;
+                      children: []
+                      pos: 15203
+                      length: 12
+                    pos: 15195
+                    length: 26
+                children: []
+                pos: 15131
+                length: 90
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNullType
+                    children: []
+                    pos: 15255
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15227
+                    length: 89
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NULL_TYPE);
+                      children: []
+                      pos: 15278
+                      length: 32
+                    pos: 15270
+                    length: 46
+                children: []
+                pos: 15227
+                length: 89
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNumberType
+                    children: []
+                    pos: 15350
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15322
+                    length: 93
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(NUMBER_TYPE);
+                      children: []
+                      pos: 15375
+                      length: 34
+                    pos: 15367
+                    length: 48
+                children: []
+                pos: 15322
+                length: 93
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseObjectType
+                    children: []
+                    pos: 15449
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectType type
+                      children: []
+                      pos: 15464
+                      length: 15
+                    pos: 15421
+                    length: 86
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return type;
+                      children: []
+                      pos: 15489
+                      length: 12
+                    pos: 15481
+                    length: 26
+                children: []
+                pos: 15421
+                length: 86
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseStringType
+                    children: []
+                    pos: 15541
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15513
+                    length: 93
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(STRING_TYPE);
+                      children: []
+                      pos: 15566
+                      length: 34
+                    pos: 15558
+                    length: 48
+                children: []
+                pos: 15513
+                length: 93
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseVoidType
+                    children: []
+                    pos: 15640
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15612
+                    length: 89
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return getNativeType(VOID_TYPE);
+                      children: []
+                      pos: 15663
+                      length: 32
+                    pos: 15655
+                    length: 46
+                children: []
+                pos: 15612
+                length: 89
+              pos: 14732
+              length: 973
+          children: []
+          pos: 14732
+          length: 973
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: RestrictByOneTypeOfResultVisitor
+              children: []
+              pos: 15809
+              length: 32
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final String value;
+                children: []
+                pos: 16008
+                length: 27
+              - type: field_declaration
+                fields:
+                  text: private final boolean resultEqualsValue;
+                children: []
+                pos: 16219
+                length: 40
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    RestrictByOneTypeOfResultVisitor(String value, boolean resultEqualsValue) {
+                          this.value = value;
+                          this.resultEqualsValue = resultEqualsValue;
+                        }
+                children: []
+                pos: 16265
+                length: 157
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: matchesExpectation
+                    children: []
+                    pos: 16627
+                    length: 18
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: String result
+                      children: []
+                      pos: 16646
+                      length: 13
+                    pos: 16611
+                    length: 113
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return result.equals(value) == resultEqualsValue;
+                      children: []
+                      pos: 16669
+                      length: 49
+                    pos: 16661
+                    length: 63
+                children: []
+                pos: 16611
+                length: 113
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseTopType
+                    children: []
+                    pos: 16761
+                    length: 11
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: JSType topType
+                      children: []
+                      pos: 16773
+                      length: 14
+                    pos: 16730
+                    length: 291
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: JSType result = topType;
+                      children: []
+                      pos: 16797
+                      length: 24
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: identifier
+                              fields:
+                                text: resultEqualsValue
+                              children: []
+                              pos: 16832
+                              length: 17
+                          children: []
+                          pos: 16831
+                          length: 19
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSType typeByName = getNativeTypeForTypeOf(value);
+                          children: []
+                          pos: 16861
+                          length: 50
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: typeByName
+                                      children: []
+                                      pos: 16924
+                                      length: 10
+                                    right:
+                                      type: null_literal
+                                      fields: {}
+                                      children: []
+                                      pos: 16938
+                                      length: 4
+                                  children: []
+                                  pos: 16924
+                                  length: 18
+                              children: []
+                              pos: 16923
+                              length: 20
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: expression_statement
+                              fields:
+                                text: result = typeByName;
+                              children: []
+                              pos: 16956
+                              length: 20
+                            pos: 16944
+                            length: 42
+                          pos: 16920
+                          length: 66
+                        pos: 16851
+                        length: 143
+                      pos: 16828
+                      length: 166
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 17001
+                      length: 14
+                    pos: 16789
+                    length: 232
+                children: []
+                pos: 16730
+                length: 291
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNoObjectType
+                    children: []
+                    pos: 17055
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17027
+                    length: 191
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return (value.equals("object") || value.equals("function")) ==
+                                    resultEqualsValue ? getNativeType(NO_OBJECT_TYPE) : null;
+                      children: []
+                      pos: 17082
+                      length: 130
+                    pos: 17074
+                    length: 144
+                children: []
+                pos: 17027
+                length: 191
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseBooleanType
+                    children: []
+                    pos: 17252
+                    length: 15
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17224
+                    length: 134
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("boolean") ? getNativeType(BOOLEAN_TYPE)
+                          : null;'
+                      children: []
+                      pos: 17278
+                      length: 74
+                    pos: 17270
+                    length: 88
+                children: []
+                pos: 17224
+                length: 134
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseFunctionType
+                    children: []
+                    pos: 17392
+                    length: 16
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: FunctionType type
+                      children: []
+                      pos: 17409
+                      length: 17
+                    pos: 17364
+                    length: 130
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("function") ? type : null;'
+                      children: []
+                      pos: 17436
+                      length: 52
+                    pos: 17428
+                    length: 66
+                children: []
+                pos: 17364
+                length: 130
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNullType
+                    children: []
+                    pos: 17528
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17500
+                    length: 127
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("object") ? getNativeType(NULL_TYPE)
+                          : null;'
+                      children: []
+                      pos: 17551
+                      length: 70
+                    pos: 17543
+                    length: 84
+                children: []
+                pos: 17500
+                length: 127
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseNumberType
+                    children: []
+                    pos: 17661
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 17633
+                    length: 131
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("number") ? getNativeType(NUMBER_TYPE)
+                          : null;'
+                      children: []
+                      pos: 17686
+                      length: 72
+                    pos: 17678
+                    length: 86
+                children: []
+                pos: 17633
+                length: 131
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseObjectType
+                    children: []
+                    pos: 17798
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectType type
+                      children: []
+                      pos: 17813
+                      length: 15
+                    pos: 17770
+                    length: 434
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: value.equals("function")
+                              children: []
+                              pos: 17842
+                              length: 24
+                          children: []
+                          pos: 17841
+                          length: 26
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: JSType ctorType = getNativeType(U2U_CONSTRUCTOR_TYPE);
+                          children: []
+                          pos: 17878
+                          length: 54
+                        - type: return_statement
+                          fields:
+                            text: 'return resultEqualsValue && ctorType.isSubtype(type)
+                              ? ctorType : null;'
+                          children: []
+                          pos: 17941
+                          length: 71
+                        pos: 17868
+                        length: 273
+                      pos: 17838
+                      length: 303
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("object") ? type : null;'
+                      children: []
+                      pos: 18148
+                      length: 50
+                    pos: 17830
+                    length: 374
+                children: []
+                pos: 17770
+                length: 434
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseStringType
+                    children: []
+                    pos: 18238
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 18210
+                    length: 131
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("string") ? getNativeType(STRING_TYPE)
+                          : null;'
+                      children: []
+                      pos: 18263
+                      length: 72
+                    pos: 18255
+                    length: 86
+                children: []
+                pos: 18210
+                length: 131
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: caseVoidType
+                    children: []
+                    pos: 18375
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 18347
+                    length: 130
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: 'return matchesExpectation("undefined") ? getNativeType(VOID_TYPE)
+                          : null;'
+                      children: []
+                      pos: 18398
+                      length: 73
+                    pos: 18390
+                    length: 87
+                children: []
+                pos: 18347
+                length: 130
+              pos: 15795
+              length: 2686
+          children: []
+          pos: 15795
+          length: 2686
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedWithoutUndefined
+              children: []
+              pos: 18583
+              length: 29
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 18613
+                length: 11
+              pos: 18560
+              length: 142
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return type == null ? null : type.visit(restrictUndefinedVisitor);'
+                children: []
+                pos: 18632
+                length: 66
+              pos: 18626
+              length: 76
+          children: []
+          pos: 18560
+          length: 142
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedWithoutNull
+              children: []
+              pos: 18799
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 18824
+                length: 11
+              pos: 18776
+              length: 132
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return type == null ? null : type.visit(restrictNullVisitor);'
+                children: []
+                pos: 18843
+                length: 61
+              pos: 18837
+              length: 71
+          children: []
+          pos: 18776
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRestrictedByTypeOfResult
+              children: []
+              pos: 20164
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSType type
+                children: []
+                pos: 20192
+                length: 11
+              pos: 20157
+              length: 465
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: type
+                            children: []
+                            pos: 20293
+                            length: 4
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 20301
+                            length: 4
+                        children: []
+                        pos: 20293
+                        length: 12
+                    children: []
+                    pos: 20292
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: identifier
+                            fields:
+                              text: resultEqualsValue
+                            children: []
+                            pos: 20319
+                            length: 17
+                        children: []
+                        pos: 20318
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: JSType result = getNativeTypeForTypeOf(value);
+                        children: []
+                        pos: 20348
+                        length: 46
+                      - type: return_statement
+                        fields:
+                          text: 'return result == null ? getNativeType(CHECKED_UNKNOWN_TYPE)
+                            : result;'
+                        children: []
+                        pos: 20403
+                        length: 69
+                      pos: 20338
+                      length: 142
+                    pos: 20315
+                    length: 201
+                  pos: 20307
+                  length: 215
+                pos: 20289
+                length: 233
+              - type: return_statement
+                fields:
+                  text: |-
+                    return type.visit(
+                            new RestrictByOneTypeOfResultVisitor(value, resultEqualsValue));
+                children: []
+                pos: 20527
+                length: 91
+              pos: 20283
+              length: 339
+          children: []
+          pos: 20157
+          length: 465
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNativeType
+              children: []
+              pos: 20633
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JSTypeNative typeId
+                children: []
+                pos: 20647
+                length: 19
+              pos: 20626
+              length: 94
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return typeRegistry.getNativeType(typeId);
+                children: []
+                pos: 20674
+                length: 42
+              pos: 20668
+              length: 52
+          children: []
+          pos: 20626
+          length: 94
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNativeTypeForTypeOf
+              children: []
+              pos: 21117
+              length: 22
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String value
+                children: []
+                pos: 21140
+                length: 12
+              pos: 21102
+              length: 512
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: value.equals("number")
+                        children: []
+                        pos: 21164
+                        length: 22
+                    children: []
+                    pos: 21163
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return getNativeType(NUMBER_TYPE);
+                    children: []
+                    pos: 21196
+                    length: 34
+                  pos: 21188
+                  length: 48
+                pos: 21160
+                length: 450
+              pos: 21154
+              length: 460
+          children: []
+          pos: 21102
+          length: 512
+        pos: 2446
+        length: 19170
+    children: []
+    pos: 2446
+    length: 19170
+  pos: 0
+  length: 21617
 text_diff: |
   --- before
   +++ after

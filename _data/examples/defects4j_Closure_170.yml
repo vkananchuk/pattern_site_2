@@ -1,5 +1,3020 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: FlowSensitiveInlineVariables
+        children: []
+        pos: 2299
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 2912
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final Set<Var> inlinedNewDependencies = Sets.newHashSet();
+          children: []
+          pos: 2955
+          length: 66
+        - type: field_declaration
+          fields:
+            text: private ControlFlowGraph<Node> cfg;
+          children: []
+          pos: 3113
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private List<Candidate> candidates;
+          children: []
+          pos: 3151
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private MustBeReachingVariableDef reachingDef;
+          children: []
+          pos: 3189
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private MaybeReachingVariableUse reachingUses;
+          children: []
+          pos: 3238
+          length: 46
+        - type: field_declaration
+          fields:
+            text: |-
+              private static final Predicate<Node> SIDE_EFFECT_PREDICATE =
+                  new Predicate<Node>() {
+                    @Override
+                    public boolean apply(Node n) {
+                      // When the node is null it means, we reached the implicit return
+                      // where the function returns (possibly without an return statement)
+                      if (n == null) {
+                        return false;
+                      }
+
+                      // TODO(user): We only care about calls to functions that
+                      // passes one of the dependent variable to a non-side-effect free
+                      // function.
+                      if (n.isCall() && NodeUtil.functionCallHasSideEffects(n)) {
+                        return true;
+                      }
+
+                      if (n.isNew() && NodeUtil.constructorCallHasSideEffects(n)) {
+                        return true;
+                      }
+
+                      if (n.isDelProp()) {
+                        return true;
+                      }
+
+                      for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
+                        if (!ControlFlowGraph.isEnteringNewCfgNode(c) && apply(c)) {
+                          return true;
+                        }
+                      }
+                      return false;
+                    }
+                };
+          children: []
+          pos: 3288
+          length: 1006
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public FlowSensitiveInlineVariables(AbstractCompiler compiler) {
+                  this.compiler = compiler;
+                }
+          children: []
+          pos: 4298
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: enterScope
+              children: []
+              pos: 4424
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 4435
+                length: 15
+              pos: 4400
+              length: 1782
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: t.inGlobalScope()
+                        children: []
+                        pos: 4463
+                        length: 17
+                    children: []
+                    pos: 4462
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 4490
+                    length: 7
+                  pos: 4482
+                  length: 85
+                pos: 4459
+                length: 108
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: LiveVariablesAnalysis.MAX_VARIABLES_TO_ANALYZE
+                            children: []
+                            pos: 4577
+                            length: 46
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: t.getScope().getVarCount()
+                            children: []
+                            pos: 4634
+                            length: 26
+                        children: []
+                        pos: 4577
+                        length: 83
+                    children: []
+                    pos: 4576
+                    length: 85
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 4670
+                    length: 7
+                  pos: 4662
+                  length: 21
+                pos: 4573
+                length: 110
+              - type: local_variable_declaration
+                fields:
+                  text: ControlFlowAnalysis cfa = new ControlFlowAnalysis(compiler,
+                    false, true);
+                children: []
+                pos: 4737
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkState(t.getScopeRoot().isFunction());
+                children: []
+                pos: 4856
+                length: 56
+              - type: expression_statement
+                fields:
+                  text: cfa.process(null, t.getScopeRoot().getLastChild());
+                children: []
+                pos: 4917
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: cfg = cfa.getCfg();
+                children: []
+                pos: 4973
+                length: 19
+              - type: expression_statement
+                fields:
+                  text: reachingDef = new MustBeReachingVariableDef(cfg, t.getScope(),
+                    compiler);
+                children: []
+                pos: 4997
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: reachingDef.analyze();
+                children: []
+                pos: 5075
+                length: 22
+              - type: expression_statement
+                fields:
+                  text: candidates = Lists.newLinkedList();
+                children: []
+                pos: 5102
+                length: 35
+              - type: expression_statement
+                fields:
+                  text: |-
+                    new NodeTraversal(compiler, new GatherCandiates()).traverse(
+                            t.getScopeRoot().getLastChild());
+                children: []
+                pos: 5236
+                length: 102
+              - type: expression_statement
+                fields:
+                  text: reachingUses = new MaybeReachingVariableUse(cfg, t.getScope(),
+                    compiler);
+                children: []
+                pos: 5409
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: reachingUses.analyze();
+                children: []
+                pos: 5487
+                length: 23
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Candidate c : candidates) {
+                          if (c.canInline(t.getScope())) {
+                            c.inlineVariable();
+
+                            // If definition c has dependencies, then inlining it may have
+                            // introduced new dependencies for our other inlining candidates.
+                            //
+                            // MustBeReachingVariableDef uses this dependency graph in its
+                            // analysis, so some of these candidates may no longer be valid.
+                            // We keep track of when the variable dependency graph changed
+                            // so that we can back off appropriately.
+                            if (!c.defMetadata.depends.isEmpty()) {
+                              inlinedNewDependencies.add(t.getScope().getVar(c.varName));
+                            }
+                          }
+                        }
+                children: []
+                pos: 5515
+                length: 663
+              pos: 4452
+              length: 1730
+          children: []
+          pos: 4400
+          length: 1782
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: exitScope
+              children: []
+              pos: 6210
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 6220
+                length: 15
+              pos: 6186
+              length: 53
+            body:
+              type: block
+              fields: {}
+              children: []
+              pos: 6237
+              length: 2
+          children: []
+          pos: 6186
+          length: 53
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 6267
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 6275
+                length: 12
+              pos: 6243
+              length: 132
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: "(new NodeTraversal(compiler, this)).traverseRoots(externs,
+                    root);"
+                children: []
+                pos: 6306
+                length: 65
+              pos: 6300
+              length: 75
+          children: []
+          pos: 6243
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 6403
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 6409
+                length: 15
+              pos: 6379
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children: []
+              pos: 6447
+              length: 312
+          children: []
+          pos: 6379
+          length: 380
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: GatherCandiates
+              children: []
+              pos: 7144
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 7224
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 7230
+                      length: 15
+                    pos: 7198
+                    length: 1595
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: DiGraphNode<Node, Branch> graphNode = cfg.getDirectedGraphNode(n);
+                      children: []
+                      pos: 7276
+                      length: 66
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: graphNode
+                                  children: []
+                                  pos: 7353
+                                  length: 9
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 7366
+                                  length: 4
+                              children: []
+                              pos: 7353
+                              length: 17
+                          children: []
+                          pos: 7352
+                          length: 19
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 7409
+                          length: 7
+                        pos: 7372
+                        length: 52
+                      pos: 7349
+                      length: 75
+                    - type: local_variable_declaration
+                      fields:
+                        text: final Node cfgNode = n;
+                      children: []
+                      pos: 7431
+                      length: 23
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          AbstractCfgNodeTraversalCallback gatherCb =
+                                    new AbstractCfgNodeTraversalCallback() {
+
+                                  @Override
+                                  public void visit(NodeTraversal t, Node n, Node parent) {
+                                    if (n.isName()) {
+
+                                      // n.getParent() isn't null. This just the case where n is the root
+                                      // node that gatherCb started at.
+                                      if (parent == null) {
+                                        return;
+                                      }
+
+                                      // Make sure that the name node is purely a read.
+                                      if ((NodeUtil.isAssignmentOp(parent) && parent.getFirstChild() == n)
+                                          || parent.isVar() || parent.isInc() || parent.isDec() ||
+                                          parent.isParamList() || parent.isCatch()) {
+                                        return;
+                                      }
+
+                                      String name = n.getString();
+                                      if (compiler.getCodingConvention().isExported(name)) {
+                                        return;
+                                      }
+
+                                      Definition def = reachingDef.getDef(name, cfgNode);
+                                      // TODO(nicksantos): We need to add some notion of @const outer
+                                      // scope vars. We can inline those just fine.
+                                      if (def != null &&
+                                          !reachingDef.dependsOnOuterScopeVars(def)) {
+                                        candidates.add(new Candidate(name, def, n, cfgNode));
+                                      }
+                                    }
+                                  }
+                                };
+                      children: []
+                      pos: 7461
+                      length: 1266
+                    - type: expression_statement
+                      fields:
+                        text: NodeTraversal.traverse(compiler, cfgNode, gatherCb);
+                      children: []
+                      pos: 8735
+                      length: 52
+                    pos: 7268
+                    length: 1525
+                children: []
+                pos: 7198
+                length: 1595
+              pos: 7130
+              length: 1667
+          children: []
+          pos: 7130
+          length: 1667
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Candidate
+              children: []
+              pos: 8905
+              length: 9
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final String varName;
+                children: []
+                pos: 8951
+                length: 29
+              - type: field_declaration
+                fields:
+                  text: private Node def;
+                children: []
+                pos: 9026
+                length: 17
+              - type: field_declaration
+                fields:
+                  text: private final Definition defMetadata;
+                children: []
+                pos: 9048
+                length: 37
+              - type: field_declaration
+                fields:
+                  text: private final Node use;
+                children: []
+                pos: 9124
+                length: 23
+              - type: field_declaration
+                fields:
+                  text: private final Node useCfgNode;
+                children: []
+                pos: 9152
+                length: 30
+              - type: field_declaration
+                fields:
+                  text: private int numUsesWithinCfgNode;
+                children: []
+                pos: 9255
+                length: 33
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    Candidate(String varName, Definition defMetadata,
+                            Node use, Node useCfgNode) {
+                          Preconditions.checkArgument(use.isName());
+                          this.varName = varName;
+                          this.defMetadata = defMetadata;
+                          this.use = use;
+                          this.useCfgNode = useCfgNode;
+                        }
+                children: []
+                pos: 9294
+                length: 267
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getDefCfgNode
+                    children: []
+                    pos: 9580
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 9567
+                    length: 67
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return defMetadata.node;
+                      children: []
+                      pos: 9604
+                      length: 24
+                    pos: 9596
+                    length: 38
+                children: []
+                pos: 9567
+                length: 67
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: canInline
+                    children: []
+                    pos: 9656
+                    length: 9
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final Scope scope
+                      children: []
+                      pos: 9666
+                      length: 17
+                    pos: 9640
+                    length: 4955
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: getDefCfgNode().isFunction()
+                              children: []
+                              pos: 9733
+                              length: 28
+                          children: []
+                          pos: 9732
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 9773
+                          length: 13
+                        pos: 9763
+                        length: 31
+                      pos: 9729
+                      length: 65
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Var dependency : defMetadata.depends) {
+                                  if (inlinedNewDependencies.contains(dependency)) {
+                                    return false;
+                                  }
+                                }
+                      children: []
+                      pos: 9991
+                      length: 145
+                    - type: expression_statement
+                      fields:
+                        text: getDefinition(getDefCfgNode());
+                      children: []
+                      pos: 10144
+                      length: 31
+                    - type: expression_statement
+                      fields:
+                        text: getNumUseInUseCfgNode(useCfgNode);
+                      children: []
+                      pos: 10182
+                      length: 34
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: def
+                                  children: []
+                                  pos: 10263
+                                  length: 3
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 10270
+                                  length: 4
+                              children: []
+                              pos: 10263
+                              length: 11
+                          children: []
+                          pos: 10262
+                          length: 13
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 10286
+                          length: 13
+                        pos: 10276
+                        length: 31
+                      pos: 10259
+                      length: 48
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: def.isAssign()
+                                  children: []
+                                  pos: 10435
+                                  length: 14
+                                right:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!NodeUtil.isExprAssign(def.getParent())"
+                                  children: []
+                                  pos: 10453
+                                  length: 39
+                              children: []
+                              pos: 10435
+                              length: 57
+                          children: []
+                          pos: 10434
+                          length: 59
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 10504
+                          length: 13
+                        pos: 10494
+                        length: 31
+                      pos: 10431
+                      length: 94
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: checkRightOf(def, getDefCfgNode(), SIDE_EFFECT_PREDICATE)
+                              children: []
+                              pos: 10667
+                              length: 57
+                          children: []
+                          pos: 10666
+                          length: 59
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 10736
+                          length: 13
+                        pos: 10726
+                        length: 31
+                      pos: 10663
+                      length: 94
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: checkLeftOf(use, useCfgNode, SIDE_EFFECT_PREDICATE)
+                              children: []
+                              pos: 10937
+                              length: 51
+                          children: []
+                          pos: 10936
+                          length: 53
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11000
+                          length: 13
+                        pos: 10990
+                        length: 31
+                      pos: 10933
+                      length: 88
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: NodeUtil.mayHaveSideEffects(def.getLastChild(),
+                                  compiler)
+                              children: []
+                              pos: 11221
+                              length: 57
+                          children: []
+                          pos: 11220
+                          length: 59
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11290
+                          length: 13
+                        pos: 11280
+                        length: 31
+                      pos: 11217
+                      length: 94
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: numUsesWithinCfgNode
+                                  children: []
+                                  pos: 11605
+                                  length: 20
+                                right:
+                                  type: decimal_integer_literal
+                                  fields:
+                                    text: '1'
+                                  children: []
+                                  pos: 11629
+                                  length: 1
+                              children: []
+                              pos: 11605
+                              length: 25
+                          children: []
+                          pos: 11604
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11642
+                          length: 13
+                        pos: 11632
+                        length: 31
+                      pos: 11601
+                      length: 62
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: NodeUtil.isWithinLoop(use)
+                              children: []
+                              pos: 11729
+                              length: 26
+                          children: []
+                          pos: 11728
+                          length: 28
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11767
+                          length: 13
+                        pos: 11757
+                        length: 31
+                      pos: 11725
+                      length: 63
+                    - type: local_variable_declaration
+                      fields:
+                        text: Collection<Node> uses = reachingUses.getUses(varName,
+                          getDefCfgNode());
+                      children: []
+                      pos: 11797
+                      length: 71
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: uses.size()
+                                  children: []
+                                  pos: 11880
+                                  length: 11
+                                right:
+                                  type: decimal_integer_literal
+                                  fields:
+                                    text: '1'
+                                  children: []
+                                  pos: 11895
+                                  length: 1
+                              children: []
+                              pos: 11880
+                              length: 16
+                          children: []
+                          pos: 11879
+                          length: 18
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11908
+                          length: 13
+                        pos: 11898
+                        length: 31
+                      pos: 11876
+                      length: 53
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: |-
+                                  NodeUtil.has(def.getLastChild(),
+                                            new Predicate<Node>() {
+                                                @Override
+                                                public boolean apply(Node input) {
+                                                  switch (input.getType()) {
+                                                    case Token.GETELEM:
+                                                    case Token.GETPROP:
+                                                    case Token.ARRAYLIT:
+                                                    case Token.OBJECTLIT:
+                                                    case Token.REGEXP:
+                                                    case Token.NEW:
+                                                      return true;
+                                                    case Token.NAME:
+                                                      Var var = scope.getOwnSlot(input.getString());
+                                                      if (var != null
+                                                          && var.getParentNode().isCatch()) {
+                                                        return true;
+                                                      }
+                                                  }
+                                                  return false;
+                                                }
+                                            },
+                                            new Predicate<Node>() {
+                                                @Override
+                                                public boolean apply(Node input) {
+                                                  // Recurse if the node is not a function.
+                                                  return !input.isFunction();
+                                                }
+                                            })
+                              children: []
+                              pos: 12557
+                              length: 1011
+                          children: []
+                          pos: 12556
+                          length: 1013
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 13580
+                          length: 13
+                        pos: 13570
+                        length: 31
+                      pos: 12553
+                      length: 1048
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: NodeUtil.isStatementBlock(getDefCfgNode().getParent())
+                                  children: []
+                                  pos: 13731
+                                  length: 54
+                                right:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: getDefCfgNode().getNext()
+                                      children: []
+                                      pos: 13799
+                                      length: 25
+                                    right:
+                                      type: identifier
+                                      fields:
+                                        text: useCfgNode
+                                      children: []
+                                      pos: 13828
+                                      length: 10
+                                  children: []
+                                  pos: 13799
+                                  length: 39
+                              children: []
+                              pos: 13731
+                              length: 107
+                          children: []
+                          pos: 13730
+                          length: 109
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: |-
+                              CheckPathsBetweenNodes<Node, ControlFlowGraph.Branch>
+                                        pathCheck = new CheckPathsBetweenNodes<Node, ControlFlowGraph.Branch>(
+                                               cfg,
+                                               cfg.getDirectedGraphNode(getDefCfgNode()),
+                                               cfg.getDirectedGraphNode(useCfgNode),
+                                               SIDE_EFFECT_PREDICATE,
+                                               Predicates.
+                                                   <DiGraphEdge<Node, ControlFlowGraph.Branch>>alwaysTrue(),
+                                               false);
+                          children: []
+                          pos: 14030
+                          length: 444
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: pathCheck.somePathsSatisfyPredicate()
+                                  children: []
+                                  pos: 14487
+                                  length: 37
+                              children: []
+                              pos: 14486
+                              length: 39
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return false;
+                              children: []
+                              pos: 14538
+                              length: 13
+                            pos: 14526
+                            length: 35
+                          pos: 14483
+                          length: 78
+                        pos: 13840
+                        length: 729
+                      pos: 13727
+                      length: 842
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 14577
+                      length: 12
+                    pos: 9685
+                    length: 4910
+                children: []
+                pos: 9640
+                length: 4955
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: inlineVariable
+                    children: []
+                    pos: 14660
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14647
+                    length: 803
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node defParent = def.getParent();
+                      children: []
+                      pos: 14685
+                      length: 33
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node useParent = use.getParent();
+                      children: []
+                      pos: 14725
+                      length: 33
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: def.isAssign()
+                              children: []
+                              pos: 14769
+                              length: 14
+                          children: []
+                          pos: 14768
+                          length: 16
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: Node rhs = def.getLastChild();
+                          children: []
+                          pos: 14795
+                          length: 30
+                        - type: expression_statement
+                          fields:
+                            text: rhs.detachFromParent();
+                          children: []
+                          pos: 14834
+                          length: 23
+                        - type: expression_statement
+                          fields:
+                            text: Preconditions.checkState(defParent.isExprResult());
+                          children: []
+                          pos: 14920
+                          length: 51
+                        - type: while_statement
+                          fields:
+                            text: |-
+                              while (defParent.getParent().isLabel()) {
+                                        defParent = defParent.getParent();
+                                      }
+                          children: []
+                          pos: 14980
+                          length: 96
+                        - type: expression_statement
+                          fields:
+                            text: defParent.detachFromParent();
+                          children: []
+                          pos: 15085
+                          length: 29
+                        - type: expression_statement
+                          fields:
+                            text: useParent.replaceChild(use, rhs);
+                          children: []
+                          pos: 15123
+                          length: 33
+                        pos: 14785
+                        length: 379
+                      pos: 14765
+                      length: 644
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 15416
+                      length: 28
+                    pos: 14677
+                    length: 773
+                children: []
+                pos: 14647
+                length: 803
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getDefinition
+                    children: []
+                    pos: 15585
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 15599
+                      length: 6
+                    pos: 15572
+                    length: 713
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          AbstractCfgNodeTraversalCallback gatherCb =
+                                  new AbstractCfgNodeTraversalCallback() {
+
+                                  @Override
+                                  public void visit(NodeTraversal t, Node n, Node parent) {
+                                    switch (n.getType()) {
+                                      case Token.NAME:
+                                        if (n.getString().equals(varName) && n.hasChildren()) {
+                                          def = n;
+                                        }
+                                        return;
+
+                                      case Token.ASSIGN:
+                                        Node lhs = n.getFirstChild();
+                                        if (lhs.isName() && lhs.getString().equals(varName)) {
+                                          def = n;
+                                        }
+                                        return;
+                                    }
+                                  }
+                                };
+                      children: []
+                      pos: 15615
+                      length: 611
+                    - type: expression_statement
+                      fields:
+                        text: NodeTraversal.traverse(compiler, n, gatherCb);
+                      children: []
+                      pos: 16233
+                      length: 46
+                    pos: 15607
+                    length: 678
+                children: []
+                pos: 15572
+                length: 713
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getNumUseInUseCfgNode
+                    children: []
+                    pos: 16426
+                    length: 21
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final Node cfgNode
+                      children: []
+                      pos: 16448
+                      length: 18
+                    pos: 16413
+                    length: 1315
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: numUsesWithinCfgNode = 0;
+                      children: []
+                      pos: 16477
+                      length: 25
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          AbstractCfgNodeTraversalCallback gatherCb =
+                                    new AbstractCfgNodeTraversalCallback() {
+
+                                  @Override
+                                  public void visit(NodeTraversal t, Node n, Node parent) {
+                                    if (n.isName() && n.getString().equals(varName)) {
+                                      // We make a special exception when the entire cfgNode is a chain
+                                      // of assignments, since in that case the assignment statements
+                                      // will happen after the inlining of the right hand side.
+                                      // TODO(blickly): Make the SIDE_EFFECT_PREDICATE check more exact
+                                      //   and remove this special case.
+                                      if (parent.isAssign() && (parent.getFirstChild() == n)
+                                          && isAssignChain(parent, cfgNode)) {
+                                        // Don't count lhs of top-level assignment chain
+                                        return;
+                                      } else {
+                                        numUsesWithinCfgNode++;
+                                      }
+                                    }
+                                  }
+
+                                  private boolean isAssignChain(Node child, Node ancestor) {
+                                    for (Node n = child; n != ancestor; n = n.getParent()) {
+                                      if (!n.isAssign()) {
+                                        return false;
+                                      }
+                                    }
+                                    return true;
+                                  }
+                                };
+                      children: []
+                      pos: 16509
+                      length: 1153
+                    - type: expression_statement
+                      fields:
+                        text: NodeTraversal.traverse(compiler, cfgNode, gatherCb);
+                      children: []
+                      pos: 17670
+                      length: 52
+                    pos: 16468
+                    length: 1260
+                children: []
+                pos: 16413
+                length: 1315
+              pos: 8891
+              length: 8841
+          children: []
+          pos: 8891
+          length: 8841
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkRightOf
+              children: []
+              pos: 17999
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 18019
+                length: 6
+              pos: 17976
+              length: 339
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node p = n; p != expressionRoot; p = p.getParent()) {
+                          for (Node cur = p.getNext(); cur != null; cur = cur.getNext()) {
+                            if (predicate.apply(cur)) {
+                              return true;
+                            }
+                          }
+                        }
+                children: []
+                pos: 18081
+                length: 212
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 18298
+                length: 13
+              pos: 18075
+              length: 240
+          children: []
+          pos: 17976
+          length: 339
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkLeftOf
+              children: []
+              pos: 18581
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 18600
+                length: 6
+              pos: 18558
+              length: 363
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node p = n; p != expressionRoot; p = p.getParent()) {
+                          for (Node cur = p.getParent().getFirstChild(); cur != p;
+                              cur = cur.getNext()) {
+                            if (predicate.apply(cur)) {
+                              return true;
+                            }
+                          }
+                        }
+                children: []
+                pos: 18662
+                length: 237
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 18904
+                length: 13
+              pos: 18656
+              length: 265
+          children: []
+          pos: 18558
+          length: 363
+        pos: 2293
+        length: 16630
+    children: []
+    pos: 2293
+    length: 16630
+  pos: 0
+  length: 18924
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: FlowSensitiveInlineVariables
+        children: []
+        pos: 2299
+        length: 28
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final AbstractCompiler compiler;
+          children: []
+          pos: 2912
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final Set<Var> inlinedNewDependencies = Sets.newHashSet();
+          children: []
+          pos: 2955
+          length: 66
+        - type: field_declaration
+          fields:
+            text: private ControlFlowGraph<Node> cfg;
+          children: []
+          pos: 3113
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private List<Candidate> candidates;
+          children: []
+          pos: 3151
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private MustBeReachingVariableDef reachingDef;
+          children: []
+          pos: 3189
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private MaybeReachingVariableUse reachingUses;
+          children: []
+          pos: 3238
+          length: 46
+        - type: field_declaration
+          fields:
+            text: |-
+              private static final Predicate<Node> SIDE_EFFECT_PREDICATE =
+                  new Predicate<Node>() {
+                    @Override
+                    public boolean apply(Node n) {
+                      // When the node is null it means, we reached the implicit return
+                      // where the function returns (possibly without an return statement)
+                      if (n == null) {
+                        return false;
+                      }
+
+                      // TODO(user): We only care about calls to functions that
+                      // passes one of the dependent variable to a non-side-effect free
+                      // function.
+                      if (n.isCall() && NodeUtil.functionCallHasSideEffects(n)) {
+                        return true;
+                      }
+
+                      if (n.isNew() && NodeUtil.constructorCallHasSideEffects(n)) {
+                        return true;
+                      }
+
+                      if (n.isDelProp()) {
+                        return true;
+                      }
+
+                      for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
+                        if (!ControlFlowGraph.isEnteringNewCfgNode(c) && apply(c)) {
+                          return true;
+                        }
+                      }
+                      return false;
+                    }
+                };
+          children: []
+          pos: 3288
+          length: 1006
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public FlowSensitiveInlineVariables(AbstractCompiler compiler) {
+                  this.compiler = compiler;
+                }
+          children: []
+          pos: 4298
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: enterScope
+              children: []
+              pos: 4424
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 4435
+                length: 15
+              pos: 4400
+              length: 1782
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: t.inGlobalScope()
+                        children: []
+                        pos: 4463
+                        length: 17
+                    children: []
+                    pos: 4462
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 4490
+                    length: 7
+                  pos: 4482
+                  length: 85
+                pos: 4459
+                length: 108
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: LiveVariablesAnalysis.MAX_VARIABLES_TO_ANALYZE
+                            children: []
+                            pos: 4577
+                            length: 46
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: t.getScope().getVarCount()
+                            children: []
+                            pos: 4634
+                            length: 26
+                        children: []
+                        pos: 4577
+                        length: 83
+                    children: []
+                    pos: 4576
+                    length: 85
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 4670
+                    length: 7
+                  pos: 4662
+                  length: 21
+                pos: 4573
+                length: 110
+              - type: local_variable_declaration
+                fields:
+                  text: ControlFlowAnalysis cfa = new ControlFlowAnalysis(compiler,
+                    false, true);
+                children: []
+                pos: 4737
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkState(t.getScopeRoot().isFunction());
+                children: []
+                pos: 4856
+                length: 56
+              - type: expression_statement
+                fields:
+                  text: cfa.process(null, t.getScopeRoot().getLastChild());
+                children: []
+                pos: 4917
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: cfg = cfa.getCfg();
+                children: []
+                pos: 4973
+                length: 19
+              - type: expression_statement
+                fields:
+                  text: reachingDef = new MustBeReachingVariableDef(cfg, t.getScope(),
+                    compiler);
+                children: []
+                pos: 4997
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: reachingDef.analyze();
+                children: []
+                pos: 5075
+                length: 22
+              - type: expression_statement
+                fields:
+                  text: candidates = Lists.newLinkedList();
+                children: []
+                pos: 5102
+                length: 35
+              - type: expression_statement
+                fields:
+                  text: |-
+                    new NodeTraversal(compiler, new GatherCandiates()).traverse(
+                            t.getScopeRoot().getLastChild());
+                children: []
+                pos: 5236
+                length: 102
+              - type: expression_statement
+                fields:
+                  text: reachingUses = new MaybeReachingVariableUse(cfg, t.getScope(),
+                    compiler);
+                children: []
+                pos: 5409
+                length: 73
+              - type: expression_statement
+                fields:
+                  text: reachingUses.analyze();
+                children: []
+                pos: 5487
+                length: 23
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Candidate c : candidates) {
+                          if (c.canInline(t.getScope())) {
+                            c.inlineVariable();
+
+                            // If definition c has dependencies, then inlining it may have
+                            // introduced new dependencies for our other inlining candidates.
+                            //
+                            // MustBeReachingVariableDef uses this dependency graph in its
+                            // analysis, so some of these candidates may no longer be valid.
+                            // We keep track of when the variable dependency graph changed
+                            // so that we can back off appropriately.
+                            if (!c.defMetadata.depends.isEmpty()) {
+                              inlinedNewDependencies.add(t.getScope().getVar(c.varName));
+                            }
+                          }
+                        }
+                children: []
+                pos: 5515
+                length: 663
+              pos: 4452
+              length: 1730
+          children: []
+          pos: 4400
+          length: 1782
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: exitScope
+              children: []
+              pos: 6210
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 6220
+                length: 15
+              pos: 6186
+              length: 53
+            body:
+              type: block
+              fields: {}
+              children: []
+              pos: 6237
+              length: 2
+          children: []
+          pos: 6186
+          length: 53
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 6267
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 6275
+                length: 12
+              pos: 6243
+              length: 132
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: "(new NodeTraversal(compiler, this)).traverseRoots(externs,
+                    root);"
+                children: []
+                pos: 6306
+                length: 65
+              pos: 6300
+              length: 75
+          children: []
+          pos: 6243
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 6403
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 6409
+                length: 15
+              pos: 6379
+              length: 380
+            body:
+              type: block
+              fields: {}
+              children: []
+              pos: 6447
+              length: 312
+          children: []
+          pos: 6379
+          length: 380
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: GatherCandiates
+              children: []
+              pos: 7144
+              length: 15
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: visit
+                    children: []
+                    pos: 7224
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: NodeTraversal t
+                      children: []
+                      pos: 7230
+                      length: 15
+                    pos: 7198
+                    length: 1595
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: DiGraphNode<Node, Branch> graphNode = cfg.getDirectedGraphNode(n);
+                      children: []
+                      pos: 7276
+                      length: 66
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: graphNode
+                                  children: []
+                                  pos: 7353
+                                  length: 9
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 7366
+                                  length: 4
+                              children: []
+                              pos: 7353
+                              length: 17
+                          children: []
+                          pos: 7352
+                          length: 19
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return;
+                          children: []
+                          pos: 7409
+                          length: 7
+                        pos: 7372
+                        length: 52
+                      pos: 7349
+                      length: 75
+                    - type: local_variable_declaration
+                      fields:
+                        text: final Node cfgNode = n;
+                      children: []
+                      pos: 7431
+                      length: 23
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          AbstractCfgNodeTraversalCallback gatherCb =
+                                    new AbstractCfgNodeTraversalCallback() {
+
+                                  @Override
+                                  public void visit(NodeTraversal t, Node n, Node parent) {
+                                    if (n.isName()) {
+
+                                      // n.getParent() isn't null. This just the case where n is the root
+                                      // node that gatherCb started at.
+                                      if (parent == null) {
+                                        return;
+                                      }
+
+                                      // Make sure that the name node is purely a read.
+                                      if ((NodeUtil.isAssignmentOp(parent) && parent.getFirstChild() == n)
+                                          || parent.isVar() || parent.isInc() || parent.isDec() ||
+                                          parent.isParamList() || parent.isCatch()) {
+                                        return;
+                                      }
+
+                                      String name = n.getString();
+                                      if (compiler.getCodingConvention().isExported(name)) {
+                                        return;
+                                      }
+
+                                      Definition def = reachingDef.getDef(name, cfgNode);
+                                      // TODO(nicksantos): We need to add some notion of @const outer
+                                      // scope vars. We can inline those just fine.
+                                      if (def != null &&
+                                          !reachingDef.dependsOnOuterScopeVars(def)) {
+                                        candidates.add(new Candidate(name, def, n, cfgNode));
+                                      }
+                                    }
+                                  }
+                                };
+                      children: []
+                      pos: 7461
+                      length: 1266
+                    - type: expression_statement
+                      fields:
+                        text: NodeTraversal.traverse(compiler, cfgNode, gatherCb);
+                      children: []
+                      pos: 8735
+                      length: 52
+                    pos: 7268
+                    length: 1525
+                children: []
+                pos: 7198
+                length: 1595
+              pos: 7130
+              length: 1667
+          children: []
+          pos: 7130
+          length: 1667
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Candidate
+              children: []
+              pos: 8905
+              length: 9
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final String varName;
+                children: []
+                pos: 8951
+                length: 29
+              - type: field_declaration
+                fields:
+                  text: private Node def;
+                children: []
+                pos: 9026
+                length: 17
+              - type: field_declaration
+                fields:
+                  text: private final Definition defMetadata;
+                children: []
+                pos: 9048
+                length: 37
+              - type: field_declaration
+                fields:
+                  text: private final Node use;
+                children: []
+                pos: 9124
+                length: 23
+              - type: field_declaration
+                fields:
+                  text: private final Node useCfgNode;
+                children: []
+                pos: 9152
+                length: 30
+              - type: field_declaration
+                fields:
+                  text: private int numUsesWithinCfgNode;
+                children: []
+                pos: 9255
+                length: 33
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    Candidate(String varName, Definition defMetadata,
+                            Node use, Node useCfgNode) {
+                          Preconditions.checkArgument(use.isName());
+                          this.varName = varName;
+                          this.defMetadata = defMetadata;
+                          this.use = use;
+                          this.useCfgNode = useCfgNode;
+                        }
+                children: []
+                pos: 9294
+                length: 267
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getDefCfgNode
+                    children: []
+                    pos: 9580
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 9567
+                    length: 67
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return defMetadata.node;
+                      children: []
+                      pos: 9604
+                      length: 24
+                    pos: 9596
+                    length: 38
+                children: []
+                pos: 9567
+                length: 67
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: canInline
+                    children: []
+                    pos: 9656
+                    length: 9
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final Scope scope
+                      children: []
+                      pos: 9666
+                      length: 17
+                    pos: 9640
+                    length: 4955
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: getDefCfgNode().isFunction()
+                              children: []
+                              pos: 9733
+                              length: 28
+                          children: []
+                          pos: 9732
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 9773
+                          length: 13
+                        pos: 9763
+                        length: 31
+                      pos: 9729
+                      length: 65
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (Var dependency : defMetadata.depends) {
+                                  if (inlinedNewDependencies.contains(dependency)) {
+                                    return false;
+                                  }
+                                }
+                      children: []
+                      pos: 9991
+                      length: 145
+                    - type: expression_statement
+                      fields:
+                        text: getDefinition(getDefCfgNode());
+                      children: []
+                      pos: 10144
+                      length: 31
+                    - type: expression_statement
+                      fields:
+                        text: getNumUseInUseCfgNode(useCfgNode);
+                      children: []
+                      pos: 10182
+                      length: 34
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: def
+                                  children: []
+                                  pos: 10263
+                                  length: 3
+                                right:
+                                  type: null_literal
+                                  fields: {}
+                                  children: []
+                                  pos: 10270
+                                  length: 4
+                              children: []
+                              pos: 10263
+                              length: 11
+                          children: []
+                          pos: 10262
+                          length: 13
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 10286
+                          length: 13
+                        pos: 10276
+                        length: 31
+                      pos: 10259
+                      length: 48
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: def.isAssign()
+                                  children: []
+                                  pos: 10435
+                                  length: 14
+                                right:
+                                  type: unary_expression
+                                  fields:
+                                    text: "!NodeUtil.isExprAssign(def.getParent())"
+                                  children: []
+                                  pos: 10453
+                                  length: 39
+                              children: []
+                              pos: 10435
+                              length: 57
+                          children: []
+                          pos: 10434
+                          length: 59
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 10504
+                          length: 13
+                        pos: 10494
+                        length: 31
+                      pos: 10431
+                      length: 94
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: checkRightOf(def, getDefCfgNode(), SIDE_EFFECT_PREDICATE)
+                              children: []
+                              pos: 10667
+                              length: 57
+                          children: []
+                          pos: 10666
+                          length: 59
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 10736
+                          length: 13
+                        pos: 10726
+                        length: 31
+                      pos: 10663
+                      length: 94
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: checkLeftOf(use, useCfgNode, SIDE_EFFECT_PREDICATE)
+                              children: []
+                              pos: 10937
+                              length: 51
+                          children: []
+                          pos: 10936
+                          length: 53
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11000
+                          length: 13
+                        pos: 10990
+                        length: 31
+                      pos: 10933
+                      length: 88
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: NodeUtil.mayHaveSideEffects(def.getLastChild(),
+                                  compiler)
+                              children: []
+                              pos: 11221
+                              length: 57
+                          children: []
+                          pos: 11220
+                          length: 59
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11290
+                          length: 13
+                        pos: 11280
+                        length: 31
+                      pos: 11217
+                      length: 94
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: numUsesWithinCfgNode
+                                  children: []
+                                  pos: 11605
+                                  length: 20
+                                right:
+                                  type: decimal_integer_literal
+                                  fields:
+                                    text: '1'
+                                  children: []
+                                  pos: 11629
+                                  length: 1
+                              children: []
+                              pos: 11605
+                              length: 25
+                          children: []
+                          pos: 11604
+                          length: 27
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11642
+                          length: 13
+                        pos: 11632
+                        length: 31
+                      pos: 11601
+                      length: 62
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: NodeUtil.isWithinLoop(use)
+                              children: []
+                              pos: 11729
+                              length: 26
+                          children: []
+                          pos: 11728
+                          length: 28
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11767
+                          length: 13
+                        pos: 11757
+                        length: 31
+                      pos: 11725
+                      length: 63
+                    - type: local_variable_declaration
+                      fields:
+                        text: Collection<Node> uses = reachingUses.getUses(varName,
+                          getDefCfgNode());
+                      children: []
+                      pos: 11797
+                      length: 71
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: not_equals
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: uses.size()
+                                  children: []
+                                  pos: 11880
+                                  length: 11
+                                right:
+                                  type: decimal_integer_literal
+                                  fields:
+                                    text: '1'
+                                  children: []
+                                  pos: 11895
+                                  length: 1
+                              children: []
+                              pos: 11880
+                              length: 16
+                          children: []
+                          pos: 11879
+                          length: 18
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 11908
+                          length: 13
+                        pos: 11898
+                        length: 31
+                      pos: 11876
+                      length: 53
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: |-
+                                  NodeUtil.has(def.getLastChild(),
+                                            new Predicate<Node>() {
+                                                @Override
+                                                public boolean apply(Node input) {
+                                                  switch (input.getType()) {
+                                                    case Token.GETELEM:
+                                                    case Token.GETPROP:
+                                                    case Token.ARRAYLIT:
+                                                    case Token.OBJECTLIT:
+                                                    case Token.REGEXP:
+                                                    case Token.NEW:
+                                                      return true;
+                                                    case Token.NAME:
+                                                      Var var = scope.getOwnSlot(input.getString());
+                                                      if (var != null
+                                                          && var.getParentNode().isCatch()) {
+                                                        return true;
+                                                      }
+                                                  }
+                                                  return false;
+                                                }
+                                            },
+                                            new Predicate<Node>() {
+                                                @Override
+                                                public boolean apply(Node input) {
+                                                  // Recurse if the node is not a function.
+                                                  return !input.isFunction();
+                                                }
+                                            })
+                              children: []
+                              pos: 12557
+                              length: 1011
+                          children: []
+                          pos: 12556
+                          length: 1013
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: return_statement
+                          fields:
+                            text: return false;
+                          children: []
+                          pos: 13580
+                          length: 13
+                        pos: 13570
+                        length: 31
+                      pos: 12553
+                      length: 1048
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: method_invocation
+                                  fields:
+                                    text: NodeUtil.isStatementBlock(getDefCfgNode().getParent())
+                                  children: []
+                                  pos: 13731
+                                  length: 54
+                                right:
+                                  type: not_equals
+                                  fields:
+                                    left:
+                                      type: method_invocation
+                                      fields:
+                                        text: getDefCfgNode().getNext()
+                                      children: []
+                                      pos: 13799
+                                      length: 25
+                                    right:
+                                      type: identifier
+                                      fields:
+                                        text: useCfgNode
+                                      children: []
+                                      pos: 13828
+                                      length: 10
+                                  children: []
+                                  pos: 13799
+                                  length: 39
+                              children: []
+                              pos: 13731
+                              length: 107
+                          children: []
+                          pos: 13730
+                          length: 109
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: |-
+                              CheckPathsBetweenNodes<Node, ControlFlowGraph.Branch>
+                                        pathCheck = new CheckPathsBetweenNodes<Node, ControlFlowGraph.Branch>(
+                                               cfg,
+                                               cfg.getDirectedGraphNode(getDefCfgNode()),
+                                               cfg.getDirectedGraphNode(useCfgNode),
+                                               SIDE_EFFECT_PREDICATE,
+                                               Predicates.
+                                                   <DiGraphEdge<Node, ControlFlowGraph.Branch>>alwaysTrue(),
+                                               false);
+                          children: []
+                          pos: 14030
+                          length: 444
+                        - type: if_statement
+                          fields:
+                            condition:
+                              type: parenthesized_expression
+                              fields:
+                                expression:
+                                  type: method_invocation
+                                  fields:
+                                    text: pathCheck.somePathsSatisfyPredicate()
+                                  children: []
+                                  pos: 14487
+                                  length: 37
+                              children: []
+                              pos: 14486
+                              length: 39
+                          children:
+                          - type: block
+                            fields: {}
+                            children:
+                            - type: return_statement
+                              fields:
+                                text: return false;
+                              children: []
+                              pos: 14538
+                              length: 13
+                            pos: 14526
+                            length: 35
+                          pos: 14483
+                          length: 78
+                        pos: 13840
+                        length: 729
+                      pos: 13727
+                      length: 842
+                    - type: return_statement
+                      fields:
+                        text: return true;
+                      children: []
+                      pos: 14577
+                      length: 12
+                    pos: 9685
+                    length: 4910
+                children: []
+                pos: 9640
+                length: 4955
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: inlineVariable
+                    children: []
+                    pos: 14660
+                    length: 14
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 14647
+                    length: 803
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node defParent = def.getParent();
+                      children: []
+                      pos: 14685
+                      length: 33
+                    - type: local_variable_declaration
+                      fields:
+                        text: Node useParent = use.getParent();
+                      children: []
+                      pos: 14725
+                      length: 33
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: method_invocation
+                              fields:
+                                text: def.isAssign()
+                              children: []
+                              pos: 14769
+                              length: 14
+                          children: []
+                          pos: 14768
+                          length: 16
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: local_variable_declaration
+                          fields:
+                            text: Node rhs = def.getLastChild();
+                          children: []
+                          pos: 14795
+                          length: 30
+                        - type: expression_statement
+                          fields:
+                            text: rhs.detachFromParent();
+                          children: []
+                          pos: 14834
+                          length: 23
+                        - type: expression_statement
+                          fields:
+                            text: Preconditions.checkState(defParent.isExprResult());
+                          children: []
+                          pos: 14920
+                          length: 51
+                        - type: while_statement
+                          fields:
+                            text: |-
+                              while (defParent.getParent().isLabel()) {
+                                        defParent = defParent.getParent();
+                                      }
+                          children: []
+                          pos: 14980
+                          length: 96
+                        - type: expression_statement
+                          fields:
+                            text: defParent.detachFromParent();
+                          children: []
+                          pos: 15085
+                          length: 29
+                        - type: expression_statement
+                          fields:
+                            text: useParent.replaceChild(use, rhs);
+                          children: []
+                          pos: 15123
+                          length: 33
+                        pos: 14785
+                        length: 379
+                      pos: 14765
+                      length: 644
+                    - type: expression_statement
+                      fields:
+                        text: compiler.reportCodeChange();
+                      children: []
+                      pos: 15416
+                      length: 28
+                    pos: 14677
+                    length: 773
+                children: []
+                pos: 14647
+                length: 803
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getDefinition
+                    children: []
+                    pos: 15585
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Node n
+                      children: []
+                      pos: 15599
+                      length: 6
+                    pos: 15572
+                    length: 713
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          AbstractCfgNodeTraversalCallback gatherCb =
+                                  new AbstractCfgNodeTraversalCallback() {
+
+                                  @Override
+                                  public void visit(NodeTraversal t, Node n, Node parent) {
+                                    switch (n.getType()) {
+                                      case Token.NAME:
+                                        if (n.getString().equals(varName) && n.hasChildren()) {
+                                          def = n;
+                                        }
+                                        return;
+
+                                      case Token.ASSIGN:
+                                        Node lhs = n.getFirstChild();
+                                        if (lhs.isName() && lhs.getString().equals(varName)) {
+                                          def = n;
+                                        }
+                                        return;
+                                    }
+                                  }
+                                };
+                      children: []
+                      pos: 15615
+                      length: 611
+                    - type: expression_statement
+                      fields:
+                        text: NodeTraversal.traverse(compiler, n, gatherCb);
+                      children: []
+                      pos: 16233
+                      length: 46
+                    pos: 15607
+                    length: 678
+                children: []
+                pos: 15572
+                length: 713
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getNumUseInUseCfgNode
+                    children: []
+                    pos: 16426
+                    length: 21
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final Node cfgNode
+                      children: []
+                      pos: 16448
+                      length: 18
+                    pos: 16413
+                    length: 970
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: numUsesWithinCfgNode = 0;
+                      children: []
+                      pos: 16477
+                      length: 25
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          AbstractCfgNodeTraversalCallback gatherCb =
+                                    new AbstractCfgNodeTraversalCallback() {
+
+                                  @Override
+                                  public void visit(NodeTraversal t, Node n, Node parent) {
+                                    if (n.isName() && n.getString().equals(varName) &&
+                                      // We make a special exception when the entire cfgNode is a chain
+                                      // of assignments, since in that case the assignment statements
+                                      // will happen after the inlining of the right hand side.
+                                      // TODO(blickly): Make the SIDE_EFFECT_PREDICATE check more exact
+                                      //   and remove this special case.
+                                        !(parent.isAssign() &&
+                                         (parent.getFirstChild() == n))) {
+                                        // Don't count lhs of top-level assignment chain
+                                        numUsesWithinCfgNode++;
+                                    }
+                                  }
+
+                                };
+                      children: []
+                      pos: 16509
+                      length: 808
+                    - type: expression_statement
+                      fields:
+                        text: NodeTraversal.traverse(compiler, cfgNode, gatherCb);
+                      children: []
+                      pos: 17325
+                      length: 52
+                    pos: 16468
+                    length: 915
+                children: []
+                pos: 16413
+                length: 970
+              pos: 8891
+              length: 8496
+          children: []
+          pos: 8891
+          length: 8496
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkRightOf
+              children: []
+              pos: 17654
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 17674
+                length: 6
+              pos: 17631
+              length: 339
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node p = n; p != expressionRoot; p = p.getParent()) {
+                          for (Node cur = p.getNext(); cur != null; cur = cur.getNext()) {
+                            if (predicate.apply(cur)) {
+                              return true;
+                            }
+                          }
+                        }
+                children: []
+                pos: 17736
+                length: 212
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 17953
+                length: 13
+              pos: 17730
+              length: 240
+          children: []
+          pos: 17631
+          length: 339
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkLeftOf
+              children: []
+              pos: 18236
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 18255
+                length: 6
+              pos: 18213
+              length: 363
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node p = n; p != expressionRoot; p = p.getParent()) {
+                          for (Node cur = p.getParent().getFirstChild(); cur != p;
+                              cur = cur.getNext()) {
+                            if (predicate.apply(cur)) {
+                              return true;
+                            }
+                          }
+                        }
+                children: []
+                pos: 18317
+                length: 237
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 18559
+                length: 13
+              pos: 18311
+              length: 265
+          children: []
+          pos: 18213
+          length: 363
+        pos: 2293
+        length: 16285
+    children: []
+    pos: 2293
+    length: 16285
+  pos: 0
+  length: 18579
 text_diff: "--- before\n+++ after\n@@ -479,30 +479,19 @@\n \n         @Override\n
   \        public void visit(NodeTraversal t, Node n, Node parent) {\n-          if
   (n.isName() && n.getString().equals(varName)) {\n+          if (n.isName() && n.getString().equals(varName)

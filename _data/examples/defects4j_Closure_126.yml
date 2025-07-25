@@ -1,5 +1,1894 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MinimizeExitPoints
+        children: []
+        pos: 1107
+        length: 18
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: AbstractCompiler compiler;
+          children: []
+          pos: 1197
+          length: 26
+        - type: constructor_declaration
+          fields:
+            text: |-
+              MinimizeExitPoints(AbstractCompiler compiler) {
+                  this.compiler = compiler;
+                }
+          children: []
+          pos: 1227
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 1336
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 1344
+                length: 12
+              pos: 1312
+              length: 112
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: NodeTraversal.traverse(compiler, root, this);
+                children: []
+                pos: 1375
+                length: 45
+              pos: 1369
+              length: 55
+          children: []
+          pos: 1312
+          length: 112
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 1452
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 1458
+                length: 15
+              pos: 1428
+              length: 1007
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.getType()
+                        children: []
+                        pos: 1510
+                        length: 11
+                    children: []
+                    pos: 1509
+                    length: 13
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.LABEL:
+                                tryMinimizeExits(
+                                    n.getLastChild(), Token.BREAK, n.getFirstChild().getString());
+                                break;
+
+                              case Token.FOR:
+                              case Token.WHILE:
+                                tryMinimizeExits(NodeUtil.getLoopCodeBlock(n), Token.CONTINUE, null);
+                                break;
+
+                              case Token.DO:
+                                tryMinimizeExits(NodeUtil.getLoopCodeBlock(n), Token.CONTINUE, null);
+
+                                Node cond = NodeUtil.getConditionExpression(n);
+                                if (NodeUtil.getImpureBooleanValue(cond) == TernaryValue.FALSE) {
+                                  // Normally, we wouldn't be able to optimize BREAKs inside a loop
+                                  // but as we know the condition will always false, we can treat them
+                                  // as we would a CONTINUE.
+                                  tryMinimizeExits(n.getFirstChild(), Token.BREAK, null);
+                                }
+                                break;
+
+                              case Token.FUNCTION:
+                                tryMinimizeExits(n.getLastChild(), Token.RETURN, null);
+                                break;
+                            }
+                    children: []
+                    pos: 1523
+                    length: 908
+                children: []
+                pos: 1502
+                length: 929
+              pos: 1496
+              length: 939
+          children: []
+          pos: 1428
+          length: 1007
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: tryMinimizeExits
+              children: []
+              pos: 3241
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 3258
+                length: 6
+              pos: 3236
+              length: 3068
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: matchingExitNode(n, exitType, labelName)
+                        children: []
+                        pos: 3332
+                        length: 40
+                    children: []
+                    pos: 3331
+                    length: 42
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: NodeUtil.removeChild(n.getParent(), n);
+                    children: []
+                    pos: 3382
+                    length: 39
+                  - type: expression_statement
+                    fields:
+                      text: compiler.reportCodeChange();
+                    children: []
+                    pos: 3428
+                    length: 28
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 3463
+                    length: 7
+                  pos: 3374
+                  length: 102
+                pos: 3328
+                length: 148
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.isIf()
+                        children: []
+                        pos: 3507
+                        length: 8
+                    children: []
+                    pos: 3506
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node ifBlock = n.getFirstChild().getNext();
+                    children: []
+                    pos: 3525
+                    length: 43
+                  - type: expression_statement
+                    fields:
+                      text: tryMinimizeExits(ifBlock, exitType, labelName);
+                    children: []
+                    pos: 3575
+                    length: 47
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node elseBlock = ifBlock.getNext();
+                    children: []
+                    pos: 3629
+                    length: 35
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: elseBlock
+                                children: []
+                                pos: 3675
+                                length: 9
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 3688
+                                length: 4
+                            children: []
+                            pos: 3675
+                            length: 17
+                        children: []
+                        pos: 3674
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: tryMinimizeExits(elseBlock, exitType, labelName);
+                        children: []
+                        pos: 3704
+                        length: 49
+                      pos: 3694
+                      length: 67
+                    pos: 3671
+                    length: 90
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 3768
+                    length: 7
+                  pos: 3517
+                  length: 264
+                pos: 3503
+                length: 278
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.isTry()
+                        children: []
+                        pos: 3826
+                        length: 9
+                    children: []
+                    pos: 3825
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node tryBlock = n.getFirstChild();
+                    children: []
+                    pos: 3845
+                    length: 34
+                  - type: expression_statement
+                    fields:
+                      text: tryMinimizeExits(tryBlock, exitType, labelName);
+                    children: []
+                    pos: 3886
+                    length: 48
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node allCatchNodes = NodeUtil.getCatchBlock(n);
+                    children: []
+                    pos: 3941
+                    length: 47
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: NodeUtil.hasCatchHandler(allCatchNodes)
+                            children: []
+                            pos: 3999
+                            length: 39
+                        children: []
+                        pos: 3998
+                        length: 41
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: Preconditions.checkState(allCatchNodes.hasOneChild());
+                        children: []
+                        pos: 4050
+                        length: 54
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node catchNode = allCatchNodes.getFirstChild();
+                        children: []
+                        pos: 4113
+                        length: 47
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node catchCodeBlock = catchNode.getLastChild();
+                        children: []
+                        pos: 4169
+                        length: 47
+                      - type: expression_statement
+                        fields:
+                          text: tryMinimizeExits(catchCodeBlock, exitType, labelName);
+                        children: []
+                        pos: 4225
+                        length: 54
+                      pos: 4040
+                      length: 247
+                    pos: 3995
+                    length: 292
+                  pos: 3837
+                  length: 661
+                pos: 3822
+                length: 676
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.isLabel()
+                        children: []
+                        pos: 4531
+                        length: 11
+                    children: []
+                    pos: 4530
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node labelBlock = n.getLastChild();
+                    children: []
+                    pos: 4552
+                    length: 35
+                  - type: expression_statement
+                    fields:
+                      text: tryMinimizeExits(labelBlock, exitType, labelName);
+                    children: []
+                    pos: 4594
+                    length: 50
+                  pos: 4544
+                  length: 106
+                pos: 4527
+                length: 123
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: unary_expression
+                            fields:
+                              text: "!n.isBlock()"
+                            children: []
+                            pos: 4799
+                            length: 12
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: n.getLastChild()
+                                children: []
+                                pos: 4815
+                                length: 16
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 4835
+                                length: 4
+                            children: []
+                            pos: 4815
+                            length: 24
+                        children: []
+                        pos: 4799
+                        length: 40
+                    children: []
+                    pos: 4798
+                    length: 42
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 4849
+                    length: 7
+                  pos: 4841
+                  length: 21
+                pos: 4795
+                length: 67
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Node c : n.children()) {
+
+                          // An 'if' block to process below.
+                          if (c.isIf()) {
+                            Node ifTree = c;
+                            Node trueBlock, falseBlock;
+
+                            // First, the true condition block.
+                            trueBlock = ifTree.getFirstChild().getNext();
+                            falseBlock = trueBlock.getNext();
+                            tryMinimizeIfBlockExits(trueBlock, falseBlock,
+                                ifTree, exitType, labelName);
+
+                            // Now the else block.
+                            // The if blocks may have changed, get them again.
+                            trueBlock = ifTree.getFirstChild().getNext();
+                            falseBlock = trueBlock.getNext();
+                            if (falseBlock != null) {
+                              tryMinimizeIfBlockExits(falseBlock, trueBlock,
+                                  ifTree, exitType, labelName);
+                            }
+                          }
+
+                          if (c == n.getLastChild()) {
+                            break;
+                          }
+                        }
+                children: []
+                pos: 5140
+                length: 797
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node c = n.getLastChild(); c != null; c = n.getLastChild()) {
+                          tryMinimizeExits(c, exitType, labelName);
+                          // If the node is still the last child, we are done.
+                          if (c == n.getLastChild()) {
+                            break;
+                          }
+                        }
+                children: []
+                pos: 6063
+                length: 237
+              pos: 3298
+              length: 3006
+          children: []
+          pos: 3236
+          length: 3068
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: tryMinimizeIfBlockExits
+              children: []
+              pos: 6914
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node srcBlock
+                children: []
+                pos: 6938
+                length: 13
+              pos: 6901
+              length: 1575
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Node exitNodeParent = null;
+                children: []
+                pos: 7026
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: Node exitNode = null;
+                children: []
+                pos: 7058
+                length: 21
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: srcBlock.isBlock()
+                        children: []
+                        pos: 7125
+                        length: 18
+                    children: []
+                    pos: 7124
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!srcBlock.hasChildren()"
+                            children: []
+                            pos: 7157
+                            length: 23
+                        children: []
+                        pos: 7156
+                        length: 25
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 7192
+                        length: 7
+                      pos: 7182
+                      length: 25
+                    pos: 7153
+                    length: 54
+                  - type: expression_statement
+                    fields:
+                      text: exitNodeParent = srcBlock;
+                    children: []
+                    pos: 7214
+                    length: 26
+                  - type: expression_statement
+                    fields:
+                      text: exitNode = exitNodeParent.getLastChild();
+                    children: []
+                    pos: 7247
+                    length: 41
+                  pos: 7145
+                  length: 149
+                pos: 7121
+                length: 304
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!matchingExitNode(exitNode, exitType, labelName)"
+                        children: []
+                        pos: 7464
+                        length: 48
+                    children: []
+                    pos: 7463
+                    length: 50
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 7522
+                    length: 7
+                  pos: 7514
+                  length: 21
+                pos: 7460
+                length: 75
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: ifNode.getNext()
+                            children: []
+                            pos: 7596
+                            length: 16
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7616
+                            length: 4
+                        children: []
+                        pos: 7596
+                        length: 24
+                    children: []
+                    pos: 7595
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node newDestBlock = IR.block().srcref(ifNode);
+                    children: []
+                    pos: 7721
+                    length: 46
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: destBlock
+                                children: []
+                                pos: 7778
+                                length: 9
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7791
+                                length: 4
+                            children: []
+                            pos: 7778
+                            length: 17
+                        children: []
+                        pos: 7777
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: ifNode.addChildToBack(newDestBlock);
+                        children: []
+                        pos: 7860
+                        length: 36
+                      pos: 7797
+                      length: 107
+                    pos: 7774
+                    length: 538
+                  - type: expression_statement
+                    fields:
+                      text: moveAllFollowing(ifNode, ifNode.getParent(), newDestBlock);
+                    children: []
+                    pos: 8372
+                    length: 59
+                  - type: expression_statement
+                    fields:
+                      text: compiler.reportCodeChange();
+                    children: []
+                    pos: 8438
+                    length: 28
+                  pos: 7622
+                  length: 850
+                pos: 7592
+                length: 880
+              pos: 7020
+              length: 1456
+          children: []
+          pos: 6901
+          length: 1575
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchingExitNode
+              children: []
+              pos: 8987
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 9004
+                length: 6
+              pos: 8964
+              length: 463
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: n.getType()
+                            children: []
+                            pos: 9050
+                            length: 11
+                          right:
+                            type: identifier
+                            fields:
+                              text: type
+                            children: []
+                            pos: 9065
+                            length: 4
+                        children: []
+                        pos: 9050
+                        length: 19
+                    children: []
+                    pos: 9049
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: type
+                                children: []
+                                pos: 9083
+                                length: 4
+                              right:
+                                type: field_access
+                                fields:
+                                  text: Token.RETURN
+                                children: []
+                                pos: 9091
+                                length: 12
+                            children: []
+                            pos: 9083
+                            length: 20
+                        children: []
+                        pos: 9082
+                        length: 22
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return !n.hasChildren();
+                        children: []
+                        pos: 9160
+                        length: 24
+                      pos: 9105
+                      length: 87
+                    pos: 9079
+                    length: 320
+                  pos: 9071
+                  length: 334
+                pos: 9046
+                length: 359
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 9410
+                length: 13
+              pos: 9040
+              length: 387
+          children: []
+          pos: 8964
+          length: 463
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: moveAllFollowing
+              children: []
+              pos: 9722
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node start
+                children: []
+                pos: 9746
+                length: 10
+              pos: 9702
+              length: 409
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node n = start.getNext(); n != null; n = start.getNext()) {
+                          boolean isFunctionDeclaration = NodeUtil.isFunctionDeclaration(n);
+                          srcParent.removeChild(n);
+                          if (isFunctionDeclaration) {
+                            destParent.addChildToFront(n);
+                          } else {
+                            destParent.addChildToBack(n);
+                          }
+                        }
+                children: []
+                pos: 9797
+                length: 310
+              pos: 9791
+              length: 320
+          children: []
+          pos: 9702
+          length: 409
+        pos: 1101
+        length: 9012
+    children: []
+    pos: 1101
+    length: 9012
+  pos: 0
+  length: 10114
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MinimizeExitPoints
+        children: []
+        pos: 1107
+        length: 18
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: AbstractCompiler compiler;
+          children: []
+          pos: 1197
+          length: 26
+        - type: constructor_declaration
+          fields:
+            text: |-
+              MinimizeExitPoints(AbstractCompiler compiler) {
+                  this.compiler = compiler;
+                }
+          children: []
+          pos: 1227
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 1336
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node externs
+                children: []
+                pos: 1344
+                length: 12
+              pos: 1312
+              length: 112
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: NodeTraversal.traverse(compiler, root, this);
+                children: []
+                pos: 1375
+                length: 45
+              pos: 1369
+              length: 55
+          children: []
+          pos: 1312
+          length: 112
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: visit
+              children: []
+              pos: 1452
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: NodeTraversal t
+                children: []
+                pos: 1458
+                length: 15
+              pos: 1428
+              length: 1007
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.getType()
+                        children: []
+                        pos: 1510
+                        length: 11
+                    children: []
+                    pos: 1509
+                    length: 13
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                              case Token.LABEL:
+                                tryMinimizeExits(
+                                    n.getLastChild(), Token.BREAK, n.getFirstChild().getString());
+                                break;
+
+                              case Token.FOR:
+                              case Token.WHILE:
+                                tryMinimizeExits(NodeUtil.getLoopCodeBlock(n), Token.CONTINUE, null);
+                                break;
+
+                              case Token.DO:
+                                tryMinimizeExits(NodeUtil.getLoopCodeBlock(n), Token.CONTINUE, null);
+
+                                Node cond = NodeUtil.getConditionExpression(n);
+                                if (NodeUtil.getImpureBooleanValue(cond) == TernaryValue.FALSE) {
+                                  // Normally, we wouldn't be able to optimize BREAKs inside a loop
+                                  // but as we know the condition will always false, we can treat them
+                                  // as we would a CONTINUE.
+                                  tryMinimizeExits(n.getFirstChild(), Token.BREAK, null);
+                                }
+                                break;
+
+                              case Token.FUNCTION:
+                                tryMinimizeExits(n.getLastChild(), Token.RETURN, null);
+                                break;
+                            }
+                    children: []
+                    pos: 1523
+                    length: 908
+                children: []
+                pos: 1502
+                length: 929
+              pos: 1496
+              length: 939
+          children: []
+          pos: 1428
+          length: 1007
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: tryMinimizeExits
+              children: []
+              pos: 3241
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 3258
+                length: 6
+              pos: 3236
+              length: 3219
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: matchingExitNode(n, exitType, labelName)
+                        children: []
+                        pos: 3332
+                        length: 40
+                    children: []
+                    pos: 3331
+                    length: 42
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: NodeUtil.removeChild(n.getParent(), n);
+                    children: []
+                    pos: 3382
+                    length: 39
+                  - type: expression_statement
+                    fields:
+                      text: compiler.reportCodeChange();
+                    children: []
+                    pos: 3428
+                    length: 28
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 3463
+                    length: 7
+                  pos: 3374
+                  length: 102
+                pos: 3328
+                length: 148
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.isIf()
+                        children: []
+                        pos: 3507
+                        length: 8
+                    children: []
+                    pos: 3506
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node ifBlock = n.getFirstChild().getNext();
+                    children: []
+                    pos: 3525
+                    length: 43
+                  - type: expression_statement
+                    fields:
+                      text: tryMinimizeExits(ifBlock, exitType, labelName);
+                    children: []
+                    pos: 3575
+                    length: 47
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node elseBlock = ifBlock.getNext();
+                    children: []
+                    pos: 3629
+                    length: 35
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: elseBlock
+                                children: []
+                                pos: 3675
+                                length: 9
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 3688
+                                length: 4
+                            children: []
+                            pos: 3675
+                            length: 17
+                        children: []
+                        pos: 3674
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: tryMinimizeExits(elseBlock, exitType, labelName);
+                        children: []
+                        pos: 3704
+                        length: 49
+                      pos: 3694
+                      length: 67
+                    pos: 3671
+                    length: 90
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 3768
+                    length: 7
+                  pos: 3517
+                  length: 264
+                pos: 3503
+                length: 278
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.isTry()
+                        children: []
+                        pos: 3826
+                        length: 9
+                    children: []
+                    pos: 3825
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node tryBlock = n.getFirstChild();
+                    children: []
+                    pos: 3845
+                    length: 34
+                  - type: expression_statement
+                    fields:
+                      text: tryMinimizeExits(tryBlock, exitType, labelName);
+                    children: []
+                    pos: 3886
+                    length: 48
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node allCatchNodes = NodeUtil.getCatchBlock(n);
+                    children: []
+                    pos: 3941
+                    length: 47
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: NodeUtil.hasCatchHandler(allCatchNodes)
+                            children: []
+                            pos: 3999
+                            length: 39
+                        children: []
+                        pos: 3998
+                        length: 41
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: Preconditions.checkState(allCatchNodes.hasOneChild());
+                        children: []
+                        pos: 4050
+                        length: 54
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node catchNode = allCatchNodes.getFirstChild();
+                        children: []
+                        pos: 4113
+                        length: 47
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node catchCodeBlock = catchNode.getLastChild();
+                        children: []
+                        pos: 4169
+                        length: 47
+                      - type: expression_statement
+                        fields:
+                          text: tryMinimizeExits(catchCodeBlock, exitType, labelName);
+                        children: []
+                        pos: 4225
+                        length: 54
+                      pos: 4040
+                      length: 247
+                    pos: 3995
+                    length: 292
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: NodeUtil.hasFinally(n)
+                            children: []
+                            pos: 4503
+                            length: 22
+                        children: []
+                        pos: 4502
+                        length: 24
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: Node finallyBlock = n.getLastChild();
+                        children: []
+                        pos: 4537
+                        length: 37
+                      - type: expression_statement
+                        fields:
+                          text: tryMinimizeExits(finallyBlock, exitType, labelName);
+                        children: []
+                        pos: 4583
+                        length: 52
+                      pos: 4527
+                      length: 116
+                    pos: 4499
+                    length: 144
+                  pos: 3837
+                  length: 812
+                pos: 3822
+                length: 827
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.isLabel()
+                        children: []
+                        pos: 4682
+                        length: 11
+                    children: []
+                    pos: 4681
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node labelBlock = n.getLastChild();
+                    children: []
+                    pos: 4703
+                    length: 35
+                  - type: expression_statement
+                    fields:
+                      text: tryMinimizeExits(labelBlock, exitType, labelName);
+                    children: []
+                    pos: 4745
+                    length: 50
+                  pos: 4695
+                  length: 106
+                pos: 4678
+                length: 123
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: unary_expression
+                            fields:
+                              text: "!n.isBlock()"
+                            children: []
+                            pos: 4950
+                            length: 12
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: n.getLastChild()
+                                children: []
+                                pos: 4966
+                                length: 16
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 4986
+                                length: 4
+                            children: []
+                            pos: 4966
+                            length: 24
+                        children: []
+                        pos: 4950
+                        length: 40
+                    children: []
+                    pos: 4949
+                    length: 42
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 5000
+                    length: 7
+                  pos: 4992
+                  length: 21
+                pos: 4946
+                length: 67
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (Node c : n.children()) {
+
+                          // An 'if' block to process below.
+                          if (c.isIf()) {
+                            Node ifTree = c;
+                            Node trueBlock, falseBlock;
+
+                            // First, the true condition block.
+                            trueBlock = ifTree.getFirstChild().getNext();
+                            falseBlock = trueBlock.getNext();
+                            tryMinimizeIfBlockExits(trueBlock, falseBlock,
+                                ifTree, exitType, labelName);
+
+                            // Now the else block.
+                            // The if blocks may have changed, get them again.
+                            trueBlock = ifTree.getFirstChild().getNext();
+                            falseBlock = trueBlock.getNext();
+                            if (falseBlock != null) {
+                              tryMinimizeIfBlockExits(falseBlock, trueBlock,
+                                  ifTree, exitType, labelName);
+                            }
+                          }
+
+                          if (c == n.getLastChild()) {
+                            break;
+                          }
+                        }
+                children: []
+                pos: 5291
+                length: 797
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node c = n.getLastChild(); c != null; c = n.getLastChild()) {
+                          tryMinimizeExits(c, exitType, labelName);
+                          // If the node is still the last child, we are done.
+                          if (c == n.getLastChild()) {
+                            break;
+                          }
+                        }
+                children: []
+                pos: 6214
+                length: 237
+              pos: 3298
+              length: 3157
+          children: []
+          pos: 3236
+          length: 3219
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: tryMinimizeIfBlockExits
+              children: []
+              pos: 7065
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node srcBlock
+                children: []
+                pos: 7089
+                length: 13
+              pos: 7052
+              length: 1575
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Node exitNodeParent = null;
+                children: []
+                pos: 7177
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: Node exitNode = null;
+                children: []
+                pos: 7209
+                length: 21
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: srcBlock.isBlock()
+                        children: []
+                        pos: 7276
+                        length: 18
+                    children: []
+                    pos: 7275
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!srcBlock.hasChildren()"
+                            children: []
+                            pos: 7308
+                            length: 23
+                        children: []
+                        pos: 7307
+                        length: 25
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return;
+                        children: []
+                        pos: 7343
+                        length: 7
+                      pos: 7333
+                      length: 25
+                    pos: 7304
+                    length: 54
+                  - type: expression_statement
+                    fields:
+                      text: exitNodeParent = srcBlock;
+                    children: []
+                    pos: 7365
+                    length: 26
+                  - type: expression_statement
+                    fields:
+                      text: exitNode = exitNodeParent.getLastChild();
+                    children: []
+                    pos: 7398
+                    length: 41
+                  pos: 7296
+                  length: 149
+                pos: 7272
+                length: 304
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!matchingExitNode(exitNode, exitType, labelName)"
+                        children: []
+                        pos: 7615
+                        length: 48
+                    children: []
+                    pos: 7614
+                    length: 50
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 7673
+                    length: 7
+                  pos: 7665
+                  length: 21
+                pos: 7611
+                length: 75
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: ifNode.getNext()
+                            children: []
+                            pos: 7747
+                            length: 16
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7767
+                            length: 4
+                        children: []
+                        pos: 7747
+                        length: 24
+                    children: []
+                    pos: 7746
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node newDestBlock = IR.block().srcref(ifNode);
+                    children: []
+                    pos: 7872
+                    length: 46
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: destBlock
+                                children: []
+                                pos: 7929
+                                length: 9
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7942
+                                length: 4
+                            children: []
+                            pos: 7929
+                            length: 17
+                        children: []
+                        pos: 7928
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: ifNode.addChildToBack(newDestBlock);
+                        children: []
+                        pos: 8011
+                        length: 36
+                      pos: 7948
+                      length: 107
+                    pos: 7925
+                    length: 538
+                  - type: expression_statement
+                    fields:
+                      text: moveAllFollowing(ifNode, ifNode.getParent(), newDestBlock);
+                    children: []
+                    pos: 8523
+                    length: 59
+                  - type: expression_statement
+                    fields:
+                      text: compiler.reportCodeChange();
+                    children: []
+                    pos: 8589
+                    length: 28
+                  pos: 7773
+                  length: 850
+                pos: 7743
+                length: 880
+              pos: 7171
+              length: 1456
+          children: []
+          pos: 7052
+          length: 1575
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matchingExitNode
+              children: []
+              pos: 9138
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 9155
+                length: 6
+              pos: 9115
+              length: 463
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: n.getType()
+                            children: []
+                            pos: 9201
+                            length: 11
+                          right:
+                            type: identifier
+                            fields:
+                              text: type
+                            children: []
+                            pos: 9216
+                            length: 4
+                        children: []
+                        pos: 9201
+                        length: 19
+                    children: []
+                    pos: 9200
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: type
+                                children: []
+                                pos: 9234
+                                length: 4
+                              right:
+                                type: field_access
+                                fields:
+                                  text: Token.RETURN
+                                children: []
+                                pos: 9242
+                                length: 12
+                            children: []
+                            pos: 9234
+                            length: 20
+                        children: []
+                        pos: 9233
+                        length: 22
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return !n.hasChildren();
+                        children: []
+                        pos: 9311
+                        length: 24
+                      pos: 9256
+                      length: 87
+                    pos: 9230
+                    length: 320
+                  pos: 9222
+                  length: 334
+                pos: 9197
+                length: 359
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 9561
+                length: 13
+              pos: 9191
+              length: 387
+          children: []
+          pos: 9115
+          length: 463
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: moveAllFollowing
+              children: []
+              pos: 9873
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node start
+                children: []
+                pos: 9897
+                length: 10
+              pos: 9853
+              length: 409
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (Node n = start.getNext(); n != null; n = start.getNext()) {
+                          boolean isFunctionDeclaration = NodeUtil.isFunctionDeclaration(n);
+                          srcParent.removeChild(n);
+                          if (isFunctionDeclaration) {
+                            destParent.addChildToFront(n);
+                          } else {
+                            destParent.addChildToBack(n);
+                          }
+                        }
+                children: []
+                pos: 9948
+                length: 310
+              pos: 9942
+              length: 320
+          children: []
+          pos: 9853
+          length: 409
+        pos: 1101
+        length: 9163
+    children: []
+    pos: 1101
+    length: 9163
+  pos: 0
+  length: 10265
 text_diff: "--- before\n+++ after\n@@ -138,6 +138,10 @@\n        * can cause problems
   if it changes the completion type of the finally\n        * block. See ECMA 262
   Sections 8.9 & 12.14\n        */\n+      if (NodeUtil.hasFinally(n)) {\n+        Node

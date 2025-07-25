@@ -1,5 +1,1607 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Line
+        children: []
+        pos: 1886
+        length: 4
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private Vector3D direction;
+          children: []
+          pos: 1972
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private Vector3D zero;
+          children: []
+          pos: 2050
+          length: 22
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public Line(final Vector3D p1, final Vector3D p2) throws MathIllegalArgumentException {
+                      reset(p1, p2);
+                  }
+          children: []
+          pos: 2365
+          length: 116
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public Line(final Line line) {
+                      this.direction = line.direction;
+                      this.zero      = line.zero;
+                  }
+          children: []
+          pos: 2668
+          length: 113
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reset
+              children: []
+              pos: 3104
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D p1
+                children: []
+                pos: 3110
+                length: 17
+              pos: 3092
+              length: 463
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D delta = p2.subtract(p1);
+                children: []
+                pos: 3194
+                length: 39
+              - type: local_variable_declaration
+                fields:
+                  text: final double norm2 = delta.getNormSq();
+                children: []
+                pos: 3242
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: norm2
+                            children: []
+                            pos: 3294
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 3303
+                            length: 3
+                        children: []
+                        pos: 3294
+                        length: 12
+                    children: []
+                    pos: 3293
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new MathIllegalArgumentException(LocalizedFormats.ZERO_NORM);
+                    children: []
+                    pos: 3322
+                    length: 67
+                  pos: 3308
+                  length: 91
+                pos: 3290
+                length: 109
+              - type: expression_statement
+                fields:
+                  text: this.direction = new Vector3D(1.0 / FastMath.sqrt(norm2),
+                    delta);
+                children: []
+                pos: 3408
+                length: 65
+              - type: expression_statement
+                fields:
+                  text: zero = new Vector3D(1.0, p1, -p1.dotProduct(delta) / norm2,
+                    delta);
+                children: []
+                pos: 3482
+                length: 67
+              pos: 3184
+              length: 371
+          children: []
+          pos: 3092
+          length: 463
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: revert
+              children: []
+              pos: 3680
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3668
+              length: 157
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Line reverted = new Line(this);
+                children: []
+                pos: 3699
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: reverted.direction = reverted.direction.negate();
+                children: []
+                pos: 3745
+                length: 49
+              - type: return_statement
+                fields:
+                  text: return reverted;
+                children: []
+                pos: 3803
+                length: 16
+              pos: 3689
+              length: 136
+          children: []
+          pos: 3668
+          length: 157
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDirection
+              children: []
+              pos: 3943
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3927
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return direction;
+                children: []
+                pos: 3968
+                length: 17
+              pos: 3958
+              length: 33
+          children: []
+          pos: 3927
+          length: 64
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOrigin
+              children: []
+              pos: 4119
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4103
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return zero;
+                children: []
+                pos: 4141
+                length: 12
+              pos: 4131
+              length: 28
+          children: []
+          pos: 4103
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getAbscissa
+              children: []
+              pos: 4469
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D point
+                children: []
+                pos: 4481
+                length: 20
+              pos: 4455
+              length: 114
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return point.subtract(zero).dotProduct(direction);
+                children: []
+                pos: 4513
+                length: 50
+              pos: 4503
+              length: 66
+          children: []
+          pos: 4455
+          length: 114
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: pointAt
+              children: []
+              pos: 4760
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double abscissa
+                children: []
+                pos: 4768
+                length: 21
+              pos: 4744
+              length: 115
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Vector3D(1.0, zero, abscissa, direction);
+                children: []
+                pos: 4801
+                length: 52
+              pos: 4791
+              length: 68
+          children: []
+          pos: 4744
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toSubSpace
+              children: []
+              pos: 4946
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector<Euclidean3D> point
+                children: []
+                pos: 4957
+                length: 31
+              pos: 4930
+              length: 127
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Vector1D(getAbscissa((Vector3D) point));
+                children: []
+                pos: 5000
+                length: 51
+              pos: 4990
+              length: 67
+          children: []
+          pos: 4930
+          length: 127
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toSpace
+              children: []
+              pos: 5138
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector<Euclidean1D> point
+                children: []
+                pos: 5146
+                length: 31
+              pos: 5122
+              length: 115
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return pointAt(((Vector1D) point).getX());
+                children: []
+                pos: 5189
+                length: 42
+              pos: 5179
+              length: 58
+          children: []
+          pos: 5122
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSimilarTo
+              children: []
+              pos: 5595
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 5607
+                length: 15
+              pos: 5580
+              length: 219
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double angle = Vector3D.angle(direction, line.direction);
+                children: []
+                pos: 5634
+                length: 63
+              - type: return_statement
+                fields:
+                  text: return ((angle < 1.0e-10) || (angle > (FastMath.PI - 1.0e-10)))
+                    && contains(line.zero);
+                children: []
+                pos: 5706
+                length: 87
+              pos: 5624
+              length: 175
+          children: []
+          pos: 5580
+          length: 219
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: contains
+              children: []
+              pos: 5952
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D p
+                children: []
+                pos: 5961
+                length: 16
+              pos: 5937
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return distance(p) < 1.0e-10;
+                children: []
+                pos: 5989
+                length: 29
+              pos: 5979
+              length: 45
+          children: []
+          pos: 5937
+          length: 87
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: distance
+              children: []
+              pos: 6199
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D p
+                children: []
+                pos: 6208
+                length: 16
+              pos: 6185
+              length: 207
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D d = p.subtract(zero);
+                children: []
+                pos: 6236
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D n = new Vector3D(1.0, d, -d.dotProduct(direction),
+                    direction);
+                children: []
+                pos: 6281
+                length: 77
+              - type: return_statement
+                fields:
+                  text: return n.getNorm();
+                children: []
+                pos: 6367
+                length: 19
+              pos: 6226
+              length: 166
+          children: []
+          pos: 6185
+          length: 207
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: distance
+              children: []
+              pos: 6618
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 6627
+                length: 15
+              pos: 6604
+              length: 494
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D normal = Vector3D.crossProduct(direction, line.direction);
+                children: []
+                pos: 6655
+                length: 73
+              - type: local_variable_declaration
+                fields:
+                  text: final double n = normal.getNorm();
+                children: []
+                pos: 6737
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: "n"
+                            children: []
+                            pos: 6784
+                            length: 1
+                          right:
+                            type: field_access
+                            fields:
+                              text: Precision.SAFE_MIN
+                            children: []
+                            pos: 6788
+                            length: 18
+                        children: []
+                        pos: 6784
+                        length: 22
+                    children: []
+                    pos: 6783
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return distance(line.zero);
+                    children: []
+                    pos: 6856
+                    length: 27
+                  pos: 6808
+                  length: 85
+                pos: 6780
+                length: 113
+              - type: local_variable_declaration
+                fields:
+                  text: final double offset = line.zero.subtract(zero).dotProduct(normal)
+                    / n;
+                children: []
+                pos: 6983
+                length: 70
+              - type: return_statement
+                fields:
+                  text: return FastMath.abs(offset);
+                children: []
+                pos: 7063
+                length: 28
+              pos: 6644
+              length: 454
+          children: []
+          pos: 6604
+          length: 494
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: closestPoint
+              children: []
+              pos: 7310
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 7323
+                length: 15
+              pos: 7294
+              length: 527
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double cos = direction.dotProduct(line.direction);
+                children: []
+                pos: 7351
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: final double n = 1 - cos * cos;
+                children: []
+                pos: 7416
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: "n"
+                            children: []
+                            pos: 7460
+                            length: 1
+                          right:
+                            type: field_access
+                            fields:
+                              text: Precision.EPSILON
+                            children: []
+                            pos: 7464
+                            length: 17
+                        children: []
+                        pos: 7460
+                        length: 21
+                    children: []
+                    pos: 7459
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return zero;
+                    children: []
+                    pos: 7535
+                    length: 12
+                  pos: 7483
+                  length: 74
+                pos: 7456
+                length: 101
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D delta0 = line.zero.subtract(zero);
+                children: []
+                pos: 7567
+                length: 49
+              - type: local_variable_declaration
+                fields:
+                  text: final double a        = delta0.dotProduct(direction);
+                children: []
+                pos: 7625
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: final double b        = delta0.dotProduct(line.direction);
+                children: []
+                pos: 7687
+                length: 58
+              - type: return_statement
+                fields:
+                  text: return new Vector3D(1, zero, (a - b * cos) / n, direction);
+                children: []
+                pos: 7755
+                length: 59
+              pos: 7340
+              length: 481
+          children: []
+          pos: 7294
+          length: 527
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: intersection
+              children: []
+              pos: 8070
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 8083
+                length: 15
+              pos: 8054
+              length: 162
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D closest = closestPoint(line);
+                children: []
+                pos: 8110
+                length: 44
+              - type: return_statement
+                fields:
+                  text: 'return line.contains(closest) ? closest : null;'
+                children: []
+                pos: 8163
+                length: 47
+              pos: 8100
+              length: 116
+          children: []
+          pos: 8054
+          length: 162
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: wholeLine
+              children: []
+              pos: 8345
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8330
+              length: 88
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new SubLine(this, new IntervalsSet());
+                children: []
+                pos: 8367
+                length: 45
+              pos: 8357
+              length: 61
+          children: []
+          pos: 8330
+          length: 88
+        pos: 1873
+        length: 6548
+    children: []
+    pos: 1873
+    length: 6548
+  pos: 0
+  length: 8422
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Line
+        children: []
+        pos: 1886
+        length: 4
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private Vector3D direction;
+          children: []
+          pos: 1972
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private Vector3D zero;
+          children: []
+          pos: 2050
+          length: 22
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public Line(final Vector3D p1, final Vector3D p2) throws MathIllegalArgumentException {
+                      reset(p1, p2);
+                  }
+          children: []
+          pos: 2365
+          length: 116
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public Line(final Line line) {
+                      this.direction = line.direction;
+                      this.zero      = line.zero;
+                  }
+          children: []
+          pos: 2668
+          length: 113
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reset
+              children: []
+              pos: 3104
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D p1
+                children: []
+                pos: 3110
+                length: 17
+              pos: 3092
+              length: 463
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D delta = p2.subtract(p1);
+                children: []
+                pos: 3194
+                length: 39
+              - type: local_variable_declaration
+                fields:
+                  text: final double norm2 = delta.getNormSq();
+                children: []
+                pos: 3242
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: norm2
+                            children: []
+                            pos: 3294
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 3303
+                            length: 3
+                        children: []
+                        pos: 3294
+                        length: 12
+                    children: []
+                    pos: 3293
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new MathIllegalArgumentException(LocalizedFormats.ZERO_NORM);
+                    children: []
+                    pos: 3322
+                    length: 67
+                  pos: 3308
+                  length: 91
+                pos: 3290
+                length: 109
+              - type: expression_statement
+                fields:
+                  text: this.direction = new Vector3D(1.0 / FastMath.sqrt(norm2),
+                    delta);
+                children: []
+                pos: 3408
+                length: 65
+              - type: expression_statement
+                fields:
+                  text: zero = new Vector3D(1.0, p1, -p1.dotProduct(delta) / norm2,
+                    delta);
+                children: []
+                pos: 3482
+                length: 67
+              pos: 3184
+              length: 371
+          children: []
+          pos: 3092
+          length: 463
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: revert
+              children: []
+              pos: 3680
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3668
+              length: 125
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Line reverted = new Line(zero, zero.subtract(direction));
+                children: []
+                pos: 3699
+                length: 63
+              - type: return_statement
+                fields:
+                  text: return reverted;
+                children: []
+                pos: 3771
+                length: 16
+              pos: 3689
+              length: 104
+          children: []
+          pos: 3668
+          length: 125
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getDirection
+              children: []
+              pos: 3911
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3895
+              length: 64
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return direction;
+                children: []
+                pos: 3936
+                length: 17
+              pos: 3926
+              length: 33
+          children: []
+          pos: 3895
+          length: 64
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getOrigin
+              children: []
+              pos: 4087
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4071
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return zero;
+                children: []
+                pos: 4109
+                length: 12
+              pos: 4099
+              length: 28
+          children: []
+          pos: 4071
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getAbscissa
+              children: []
+              pos: 4437
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D point
+                children: []
+                pos: 4449
+                length: 20
+              pos: 4423
+              length: 114
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return point.subtract(zero).dotProduct(direction);
+                children: []
+                pos: 4481
+                length: 50
+              pos: 4471
+              length: 66
+          children: []
+          pos: 4423
+          length: 114
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: pointAt
+              children: []
+              pos: 4728
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double abscissa
+                children: []
+                pos: 4736
+                length: 21
+              pos: 4712
+              length: 115
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Vector3D(1.0, zero, abscissa, direction);
+                children: []
+                pos: 4769
+                length: 52
+              pos: 4759
+              length: 68
+          children: []
+          pos: 4712
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toSubSpace
+              children: []
+              pos: 4914
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector<Euclidean3D> point
+                children: []
+                pos: 4925
+                length: 31
+              pos: 4898
+              length: 127
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Vector1D(getAbscissa((Vector3D) point));
+                children: []
+                pos: 4968
+                length: 51
+              pos: 4958
+              length: 67
+          children: []
+          pos: 4898
+          length: 127
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toSpace
+              children: []
+              pos: 5106
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector<Euclidean1D> point
+                children: []
+                pos: 5114
+                length: 31
+              pos: 5090
+              length: 115
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return pointAt(((Vector1D) point).getX());
+                children: []
+                pos: 5157
+                length: 42
+              pos: 5147
+              length: 58
+          children: []
+          pos: 5090
+          length: 115
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isSimilarTo
+              children: []
+              pos: 5563
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 5575
+                length: 15
+              pos: 5548
+              length: 219
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double angle = Vector3D.angle(direction, line.direction);
+                children: []
+                pos: 5602
+                length: 63
+              - type: return_statement
+                fields:
+                  text: return ((angle < 1.0e-10) || (angle > (FastMath.PI - 1.0e-10)))
+                    && contains(line.zero);
+                children: []
+                pos: 5674
+                length: 87
+              pos: 5592
+              length: 175
+          children: []
+          pos: 5548
+          length: 219
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: contains
+              children: []
+              pos: 5920
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D p
+                children: []
+                pos: 5929
+                length: 16
+              pos: 5905
+              length: 87
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return distance(p) < 1.0e-10;
+                children: []
+                pos: 5957
+                length: 29
+              pos: 5947
+              length: 45
+          children: []
+          pos: 5905
+          length: 87
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: distance
+              children: []
+              pos: 6167
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Vector3D p
+                children: []
+                pos: 6176
+                length: 16
+              pos: 6153
+              length: 207
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D d = p.subtract(zero);
+                children: []
+                pos: 6204
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D n = new Vector3D(1.0, d, -d.dotProduct(direction),
+                    direction);
+                children: []
+                pos: 6249
+                length: 77
+              - type: return_statement
+                fields:
+                  text: return n.getNorm();
+                children: []
+                pos: 6335
+                length: 19
+              pos: 6194
+              length: 166
+          children: []
+          pos: 6153
+          length: 207
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: distance
+              children: []
+              pos: 6586
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 6595
+                length: 15
+              pos: 6572
+              length: 494
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D normal = Vector3D.crossProduct(direction, line.direction);
+                children: []
+                pos: 6623
+                length: 73
+              - type: local_variable_declaration
+                fields:
+                  text: final double n = normal.getNorm();
+                children: []
+                pos: 6705
+                length: 34
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: "n"
+                            children: []
+                            pos: 6752
+                            length: 1
+                          right:
+                            type: field_access
+                            fields:
+                              text: Precision.SAFE_MIN
+                            children: []
+                            pos: 6756
+                            length: 18
+                        children: []
+                        pos: 6752
+                        length: 22
+                    children: []
+                    pos: 6751
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return distance(line.zero);
+                    children: []
+                    pos: 6824
+                    length: 27
+                  pos: 6776
+                  length: 85
+                pos: 6748
+                length: 113
+              - type: local_variable_declaration
+                fields:
+                  text: final double offset = line.zero.subtract(zero).dotProduct(normal)
+                    / n;
+                children: []
+                pos: 6951
+                length: 70
+              - type: return_statement
+                fields:
+                  text: return FastMath.abs(offset);
+                children: []
+                pos: 7031
+                length: 28
+              pos: 6612
+              length: 454
+          children: []
+          pos: 6572
+          length: 494
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: closestPoint
+              children: []
+              pos: 7278
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 7291
+                length: 15
+              pos: 7262
+              length: 527
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double cos = direction.dotProduct(line.direction);
+                children: []
+                pos: 7319
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: final double n = 1 - cos * cos;
+                children: []
+                pos: 7384
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: "n"
+                            children: []
+                            pos: 7428
+                            length: 1
+                          right:
+                            type: field_access
+                            fields:
+                              text: Precision.EPSILON
+                            children: []
+                            pos: 7432
+                            length: 17
+                        children: []
+                        pos: 7428
+                        length: 21
+                    children: []
+                    pos: 7427
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return zero;
+                    children: []
+                    pos: 7503
+                    length: 12
+                  pos: 7451
+                  length: 74
+                pos: 7424
+                length: 101
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D delta0 = line.zero.subtract(zero);
+                children: []
+                pos: 7535
+                length: 49
+              - type: local_variable_declaration
+                fields:
+                  text: final double a        = delta0.dotProduct(direction);
+                children: []
+                pos: 7593
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: final double b        = delta0.dotProduct(line.direction);
+                children: []
+                pos: 7655
+                length: 58
+              - type: return_statement
+                fields:
+                  text: return new Vector3D(1, zero, (a - b * cos) / n, direction);
+                children: []
+                pos: 7723
+                length: 59
+              pos: 7308
+              length: 481
+          children: []
+          pos: 7262
+          length: 527
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: intersection
+              children: []
+              pos: 8038
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Line line
+                children: []
+                pos: 8051
+                length: 15
+              pos: 8022
+              length: 162
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final Vector3D closest = closestPoint(line);
+                children: []
+                pos: 8078
+                length: 44
+              - type: return_statement
+                fields:
+                  text: 'return line.contains(closest) ? closest : null;'
+                children: []
+                pos: 8131
+                length: 47
+              pos: 8068
+              length: 116
+          children: []
+          pos: 8022
+          length: 162
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: wholeLine
+              children: []
+              pos: 8313
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8298
+              length: 88
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new SubLine(this, new IntervalsSet());
+                children: []
+                pos: 8335
+                length: 45
+              pos: 8325
+              length: 61
+          children: []
+          pos: 8298
+          length: 88
+        pos: 1873
+        length: 6516
+    children: []
+    pos: 1873
+    length: 6516
+  pos: 0
+  length: 8390
 text_diff: "--- before\n+++ after\n@@ -84,8 +84,7 @@\n      * @return a new instance,
   with reversed direction\n      */\n     public Line revert() {\n-        final Line
   reverted = new Line(this);\n-        reverted.direction = reverted.direction.negate();\n+

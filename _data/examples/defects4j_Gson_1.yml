@@ -1,5 +1,822 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: TypeInfoFactory
+        children: []
+        pos: 992
+        length: 15
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: constructor_declaration
+          fields:
+            text: |-
+              private TypeInfoFactory() {
+                  // Not instantiable since it provides factory methods only.
+                }
+          children: []
+          pos: 1013
+          length: 95
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypeInfoForArray
+              children: []
+              pos: 1140
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Type type
+                children: []
+                pos: 1160
+                length: 9
+              pos: 1112
+              length: 158
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(TypeUtils.isArray(type));
+                children: []
+                pos: 1177
+                length: 53
+              - type: return_statement
+                fields:
+                  text: return new TypeInfoArray(type);
+                children: []
+                pos: 1235
+                length: 31
+              pos: 1171
+              length: 99
+          children: []
+          pos: 1112
+          length: 158
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypeInfoForField
+              children: []
+              pos: 1663
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 1683
+                length: 7
+              pos: 1640
+              length: 291
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Class<?> classDefiningF = TypeUtils.toRawClass(typeDefiningF);
+                children: []
+                pos: 1718
+                length: 62
+              - type: local_variable_declaration
+                fields:
+                  text: Type type = f.getGenericType();
+                children: []
+                pos: 1785
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: Type actualType = getActualType(type, typeDefiningF, classDefiningF);
+                children: []
+                pos: 1821
+                length: 69
+              - type: return_statement
+                fields:
+                  text: return new TypeInfo(actualType);
+                children: []
+                pos: 1895
+                length: 32
+              pos: 1712
+              length: 219
+          children: []
+          pos: 1640
+          length: 291
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getActualType
+              children: []
+              pos: 1955
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Type typeToEvaluate
+                children: []
+                pos: 1976
+                length: 19
+              pos: 1935
+              length: 3213
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: typeToEvaluate instanceof Class<?>
+                        children: []
+                        pos: 2049
+                        length: 34
+                    children: []
+                    pos: 2048
+                    length: 36
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return typeToEvaluate;
+                    children: []
+                    pos: 2093
+                    length: 22
+                  pos: 2085
+                  length: 36
+                pos: 2045
+                length: 3099
+              pos: 2039
+              length: 3109
+          children: []
+          pos: 1935
+          length: 3213
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: extractTypeForHierarchy
+              children: []
+              pos: 5172
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Type parentType
+                children: []
+                pos: 5196
+                length: 15
+              pos: 5152
+              length: 1519
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Class<?> rawParentType = null;
+                children: []
+                pos: 5251
+                length: 30
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: parentType instanceof Class<?>
+                        children: []
+                        pos: 5290
+                        length: 30
+                    children: []
+                    pos: 5289
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: rawParentType = (Class<?>) parentType;
+                    children: []
+                    pos: 5330
+                    length: 38
+                  pos: 5322
+                  length: 52
+                pos: 5286
+                length: 313
+              - type: local_variable_declaration
+                fields:
+                  text: Type superClass = rawParentType.getGenericSuperclass();
+                children: []
+                pos: 5605
+                length: 55
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: instanceof_expression
+                            fields:
+                              text: superClass instanceof ParameterizedType
+                            children: []
+                            pos: 5669
+                            length: 39
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: "((ParameterizedType) superClass).getRawType()"
+                                children: []
+                                pos: 5720
+                                length: 45
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: typeToEvaluate.getGenericDeclaration()
+                                children: []
+                                pos: 5769
+                                length: 38
+                            children: []
+                            pos: 5720
+                            length: 87
+                        children: []
+                        pos: 5669
+                        length: 138
+                    children: []
+                    pos: 5668
+                    length: 140
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: |-
+                        TypeVariable<?>[] classTypeVariables =
+                                  ((Class<?>) ((ParameterizedType) superClass).getRawType()).getTypeParameters();
+                    children: []
+                    pos: 5853
+                    length: 128
+                  - type: local_variable_declaration
+                    fields:
+                      text: int indexOfActualTypeArgument = getIndex(classTypeVariables,
+                        typeToEvaluate);
+                    children: []
+                    pos: 5988
+                    length: 77
+                  - type: local_variable_declaration
+                    fields:
+                      text: Type[] actualTypeArguments = null;
+                    children: []
+                    pos: 6073
+                    length: 34
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: instanceof_expression
+                            fields:
+                              text: parentType instanceof Class<?>
+                            children: []
+                            pos: 6118
+                            length: 30
+                        children: []
+                        pos: 6117
+                        length: 32
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: actualTypeArguments = ((ParameterizedType) superClass).getActualTypeArguments();
+                        children: []
+                        pos: 6160
+                        length: 80
+                      pos: 6150
+                      length: 98
+                    pos: 6114
+                    length: 319
+                  - type: return_statement
+                    fields:
+                      text: return actualTypeArguments[indexOfActualTypeArgument];
+                    children: []
+                    pos: 6441
+                    length: 54
+                  pos: 5809
+                  length: 692
+                pos: 5665
+                length: 836
+              - type: local_variable_declaration
+                fields:
+                  text: Type searchedType = null;
+                children: []
+                pos: 6507
+                length: 25
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: superClass
+                            children: []
+                            pos: 6541
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6555
+                            length: 4
+                        children: []
+                        pos: 6541
+                        length: 18
+                    children: []
+                    pos: 6540
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: searchedType = extractTypeForHierarchy(superClass, typeToEvaluate);
+                    children: []
+                    pos: 6569
+                    length: 67
+                  pos: 6561
+                  length: 81
+                pos: 6537
+                length: 105
+              - type: return_statement
+                fields:
+                  text: return searchedType;
+                children: []
+                pos: 6647
+                length: 20
+              pos: 5245
+              length: 1426
+          children: []
+          pos: 5152
+          length: 1519
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: extractRealTypes
+              children: []
+              pos: 6697
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Type[] actualTypeArguments
+                children: []
+                pos: 6721
+                length: 26
+              pos: 6675
+              length: 408
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkNotNull(actualTypeArguments);
+                children: []
+                pos: 6797
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: Type[] retTypes = new Type[actualTypeArguments.length];
+                children: []
+                pos: 6851
+                length: 55
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < actualTypeArguments.length; ++i) {
+                          retTypes[i] = getActualType(actualTypeArguments[i], parentType, rawParentClass);
+                        }
+                children: []
+                pos: 6911
+                length: 147
+              - type: return_statement
+                fields:
+                  text: return retTypes;
+                children: []
+                pos: 7063
+                length: 16
+              pos: 6791
+              length: 292
+          children: []
+          pos: 6675
+          length: 408
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getIndex
+              children: []
+              pos: 7106
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: TypeVariable<?>[] types
+                children: []
+                pos: 7115
+                length: 23
+              pos: 7087
+              length: 308
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < types.length; ++i) {
+                          if (type.equals(types[i])) {
+                            return i;
+                          }
+                        }
+                children: []
+                pos: 7168
+                length: 107
+              - type: throw_statement
+                fields:
+                  text: |-
+                    throw new IllegalStateException(
+                            "How can the type variable not be present in the class declaration!");
+                children: []
+                pos: 7280
+                length: 111
+              pos: 7162
+              length: 233
+          children: []
+          pos: 7087
+          length: 308
+        pos: 980
+        length: 6417
+    children: []
+    pos: 980
+    length: 6417
+  pos: 0
+  length: 7398
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: TypeInfoFactory
+        children: []
+        pos: 992
+        length: 15
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: constructor_declaration
+          fields:
+            text: |-
+              private TypeInfoFactory() {
+                  // Not instantiable since it provides factory methods only.
+                }
+          children: []
+          pos: 1013
+          length: 95
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypeInfoForArray
+              children: []
+              pos: 1140
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Type type
+                children: []
+                pos: 1160
+                length: 9
+              pos: 1112
+              length: 158
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkArgument(TypeUtils.isArray(type));
+                children: []
+                pos: 1177
+                length: 53
+              - type: return_statement
+                fields:
+                  text: return new TypeInfoArray(type);
+                children: []
+                pos: 1235
+                length: 31
+              pos: 1171
+              length: 99
+          children: []
+          pos: 1112
+          length: 158
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getTypeInfoForField
+              children: []
+              pos: 1663
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Field f
+                children: []
+                pos: 1683
+                length: 7
+              pos: 1640
+              length: 291
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Class<?> classDefiningF = TypeUtils.toRawClass(typeDefiningF);
+                children: []
+                pos: 1718
+                length: 62
+              - type: local_variable_declaration
+                fields:
+                  text: Type type = f.getGenericType();
+                children: []
+                pos: 1785
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: Type actualType = getActualType(type, typeDefiningF, classDefiningF);
+                children: []
+                pos: 1821
+                length: 69
+              - type: return_statement
+                fields:
+                  text: return new TypeInfo(actualType);
+                children: []
+                pos: 1895
+                length: 32
+              pos: 1712
+              length: 219
+          children: []
+          pos: 1640
+          length: 291
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getActualType
+              children: []
+              pos: 1955
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Type typeToEvaluate
+                children: []
+                pos: 1976
+                length: 19
+              pos: 1935
+              length: 2826
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: typeToEvaluate instanceof Class<?>
+                        children: []
+                        pos: 2049
+                        length: 34
+                    children: []
+                    pos: 2048
+                    length: 36
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return typeToEvaluate;
+                    children: []
+                    pos: 2093
+                    length: 22
+                  pos: 2085
+                  length: 36
+                pos: 2045
+                length: 2712
+              pos: 2039
+              length: 2722
+          children: []
+          pos: 1935
+          length: 2826
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: extractRealTypes
+              children: []
+              pos: 4828
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Type[] actualTypeArguments
+                children: []
+                pos: 4852
+                length: 26
+              pos: 4806
+              length: 408
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkNotNull(actualTypeArguments);
+                children: []
+                pos: 4928
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: Type[] retTypes = new Type[actualTypeArguments.length];
+                children: []
+                pos: 4982
+                length: 55
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < actualTypeArguments.length; ++i) {
+                          retTypes[i] = getActualType(actualTypeArguments[i], parentType, rawParentClass);
+                        }
+                children: []
+                pos: 5042
+                length: 147
+              - type: return_statement
+                fields:
+                  text: return retTypes;
+                children: []
+                pos: 5194
+                length: 16
+              pos: 4922
+              length: 292
+          children: []
+          pos: 4806
+          length: 408
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getIndex
+              children: []
+              pos: 5237
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: TypeVariable<?>[] types
+                children: []
+                pos: 5246
+                length: 23
+              pos: 5218
+              length: 308
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < types.length; ++i) {
+                          if (type.equals(types[i])) {
+                            return i;
+                          }
+                        }
+                children: []
+                pos: 5299
+                length: 107
+              - type: throw_statement
+                fields:
+                  text: |-
+                    throw new IllegalStateException(
+                            "How can the type variable not be present in the class declaration!");
+                children: []
+                pos: 5411
+                length: 111
+              pos: 5293
+              length: 233
+          children: []
+          pos: 5218
+          length: 308
+        pos: 980
+        length: 4548
+    children: []
+    pos: 980
+    length: 4548
+  pos: 0
+  length: 5529
 text_diff: "--- before\n+++ after\n@@ -90,16 +90,8 @@\n         int indexOfActualTypeArgument
   = getIndex(classTypeVariables, fieldTypeVariable);\n         Type[] actualTypeArguments
   = objParameterizedType.getActualTypeArguments();\n         return actualTypeArguments[indexOfActualTypeArgument];\n-

@@ -1,197 +1,169 @@
 ---
 language: python
-text_diff: "--- before\n+++ after\n@@ -8,7 +8,7 @@\n     nodesseen = set()\n     nodesseen.add(startnode)\n
+before_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: breadth_first_search
+        children: []
+        pos: 44
+        length: 20
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: startnode
+          children: []
+          pos: 65
+          length: 9
+        pos: 40
+        length: 410
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: queue = Queue()
+          children: []
+          pos: 91
+          length: 15
+        - type: expression_statement
+          fields:
+            text: queue.append(startnode)
+          children: []
+          pos: 111
+          length: 23
+        - type: expression_statement
+          fields:
+            text: nodesseen = set()
+          children: []
+          pos: 140
+          length: 17
+        - type: expression_statement
+          fields:
+            text: nodesseen.add(startnode)
+          children: []
+          pos: 162
+          length: 24
+        - type: while_statement
+          fields:
+            text: |-
+              while True:
+                      node = queue.popleft()
+
+                      if node is goalnode:
+                          return True
+                      else:
+                          queue.extend(node for node in node.successors if node not in nodesseen)
+                          nodesseen.update(node.successors)
+          children: []
+          pos: 192
+          length: 240
+        - type: return_statement
+          fields:
+            text: return False
+          children: []
+          pos: 438
+          length: 12
+        pos: 91
+        length: 359
+    children: []
+    pos: 40
+    length: 410
+  pos: 0
+  length: 451
+after_tree:
+  type: child
+  fields: {}
+  children:
+  - type: method_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: breadth_first_search
+        children: []
+        pos: 44
+        length: 20
+      parameters:
+        type: method_parameters
+        fields: {}
+        children:
+        - type: identifier
+          fields:
+            text: startnode
+          children: []
+          pos: 65
+          length: 9
+        pos: 40
+        length: 411
+      body:
+        type: block
+        fields: {}
+        children:
+        - type: expression_statement
+          fields:
+            text: queue = Queue()
+          children: []
+          pos: 91
+          length: 15
+        - type: expression_statement
+          fields:
+            text: queue.append(startnode)
+          children: []
+          pos: 111
+          length: 23
+        - type: expression_statement
+          fields:
+            text: nodesseen = set()
+          children: []
+          pos: 140
+          length: 17
+        - type: expression_statement
+          fields:
+            text: nodesseen.add(startnode)
+          children: []
+          pos: 162
+          length: 24
+        - type: while_statement
+          fields:
+            text: |-
+              while queue:
+                      node = queue.popleft()
+
+                      if node is goalnode:
+                          return True
+                      else:
+                          queue.extend(node for node in node.successors if node not in nodesseen)
+                          nodesseen.update(node.successors)
+          children: []
+          pos: 192
+          length: 241
+        - type: return_statement
+          fields:
+            text: return False
+          children: []
+          pos: 439
+          length: 12
+        pos: 91
+        length: 360
+    children: []
+    pos: 40
+    length: 411
+  pos: 0
+  length: 452
+text_diff: "--- before\n+++ after\n@@ -7,7 +7,7 @@\n     nodesseen = set()\n     nodesseen.add(startnode)\n
   \n-    while True:\n+    while queue:\n         node = queue.popleft()\n \n         if
-  node is goalnode:\n@@ -20,15 +20,69 @@\n     return False\n \n \n-\n \"\"\"\n-Breadth-First
-  Search\n+from collections import deque as Queue\n+\n+def breadth_first_search(startnode,
-  goalnode):\n+    queue = Queue()\n+    queue.append(startnode)\n+\n+    nodesseen
-  = set()\n+    nodesseen.add(startnode)\n+\n+    while len(queue):\n+        node
-  = queue.popleft()\n+\n+        if node is goalnode:\n+            return True\n+
-  \       else:\n+            queue.extend(node for node in node.successors if node
-  not in nodesseen)\n+            nodesseen.update(node.successors)\n+\n+    return
-  False\n+\n+\n+\n+from collections import deque as Queue\n \n+def breadth_first_search(startnode,
-  goalnode):\n+    queue = Queue()\n+    queue.append(startnode)\n \n-Input:\n-    startnode:
-  A digraph node\n-    goalnode: A digraph node\n+    nodesseen = set()\n+    nodesseen.add(startnode)\n+\n+
-  \   while len(queue) > 0:\n+        node = queue.popleft()\n+\n+        if node
-  is goalnode:\n+            return True\n+        else:\n+            queue.extend(node
-  for node in node.successors if node not in nodesseen)\n+            nodesseen.update(node.successors)\n+\n+
-  \   return False\n+\n+\n+\n+from collections import deque as Queue\n+\n+def breadth_first_search(startnode,
-  goalnode):\n+    queue = Queue()\n+    queue.append(startnode)\n+\n+    nodesseen
-  = set()\n+    nodesseen.add(startnode)\n+\n+    while len(queue) != 0:\n+        node
-  = queue.popleft()\n+\n+        if node is goalnode:\n+            return True\n+
-  \       else:\n+            queue.extend(node for node in node.successors if node
-  not in nodesseen)\n+            nodesseen.update(node.successors)\n+\n+    return
-  False\n \n-Output:\n-    Whether goalnode is reachable from startnode\n \"\"\"\n"
+  node is goalnode:\n"
 tree_diff: |+
-  New cluster:
-  UPDATE from """
-  Breadth-First Search
-
-
-  Input:
-      startnode: A digraph node
-      goalnode: A digraph node
-
-  Output:
-      Whether goalnode is reachable from startnode
-  """ to """
-  from collections import deque as Queue
-
-  def breadth_first_search(startnode, goalnode):
-      queue = Queue()
-      queue.append(startnode)
-
-      nodesseen = set()
-      nodesseen.add(startnode)
-
-      while len(queue):
-          node = queue.popleft()
-
-          if node is goalnode:
-              return True
-          else:
-              queue.extend(node for node in node.successors if node not in nodesseen)
-              nodesseen.update(node.successors)
-
-      return False
-
-
-
-  from collections import deque as Queue
-
-  def breadth_first_search(startnode, goalnode):
-      queue = Queue()
-      queue.append(startnode)
-
-      nodesseen = set()
-      nodesseen.add(startnode)
-
-      while len(queue) > 0:
-          node = queue.popleft()
-
-          if node is goalnode:
-              return True
-          else:
-              queue.extend(node for node in node.successors if node not in nodesseen)
-              nodesseen.update(node.successors)
-
-      return False
-
-
-
-  from collections import deque as Queue
-
-  def breadth_first_search(startnode, goalnode):
-      queue = Queue()
-      queue.append(startnode)
-
-      nodesseen = set()
-      nodesseen.add(startnode)
-
-      while len(queue) != 0:
-          node = queue.popleft()
-
-          if node is goalnode:
-              return True
-          else:
-              queue.extend(node for node in node.successors if node not in nodesseen)
-              nodesseen.update(node.successors)
-
-      return False
-
-  """
-  ------------
-  ===
-  update-node
-  ---
-  expression_statement: """
-  Breadth-First Search
-
-
-  Input:
-      startnode: A digraph node
-      goalnode: A digraph node
-
-  Output:
-      Whether goalnode is reachable from startnode
-  """ [455,609]
-  replace """
-  Breadth-First Search
-
-
-  Input:
-      startnode: A digraph node
-      goalnode: A digraph node
-
-  Output:
-      Whether goalnode is reachable from startnode
-  """ by """
-  from collections import deque as Queue
-
-  def breadth_first_search(startnode, goalnode):
-      queue = Queue()
-      queue.append(startnode)
-
-      nodesseen = set()
-      nodesseen.add(startnode)
-
-      while len(queue):
-          node = queue.popleft()
-
-          if node is goalnode:
-              return True
-          else:
-              queue.extend(node for node in node.successors if node not in nodesseen)
-              nodesseen.update(node.successors)
-
-      return False
-
-
-
-  from collections import deque as Queue
-
-  def breadth_first_search(startnode, goalnode):
-      queue = Queue()
-      queue.append(startnode)
-
-      nodesseen = set()
-      nodesseen.add(startnode)
-
-      while len(queue) > 0:
-          node = queue.popleft()
-
-          if node is goalnode:
-              return True
-          else:
-              queue.extend(node for node in node.successors if node not in nodesseen)
-              nodesseen.update(node.successors)
-
-      return False
-
-
-
-  from collections import deque as Queue
-
-  def breadth_first_search(startnode, goalnode):
-      queue = Queue()
-      queue.append(startnode)
-
-      nodesseen = set()
-      nodesseen.add(startnode)
-
-      while len(queue) != 0:
-          node = queue.popleft()
-
-          if node is goalnode:
-              return True
-          else:
-              queue.extend(node for node in node.successors if node not in nodesseen)
-              nodesseen.update(node.successors)
-
-      return False
-
-  """
-
   New cluster:
   UPDATE from while True:
           node = queue.popleft()
@@ -219,7 +191,7 @@ tree_diff: |+
               return True
           else:
               queue.extend(node for node in node.successors if node not in nodesseen)
-              nodesseen.update(node.successors) [193,433]
+              nodesseen.update(node.successors) [192,432]
   replace while True:
           node = queue.popleft()
 

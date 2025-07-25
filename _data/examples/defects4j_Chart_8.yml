@@ -1,5 +1,3464 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Week
+        children: []
+        pos: 4108
+        length: 4
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1856387786939865061L;
+          children: []
+          pos: 4203
+          length: 66
+        - type: field_declaration
+          fields:
+            text: public static final int FIRST_WEEK_IN_YEAR = 1;
+          children: []
+          pos: 4330
+          length: 47
+        - type: field_declaration
+          fields:
+            text: public static final int LAST_WEEK_IN_YEAR = 53;
+          children: []
+          pos: 4437
+          length: 47
+        - type: field_declaration
+          fields:
+            text: private short year;
+          children: []
+          pos: 4538
+          length: 19
+        - type: field_declaration
+          fields:
+            text: private byte week;
+          children: []
+          pos: 4594
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private long firstMillisecond;
+          children: []
+          pos: 4655
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private long lastMillisecond;
+          children: []
+          pos: 4727
+          length: 29
+        - type: constructor_declaration
+          fields:
+            text: "public Week() {\r\n        this(new Date());\r\n    }"
+          children: []
+          pos: 4882
+          length: 49
+        - type: constructor_declaration
+          fields:
+            text: "public Week(int week, int year) {\r\n        if ((week < FIRST_WEEK_IN_YEAR)
+              && (week > LAST_WEEK_IN_YEAR)) {\r\n            throw new IllegalArgumentException(\r\n
+              \                   \"The 'week' argument must be in the range 1 - 53.\");\r\n
+              \       }\r\n        this.week = (byte) week;\r\n        this.year =
+              (short) year;\r\n        peg(Calendar.getInstance());\r\n    }"
+          children: []
+          pos: 5127
+          length: 355
+        - type: constructor_declaration
+          fields:
+            text: "public Week(int week, Year year) {\r\n        if ((week < FIRST_WEEK_IN_YEAR)
+              && (week > LAST_WEEK_IN_YEAR)) {\r\n            throw new IllegalArgumentException(\r\n
+              \                   \"The 'week' argument must be in the range 1 - 53.\");\r\n
+              \       }\r\n        this.week = (byte) week;\r\n        this.year =
+              (short) year.getYear();\r\n        peg(Calendar.getInstance());\r\n
+              \  }"
+          children: []
+          pos: 5678
+          length: 365
+        - type: constructor_declaration
+          fields:
+            text: "public Week(Date time) {\r\n        // defer argument checking...\r\n
+              \       this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());\r\n
+              \   }"
+          children: []
+          pos: 6233
+          length: 149
+        - type: constructor_declaration
+          fields:
+            text: "public Week(Date time, TimeZone zone) {\r\n        // defer argument
+              checking...\r\n        this(time, zone, Locale.getDefault());\r\n    }"
+          children: []
+          pos: 6779
+          length: 133
+        - type: constructor_declaration
+          fields:
+            text: "public Week(Date time, TimeZone zone, Locale locale) {\r\n        if
+              (time == null) {\r\n            throw new IllegalArgumentException(\"Null
+              'time' argument.\");\r\n        }\r\n        if (zone == null) {\r\n
+              \           throw new IllegalArgumentException(\"Null 'zone' argument.\");\r\n
+              \       }\r\n        if (locale == null) {\r\n            throw new
+              IllegalArgumentException(\"Null 'locale' argument.\");\r\n        }\r\n
+              \       Calendar calendar = Calendar.getInstance(zone, locale);\r\n
+              \       calendar.setTime(time);\r\n\r\n        // sometimes the last
+              few days of the year are considered to fall in\r\n        // the *first*
+              week of the following year.  Refer to the Javadocs for\r\n        //
+              GregorianCalendar.\r\n        int tempWeek = calendar.get(Calendar.WEEK_OF_YEAR);\r\n
+              \       if (tempWeek == 1\r\n                && calendar.get(Calendar.MONTH)
+              == Calendar.DECEMBER) {\r\n            this.week = 1;\r\n            this.year
+              = (short) (calendar.get(Calendar.YEAR) + 1);\r\n        }\r\n        else
+              {\r\n            this.week = (byte) Math.min(tempWeek, LAST_WEEK_IN_YEAR);\r\n
+              \           int yyyy = calendar.get(Calendar.YEAR);\r\n            //
+              alternatively, sometimes the first few days of the year are\r\n            //
+              considered to fall in the *last* week of the previous year...\r\n            if
+              (calendar.get(Calendar.MONTH) == Calendar.JANUARY\r\n                    &&
+              this.week >= 52) {\r\n                yyyy--;\r\n            }\r\n            this.year
+              = (short) yyyy;\r\n        }\r\n        peg(calendar);\r\n    }"
+          children: []
+          pos: 7323
+          length: 1480
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getYear
+              children: []
+              pos: 8951
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8939
+              length: 67
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Year(this.year);
+                children: []
+                pos: 8972
+                length: 27
+              pos: 8961
+              length: 45
+          children: []
+          pos: 8939
+          length: 67
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getYearValue
+              children: []
+              pos: 9148
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9137
+              length: 61
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.year;
+                children: []
+                pos: 9174
+                length: 17
+              pos: 9163
+              length: 35
+          children: []
+          pos: 9137
+          length: 61
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getWeek
+              children: []
+              pos: 9295
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9284
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.week;
+                children: []
+                pos: 9316
+                length: 17
+              pos: 9305
+              length: 35
+          children: []
+          pos: 9284
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFirstMillisecond
+              children: []
+              pos: 9733
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9721
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.firstMillisecond;
+                children: []
+                pos: 9766
+                length: 29
+              pos: 9755
+              length: 47
+          children: []
+          pos: 9721
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLastMillisecond
+              children: []
+              pos: 10194
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10182
+              length: 79
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.lastMillisecond;
+                children: []
+                pos: 10226
+                length: 28
+              pos: 10215
+              length: 46
+          children: []
+          pos: 10182
+          length: 79
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: peg
+              children: []
+              pos: 10565
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Calendar calendar
+                children: []
+                pos: 10569
+                length: 17
+              pos: 10553
+              length: 169
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.firstMillisecond = getFirstMillisecond(calendar);
+                children: []
+                pos: 10599
+                length: 54
+              - type: expression_statement
+                fields:
+                  text: this.lastMillisecond = getLastMillisecond(calendar);
+                children: []
+                pos: 10663
+                length: 52
+              pos: 10588
+              length: 134
+          children: []
+          pos: 10553
+          length: 169
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: previous
+              children: []
+              pos: 11155
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11130
+              length: 736
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Week result;
+                children: []
+                pos: 11179
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.week
+                            children: []
+                            pos: 11205
+                            length: 9
+                          right:
+                            type: identifier
+                            fields:
+                              text: FIRST_WEEK_IN_YEAR
+                            children: []
+                            pos: 11218
+                            length: 18
+                        children: []
+                        pos: 11205
+                        length: 31
+                    children: []
+                    pos: 11204
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = new Week(this.week - 1, this.year);
+                    children: []
+                    pos: 11253
+                    length: 44
+                  pos: 11238
+                  length: 70
+                pos: 11201
+                length: 632
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 11843
+                length: 14
+              pos: 11166
+              length: 700
+          children: []
+          pos: 11130
+          length: 736
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: next
+              children: []
+              pos: 12310
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12285
+              length: 807
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Week result;
+                children: []
+                pos: 12330
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.week
+                            children: []
+                            pos: 12356
+                            length: 9
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '52'
+                            children: []
+                            pos: 12368
+                            length: 2
+                        children: []
+                        pos: 12356
+                        length: 14
+                    children: []
+                    pos: 12355
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = new Week(this.week + 1, this.year);
+                    children: []
+                    pos: 12387
+                    length: 44
+                  pos: 12372
+                  length: 70
+                pos: 12352
+                length: 707
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 13069
+                length: 14
+              pos: 12317
+              length: 775
+          children: []
+          pos: 12285
+          length: 807
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSerialIndex
+              children: []
+              pos: 13231
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13219
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.year * 53L + this.week;
+                children: []
+                pos: 13259
+                length: 35
+              pos: 13248
+              length: 53
+          children: []
+          pos: 13219
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFirstMillisecond
+              children: []
+              pos: 13714
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Calendar calendar
+                children: []
+                pos: 13734
+                length: 17
+              pos: 13702
+              length: 540
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Calendar c = (Calendar) calendar.clone();
+                children: []
+                pos: 13764
+                length: 41
+              - type: expression_statement
+                fields:
+                  text: c.clear();
+                children: []
+                pos: 13815
+                length: 10
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.YEAR, this.year);
+                children: []
+                pos: 13835
+                length: 32
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.WEEK_OF_YEAR, this.week);
+                children: []
+                pos: 13877
+                length: 40
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek());
+                children: []
+                pos: 13927
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.HOUR, 0);
+                children: []
+                pos: 13988
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MINUTE, 0);
+                children: []
+                pos: 14022
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.SECOND, 0);
+                children: []
+                pos: 14058
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MILLISECOND, 0);
+                children: []
+                pos: 14094
+                length: 31
+              - type: return_statement
+                fields:
+                  text: return c.getTime().getTime();
+                children: []
+                pos: 14206
+                length: 29
+              pos: 13753
+              length: 489
+          children: []
+          pos: 13702
+          length: 540
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLastMillisecond
+              children: []
+              pos: 14653
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Calendar calendar
+                children: []
+                pos: 14672
+                length: 17
+              pos: 14641
+              length: 547
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Calendar c = (Calendar) calendar.clone();
+                children: []
+                pos: 14702
+                length: 41
+              - type: expression_statement
+                fields:
+                  text: c.clear();
+                children: []
+                pos: 14753
+                length: 10
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.YEAR, this.year);
+                children: []
+                pos: 14773
+                length: 32
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.WEEK_OF_YEAR, this.week + 1);
+                children: []
+                pos: 14815
+                length: 44
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek());
+                children: []
+                pos: 14869
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.HOUR, 0);
+                children: []
+                pos: 14930
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MINUTE, 0);
+                children: []
+                pos: 14964
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.SECOND, 0);
+                children: []
+                pos: 15000
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MILLISECOND, 0);
+                children: []
+                pos: 15036
+                length: 31
+              - type: return_statement
+                fields:
+                  text: return c.getTime().getTime() - 1;
+                children: []
+                pos: 15148
+                length: 33
+              pos: 14691
+              length: 497
+          children: []
+          pos: 14641
+          length: 547
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 15406
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15392
+              length: 89
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return "Week " + this.week + ", " + this.year;
+                children: []
+                pos: 15428
+                length: 46
+              pos: 15417
+              length: 64
+          children: []
+          pos: 15392
+          length: 89
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 15913
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object obj
+                children: []
+                pos: 15920
+                length: 10
+              pos: 15898
+              length: 397
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 15949
+                            length: 3
+                          right:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 15956
+                            length: 4
+                        children: []
+                        pos: 15949
+                        length: 11
+                    children: []
+                    pos: 15948
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 15977
+                    length: 12
+                  pos: 15962
+                  length: 38
+                pos: 15945
+                length: 55
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(obj instanceof Week)"
+                        children: []
+                        pos: 16014
+                        length: 22
+                    children: []
+                    pos: 16013
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 16053
+                    length: 13
+                  pos: 16038
+                  length: 39
+                pos: 16010
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: Week that = (Week) obj;
+                children: []
+                pos: 16087
+                length: 23
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.week
+                            children: []
+                            pos: 16124
+                            length: 9
+                          right:
+                            type: field_access
+                            fields:
+                              text: that.week
+                            children: []
+                            pos: 16137
+                            length: 9
+                        children: []
+                        pos: 16124
+                        length: 22
+                    children: []
+                    pos: 16123
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 16163
+                    length: 13
+                  pos: 16148
+                  length: 39
+                pos: 16120
+                length: 67
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.year
+                            children: []
+                            pos: 16201
+                            length: 9
+                          right:
+                            type: field_access
+                            fields:
+                              text: that.year
+                            children: []
+                            pos: 16214
+                            length: 9
+                        children: []
+                        pos: 16201
+                        length: 22
+                    children: []
+                    pos: 16200
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 16240
+                    length: 13
+                  pos: 16225
+                  length: 39
+                pos: 16197
+                length: 67
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 16274
+                length: 12
+              pos: 15932
+              length: 363
+          children: []
+          pos: 15898
+          length: 397
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 16626
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16615
+              length: 166
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result = 17;
+                children: []
+                pos: 16648
+                length: 16
+              - type: expression_statement
+                fields:
+                  text: result = 37 * result + this.week;
+                children: []
+                pos: 16674
+                length: 33
+              - type: expression_statement
+                fields:
+                  text: result = 37 * result + this.year;
+                children: []
+                pos: 16717
+                length: 33
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 16760
+                length: 14
+              pos: 16637
+              length: 144
+          children: []
+          pos: 16615
+          length: 166
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: compareTo
+              children: []
+              pos: 17124
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object o1
+                children: []
+                pos: 17134
+                length: 9
+              pos: 17113
+              length: 949
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result;
+                children: []
+                pos: 17158
+                length: 11
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: o1 instanceof Week
+                        children: []
+                        pos: 17296
+                        length: 18
+                    children: []
+                    pos: 17295
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Week w = (Week) o1;
+                    children: []
+                    pos: 17331
+                    length: 19
+                  - type: expression_statement
+                    fields:
+                      text: result = this.year - w.getYear().getYear();
+                    children: []
+                    pos: 17364
+                    length: 43
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: result
+                                children: []
+                                pos: 17425
+                                length: 6
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 17435
+                                length: 1
+                            children: []
+                            pos: 17425
+                            length: 11
+                        children: []
+                        pos: 17424
+                        length: 13
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: result = this.week - w.getWeek();
+                        children: []
+                        pos: 17457
+                        length: 33
+                      pos: 17438
+                      length: 67
+                    pos: 17421
+                    length: 84
+                  pos: 17316
+                  length: 200
+                pos: 17292
+                length: 735
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 18039
+                length: 14
+              pos: 17145
+              length: 917
+          children: []
+          pos: 17113
+          length: 949
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseWeek
+              children: []
+              pos: 18466
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 18476
+                length: 8
+              pos: 18447
+              length: 1629
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Week result = null;
+                children: []
+                pos: 18499
+                length: 19
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: s
+                            children: []
+                            pos: 18532
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18537
+                            length: 4
+                        children: []
+                        pos: 18532
+                        length: 9
+                    children: []
+                    pos: 18531
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: s = s.trim();
+                    children: []
+                    pos: 18622
+                    length: 13
+                  - type: local_variable_declaration
+                    fields:
+                      text: int i = Week.findSeparator(s);
+                    children: []
+                    pos: 18651
+                    length: 30
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: i
+                                children: []
+                                pos: 18699
+                                length: 1
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "-1"
+                                children: []
+                                pos: 18704
+                                length: 2
+                            children: []
+                            pos: 18699
+                            length: 7
+                        children: []
+                        pos: 18698
+                        length: 9
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: String s1 = s.substring(0, i).trim();
+                        children: []
+                        pos: 18727
+                        length: 37
+                      - type: local_variable_declaration
+                        fields:
+                          text: String s2 = s.substring(i + 1, s.length()).trim();
+                        children: []
+                        pos: 18782
+                        length: 50
+                      - type: local_variable_declaration
+                        fields:
+                          text: Year y = Week.evaluateAsYear(s1);
+                        children: []
+                        pos: 18852
+                        length: 33
+                      - type: local_variable_declaration
+                        fields:
+                          text: int w;
+                        children: []
+                        pos: 18903
+                        length: 6
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: not_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: "y"
+                                    children: []
+                                    pos: 18931
+                                    length: 1
+                                  right:
+                                    type: null_literal
+                                    fields: {}
+                                    children: []
+                                    pos: 18936
+                                    length: 4
+                                children: []
+                                pos: 18931
+                                length: 9
+                            children: []
+                            pos: 18930
+                            length: 11
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: w = Week.stringToWeek(s2);
+                            children: []
+                            pos: 18965
+                            length: 26
+                          - type: if_statement
+                            fields:
+                              condition:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: w
+                                        children: []
+                                        pos: 19017
+                                        length: 1
+                                      right:
+                                        type: unary_expression
+                                        fields:
+                                          text: "-1"
+                                        children: []
+                                        pos: 19022
+                                        length: 2
+                                    children: []
+                                    pos: 19017
+                                    length: 7
+                                children: []
+                                pos: 19016
+                                length: 9
+                            children:
+                            - type: block
+                              fields: {}
+                              children:
+                              - type: throw_statement
+                                fields:
+                                  text: "throw new TimePeriodFormatException(\r\n
+                                    \                               \"Can't evaluate
+                                    the week.\");"
+                                children: []
+                                pos: 19053
+                                length: 98
+                              pos: 19026
+                              length: 148
+                            pos: 19013
+                            length: 161
+                          - type: expression_statement
+                            fields:
+                              text: result = new Week(w, y);
+                            children: []
+                            pos: 19196
+                            length: 24
+                          pos: 18942
+                          length: 297
+                        pos: 18927
+                        length: 942
+                      pos: 18708
+                      length: 1178
+                    pos: 18695
+                    length: 1335
+                  pos: 18543
+                  length: 1500
+                pos: 18528
+                length: 1515
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 20053
+                length: 14
+              pos: 18486
+              length: 1590
+          children: []
+          pos: 18447
+          length: 1629
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findSeparator
+              children: []
+              pos: 20362
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 20376
+                length: 8
+              pos: 20343
+              length: 349
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result = s.indexOf('-');
+                children: []
+                pos: 20399
+                length: 28
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: result
+                            children: []
+                            pos: 20441
+                            length: 6
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 20451
+                            length: 2
+                        children: []
+                        pos: 20441
+                        length: 12
+                    children: []
+                    pos: 20440
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = s.indexOf(',');
+                    children: []
+                    pos: 20470
+                    length: 24
+                  pos: 20455
+                  length: 50
+                pos: 20437
+                length: 68
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: result
+                            children: []
+                            pos: 20519
+                            length: 6
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 20529
+                            length: 2
+                        children: []
+                        pos: 20519
+                        length: 12
+                    children: []
+                    pos: 20518
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = s.indexOf(' ');
+                    children: []
+                    pos: 20548
+                    length: 24
+                  pos: 20533
+                  length: 50
+                pos: 20515
+                length: 68
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: result
+                            children: []
+                            pos: 20597
+                            length: 6
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 20607
+                            length: 2
+                        children: []
+                        pos: 20597
+                        length: 12
+                    children: []
+                    pos: 20596
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = s.indexOf('.');
+                    children: []
+                    pos: 20626
+                    length: 24
+                  pos: 20611
+                  length: 50
+                pos: 20593
+                length: 68
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 20671
+                length: 14
+              pos: 20386
+              length: 306
+          children: []
+          pos: 20343
+          length: 349
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: evaluateAsYear
+              children: []
+              pos: 20985
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 21000
+                length: 8
+              pos: 20965
+              length: 260
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Year result = null;
+                children: []
+                pos: 21023
+                length: 19
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: result = Year.parseYear(s);
+                      children: []
+                      pos: 21071
+                      length: 27
+                    pos: 21056
+                    length: 53
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: "catch (TimePeriodFormatException e) {\r\n            //
+                          suppress\r\n        }"
+                      children: []
+                      pos: 21119
+                      length: 73
+                    pos: 21052
+                    length: 140
+                children: []
+                pos: 21052
+                length: 140
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 21202
+                length: 14
+              pos: 21010
+              length: 215
+          children: []
+          pos: 20965
+          length: 260
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stringToWeek
+              children: []
+              pos: 21482
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 21495
+                length: 8
+              pos: 21463
+              length: 419
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result = -1;
+                children: []
+                pos: 21518
+                length: 16
+              - type: expression_statement
+                fields:
+                  text: s = s.replace('W', ' ');
+                children: []
+                pos: 21544
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: s = s.trim();
+                children: []
+                pos: 21578
+                length: 13
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: result = Integer.parseInt(s);
+                      children: []
+                      pos: 21620
+                      length: 29
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: less_than
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: result
+                                          children: []
+                                          pos: 21668
+                                          length: 6
+                                        right:
+                                          type: decimal_integer_literal
+                                          fields:
+                                            text: '1'
+                                          children: []
+                                          pos: 21677
+                                          length: 1
+                                      children: []
+                                      pos: 21668
+                                      length: 10
+                                  children: []
+                                  pos: 21667
+                                  length: 12
+                                right:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: greater_than
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: result
+                                          children: []
+                                          pos: 21684
+                                          length: 6
+                                        right:
+                                          type: identifier
+                                          fields:
+                                            text: LAST_WEEK_IN_YEAR
+                                          children: []
+                                          pos: 21693
+                                          length: 17
+                                      children: []
+                                      pos: 21684
+                                      length: 26
+                                  children: []
+                                  pos: 21683
+                                  length: 28
+                              children: []
+                              pos: 21667
+                              length: 44
+                          children: []
+                          pos: 21666
+                          length: 46
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: result = -1;
+                          children: []
+                          pos: 21732
+                          length: 12
+                        pos: 21713
+                        length: 46
+                      pos: 21663
+                      length: 96
+                    pos: 21605
+                    length: 165
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: "catch (NumberFormatException e) {\r\n            //
+                          suppress\r\n        }"
+                      children: []
+                      pos: 21780
+                      length: 69
+                    pos: 21601
+                    length: 248
+                children: []
+                pos: 21601
+                length: 248
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 21859
+                length: 14
+              pos: 21505
+              length: 377
+          children: []
+          pos: 21463
+          length: 419
+        pos: 4095
+        length: 17792
+    children: []
+    pos: 4095
+    length: 17792
+  pos: 0
+  length: 21889
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Week
+        children: []
+        pos: 4108
+        length: 4
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = 1856387786939865061L;
+          children: []
+          pos: 4203
+          length: 66
+        - type: field_declaration
+          fields:
+            text: public static final int FIRST_WEEK_IN_YEAR = 1;
+          children: []
+          pos: 4330
+          length: 47
+        - type: field_declaration
+          fields:
+            text: public static final int LAST_WEEK_IN_YEAR = 53;
+          children: []
+          pos: 4437
+          length: 47
+        - type: field_declaration
+          fields:
+            text: private short year;
+          children: []
+          pos: 4538
+          length: 19
+        - type: field_declaration
+          fields:
+            text: private byte week;
+          children: []
+          pos: 4594
+          length: 18
+        - type: field_declaration
+          fields:
+            text: private long firstMillisecond;
+          children: []
+          pos: 4655
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private long lastMillisecond;
+          children: []
+          pos: 4727
+          length: 29
+        - type: constructor_declaration
+          fields:
+            text: "public Week() {\r\n        this(new Date());\r\n    }"
+          children: []
+          pos: 4882
+          length: 49
+        - type: constructor_declaration
+          fields:
+            text: "public Week(int week, int year) {\r\n        if ((week < FIRST_WEEK_IN_YEAR)
+              && (week > LAST_WEEK_IN_YEAR)) {\r\n            throw new IllegalArgumentException(\r\n
+              \                   \"The 'week' argument must be in the range 1 - 53.\");\r\n
+              \       }\r\n        this.week = (byte) week;\r\n        this.year =
+              (short) year;\r\n        peg(Calendar.getInstance());\r\n    }"
+          children: []
+          pos: 5127
+          length: 355
+        - type: constructor_declaration
+          fields:
+            text: "public Week(int week, Year year) {\r\n        if ((week < FIRST_WEEK_IN_YEAR)
+              && (week > LAST_WEEK_IN_YEAR)) {\r\n            throw new IllegalArgumentException(\r\n
+              \                   \"The 'week' argument must be in the range 1 - 53.\");\r\n
+              \       }\r\n        this.week = (byte) week;\r\n        this.year =
+              (short) year.getYear();\r\n        peg(Calendar.getInstance());\r\n
+              \  }"
+          children: []
+          pos: 5678
+          length: 365
+        - type: constructor_declaration
+          fields:
+            text: "public Week(Date time) {\r\n        // defer argument checking...\r\n
+              \       this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());\r\n
+              \   }"
+          children: []
+          pos: 6233
+          length: 149
+        - type: constructor_declaration
+          fields:
+            text: "public Week(Date time, TimeZone zone) {\r\n        // defer argument
+              checking...\r\n        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE,
+              Locale.getDefault());\r\n    }"
+          children: []
+          pos: 6779
+          length: 164
+        - type: constructor_declaration
+          fields:
+            text: "public Week(Date time, TimeZone zone, Locale locale) {\r\n        if
+              (time == null) {\r\n            throw new IllegalArgumentException(\"Null
+              'time' argument.\");\r\n        }\r\n        if (zone == null) {\r\n
+              \           throw new IllegalArgumentException(\"Null 'zone' argument.\");\r\n
+              \       }\r\n        if (locale == null) {\r\n            throw new
+              IllegalArgumentException(\"Null 'locale' argument.\");\r\n        }\r\n
+              \       Calendar calendar = Calendar.getInstance(zone, locale);\r\n
+              \       calendar.setTime(time);\r\n\r\n        // sometimes the last
+              few days of the year are considered to fall in\r\n        // the *first*
+              week of the following year.  Refer to the Javadocs for\r\n        //
+              GregorianCalendar.\r\n        int tempWeek = calendar.get(Calendar.WEEK_OF_YEAR);\r\n
+              \       if (tempWeek == 1\r\n                && calendar.get(Calendar.MONTH)
+              == Calendar.DECEMBER) {\r\n            this.week = 1;\r\n            this.year
+              = (short) (calendar.get(Calendar.YEAR) + 1);\r\n        }\r\n        else
+              {\r\n            this.week = (byte) Math.min(tempWeek, LAST_WEEK_IN_YEAR);\r\n
+              \           int yyyy = calendar.get(Calendar.YEAR);\r\n            //
+              alternatively, sometimes the first few days of the year are\r\n            //
+              considered to fall in the *last* week of the previous year...\r\n            if
+              (calendar.get(Calendar.MONTH) == Calendar.JANUARY\r\n                    &&
+              this.week >= 52) {\r\n                yyyy--;\r\n            }\r\n            this.year
+              = (short) yyyy;\r\n        }\r\n        peg(calendar);\r\n    }"
+          children: []
+          pos: 7354
+          length: 1480
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getYear
+              children: []
+              pos: 8982
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8970
+              length: 67
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new Year(this.year);
+                children: []
+                pos: 9003
+                length: 27
+              pos: 8992
+              length: 45
+          children: []
+          pos: 8970
+          length: 67
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getYearValue
+              children: []
+              pos: 9179
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9168
+              length: 61
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.year;
+                children: []
+                pos: 9205
+                length: 17
+              pos: 9194
+              length: 35
+          children: []
+          pos: 9168
+          length: 61
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getWeek
+              children: []
+              pos: 9326
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9315
+              length: 56
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.week;
+                children: []
+                pos: 9347
+                length: 17
+              pos: 9336
+              length: 35
+          children: []
+          pos: 9315
+          length: 56
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFirstMillisecond
+              children: []
+              pos: 9764
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9752
+              length: 81
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.firstMillisecond;
+                children: []
+                pos: 9797
+                length: 29
+              pos: 9786
+              length: 47
+          children: []
+          pos: 9752
+          length: 81
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLastMillisecond
+              children: []
+              pos: 10225
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10213
+              length: 79
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.lastMillisecond;
+                children: []
+                pos: 10257
+                length: 28
+              pos: 10246
+              length: 46
+          children: []
+          pos: 10213
+          length: 79
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: peg
+              children: []
+              pos: 10596
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Calendar calendar
+                children: []
+                pos: 10600
+                length: 17
+              pos: 10584
+              length: 169
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: this.firstMillisecond = getFirstMillisecond(calendar);
+                children: []
+                pos: 10630
+                length: 54
+              - type: expression_statement
+                fields:
+                  text: this.lastMillisecond = getLastMillisecond(calendar);
+                children: []
+                pos: 10694
+                length: 52
+              pos: 10619
+              length: 134
+          children: []
+          pos: 10584
+          length: 169
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: previous
+              children: []
+              pos: 11186
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11161
+              length: 736
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Week result;
+                children: []
+                pos: 11210
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.week
+                            children: []
+                            pos: 11236
+                            length: 9
+                          right:
+                            type: identifier
+                            fields:
+                              text: FIRST_WEEK_IN_YEAR
+                            children: []
+                            pos: 11249
+                            length: 18
+                        children: []
+                        pos: 11236
+                        length: 31
+                    children: []
+                    pos: 11235
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = new Week(this.week - 1, this.year);
+                    children: []
+                    pos: 11284
+                    length: 44
+                  pos: 11269
+                  length: 70
+                pos: 11232
+                length: 632
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 11874
+                length: 14
+              pos: 11197
+              length: 700
+          children: []
+          pos: 11161
+          length: 736
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: next
+              children: []
+              pos: 12341
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12316
+              length: 807
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Week result;
+                children: []
+                pos: 12361
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.week
+                            children: []
+                            pos: 12387
+                            length: 9
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '52'
+                            children: []
+                            pos: 12399
+                            length: 2
+                        children: []
+                        pos: 12387
+                        length: 14
+                    children: []
+                    pos: 12386
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = new Week(this.week + 1, this.year);
+                    children: []
+                    pos: 12418
+                    length: 44
+                  pos: 12403
+                  length: 70
+                pos: 12383
+                length: 707
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 13100
+                length: 14
+              pos: 12348
+              length: 775
+          children: []
+          pos: 12316
+          length: 807
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSerialIndex
+              children: []
+              pos: 13262
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13250
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return this.year * 53L + this.week;
+                children: []
+                pos: 13290
+                length: 35
+              pos: 13279
+              length: 53
+          children: []
+          pos: 13250
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFirstMillisecond
+              children: []
+              pos: 13745
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Calendar calendar
+                children: []
+                pos: 13765
+                length: 17
+              pos: 13733
+              length: 540
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Calendar c = (Calendar) calendar.clone();
+                children: []
+                pos: 13795
+                length: 41
+              - type: expression_statement
+                fields:
+                  text: c.clear();
+                children: []
+                pos: 13846
+                length: 10
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.YEAR, this.year);
+                children: []
+                pos: 13866
+                length: 32
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.WEEK_OF_YEAR, this.week);
+                children: []
+                pos: 13908
+                length: 40
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek());
+                children: []
+                pos: 13958
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.HOUR, 0);
+                children: []
+                pos: 14019
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MINUTE, 0);
+                children: []
+                pos: 14053
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.SECOND, 0);
+                children: []
+                pos: 14089
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MILLISECOND, 0);
+                children: []
+                pos: 14125
+                length: 31
+              - type: return_statement
+                fields:
+                  text: return c.getTime().getTime();
+                children: []
+                pos: 14237
+                length: 29
+              pos: 13784
+              length: 489
+          children: []
+          pos: 13733
+          length: 540
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLastMillisecond
+              children: []
+              pos: 14684
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Calendar calendar
+                children: []
+                pos: 14703
+                length: 17
+              pos: 14672
+              length: 547
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Calendar c = (Calendar) calendar.clone();
+                children: []
+                pos: 14733
+                length: 41
+              - type: expression_statement
+                fields:
+                  text: c.clear();
+                children: []
+                pos: 14784
+                length: 10
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.YEAR, this.year);
+                children: []
+                pos: 14804
+                length: 32
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.WEEK_OF_YEAR, this.week + 1);
+                children: []
+                pos: 14846
+                length: 44
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek());
+                children: []
+                pos: 14900
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.HOUR, 0);
+                children: []
+                pos: 14961
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MINUTE, 0);
+                children: []
+                pos: 14995
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.SECOND, 0);
+                children: []
+                pos: 15031
+                length: 26
+              - type: expression_statement
+                fields:
+                  text: c.set(Calendar.MILLISECOND, 0);
+                children: []
+                pos: 15067
+                length: 31
+              - type: return_statement
+                fields:
+                  text: return c.getTime().getTime() - 1;
+                children: []
+                pos: 15179
+                length: 33
+              pos: 14722
+              length: 497
+          children: []
+          pos: 14672
+          length: 547
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toString
+              children: []
+              pos: 15437
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 15423
+              length: 89
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return "Week " + this.week + ", " + this.year;
+                children: []
+                pos: 15459
+                length: 46
+              pos: 15448
+              length: 64
+          children: []
+          pos: 15423
+          length: 89
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: equals
+              children: []
+              pos: 15944
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object obj
+                children: []
+                pos: 15951
+                length: 10
+              pos: 15929
+              length: 397
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: obj
+                            children: []
+                            pos: 15980
+                            length: 3
+                          right:
+                            type: this
+                            fields: {}
+                            children: []
+                            pos: 15987
+                            length: 4
+                        children: []
+                        pos: 15980
+                        length: 11
+                    children: []
+                    pos: 15979
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return true;
+                    children: []
+                    pos: 16008
+                    length: 12
+                  pos: 15993
+                  length: 38
+                pos: 15976
+                length: 55
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(obj instanceof Week)"
+                        children: []
+                        pos: 16045
+                        length: 22
+                    children: []
+                    pos: 16044
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 16084
+                    length: 13
+                  pos: 16069
+                  length: 39
+                pos: 16041
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: Week that = (Week) obj;
+                children: []
+                pos: 16118
+                length: 23
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.week
+                            children: []
+                            pos: 16155
+                            length: 9
+                          right:
+                            type: field_access
+                            fields:
+                              text: that.week
+                            children: []
+                            pos: 16168
+                            length: 9
+                        children: []
+                        pos: 16155
+                        length: 22
+                    children: []
+                    pos: 16154
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 16194
+                    length: 13
+                  pos: 16179
+                  length: 39
+                pos: 16151
+                length: 67
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: field_access
+                            fields:
+                              text: this.year
+                            children: []
+                            pos: 16232
+                            length: 9
+                          right:
+                            type: field_access
+                            fields:
+                              text: that.year
+                            children: []
+                            pos: 16245
+                            length: 9
+                        children: []
+                        pos: 16232
+                        length: 22
+                    children: []
+                    pos: 16231
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 16271
+                    length: 13
+                  pos: 16256
+                  length: 39
+                pos: 16228
+                length: 67
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 16305
+                length: 12
+              pos: 15963
+              length: 363
+          children: []
+          pos: 15929
+          length: 397
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hashCode
+              children: []
+              pos: 16657
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 16646
+              length: 166
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result = 17;
+                children: []
+                pos: 16679
+                length: 16
+              - type: expression_statement
+                fields:
+                  text: result = 37 * result + this.week;
+                children: []
+                pos: 16705
+                length: 33
+              - type: expression_statement
+                fields:
+                  text: result = 37 * result + this.year;
+                children: []
+                pos: 16748
+                length: 33
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 16791
+                length: 14
+              pos: 16668
+              length: 144
+          children: []
+          pos: 16646
+          length: 166
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: compareTo
+              children: []
+              pos: 17155
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Object o1
+                children: []
+                pos: 17165
+                length: 9
+              pos: 17144
+              length: 949
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result;
+                children: []
+                pos: 17189
+                length: 11
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: o1 instanceof Week
+                        children: []
+                        pos: 17327
+                        length: 18
+                    children: []
+                    pos: 17326
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Week w = (Week) o1;
+                    children: []
+                    pos: 17362
+                    length: 19
+                  - type: expression_statement
+                    fields:
+                      text: result = this.year - w.getYear().getYear();
+                    children: []
+                    pos: 17395
+                    length: 43
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: result
+                                children: []
+                                pos: 17456
+                                length: 6
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 17466
+                                length: 1
+                            children: []
+                            pos: 17456
+                            length: 11
+                        children: []
+                        pos: 17455
+                        length: 13
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: result = this.week - w.getWeek();
+                        children: []
+                        pos: 17488
+                        length: 33
+                      pos: 17469
+                      length: 67
+                    pos: 17452
+                    length: 84
+                  pos: 17347
+                  length: 200
+                pos: 17323
+                length: 735
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 18070
+                length: 14
+              pos: 17176
+              length: 917
+          children: []
+          pos: 17144
+          length: 949
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseWeek
+              children: []
+              pos: 18497
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 18507
+                length: 8
+              pos: 18478
+              length: 1629
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Week result = null;
+                children: []
+                pos: 18530
+                length: 19
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: s
+                            children: []
+                            pos: 18563
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 18568
+                            length: 4
+                        children: []
+                        pos: 18563
+                        length: 9
+                    children: []
+                    pos: 18562
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: s = s.trim();
+                    children: []
+                    pos: 18653
+                    length: 13
+                  - type: local_variable_declaration
+                    fields:
+                      text: int i = Week.findSeparator(s);
+                    children: []
+                    pos: 18682
+                    length: 30
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: i
+                                children: []
+                                pos: 18730
+                                length: 1
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "-1"
+                                children: []
+                                pos: 18735
+                                length: 2
+                            children: []
+                            pos: 18730
+                            length: 7
+                        children: []
+                        pos: 18729
+                        length: 9
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: String s1 = s.substring(0, i).trim();
+                        children: []
+                        pos: 18758
+                        length: 37
+                      - type: local_variable_declaration
+                        fields:
+                          text: String s2 = s.substring(i + 1, s.length()).trim();
+                        children: []
+                        pos: 18813
+                        length: 50
+                      - type: local_variable_declaration
+                        fields:
+                          text: Year y = Week.evaluateAsYear(s1);
+                        children: []
+                        pos: 18883
+                        length: 33
+                      - type: local_variable_declaration
+                        fields:
+                          text: int w;
+                        children: []
+                        pos: 18934
+                        length: 6
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: not_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: "y"
+                                    children: []
+                                    pos: 18962
+                                    length: 1
+                                  right:
+                                    type: null_literal
+                                    fields: {}
+                                    children: []
+                                    pos: 18967
+                                    length: 4
+                                children: []
+                                pos: 18962
+                                length: 9
+                            children: []
+                            pos: 18961
+                            length: 11
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: w = Week.stringToWeek(s2);
+                            children: []
+                            pos: 18996
+                            length: 26
+                          - type: if_statement
+                            fields:
+                              condition:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: w
+                                        children: []
+                                        pos: 19048
+                                        length: 1
+                                      right:
+                                        type: unary_expression
+                                        fields:
+                                          text: "-1"
+                                        children: []
+                                        pos: 19053
+                                        length: 2
+                                    children: []
+                                    pos: 19048
+                                    length: 7
+                                children: []
+                                pos: 19047
+                                length: 9
+                            children:
+                            - type: block
+                              fields: {}
+                              children:
+                              - type: throw_statement
+                                fields:
+                                  text: "throw new TimePeriodFormatException(\r\n
+                                    \                               \"Can't evaluate
+                                    the week.\");"
+                                children: []
+                                pos: 19084
+                                length: 98
+                              pos: 19057
+                              length: 148
+                            pos: 19044
+                            length: 161
+                          - type: expression_statement
+                            fields:
+                              text: result = new Week(w, y);
+                            children: []
+                            pos: 19227
+                            length: 24
+                          pos: 18973
+                          length: 297
+                        pos: 18958
+                        length: 942
+                      pos: 18739
+                      length: 1178
+                    pos: 18726
+                    length: 1335
+                  pos: 18574
+                  length: 1500
+                pos: 18559
+                length: 1515
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 20084
+                length: 14
+              pos: 18517
+              length: 1590
+          children: []
+          pos: 18478
+          length: 1629
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: findSeparator
+              children: []
+              pos: 20393
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 20407
+                length: 8
+              pos: 20374
+              length: 349
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result = s.indexOf('-');
+                children: []
+                pos: 20430
+                length: 28
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: result
+                            children: []
+                            pos: 20472
+                            length: 6
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 20482
+                            length: 2
+                        children: []
+                        pos: 20472
+                        length: 12
+                    children: []
+                    pos: 20471
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = s.indexOf(',');
+                    children: []
+                    pos: 20501
+                    length: 24
+                  pos: 20486
+                  length: 50
+                pos: 20468
+                length: 68
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: result
+                            children: []
+                            pos: 20550
+                            length: 6
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 20560
+                            length: 2
+                        children: []
+                        pos: 20550
+                        length: 12
+                    children: []
+                    pos: 20549
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = s.indexOf(' ');
+                    children: []
+                    pos: 20579
+                    length: 24
+                  pos: 20564
+                  length: 50
+                pos: 20546
+                length: 68
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: result
+                            children: []
+                            pos: 20628
+                            length: 6
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 20638
+                            length: 2
+                        children: []
+                        pos: 20628
+                        length: 12
+                    children: []
+                    pos: 20627
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: result = s.indexOf('.');
+                    children: []
+                    pos: 20657
+                    length: 24
+                  pos: 20642
+                  length: 50
+                pos: 20624
+                length: 68
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 20702
+                length: 14
+              pos: 20417
+              length: 306
+          children: []
+          pos: 20374
+          length: 349
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: evaluateAsYear
+              children: []
+              pos: 21016
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 21031
+                length: 8
+              pos: 20996
+              length: 260
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Year result = null;
+                children: []
+                pos: 21054
+                length: 19
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: result = Year.parseYear(s);
+                      children: []
+                      pos: 21102
+                      length: 27
+                    pos: 21087
+                    length: 53
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: "catch (TimePeriodFormatException e) {\r\n            //
+                          suppress\r\n        }"
+                      children: []
+                      pos: 21150
+                      length: 73
+                    pos: 21083
+                    length: 140
+                children: []
+                pos: 21083
+                length: 140
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 21233
+                length: 14
+              pos: 21041
+              length: 215
+          children: []
+          pos: 20996
+          length: 260
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stringToWeek
+              children: []
+              pos: 21513
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String s
+                children: []
+                pos: 21526
+                length: 8
+              pos: 21494
+              length: 419
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int result = -1;
+                children: []
+                pos: 21549
+                length: 16
+              - type: expression_statement
+                fields:
+                  text: s = s.replace('W', ' ');
+                children: []
+                pos: 21575
+                length: 24
+              - type: expression_statement
+                fields:
+                  text: s = s.trim();
+                children: []
+                pos: 21609
+                length: 13
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: result = Integer.parseInt(s);
+                      children: []
+                      pos: 21651
+                      length: 29
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: or
+                              fields:
+                                left:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: less_than
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: result
+                                          children: []
+                                          pos: 21699
+                                          length: 6
+                                        right:
+                                          type: decimal_integer_literal
+                                          fields:
+                                            text: '1'
+                                          children: []
+                                          pos: 21708
+                                          length: 1
+                                      children: []
+                                      pos: 21699
+                                      length: 10
+                                  children: []
+                                  pos: 21698
+                                  length: 12
+                                right:
+                                  type: parenthesized_expression
+                                  fields:
+                                    expression:
+                                      type: greater_than
+                                      fields:
+                                        left:
+                                          type: identifier
+                                          fields:
+                                            text: result
+                                          children: []
+                                          pos: 21715
+                                          length: 6
+                                        right:
+                                          type: identifier
+                                          fields:
+                                            text: LAST_WEEK_IN_YEAR
+                                          children: []
+                                          pos: 21724
+                                          length: 17
+                                      children: []
+                                      pos: 21715
+                                      length: 26
+                                  children: []
+                                  pos: 21714
+                                  length: 28
+                              children: []
+                              pos: 21698
+                              length: 44
+                          children: []
+                          pos: 21697
+                          length: 46
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: result = -1;
+                          children: []
+                          pos: 21763
+                          length: 12
+                        pos: 21744
+                        length: 46
+                      pos: 21694
+                      length: 96
+                    pos: 21636
+                    length: 165
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: "catch (NumberFormatException e) {\r\n            //
+                          suppress\r\n        }"
+                      children: []
+                      pos: 21811
+                      length: 69
+                    pos: 21632
+                    length: 248
+                children: []
+                pos: 21632
+                length: 248
+              - type: return_statement
+                fields:
+                  text: return result;
+                children: []
+                pos: 21890
+                length: 14
+              pos: 21536
+              length: 377
+          children: []
+          pos: 21494
+          length: 419
+        pos: 4095
+        length: 17823
+    children: []
+    pos: 4095
+    length: 17823
+  pos: 0
+  length: 21920
 text_diff: "--- before\n+++ after\n@@ -172,7 +172,7 @@\n      */\r\n     public Week(Date
   time, TimeZone zone) {\r\n         // defer argument checking...\r\n-        this(time,
   zone, Locale.getDefault());\r\n+        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE,

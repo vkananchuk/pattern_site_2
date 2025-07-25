@@ -1,5 +1,4129 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ZipArchiveInputStream
+        children: []
+        pos: 1596
+        length: 21
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final int SHORT = 2;
+          children: []
+          pos: 1652
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private static final int WORD = 4;
+          children: []
+          pos: 1692
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private final ZipEncoding zipEncoding;
+          children: []
+          pos: 1815
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private final boolean useUnicodeExtraFields;
+          children: []
+          pos: 1932
+          length: 44
+        - type: field_declaration
+          fields:
+            text: private final InputStream in;
+          children: []
+          pos: 1982
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final Inflater inf = new Inflater(true);
+          children: []
+          pos: 2017
+          length: 48
+        - type: field_declaration
+          fields:
+            text: private final CRC32 crc = new CRC32();
+          children: []
+          pos: 2070
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private final byte[] buf = new byte[ZipArchiveOutputStream.BUFFER_SIZE];
+          children: []
+          pos: 2114
+          length: 72
+        - type: field_declaration
+          fields:
+            text: private ZipArchiveEntry current = null;
+          children: []
+          pos: 2192
+          length: 39
+        - type: field_declaration
+          fields:
+            text: private boolean closed = false;
+          children: []
+          pos: 2236
+          length: 31
+        - type: field_declaration
+          fields:
+            text: private boolean hitCentralDirectory = false;
+          children: []
+          pos: 2272
+          length: 44
+        - type: field_declaration
+          fields:
+            text: private int readBytesOfEntry = 0, offsetInBuffer = 0;
+          children: []
+          pos: 2321
+          length: 53
+        - type: field_declaration
+          fields:
+            text: private int bytesReadFromStream = 0;
+          children: []
+          pos: 2379
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private int lengthOfLastRead = 0;
+          children: []
+          pos: 2420
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private boolean hasDataDescriptor = false;
+          children: []
+          pos: 2458
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private static final int LFH_LEN = 30;
+          children: []
+          pos: 2506
+          length: 38
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveInputStream(InputStream inputStream) {
+                      this(inputStream, ZipEncodingHelper.UTF8, true);
+                  }
+          children: []
+          pos: 3084
+          length: 118
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveInputStream(InputStream inputStream,
+                                               String encoding,
+                                               boolean useUnicodeExtraFields) {
+                      zipEncoding = ZipEncodingHelper.getZipEncoding(encoding);
+                      this.useUnicodeExtraFields = useUnicodeExtraFields;
+                      in = new PushbackInputStream(inputStream, buf.length);
+                  }
+          children: []
+          pos: 3458
+          length: 364
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNextZipEntry
+              children: []
+              pos: 3851
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3828
+              length: 2355
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: closed
+                            children: []
+                            pos: 3902
+                            length: 6
+                          right:
+                            type: identifier
+                            fields:
+                              text: hitCentralDirectory
+                            children: []
+                            pos: 3912
+                            length: 19
+                        children: []
+                        pos: 3902
+                        length: 29
+                    children: []
+                    pos: 3901
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 3947
+                    length: 12
+                  pos: 3933
+                  length: 36
+                pos: 3898
+                length: 71
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: current
+                            children: []
+                            pos: 3982
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 3993
+                            length: 4
+                        children: []
+                        pos: 3982
+                        length: 15
+                    children: []
+                    pos: 3981
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: closeEntry();
+                    children: []
+                    pos: 4013
+                    length: 13
+                  pos: 3999
+                  length: 37
+                pos: 3978
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] lfh = new byte[LFH_LEN];
+                children: []
+                pos: 4045
+                length: 31
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: readFully(lfh);
+                      children: []
+                      pos: 4103
+                      length: 15
+                    pos: 4089
+                    length: 39
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (EOFException e) {
+                                      return null;
+                                  }
+                      children: []
+                      pos: 4129
+                      length: 59
+                    pos: 4085
+                    length: 103
+                children: []
+                pos: 4085
+                length: 103
+              - type: local_variable_declaration
+                fields:
+                  text: ZipLong sig = new ZipLong(lfh);
+                children: []
+                pos: 4197
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: sig.equals(ZipLong.CFH_SIG)
+                        children: []
+                        pos: 4241
+                        length: 27
+                    children: []
+                    pos: 4240
+                    length: 29
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: hitCentralDirectory = true;
+                    children: []
+                    pos: 4284
+                    length: 27
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 4324
+                    length: 12
+                  pos: 4270
+                  length: 76
+                pos: 4237
+                length: 109
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!sig.equals(ZipLong.LFH_SIG)"
+                        children: []
+                        pos: 4359
+                        length: 28
+                    children: []
+                    pos: 4358
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 4403
+                    length: 12
+                  pos: 4389
+                  length: 36
+                pos: 4355
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: int off = WORD;
+                children: []
+                pos: 4435
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: current = new ZipArchiveEntry();
+                children: []
+                pos: 4459
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: int versionMadeBy = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 4501
+                length: 48
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 4558
+                length: 13
+              - type: expression_statement
+                fields:
+                  text: |-
+                    current.setPlatform((versionMadeBy >> ZipFile.BYTE_SHIFT)
+                                                & ZipFile.NIBLET_MASK);
+                children: []
+                pos: 4580
+                length: 109
+              - type: local_variable_declaration
+                fields:
+                  text: final int generalPurposeFlag = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 4699
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: "final boolean hasEFS = \n            (generalPurposeFlag
+                    & ZipArchiveOutputStream.EFS_FLAG) != 0;"
+                children: []
+                pos: 4767
+                length: 96
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final ZipEncoding entryEncoding =
+                                hasEFS ? ZipEncodingHelper.UTF8_ZIP_ENCODING : zipEncoding;
+                children: []
+                pos: 4872
+                length: 105
+              - type: expression_statement
+                fields:
+                  text: hasDataDescriptor = (generalPurposeFlag & 8) != 0;
+                children: []
+                pos: 4986
+                length: 50
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5046
+                length: 13
+              - type: expression_statement
+                fields:
+                  text: current.setMethod(ZipShort.getValue(lfh, off));
+                children: []
+                pos: 5069
+                length: 47
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5125
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: long time = ZipUtil.dosToJavaTime(ZipLong.getValue(lfh, off));
+                children: []
+                pos: 5148
+                length: 62
+              - type: expression_statement
+                fields:
+                  text: current.setTime(time);
+                children: []
+                pos: 5219
+                length: 22
+              - type: expression_statement
+                fields:
+                  text: off += WORD;
+                children: []
+                pos: 5250
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!hasDataDescriptor"
+                        children: []
+                        pos: 5276
+                        length: 18
+                    children: []
+                    pos: 5275
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: current.setCrc(ZipLong.getValue(lfh, off));
+                    children: []
+                    pos: 5310
+                    length: 43
+                  - type: expression_statement
+                    fields:
+                      text: off += WORD;
+                    children: []
+                    pos: 5366
+                    length: 12
+                  - type: expression_statement
+                    fields:
+                      text: current.setCompressedSize(ZipLong.getValue(lfh, off));
+                    children: []
+                    pos: 5392
+                    length: 54
+                  - type: expression_statement
+                    fields:
+                      text: off += WORD;
+                    children: []
+                    pos: 5459
+                    length: 12
+                  - type: expression_statement
+                    fields:
+                      text: current.setSize(ZipLong.getValue(lfh, off));
+                    children: []
+                    pos: 5485
+                    length: 44
+                  - type: expression_statement
+                    fields:
+                      text: off += WORD;
+                    children: []
+                    pos: 5542
+                    length: 12
+                  pos: 5296
+                  length: 268
+                pos: 5272
+                length: 338
+              - type: local_variable_declaration
+                fields:
+                  text: int fileNameLen = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 5620
+                length: 46
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5676
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: int extraLen = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 5699
+                length: 43
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5751
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] fileName = new byte[fileNameLen];
+                children: []
+                pos: 5774
+                length: 40
+              - type: expression_statement
+                fields:
+                  text: readFully(fileName);
+                children: []
+                pos: 5823
+                length: 20
+              - type: expression_statement
+                fields:
+                  text: current.setName(entryEncoding.decode(fileName));
+                children: []
+                pos: 5852
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] extraData = new byte[extraLen];
+                children: []
+                pos: 5910
+                length: 38
+              - type: expression_statement
+                fields:
+                  text: readFully(extraData);
+                children: []
+                pos: 5957
+                length: 21
+              - type: expression_statement
+                fields:
+                  text: current.setExtra(extraData);
+                children: []
+                pos: 5987
+                length: 28
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: unary_expression
+                            fields:
+                              text: "!hasEFS"
+                            children: []
+                            pos: 6029
+                            length: 7
+                          right:
+                            type: identifier
+                            fields:
+                              text: useUnicodeExtraFields
+                            children: []
+                            pos: 6040
+                            length: 21
+                        children: []
+                        pos: 6029
+                        length: 32
+                    children: []
+                    pos: 6028
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ZipUtil.setNameAndCommentFromExtraFields(current, fileName,
+                        null);
+                    children: []
+                    pos: 6077
+                    length: 66
+                  pos: 6063
+                  length: 90
+                pos: 6025
+                length: 128
+              - type: return_statement
+                fields:
+                  text: return current;
+                children: []
+                pos: 6162
+                length: 15
+              pos: 3888
+              length: 2295
+          children: []
+          pos: 3828
+          length: 2355
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNextEntry
+              children: []
+              pos: 6209
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6189
+              length: 95
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getNextZipEntry();
+                children: []
+                pos: 6253
+                length: 25
+              pos: 6243
+              length: 41
+          children: []
+          pos: 6189
+          length: 95
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: read
+              children: []
+              pos: 6301
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] buffer
+                children: []
+                pos: 6306
+                length: 13
+              pos: 6290
+              length: 2315
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: closed
+                        children: []
+                        pos: 6377
+                        length: 6
+                    children: []
+                    pos: 6376
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IOException("The stream is closed");
+                    children: []
+                    pos: 6399
+                    length: 46
+                  pos: 6385
+                  length: 70
+                pos: 6373
+                length: 82
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: inf.finished()
+                            children: []
+                            pos: 6468
+                            length: 14
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: current
+                                children: []
+                                pos: 6486
+                                length: 7
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6497
+                                length: 4
+                            children: []
+                            pos: 6486
+                            length: 15
+                        children: []
+                        pos: 6468
+                        length: 33
+                    children: []
+                    pos: 6467
+                    length: 35
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return -1;
+                    children: []
+                    pos: 6517
+                    length: 10
+                  pos: 6503
+                  length: 34
+                pos: 6464
+                length: 73
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: and
+                            fields:
+                              left:
+                                type: and
+                                fields:
+                                  left:
+                                    type: less_or_equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: start
+                                        children: []
+                                        pos: 6600
+                                        length: 5
+                                      right:
+                                        type: field_access
+                                        fields:
+                                          text: buffer.length
+                                        children: []
+                                        pos: 6609
+                                        length: 13
+                                    children: []
+                                    pos: 6600
+                                    length: 22
+                                  right:
+                                    type: greater_or_equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: length
+                                        children: []
+                                        pos: 6626
+                                        length: 6
+                                      right:
+                                        type: decimal_integer_literal
+                                        fields:
+                                          text: '0'
+                                        children: []
+                                        pos: 6636
+                                        length: 1
+                                    children: []
+                                    pos: 6626
+                                    length: 11
+                                children: []
+                                pos: 6600
+                                length: 37
+                              right:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: start
+                                    children: []
+                                    pos: 6641
+                                    length: 5
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 6650
+                                    length: 1
+                                children: []
+                                pos: 6641
+                                length: 10
+                            children: []
+                            pos: 6600
+                            length: 51
+                          right:
+                            type: greater_or_equals
+                            fields:
+                              left:
+                                type: minus
+                                fields:
+                                  left:
+                                    type: field_access
+                                    fields:
+                                      text: buffer.length
+                                    children: []
+                                    pos: 6667
+                                    length: 13
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: start
+                                    children: []
+                                    pos: 6683
+                                    length: 5
+                                children: []
+                                pos: 6667
+                                length: 21
+                              right:
+                                type: identifier
+                                fields:
+                                  text: length
+                                children: []
+                                pos: 6692
+                                length: 6
+                            children: []
+                            pos: 6667
+                            length: 31
+                        children: []
+                        pos: 6600
+                        length: 98
+                    children: []
+                    pos: 6599
+                    length: 100
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: current.getMethod()
+                                children: []
+                                pos: 6718
+                                length: 19
+                              right:
+                                type: field_access
+                                fields:
+                                  text: ZipArchiveOutputStream.STORED
+                                children: []
+                                pos: 6741
+                                length: 29
+                            children: []
+                            pos: 6718
+                            length: 52
+                        children: []
+                        pos: 6717
+                        length: 54
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: int csize = (int) current.getSize();
+                        children: []
+                        pos: 6790
+                        length: 36
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: readBytesOfEntry
+                                    children: []
+                                    pos: 6847
+                                    length: 16
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: csize
+                                    children: []
+                                    pos: 6867
+                                    length: 5
+                                children: []
+                                pos: 6847
+                                length: 25
+                            children: []
+                            pos: 6846
+                            length: 27
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return -1;
+                            children: []
+                            pos: 6896
+                            length: 10
+                          pos: 6874
+                          length: 50
+                        pos: 6843
+                        length: 81
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: offsetInBuffer
+                                    children: []
+                                    pos: 6945
+                                    length: 14
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: lengthOfLastRead
+                                    children: []
+                                    pos: 6963
+                                    length: 16
+                                children: []
+                                pos: 6945
+                                length: 34
+                            children: []
+                            pos: 6944
+                            length: 36
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: offsetInBuffer = 0;
+                            children: []
+                            pos: 7003
+                            length: 19
+                          - type: if_statement
+                            fields:
+                              condition:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: equals
+                                    fields:
+                                      left:
+                                        type: parenthesized_expression
+                                        fields:
+                                          expression:
+                                            type: assignment_expression
+                                            fields:
+                                              text: lengthOfLastRead = in.read(buf)
+                                            children: []
+                                            pos: 7048
+                                            length: 31
+                                        children: []
+                                        pos: 7047
+                                        length: 33
+                                      right:
+                                        type: unary_expression
+                                        fields:
+                                          text: "-1"
+                                        children: []
+                                        pos: 7084
+                                        length: 2
+                                    children: []
+                                    pos: 7047
+                                    length: 39
+                                children: []
+                                pos: 7046
+                                length: 41
+                            children:
+                            - type: block
+                              fields: {}
+                              children:
+                              - type: return_statement
+                                fields:
+                                  text: return -1;
+                                children: []
+                                pos: 7114
+                                length: 10
+                              pos: 7088
+                              length: 58
+                            pos: 7043
+                            length: 103
+                          - type: expression_statement
+                            fields:
+                              text: count(lengthOfLastRead);
+                            children: []
+                            pos: 7167
+                            length: 24
+                          - type: expression_statement
+                            fields:
+                              text: bytesReadFromStream += lengthOfLastRead;
+                            children: []
+                            pos: 7212
+                            length: 40
+                          pos: 6981
+                          length: 289
+                        pos: 6941
+                        length: 329
+                      - type: local_variable_declaration
+                        fields:
+                          text: |-
+                            int toRead = length > lengthOfLastRead
+                                                ? lengthOfLastRead - offsetInBuffer
+                                                : length;
+                        children: []
+                        pos: 7287
+                        length: 124
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: less_than
+                                fields:
+                                  left:
+                                    type: parenthesized_expression
+                                    fields:
+                                      expression:
+                                        type: minus
+                                        fields:
+                                          left:
+                                            type: identifier
+                                            fields:
+                                              text: csize
+                                            children: []
+                                            pos: 7433
+                                            length: 5
+                                          right:
+                                            type: identifier
+                                            fields:
+                                              text: readBytesOfEntry
+                                            children: []
+                                            pos: 7441
+                                            length: 16
+                                        children: []
+                                        pos: 7433
+                                        length: 24
+                                    children: []
+                                    pos: 7432
+                                    length: 26
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: toRead
+                                    children: []
+                                    pos: 7461
+                                    length: 6
+                                children: []
+                                pos: 7432
+                                length: 35
+                            children: []
+                            pos: 7431
+                            length: 37
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: toRead = csize - readBytesOfEntry;
+                            children: []
+                            pos: 7491
+                            length: 34
+                          pos: 7469
+                          length: 74
+                        pos: 7428
+                        length: 115
+                      - type: expression_statement
+                        fields:
+                          text: System.arraycopy(buf, offsetInBuffer, buffer, start,
+                            toRead);
+                        children: []
+                        pos: 7560
+                        length: 61
+                      - type: expression_statement
+                        fields:
+                          text: offsetInBuffer += toRead;
+                        children: []
+                        pos: 7638
+                        length: 25
+                      - type: expression_statement
+                        fields:
+                          text: readBytesOfEntry += toRead;
+                        children: []
+                        pos: 7680
+                        length: 27
+                      - type: expression_statement
+                        fields:
+                          text: crc.update(buffer, start, toRead);
+                        children: []
+                        pos: 7724
+                        length: 34
+                      - type: return_statement
+                        fields:
+                          text: return toRead;
+                        children: []
+                        pos: 7775
+                        length: 14
+                      pos: 6772
+                      length: 1031
+                    pos: 6714
+                    length: 1089
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: inf.needsInput()
+                            children: []
+                            pos: 7820
+                            length: 16
+                        children: []
+                        pos: 7819
+                        length: 18
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: fill();
+                        children: []
+                        pos: 7856
+                        length: 7
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_than
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: lengthOfLastRead
+                                    children: []
+                                    pos: 7884
+                                    length: 16
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 7903
+                                    length: 1
+                                children: []
+                                pos: 7884
+                                length: 20
+                            children: []
+                            pos: 7883
+                            length: 22
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: bytesReadFromStream += lengthOfLastRead;
+                            children: []
+                            pos: 7928
+                            length: 40
+                          pos: 7906
+                          length: 80
+                        pos: 7880
+                        length: 106
+                      pos: 7838
+                      length: 162
+                    pos: 7816
+                    length: 184
+                  - type: local_variable_declaration
+                    fields:
+                      text: int read = 0;
+                    children: []
+                    pos: 8013
+                    length: 13
+                  - type: try_statement
+                    fields:
+                      body:
+                        type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: read = inf.inflate(buffer, start, length);
+                          children: []
+                          pos: 8061
+                          length: 42
+                        pos: 8043
+                        length: 74
+                      excepts:
+                        type: excepts
+                        fields: {}
+                        children:
+                        - type: catch_clause
+                          fields:
+                            text: |-
+                              catch (DataFormatException e) {
+                                              throw new ZipException(e.getMessage());
+                                          }
+                          children: []
+                          pos: 8118
+                          length: 101
+                        pos: 8039
+                        length: 180
+                    children: []
+                    pos: 8039
+                    length: 180
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: read
+                                children: []
+                                pos: 8236
+                                length: 4
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 8244
+                                length: 1
+                            children: []
+                            pos: 8236
+                            length: 9
+                        children: []
+                        pos: 8235
+                        length: 11
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: method_invocation
+                                fields:
+                                  text: inf.finished()
+                                children: []
+                                pos: 8269
+                                length: 14
+                            children: []
+                            pos: 8268
+                            length: 16
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return -1;
+                            children: []
+                            pos: 8307
+                            length: 10
+                          pos: 8285
+                          length: 50
+                        pos: 8265
+                        length: 188
+                      pos: 8247
+                      length: 220
+                    pos: 8232
+                    length: 235
+                  - type: expression_statement
+                    fields:
+                      text: crc.update(buffer, start, read);
+                    children: []
+                    pos: 8480
+                    length: 32
+                  - type: return_statement
+                    fields:
+                      text: return read;
+                    children: []
+                    pos: 8525
+                    length: 12
+                  pos: 6700
+                  length: 1847
+                pos: 6596
+                length: 1951
+              - type: throw_statement
+                fields:
+                  text: throw new ArrayIndexOutOfBoundsException();
+                children: []
+                pos: 8556
+                length: 43
+              pos: 6363
+              length: 2242
+          children: []
+          pos: 6290
+          length: 2315
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: close
+              children: []
+              pos: 8623
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8611
+              length: 130
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!closed"
+                        children: []
+                        pos: 8664
+                        length: 7
+                    children: []
+                    pos: 8663
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: closed = true;
+                    children: []
+                    pos: 8687
+                    length: 14
+                  - type: expression_statement
+                    fields:
+                      text: in.close();
+                    children: []
+                    pos: 8714
+                    length: 11
+                  pos: 8673
+                  length: 62
+                pos: 8660
+                length: 75
+              pos: 8650
+              length: 91
+          children: []
+          pos: 8611
+          length: 130
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: skip
+              children: []
+              pos: 8759
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long value
+                children: []
+                pos: 8764
+                length: 10
+              pos: 8747
+              length: 523
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 8809
+                            length: 5
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 8818
+                            length: 1
+                        children: []
+                        pos: 8809
+                        length: 10
+                    children: []
+                    pos: 8808
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: long skipped = 0;
+                    children: []
+                    pos: 8835
+                    length: 17
+                  - type: local_variable_declaration
+                    fields:
+                      text: byte[] b = new byte[1024];
+                    children: []
+                    pos: 8865
+                    length: 26
+                  - type: while_statement
+                    fields:
+                      text: |-
+                        while (skipped != value) {
+                                        long rem = value - skipped;
+                                        int x = read(b, 0, (int) (b.length > rem ? rem : b.length));
+                                        if (x == -1) {
+                                            return skipped;
+                                        }
+                                        skipped += x;
+                                    }
+                    children: []
+                    pos: 8904
+                    length: 276
+                  - type: return_statement
+                    fields:
+                      text: return skipped;
+                    children: []
+                    pos: 9193
+                    length: 15
+                  pos: 8821
+                  length: 397
+                pos: 8805
+                length: 413
+              - type: throw_statement
+                fields:
+                  text: throw new IllegalArgumentException();
+                children: []
+                pos: 9227
+                length: 37
+              pos: 8795
+              length: 475
+          children: []
+          pos: 8747
+          length: 523
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matches
+              children: []
+              pos: 9495
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] signature
+                children: []
+                pos: 9503
+                length: 16
+              pos: 9473
+              length: 330
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: length
+                            children: []
+                            pos: 9547
+                            length: 6
+                          right:
+                            type: field_access
+                            fields:
+                              text: ZipArchiveOutputStream.LFH_SIG.length
+                            children: []
+                            pos: 9556
+                            length: 37
+                        children: []
+                        pos: 9547
+                        length: 46
+                    children: []
+                    pos: 9546
+                    length: 48
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 9609
+                    length: 13
+                  pos: 9595
+                  length: 37
+                pos: 9543
+                length: 89
+              - type: return_statement
+                fields:
+                  text: |-
+                    return checksig(signature, ZipArchiveOutputStream.LFH_SIG) // normal file
+                                || checksig(signature, ZipArchiveOutputStream.EOCD_SIG);
+                children: []
+                pos: 9642
+                length: 142
+              pos: 9533
+              length: 270
+          children: []
+          pos: 9473
+          length: 330
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checksig
+              children: []
+              pos: 9832
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] signature
+                children: []
+                pos: 9841
+                length: 16
+              pos: 9809
+              length: 255
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < expected.length; i++) {
+                                if (signature[i] != expected[i]) {
+                                    return false;
+                                }
+                            }
+                children: []
+                pos: 9885
+                length: 144
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 10038
+                length: 12
+              pos: 9875
+              length: 189
+          children: []
+          pos: 9809
+          length: 255
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: closeEntry
+              children: []
+              pos: 10083
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10070
+              length: 973
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: closed
+                        children: []
+                        pos: 10129
+                        length: 6
+                    children: []
+                    pos: 10128
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IOException("The stream is closed");
+                    children: []
+                    pos: 10151
+                    length: 46
+                  pos: 10137
+                  length: 70
+                pos: 10125
+                length: 82
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: current
+                            children: []
+                            pos: 10220
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10231
+                            length: 4
+                        children: []
+                        pos: 10220
+                        length: 15
+                    children: []
+                    pos: 10219
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 10251
+                    length: 7
+                  pos: 10237
+                  length: 31
+                pos: 10216
+                length: 52
+              - type: expression_statement
+                fields:
+                  text: skip(Long.MAX_VALUE);
+                children: []
+                pos: 10320
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: int inB;
+                children: []
+                pos: 10350
+                length: 8
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: current.getMethod()
+                            children: []
+                            pos: 10371
+                            length: 19
+                          right:
+                            type: field_access
+                            fields:
+                              text: ZipArchiveOutputStream.DEFLATED
+                            children: []
+                            pos: 10394
+                            length: 31
+                        children: []
+                        pos: 10371
+                        length: 54
+                    children: []
+                    pos: 10370
+                    length: 56
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: inB = inf.getTotalIn();
+                    children: []
+                    pos: 10441
+                    length: 23
+                  pos: 10427
+                  length: 47
+                pos: 10367
+                length: 160
+              - type: local_variable_declaration
+                fields:
+                  text: int diff = 0;
+                children: []
+                pos: 10536
+                length: 13
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: assignment_expression
+                                fields:
+                                  text: diff = bytesReadFromStream - inB
+                                children: []
+                                pos: 10603
+                                length: 32
+                            children: []
+                            pos: 10602
+                            length: 34
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 10640
+                            length: 1
+                        children: []
+                        pos: 10602
+                        length: 39
+                    children: []
+                    pos: 10601
+                    length: 41
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        ((PushbackInputStream) in).unread(buf,
+                                                                      lengthOfLastRead - diff, diff);
+                    children: []
+                    pos: 10657
+                    length: 116
+                  pos: 10643
+                  length: 140
+                pos: 10598
+                length: 185
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: hasDataDescriptor
+                        children: []
+                        pos: 10797
+                        length: 17
+                    children: []
+                    pos: 10796
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: readFully(new byte[4 * WORD]);
+                    children: []
+                    pos: 10830
+                    length: 30
+                  pos: 10816
+                  length: 54
+                pos: 10793
+                length: 77
+              - type: expression_statement
+                fields:
+                  text: inf.reset();
+                children: []
+                pos: 10880
+                length: 12
+              - type: expression_statement
+                fields:
+                  text: |-
+                    readBytesOfEntry = offsetInBuffer = bytesReadFromStream =
+                                lengthOfLastRead = 0;
+                children: []
+                pos: 10901
+                length: 91
+              - type: expression_statement
+                fields:
+                  text: crc.reset();
+                children: []
+                pos: 11001
+                length: 12
+              - type: expression_statement
+                fields:
+                  text: current = null;
+                children: []
+                pos: 11022
+                length: 15
+              pos: 10115
+              length: 928
+          children: []
+          pos: 10070
+          length: 973
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: fill
+              children: []
+              pos: 11062
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11049
+              length: 252
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: closed
+                        children: []
+                        pos: 11102
+                        length: 6
+                    children: []
+                    pos: 11101
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IOException("The stream is closed");
+                    children: []
+                    pos: 11124
+                    length: 46
+                  pos: 11110
+                  length: 70
+                pos: 11098
+                length: 82
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_than
+                        fields:
+                          left:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: assignment_expression
+                                fields:
+                                  text: lengthOfLastRead = in.read(buf)
+                                children: []
+                                pos: 11194
+                                length: 31
+                            children: []
+                            pos: 11193
+                            length: 33
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 11229
+                            length: 1
+                        children: []
+                        pos: 11193
+                        length: 37
+                    children: []
+                    pos: 11192
+                    length: 39
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: inf.setInput(buf, 0, lengthOfLastRead);
+                    children: []
+                    pos: 11246
+                    length: 39
+                  pos: 11232
+                  length: 63
+                pos: 11189
+                length: 106
+              pos: 11088
+              length: 213
+          children: []
+          pos: 11049
+          length: 252
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readFully
+              children: []
+              pos: 11320
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] b
+                children: []
+                pos: 11330
+                length: 8
+              pos: 11307
+              length: 280
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int count = 0, x = 0;
+                children: []
+                pos: 11369
+                length: 21
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (count != b.length) {
+                                count += x = in.read(b, count, b.length - count);
+                                if (x == -1) {
+                                    throw new EOFException();
+                                }
+                            }
+                children: []
+                pos: 11399
+                length: 182
+              pos: 11359
+              length: 228
+          children: []
+          pos: 11307
+          length: 280
+        pos: 1583
+        length: 10006
+    children: []
+    pos: 1583
+    length: 10006
+  pos: 0
+  length: 11590
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: ZipArchiveInputStream
+        children: []
+        pos: 1596
+        length: 21
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final int SHORT = 2;
+          children: []
+          pos: 1652
+          length: 35
+        - type: field_declaration
+          fields:
+            text: private static final int WORD = 4;
+          children: []
+          pos: 1692
+          length: 34
+        - type: field_declaration
+          fields:
+            text: private final ZipEncoding zipEncoding;
+          children: []
+          pos: 1815
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private final boolean useUnicodeExtraFields;
+          children: []
+          pos: 1932
+          length: 44
+        - type: field_declaration
+          fields:
+            text: private final InputStream in;
+          children: []
+          pos: 1982
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final Inflater inf = new Inflater(true);
+          children: []
+          pos: 2017
+          length: 48
+        - type: field_declaration
+          fields:
+            text: private final CRC32 crc = new CRC32();
+          children: []
+          pos: 2070
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private final byte[] buf = new byte[ZipArchiveOutputStream.BUFFER_SIZE];
+          children: []
+          pos: 2114
+          length: 72
+        - type: field_declaration
+          fields:
+            text: private ZipArchiveEntry current = null;
+          children: []
+          pos: 2192
+          length: 39
+        - type: field_declaration
+          fields:
+            text: private boolean closed = false;
+          children: []
+          pos: 2236
+          length: 31
+        - type: field_declaration
+          fields:
+            text: private boolean hitCentralDirectory = false;
+          children: []
+          pos: 2272
+          length: 44
+        - type: field_declaration
+          fields:
+            text: private int readBytesOfEntry = 0, offsetInBuffer = 0;
+          children: []
+          pos: 2321
+          length: 53
+        - type: field_declaration
+          fields:
+            text: private int bytesReadFromStream = 0;
+          children: []
+          pos: 2379
+          length: 36
+        - type: field_declaration
+          fields:
+            text: private int lengthOfLastRead = 0;
+          children: []
+          pos: 2420
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private boolean hasDataDescriptor = false;
+          children: []
+          pos: 2458
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private static final int LFH_LEN = 30;
+          children: []
+          pos: 2506
+          length: 38
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveInputStream(InputStream inputStream) {
+                      this(inputStream, ZipEncodingHelper.UTF8, true);
+                  }
+          children: []
+          pos: 3084
+          length: 118
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public ZipArchiveInputStream(InputStream inputStream,
+                                               String encoding,
+                                               boolean useUnicodeExtraFields) {
+                      zipEncoding = ZipEncodingHelper.getZipEncoding(encoding);
+                      this.useUnicodeExtraFields = useUnicodeExtraFields;
+                      in = new PushbackInputStream(inputStream, buf.length);
+                  }
+          children: []
+          pos: 3458
+          length: 364
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNextZipEntry
+              children: []
+              pos: 3851
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3828
+              length: 2355
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: closed
+                            children: []
+                            pos: 3902
+                            length: 6
+                          right:
+                            type: identifier
+                            fields:
+                              text: hitCentralDirectory
+                            children: []
+                            pos: 3912
+                            length: 19
+                        children: []
+                        pos: 3902
+                        length: 29
+                    children: []
+                    pos: 3901
+                    length: 31
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 3947
+                    length: 12
+                  pos: 3933
+                  length: 36
+                pos: 3898
+                length: 71
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: current
+                            children: []
+                            pos: 3982
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 3993
+                            length: 4
+                        children: []
+                        pos: 3982
+                        length: 15
+                    children: []
+                    pos: 3981
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: closeEntry();
+                    children: []
+                    pos: 4013
+                    length: 13
+                  pos: 3999
+                  length: 37
+                pos: 3978
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] lfh = new byte[LFH_LEN];
+                children: []
+                pos: 4045
+                length: 31
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: readFully(lfh);
+                      children: []
+                      pos: 4103
+                      length: 15
+                    pos: 4089
+                    length: 39
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (EOFException e) {
+                                      return null;
+                                  }
+                      children: []
+                      pos: 4129
+                      length: 59
+                    pos: 4085
+                    length: 103
+                children: []
+                pos: 4085
+                length: 103
+              - type: local_variable_declaration
+                fields:
+                  text: ZipLong sig = new ZipLong(lfh);
+                children: []
+                pos: 4197
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: sig.equals(ZipLong.CFH_SIG)
+                        children: []
+                        pos: 4241
+                        length: 27
+                    children: []
+                    pos: 4240
+                    length: 29
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: hitCentralDirectory = true;
+                    children: []
+                    pos: 4284
+                    length: 27
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 4324
+                    length: 12
+                  pos: 4270
+                  length: 76
+                pos: 4237
+                length: 109
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!sig.equals(ZipLong.LFH_SIG)"
+                        children: []
+                        pos: 4359
+                        length: 28
+                    children: []
+                    pos: 4358
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 4403
+                    length: 12
+                  pos: 4389
+                  length: 36
+                pos: 4355
+                length: 70
+              - type: local_variable_declaration
+                fields:
+                  text: int off = WORD;
+                children: []
+                pos: 4435
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: current = new ZipArchiveEntry();
+                children: []
+                pos: 4459
+                length: 32
+              - type: local_variable_declaration
+                fields:
+                  text: int versionMadeBy = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 4501
+                length: 48
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 4558
+                length: 13
+              - type: expression_statement
+                fields:
+                  text: |-
+                    current.setPlatform((versionMadeBy >> ZipFile.BYTE_SHIFT)
+                                                & ZipFile.NIBLET_MASK);
+                children: []
+                pos: 4580
+                length: 109
+              - type: local_variable_declaration
+                fields:
+                  text: final int generalPurposeFlag = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 4699
+                length: 59
+              - type: local_variable_declaration
+                fields:
+                  text: "final boolean hasEFS = \n            (generalPurposeFlag
+                    & ZipArchiveOutputStream.EFS_FLAG) != 0;"
+                children: []
+                pos: 4767
+                length: 96
+              - type: local_variable_declaration
+                fields:
+                  text: |-
+                    final ZipEncoding entryEncoding =
+                                hasEFS ? ZipEncodingHelper.UTF8_ZIP_ENCODING : zipEncoding;
+                children: []
+                pos: 4872
+                length: 105
+              - type: expression_statement
+                fields:
+                  text: hasDataDescriptor = (generalPurposeFlag & 8) != 0;
+                children: []
+                pos: 4986
+                length: 50
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5046
+                length: 13
+              - type: expression_statement
+                fields:
+                  text: current.setMethod(ZipShort.getValue(lfh, off));
+                children: []
+                pos: 5069
+                length: 47
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5125
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: long time = ZipUtil.dosToJavaTime(ZipLong.getValue(lfh, off));
+                children: []
+                pos: 5148
+                length: 62
+              - type: expression_statement
+                fields:
+                  text: current.setTime(time);
+                children: []
+                pos: 5219
+                length: 22
+              - type: expression_statement
+                fields:
+                  text: off += WORD;
+                children: []
+                pos: 5250
+                length: 12
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!hasDataDescriptor"
+                        children: []
+                        pos: 5276
+                        length: 18
+                    children: []
+                    pos: 5275
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: current.setCrc(ZipLong.getValue(lfh, off));
+                    children: []
+                    pos: 5310
+                    length: 43
+                  - type: expression_statement
+                    fields:
+                      text: off += WORD;
+                    children: []
+                    pos: 5366
+                    length: 12
+                  - type: expression_statement
+                    fields:
+                      text: current.setCompressedSize(ZipLong.getValue(lfh, off));
+                    children: []
+                    pos: 5392
+                    length: 54
+                  - type: expression_statement
+                    fields:
+                      text: off += WORD;
+                    children: []
+                    pos: 5459
+                    length: 12
+                  - type: expression_statement
+                    fields:
+                      text: current.setSize(ZipLong.getValue(lfh, off));
+                    children: []
+                    pos: 5485
+                    length: 44
+                  - type: expression_statement
+                    fields:
+                      text: off += WORD;
+                    children: []
+                    pos: 5542
+                    length: 12
+                  pos: 5296
+                  length: 268
+                pos: 5272
+                length: 338
+              - type: local_variable_declaration
+                fields:
+                  text: int fileNameLen = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 5620
+                length: 46
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5676
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: int extraLen = ZipShort.getValue(lfh, off);
+                children: []
+                pos: 5699
+                length: 43
+              - type: expression_statement
+                fields:
+                  text: off += SHORT;
+                children: []
+                pos: 5751
+                length: 13
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] fileName = new byte[fileNameLen];
+                children: []
+                pos: 5774
+                length: 40
+              - type: expression_statement
+                fields:
+                  text: readFully(fileName);
+                children: []
+                pos: 5823
+                length: 20
+              - type: expression_statement
+                fields:
+                  text: current.setName(entryEncoding.decode(fileName));
+                children: []
+                pos: 5852
+                length: 48
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] extraData = new byte[extraLen];
+                children: []
+                pos: 5910
+                length: 38
+              - type: expression_statement
+                fields:
+                  text: readFully(extraData);
+                children: []
+                pos: 5957
+                length: 21
+              - type: expression_statement
+                fields:
+                  text: current.setExtra(extraData);
+                children: []
+                pos: 5987
+                length: 28
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: unary_expression
+                            fields:
+                              text: "!hasEFS"
+                            children: []
+                            pos: 6029
+                            length: 7
+                          right:
+                            type: identifier
+                            fields:
+                              text: useUnicodeExtraFields
+                            children: []
+                            pos: 6040
+                            length: 21
+                        children: []
+                        pos: 6029
+                        length: 32
+                    children: []
+                    pos: 6028
+                    length: 34
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: ZipUtil.setNameAndCommentFromExtraFields(current, fileName,
+                        null);
+                    children: []
+                    pos: 6077
+                    length: 66
+                  pos: 6063
+                  length: 90
+                pos: 6025
+                length: 128
+              - type: return_statement
+                fields:
+                  text: return current;
+                children: []
+                pos: 6162
+                length: 15
+              pos: 3888
+              length: 2295
+          children: []
+          pos: 3828
+          length: 2355
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNextEntry
+              children: []
+              pos: 6209
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6189
+              length: 95
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return getNextZipEntry();
+                children: []
+                pos: 6253
+                length: 25
+              pos: 6243
+              length: 41
+          children: []
+          pos: 6189
+          length: 95
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: read
+              children: []
+              pos: 6301
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] buffer
+                children: []
+                pos: 6306
+                length: 13
+              pos: 6290
+              length: 2155
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: closed
+                        children: []
+                        pos: 6377
+                        length: 6
+                    children: []
+                    pos: 6376
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IOException("The stream is closed");
+                    children: []
+                    pos: 6399
+                    length: 46
+                  pos: 6385
+                  length: 70
+                pos: 6373
+                length: 82
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: inf.finished()
+                            children: []
+                            pos: 6468
+                            length: 14
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: current
+                                children: []
+                                pos: 6486
+                                length: 7
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 6497
+                                length: 4
+                            children: []
+                            pos: 6486
+                            length: 15
+                        children: []
+                        pos: 6468
+                        length: 33
+                    children: []
+                    pos: 6467
+                    length: 35
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return -1;
+                    children: []
+                    pos: 6517
+                    length: 10
+                  pos: 6503
+                  length: 34
+                pos: 6464
+                length: 73
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: and
+                            fields:
+                              left:
+                                type: and
+                                fields:
+                                  left:
+                                    type: less_or_equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: start
+                                        children: []
+                                        pos: 6600
+                                        length: 5
+                                      right:
+                                        type: field_access
+                                        fields:
+                                          text: buffer.length
+                                        children: []
+                                        pos: 6609
+                                        length: 13
+                                    children: []
+                                    pos: 6600
+                                    length: 22
+                                  right:
+                                    type: greater_or_equals
+                                    fields:
+                                      left:
+                                        type: identifier
+                                        fields:
+                                          text: length
+                                        children: []
+                                        pos: 6626
+                                        length: 6
+                                      right:
+                                        type: decimal_integer_literal
+                                        fields:
+                                          text: '0'
+                                        children: []
+                                        pos: 6636
+                                        length: 1
+                                    children: []
+                                    pos: 6626
+                                    length: 11
+                                children: []
+                                pos: 6600
+                                length: 37
+                              right:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: start
+                                    children: []
+                                    pos: 6641
+                                    length: 5
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 6650
+                                    length: 1
+                                children: []
+                                pos: 6641
+                                length: 10
+                            children: []
+                            pos: 6600
+                            length: 51
+                          right:
+                            type: greater_or_equals
+                            fields:
+                              left:
+                                type: minus
+                                fields:
+                                  left:
+                                    type: field_access
+                                    fields:
+                                      text: buffer.length
+                                    children: []
+                                    pos: 6667
+                                    length: 13
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: start
+                                    children: []
+                                    pos: 6683
+                                    length: 5
+                                children: []
+                                pos: 6667
+                                length: 21
+                              right:
+                                type: identifier
+                                fields:
+                                  text: length
+                                children: []
+                                pos: 6692
+                                length: 6
+                            children: []
+                            pos: 6667
+                            length: 31
+                        children: []
+                        pos: 6600
+                        length: 98
+                    children: []
+                    pos: 6599
+                    length: 100
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: current.getMethod()
+                                children: []
+                                pos: 6718
+                                length: 19
+                              right:
+                                type: field_access
+                                fields:
+                                  text: ZipArchiveOutputStream.STORED
+                                children: []
+                                pos: 6741
+                                length: 29
+                            children: []
+                            pos: 6718
+                            length: 52
+                        children: []
+                        pos: 6717
+                        length: 54
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: int csize = (int) current.getSize();
+                        children: []
+                        pos: 6790
+                        length: 36
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: readBytesOfEntry
+                                    children: []
+                                    pos: 6847
+                                    length: 16
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: csize
+                                    children: []
+                                    pos: 6867
+                                    length: 5
+                                children: []
+                                pos: 6847
+                                length: 25
+                            children: []
+                            pos: 6846
+                            length: 27
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return -1;
+                            children: []
+                            pos: 6896
+                            length: 10
+                          pos: 6874
+                          length: 50
+                        pos: 6843
+                        length: 81
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_or_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: offsetInBuffer
+                                    children: []
+                                    pos: 6945
+                                    length: 14
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: lengthOfLastRead
+                                    children: []
+                                    pos: 6963
+                                    length: 16
+                                children: []
+                                pos: 6945
+                                length: 34
+                            children: []
+                            pos: 6944
+                            length: 36
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: offsetInBuffer = 0;
+                            children: []
+                            pos: 7003
+                            length: 19
+                          - type: if_statement
+                            fields:
+                              condition:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: equals
+                                    fields:
+                                      left:
+                                        type: parenthesized_expression
+                                        fields:
+                                          expression:
+                                            type: assignment_expression
+                                            fields:
+                                              text: lengthOfLastRead = in.read(buf)
+                                            children: []
+                                            pos: 7048
+                                            length: 31
+                                        children: []
+                                        pos: 7047
+                                        length: 33
+                                      right:
+                                        type: unary_expression
+                                        fields:
+                                          text: "-1"
+                                        children: []
+                                        pos: 7084
+                                        length: 2
+                                    children: []
+                                    pos: 7047
+                                    length: 39
+                                children: []
+                                pos: 7046
+                                length: 41
+                            children:
+                            - type: block
+                              fields: {}
+                              children:
+                              - type: return_statement
+                                fields:
+                                  text: return -1;
+                                children: []
+                                pos: 7114
+                                length: 10
+                              pos: 7088
+                              length: 58
+                            pos: 7043
+                            length: 103
+                          - type: expression_statement
+                            fields:
+                              text: count(lengthOfLastRead);
+                            children: []
+                            pos: 7167
+                            length: 24
+                          - type: expression_statement
+                            fields:
+                              text: bytesReadFromStream += lengthOfLastRead;
+                            children: []
+                            pos: 7212
+                            length: 40
+                          pos: 6981
+                          length: 289
+                        pos: 6941
+                        length: 329
+                      - type: local_variable_declaration
+                        fields:
+                          text: |-
+                            int toRead = length > lengthOfLastRead
+                                                ? lengthOfLastRead - offsetInBuffer
+                                                : length;
+                        children: []
+                        pos: 7287
+                        length: 124
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: less_than
+                                fields:
+                                  left:
+                                    type: parenthesized_expression
+                                    fields:
+                                      expression:
+                                        type: minus
+                                        fields:
+                                          left:
+                                            type: identifier
+                                            fields:
+                                              text: csize
+                                            children: []
+                                            pos: 7433
+                                            length: 5
+                                          right:
+                                            type: identifier
+                                            fields:
+                                              text: readBytesOfEntry
+                                            children: []
+                                            pos: 7441
+                                            length: 16
+                                        children: []
+                                        pos: 7433
+                                        length: 24
+                                    children: []
+                                    pos: 7432
+                                    length: 26
+                                  right:
+                                    type: identifier
+                                    fields:
+                                      text: toRead
+                                    children: []
+                                    pos: 7461
+                                    length: 6
+                                children: []
+                                pos: 7432
+                                length: 35
+                            children: []
+                            pos: 7431
+                            length: 37
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: toRead = csize - readBytesOfEntry;
+                            children: []
+                            pos: 7491
+                            length: 34
+                          pos: 7469
+                          length: 74
+                        pos: 7428
+                        length: 115
+                      - type: expression_statement
+                        fields:
+                          text: System.arraycopy(buf, offsetInBuffer, buffer, start,
+                            toRead);
+                        children: []
+                        pos: 7560
+                        length: 61
+                      - type: expression_statement
+                        fields:
+                          text: offsetInBuffer += toRead;
+                        children: []
+                        pos: 7638
+                        length: 25
+                      - type: expression_statement
+                        fields:
+                          text: readBytesOfEntry += toRead;
+                        children: []
+                        pos: 7680
+                        length: 27
+                      - type: expression_statement
+                        fields:
+                          text: crc.update(buffer, start, toRead);
+                        children: []
+                        pos: 7724
+                        length: 34
+                      - type: return_statement
+                        fields:
+                          text: return toRead;
+                        children: []
+                        pos: 7775
+                        length: 14
+                      pos: 6772
+                      length: 1031
+                    pos: 6714
+                    length: 1089
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: inf.needsInput()
+                            children: []
+                            pos: 7820
+                            length: 16
+                        children: []
+                        pos: 7819
+                        length: 18
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: fill();
+                        children: []
+                        pos: 7856
+                        length: 7
+                      - type: if_statement
+                        fields:
+                          condition:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: greater_than
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: lengthOfLastRead
+                                    children: []
+                                    pos: 7884
+                                    length: 16
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 7903
+                                    length: 1
+                                children: []
+                                pos: 7884
+                                length: 20
+                            children: []
+                            pos: 7883
+                            length: 22
+                        children:
+                        - type: block
+                          fields: {}
+                          children:
+                          - type: expression_statement
+                            fields:
+                              text: bytesReadFromStream += lengthOfLastRead;
+                            children: []
+                            pos: 7928
+                            length: 40
+                          pos: 7906
+                          length: 80
+                        pos: 7880
+                        length: 106
+                      pos: 7838
+                      length: 162
+                    pos: 7816
+                    length: 184
+                  - type: local_variable_declaration
+                    fields:
+                      text: int read = 0;
+                    children: []
+                    pos: 8013
+                    length: 13
+                  - type: try_statement
+                    fields:
+                      body:
+                        type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: read = inf.inflate(buffer, start, length);
+                          children: []
+                          pos: 8061
+                          length: 42
+                        pos: 8043
+                        length: 74
+                      excepts:
+                        type: excepts
+                        fields: {}
+                        children:
+                        - type: catch_clause
+                          fields:
+                            text: |-
+                              catch (DataFormatException e) {
+                                              throw new ZipException(e.getMessage());
+                                          }
+                          children: []
+                          pos: 8118
+                          length: 101
+                        pos: 8039
+                        length: 180
+                    children: []
+                    pos: 8039
+                    length: 180
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: read
+                                    children: []
+                                    pos: 8236
+                                    length: 4
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 8244
+                                    length: 1
+                                children: []
+                                pos: 8236
+                                length: 9
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: inf.finished()
+                                children: []
+                                pos: 8249
+                                length: 14
+                            children: []
+                            pos: 8236
+                            length: 27
+                        children: []
+                        pos: 8235
+                        length: 29
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return -1;
+                        children: []
+                        pos: 8283
+                        length: 10
+                      pos: 8265
+                      length: 42
+                    pos: 8232
+                    length: 75
+                  - type: expression_statement
+                    fields:
+                      text: crc.update(buffer, start, read);
+                    children: []
+                    pos: 8320
+                    length: 32
+                  - type: return_statement
+                    fields:
+                      text: return read;
+                    children: []
+                    pos: 8365
+                    length: 12
+                  pos: 6700
+                  length: 1687
+                pos: 6596
+                length: 1791
+              - type: throw_statement
+                fields:
+                  text: throw new ArrayIndexOutOfBoundsException();
+                children: []
+                pos: 8396
+                length: 43
+              pos: 6363
+              length: 2082
+          children: []
+          pos: 6290
+          length: 2155
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: close
+              children: []
+              pos: 8463
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8451
+              length: 130
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!closed"
+                        children: []
+                        pos: 8504
+                        length: 7
+                    children: []
+                    pos: 8503
+                    length: 9
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: closed = true;
+                    children: []
+                    pos: 8527
+                    length: 14
+                  - type: expression_statement
+                    fields:
+                      text: in.close();
+                    children: []
+                    pos: 8554
+                    length: 11
+                  pos: 8513
+                  length: 62
+                pos: 8500
+                length: 75
+              pos: 8490
+              length: 91
+          children: []
+          pos: 8451
+          length: 130
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: skip
+              children: []
+              pos: 8599
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long value
+                children: []
+                pos: 8604
+                length: 10
+              pos: 8587
+              length: 523
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 8649
+                            length: 5
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 8658
+                            length: 1
+                        children: []
+                        pos: 8649
+                        length: 10
+                    children: []
+                    pos: 8648
+                    length: 12
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: long skipped = 0;
+                    children: []
+                    pos: 8675
+                    length: 17
+                  - type: local_variable_declaration
+                    fields:
+                      text: byte[] b = new byte[1024];
+                    children: []
+                    pos: 8705
+                    length: 26
+                  - type: while_statement
+                    fields:
+                      text: |-
+                        while (skipped != value) {
+                                        long rem = value - skipped;
+                                        int x = read(b, 0, (int) (b.length > rem ? rem : b.length));
+                                        if (x == -1) {
+                                            return skipped;
+                                        }
+                                        skipped += x;
+                                    }
+                    children: []
+                    pos: 8744
+                    length: 276
+                  - type: return_statement
+                    fields:
+                      text: return skipped;
+                    children: []
+                    pos: 9033
+                    length: 15
+                  pos: 8661
+                  length: 397
+                pos: 8645
+                length: 413
+              - type: throw_statement
+                fields:
+                  text: throw new IllegalArgumentException();
+                children: []
+                pos: 9067
+                length: 37
+              pos: 8635
+              length: 475
+          children: []
+          pos: 8587
+          length: 523
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: matches
+              children: []
+              pos: 9335
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] signature
+                children: []
+                pos: 9343
+                length: 16
+              pos: 9313
+              length: 330
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_than
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: length
+                            children: []
+                            pos: 9387
+                            length: 6
+                          right:
+                            type: field_access
+                            fields:
+                              text: ZipArchiveOutputStream.LFH_SIG.length
+                            children: []
+                            pos: 9396
+                            length: 37
+                        children: []
+                        pos: 9387
+                        length: 46
+                    children: []
+                    pos: 9386
+                    length: 48
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return false;
+                    children: []
+                    pos: 9449
+                    length: 13
+                  pos: 9435
+                  length: 37
+                pos: 9383
+                length: 89
+              - type: return_statement
+                fields:
+                  text: |-
+                    return checksig(signature, ZipArchiveOutputStream.LFH_SIG) // normal file
+                                || checksig(signature, ZipArchiveOutputStream.EOCD_SIG);
+                children: []
+                pos: 9482
+                length: 142
+              pos: 9373
+              length: 270
+          children: []
+          pos: 9313
+          length: 330
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checksig
+              children: []
+              pos: 9672
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] signature
+                children: []
+                pos: 9681
+                length: 16
+              pos: 9649
+              length: 255
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < expected.length; i++) {
+                                if (signature[i] != expected[i]) {
+                                    return false;
+                                }
+                            }
+                children: []
+                pos: 9725
+                length: 144
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 9878
+                length: 12
+              pos: 9715
+              length: 189
+          children: []
+          pos: 9649
+          length: 255
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: closeEntry
+              children: []
+              pos: 9923
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 9910
+              length: 973
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: closed
+                        children: []
+                        pos: 9969
+                        length: 6
+                    children: []
+                    pos: 9968
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IOException("The stream is closed");
+                    children: []
+                    pos: 9991
+                    length: 46
+                  pos: 9977
+                  length: 70
+                pos: 9965
+                length: 82
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: current
+                            children: []
+                            pos: 10060
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10071
+                            length: 4
+                        children: []
+                        pos: 10060
+                        length: 15
+                    children: []
+                    pos: 10059
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 10091
+                    length: 7
+                  pos: 10077
+                  length: 31
+                pos: 10056
+                length: 52
+              - type: expression_statement
+                fields:
+                  text: skip(Long.MAX_VALUE);
+                children: []
+                pos: 10160
+                length: 21
+              - type: local_variable_declaration
+                fields:
+                  text: int inB;
+                children: []
+                pos: 10190
+                length: 8
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: current.getMethod()
+                            children: []
+                            pos: 10211
+                            length: 19
+                          right:
+                            type: field_access
+                            fields:
+                              text: ZipArchiveOutputStream.DEFLATED
+                            children: []
+                            pos: 10234
+                            length: 31
+                        children: []
+                        pos: 10211
+                        length: 54
+                    children: []
+                    pos: 10210
+                    length: 56
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: inB = inf.getTotalIn();
+                    children: []
+                    pos: 10281
+                    length: 23
+                  pos: 10267
+                  length: 47
+                pos: 10207
+                length: 160
+              - type: local_variable_declaration
+                fields:
+                  text: int diff = 0;
+                children: []
+                pos: 10376
+                length: 13
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: assignment_expression
+                                fields:
+                                  text: diff = bytesReadFromStream - inB
+                                children: []
+                                pos: 10443
+                                length: 32
+                            children: []
+                            pos: 10442
+                            length: 34
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 10480
+                            length: 1
+                        children: []
+                        pos: 10442
+                        length: 39
+                    children: []
+                    pos: 10441
+                    length: 41
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        ((PushbackInputStream) in).unread(buf,
+                                                                      lengthOfLastRead - diff, diff);
+                    children: []
+                    pos: 10497
+                    length: 116
+                  pos: 10483
+                  length: 140
+                pos: 10438
+                length: 185
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: hasDataDescriptor
+                        children: []
+                        pos: 10637
+                        length: 17
+                    children: []
+                    pos: 10636
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: readFully(new byte[4 * WORD]);
+                    children: []
+                    pos: 10670
+                    length: 30
+                  pos: 10656
+                  length: 54
+                pos: 10633
+                length: 77
+              - type: expression_statement
+                fields:
+                  text: inf.reset();
+                children: []
+                pos: 10720
+                length: 12
+              - type: expression_statement
+                fields:
+                  text: |-
+                    readBytesOfEntry = offsetInBuffer = bytesReadFromStream =
+                                lengthOfLastRead = 0;
+                children: []
+                pos: 10741
+                length: 91
+              - type: expression_statement
+                fields:
+                  text: crc.reset();
+                children: []
+                pos: 10841
+                length: 12
+              - type: expression_statement
+                fields:
+                  text: current = null;
+                children: []
+                pos: 10862
+                length: 15
+              pos: 9955
+              length: 928
+          children: []
+          pos: 9910
+          length: 973
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: fill
+              children: []
+              pos: 10902
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10889
+              length: 252
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: closed
+                        children: []
+                        pos: 10942
+                        length: 6
+                    children: []
+                    pos: 10941
+                    length: 8
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IOException("The stream is closed");
+                    children: []
+                    pos: 10964
+                    length: 46
+                  pos: 10950
+                  length: 70
+                pos: 10938
+                length: 82
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: greater_than
+                        fields:
+                          left:
+                            type: parenthesized_expression
+                            fields:
+                              expression:
+                                type: assignment_expression
+                                fields:
+                                  text: lengthOfLastRead = in.read(buf)
+                                children: []
+                                pos: 11034
+                                length: 31
+                            children: []
+                            pos: 11033
+                            length: 33
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 11069
+                            length: 1
+                        children: []
+                        pos: 11033
+                        length: 37
+                    children: []
+                    pos: 11032
+                    length: 39
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: inf.setInput(buf, 0, lengthOfLastRead);
+                    children: []
+                    pos: 11086
+                    length: 39
+                  pos: 11072
+                  length: 63
+                pos: 11029
+                length: 106
+              pos: 10928
+              length: 213
+          children: []
+          pos: 10889
+          length: 252
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readFully
+              children: []
+              pos: 11160
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] b
+                children: []
+                pos: 11170
+                length: 8
+              pos: 11147
+              length: 280
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int count = 0, x = 0;
+                children: []
+                pos: 11209
+                length: 21
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (count != b.length) {
+                                count += x = in.read(b, count, b.length - count);
+                                if (x == -1) {
+                                    throw new EOFException();
+                                }
+                            }
+                children: []
+                pos: 11239
+                length: 182
+              pos: 11199
+              length: 228
+          children: []
+          pos: 11147
+          length: 280
+        pos: 1583
+        length: 9846
+    children: []
+    pos: 1583
+    length: 9846
+  pos: 0
+  length: 11430
 text_diff: |
   --- before
   +++ after
@@ -87,12 +4211,12 @@ tree_diff: |+
   ===
   delete-node
   ---
-  if_statement [8265,8453]
+  block [8247,8467]
   ===
   ===
   delete-node
   ---
-  block [8247,8467]
+  if_statement [8265,8453]
   ===
 
 ...

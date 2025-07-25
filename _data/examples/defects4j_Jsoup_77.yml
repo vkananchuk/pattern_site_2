@@ -1,5 +1,1623 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: XmlTreeBuilder
+        children: []
+        pos: 467
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: defaultSettings
+              children: []
+              pos: 522
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 508
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return ParseSettings.preserveCase;
+                children: []
+                pos: 550
+                length: 34
+              pos: 540
+              length: 50
+          children: []
+          pos: 508
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 605
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Reader input
+                children: []
+                pos: 611
+                length: 12
+              pos: 596
+              length: 147
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return parse(input, baseUri, ParseErrorList.noTracking(),
+                    ParseSettings.preserveCase);
+                children: []
+                pos: 651
+                length: 86
+              pos: 641
+              length: 102
+          children: []
+          pos: 596
+          length: 147
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 758
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String input
+                children: []
+                pos: 764
+                length: 12
+              pos: 749
+              length: 165
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return parse(new StringReader(input), baseUri, ParseErrorList.noTracking(),
+                    ParseSettings.preserveCase);
+                children: []
+                pos: 804
+                length: 104
+              pos: 794
+              length: 120
+          children: []
+          pos: 749
+          length: 165
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: initialiseParse
+              children: []
+              pos: 949
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Reader input
+                children: []
+                pos: 965
+                length: 12
+              pos: 920
+              length: 373
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: super.initialiseParse(input, baseUri, errors, settings);
+                children: []
+                pos: 1052
+                length: 56
+              - type: expression_statement
+                fields:
+                  text: stack.add(doc);
+                children: []
+                pos: 1117
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+                children: []
+                pos: 1223
+                length: 64
+              pos: 1042
+              length: 251
+          children: []
+          pos: 920
+          length: 373
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 1331
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token token
+                children: []
+                pos: 1339
+                length: 11
+              pos: 1299
+              length: 843
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: field_access
+                        fields:
+                          text: token.type
+                        children: []
+                        pos: 1434
+                        length: 10
+                    children: []
+                    pos: 1433
+                    length: 12
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                                    case StartTag:
+                                        insert(token.asStartTag());
+                                        break;
+                                    case EndTag:
+                                        popStackToClose(token.asEndTag());
+                                        break;
+                                    case Comment:
+                                        insert(token.asComment());
+                                        break;
+                                    case Character:
+                                        insert(token.asCharacter());
+                                        break;
+                                    case Doctype:
+                                        insert(token.asDoctype());
+                                        break;
+                                    case EOF: // could put some normalisation here if desired
+                                        break;
+                                    default:
+                                        Validate.fail("Unexpected token type: " + token.type);
+                                }
+                    children: []
+                    pos: 1446
+                    length: 669
+                children: []
+                pos: 1426
+                length: 689
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 2124
+                length: 12
+              pos: 1352
+              length: 790
+          children: []
+          pos: 1299
+          length: 843
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insertNode
+              children: []
+              pos: 2161
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node node
+                children: []
+                pos: 2172
+                length: 9
+              pos: 2148
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: currentElement().appendChild(node);
+                children: []
+                pos: 2193
+                length: 35
+              pos: 2183
+              length: 51
+          children: []
+          pos: 2148
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 2248
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.StartTag startTag
+                children: []
+                pos: 2255
+                length: 23
+              pos: 2240
+              length: 584
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Tag tag = Tag.valueOf(startTag.name(), settings);
+                children: []
+                pos: 2290
+                length: 49
+              - type: local_variable_declaration
+                fields:
+                  text: Element el = new Element(tag, baseUri, settings.normalizeAttributes(startTag.attributes));
+                children: []
+                pos: 2449
+                length: 90
+              - type: expression_statement
+                fields:
+                  text: insertNode(el);
+                children: []
+                pos: 2548
+                length: 15
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: startTag.isSelfClosing()
+                        children: []
+                        pos: 2576
+                        length: 24
+                    children: []
+                    pos: 2575
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!tag.isKnownTag()"
+                            children: []
+                            pos: 2620
+                            length: 17
+                        children: []
+                        pos: 2619
+                        length: 19
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: tag.setSelfClosing();
+                      children: []
+                      pos: 2724
+                      length: 21
+                    pos: 2616
+                    length: 129
+                  pos: 2602
+                  length: 153
+                pos: 2572
+                length: 227
+              - type: return_statement
+                fields:
+                  text: return el;
+                children: []
+                pos: 2808
+                length: 10
+              pos: 2280
+              length: 544
+          children: []
+          pos: 2240
+          length: 584
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 2835
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.Comment commentToken
+                children: []
+                pos: 2842
+                length: 26
+              pos: 2830
+              length: 878
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Comment comment = new Comment(commentToken.getData());
+                children: []
+                pos: 2880
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: Node insert = comment;
+                children: []
+                pos: 2943
+                length: 22
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: field_access
+                        fields:
+                          text: commentToken.bogus
+                        children: []
+                        pos: 2978
+                        length: 18
+                    children: []
+                    pos: 2977
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String data = comment.getData();
+                    children: []
+                    pos: 3201
+                    length: 32
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: greater_than
+                                fields:
+                                  left:
+                                    type: method_invocation
+                                    fields:
+                                      text: data.length()
+                                    children: []
+                                    pos: 3250
+                                    length: 13
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '1'
+                                    children: []
+                                    pos: 3266
+                                    length: 1
+                                children: []
+                                pos: 3250
+                                length: 17
+                              right:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: or
+                                    fields:
+                                      left:
+                                        type: method_invocation
+                                        fields:
+                                          text: data.startsWith("!")
+                                        children: []
+                                        pos: 3272
+                                        length: 20
+                                      right:
+                                        type: method_invocation
+                                        fields:
+                                          text: data.startsWith("?")
+                                        children: []
+                                        pos: 3296
+                                        length: 20
+                                    children: []
+                                    pos: 3272
+                                    length: 44
+                                children: []
+                                pos: 3271
+                                length: 46
+                            children: []
+                            pos: 3250
+                            length: 67
+                        children: []
+                        pos: 3249
+                        length: 69
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: Document doc = Jsoup.parse("<" + data.substring(1,
+                            data.length() -1) + ">", baseUri, Parser.xmlParser());
+                        children: []
+                        pos: 3337
+                        length: 105
+                      - type: local_variable_declaration
+                        fields:
+                          text: Element el = doc.child(0);
+                        children: []
+                        pos: 3459
+                        length: 26
+                      - type: expression_statement
+                        fields:
+                          text: insert = new XmlDeclaration(settings.normalizeTag(el.tagName()),
+                            data.startsWith("!"));
+                        children: []
+                        pos: 3502
+                        length: 87
+                      - type: expression_statement
+                        fields:
+                          text: insert.attributes().addAll(el.attributes());
+                        children: []
+                        pos: 3606
+                        length: 44
+                      pos: 3319
+                      length: 345
+                    pos: 3246
+                    length: 418
+                  pos: 2998
+                  length: 676
+                pos: 2974
+                length: 700
+              - type: expression_statement
+                fields:
+                  text: insertNode(insert);
+                children: []
+                pos: 3683
+                length: 19
+              pos: 2870
+              length: 838
+          children: []
+          pos: 2830
+          length: 878
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 3719
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.Character token
+                children: []
+                pos: 3726
+                length: 21
+              pos: 3714
+              length: 167
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final String data = token.getData();
+                children: []
+                pos: 3759
+                length: 36
+              - type: expression_statement
+                fields:
+                  text: 'insertNode(token.isCData() ? new CDataNode(data) : new TextNode(data));'
+                children: []
+                pos: 3804
+                length: 71
+              pos: 3749
+              length: 132
+          children: []
+          pos: 3714
+          length: 167
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 3892
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.Doctype d
+                children: []
+                pos: 3899
+                length: 15
+              pos: 3887
+              length: 260
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: DocumentType doctypeNode = new DocumentType(settings.normalizeTag(d.getName()),
+                    d.getPublicIdentifier(), d.getSystemIdentifier());
+                children: []
+                pos: 3926
+                length: 130
+              - type: expression_statement
+                fields:
+                  text: doctypeNode.setPubSysKey(d.getPubSysKey());
+                children: []
+                pos: 4065
+                length: 43
+              - type: expression_statement
+                fields:
+                  text: insertNode(doctypeNode);
+                children: []
+                pos: 4117
+                length: 24
+              pos: 3916
+              length: 231
+          children: []
+          pos: 3887
+          length: 260
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: popStackToClose
+              children: []
+              pos: 4362
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.EndTag endTag
+                children: []
+                pos: 4378
+                length: 19
+              pos: 4349
+              length: 646
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String elName = endTag.normalName();
+                children: []
+                pos: 4409
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: Element firstFound = null;
+                children: []
+                pos: 4454
+                length: 26
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int pos = stack.size() -1; pos >= 0; pos--) {
+                                Element next = stack.get(pos);
+                                if (next.nodeName().equals(elName)) {
+                                    firstFound = next;
+                                    break;
+                                }
+                            }
+                children: []
+                pos: 4490
+                length: 225
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: firstFound
+                            children: []
+                            pos: 4728
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4742
+                            length: 4
+                        children: []
+                        pos: 4728
+                        length: 18
+                    children: []
+                    pos: 4727
+                    length: 20
+                children:
+                - type: return_statement
+                  fields:
+                    text: return;
+                  children: []
+                  pos: 4760
+                  length: 7
+                pos: 4724
+                length: 43
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int pos = stack.size() -1; pos >= 0; pos--) {
+                                Element next = stack.get(pos);
+                                stack.remove(pos);
+                                if (next == firstFound)
+                                    break;
+                            }
+                children: []
+                pos: 4796
+                length: 193
+              pos: 4399
+              length: 596
+          children: []
+          pos: 4349
+          length: 646
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseFragment
+              children: []
+              pos: 5012
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String inputFragment
+                children: []
+                pos: 5026
+                length: 20
+              pos: 5001
+              length: 256
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: initialiseParse(new StringReader(inputFragment), baseUri,
+                    errors, settings);
+                children: []
+                pos: 5121
+                length: 76
+              - type: expression_statement
+                fields:
+                  text: runParser();
+                children: []
+                pos: 5206
+                length: 12
+              - type: return_statement
+                fields:
+                  text: return doc.childNodes();
+                children: []
+                pos: 5227
+                length: 24
+              pos: 5111
+              length: 146
+          children: []
+          pos: 5001
+          length: 256
+        pos: 454
+        length: 4805
+    children: []
+    pos: 454
+    length: 4805
+  pos: 0
+  length: 5260
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: XmlTreeBuilder
+        children: []
+        pos: 467
+        length: 14
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: defaultSettings
+              children: []
+              pos: 522
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 508
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return ParseSettings.preserveCase;
+                children: []
+                pos: 550
+                length: 34
+              pos: 540
+              length: 50
+          children: []
+          pos: 508
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 605
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Reader input
+                children: []
+                pos: 611
+                length: 12
+              pos: 596
+              length: 147
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return parse(input, baseUri, ParseErrorList.noTracking(),
+                    ParseSettings.preserveCase);
+                children: []
+                pos: 651
+                length: 86
+              pos: 641
+              length: 102
+          children: []
+          pos: 596
+          length: 147
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 758
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String input
+                children: []
+                pos: 764
+                length: 12
+              pos: 749
+              length: 165
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return parse(new StringReader(input), baseUri, ParseErrorList.noTracking(),
+                    ParseSettings.preserveCase);
+                children: []
+                pos: 804
+                length: 104
+              pos: 794
+              length: 120
+          children: []
+          pos: 749
+          length: 165
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: initialiseParse
+              children: []
+              pos: 949
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Reader input
+                children: []
+                pos: 965
+                length: 12
+              pos: 920
+              length: 373
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: super.initialiseParse(input, baseUri, errors, settings);
+                children: []
+                pos: 1052
+                length: 56
+              - type: expression_statement
+                fields:
+                  text: stack.add(doc);
+                children: []
+                pos: 1117
+                length: 15
+              - type: expression_statement
+                fields:
+                  text: doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+                children: []
+                pos: 1223
+                length: 64
+              pos: 1042
+              length: 251
+          children: []
+          pos: 920
+          length: 373
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: process
+              children: []
+              pos: 1331
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token token
+                children: []
+                pos: 1339
+                length: 11
+              pos: 1299
+              length: 843
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: field_access
+                        fields:
+                          text: token.type
+                        children: []
+                        pos: 1434
+                        length: 10
+                    children: []
+                    pos: 1433
+                    length: 12
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                                    case StartTag:
+                                        insert(token.asStartTag());
+                                        break;
+                                    case EndTag:
+                                        popStackToClose(token.asEndTag());
+                                        break;
+                                    case Comment:
+                                        insert(token.asComment());
+                                        break;
+                                    case Character:
+                                        insert(token.asCharacter());
+                                        break;
+                                    case Doctype:
+                                        insert(token.asDoctype());
+                                        break;
+                                    case EOF: // could put some normalisation here if desired
+                                        break;
+                                    default:
+                                        Validate.fail("Unexpected token type: " + token.type);
+                                }
+                    children: []
+                    pos: 1446
+                    length: 669
+                children: []
+                pos: 1426
+                length: 689
+              - type: return_statement
+                fields:
+                  text: return true;
+                children: []
+                pos: 2124
+                length: 12
+              pos: 1352
+              length: 790
+          children: []
+          pos: 1299
+          length: 843
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insertNode
+              children: []
+              pos: 2161
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node node
+                children: []
+                pos: 2172
+                length: 9
+              pos: 2148
+              length: 86
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: currentElement().appendChild(node);
+                children: []
+                pos: 2193
+                length: 35
+              pos: 2183
+              length: 51
+          children: []
+          pos: 2148
+          length: 86
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 2248
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.StartTag startTag
+                children: []
+                pos: 2255
+                length: 23
+              pos: 2240
+              length: 584
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Tag tag = Tag.valueOf(startTag.name(), settings);
+                children: []
+                pos: 2290
+                length: 49
+              - type: local_variable_declaration
+                fields:
+                  text: Element el = new Element(tag, baseUri, settings.normalizeAttributes(startTag.attributes));
+                children: []
+                pos: 2449
+                length: 90
+              - type: expression_statement
+                fields:
+                  text: insertNode(el);
+                children: []
+                pos: 2548
+                length: 15
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: startTag.isSelfClosing()
+                        children: []
+                        pos: 2576
+                        length: 24
+                    children: []
+                    pos: 2575
+                    length: 26
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!tag.isKnownTag()"
+                            children: []
+                            pos: 2620
+                            length: 17
+                        children: []
+                        pos: 2619
+                        length: 19
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: tag.setSelfClosing();
+                      children: []
+                      pos: 2724
+                      length: 21
+                    pos: 2616
+                    length: 129
+                  pos: 2602
+                  length: 153
+                pos: 2572
+                length: 227
+              - type: return_statement
+                fields:
+                  text: return el;
+                children: []
+                pos: 2808
+                length: 10
+              pos: 2280
+              length: 544
+          children: []
+          pos: 2240
+          length: 584
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 2835
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.Comment commentToken
+                children: []
+                pos: 2842
+                length: 26
+              pos: 2830
+              length: 878
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Comment comment = new Comment(commentToken.getData());
+                children: []
+                pos: 2880
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: Node insert = comment;
+                children: []
+                pos: 2943
+                length: 22
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: field_access
+                        fields:
+                          text: commentToken.bogus
+                        children: []
+                        pos: 2978
+                        length: 18
+                    children: []
+                    pos: 2977
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String data = comment.getData();
+                    children: []
+                    pos: 3201
+                    length: 32
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: and
+                            fields:
+                              left:
+                                type: greater_than
+                                fields:
+                                  left:
+                                    type: method_invocation
+                                    fields:
+                                      text: data.length()
+                                    children: []
+                                    pos: 3250
+                                    length: 13
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '1'
+                                    children: []
+                                    pos: 3266
+                                    length: 1
+                                children: []
+                                pos: 3250
+                                length: 17
+                              right:
+                                type: parenthesized_expression
+                                fields:
+                                  expression:
+                                    type: or
+                                    fields:
+                                      left:
+                                        type: method_invocation
+                                        fields:
+                                          text: data.startsWith("!")
+                                        children: []
+                                        pos: 3272
+                                        length: 20
+                                      right:
+                                        type: method_invocation
+                                        fields:
+                                          text: data.startsWith("?")
+                                        children: []
+                                        pos: 3296
+                                        length: 20
+                                    children: []
+                                    pos: 3272
+                                    length: 44
+                                children: []
+                                pos: 3271
+                                length: 46
+                            children: []
+                            pos: 3250
+                            length: 67
+                        children: []
+                        pos: 3249
+                        length: 69
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: Document doc = Jsoup.parse("<" + data.substring(1,
+                            data.length() -1) + ">", baseUri, Parser.xmlParser());
+                        children: []
+                        pos: 3337
+                        length: 105
+                      - type: local_variable_declaration
+                        fields:
+                          text: Element el = doc.child(0);
+                        children: []
+                        pos: 3459
+                        length: 26
+                      - type: expression_statement
+                        fields:
+                          text: insert = new XmlDeclaration(settings.normalizeTag(el.tagName()),
+                            data.startsWith("!"));
+                        children: []
+                        pos: 3502
+                        length: 87
+                      - type: expression_statement
+                        fields:
+                          text: insert.attributes().addAll(el.attributes());
+                        children: []
+                        pos: 3606
+                        length: 44
+                      pos: 3319
+                      length: 345
+                    pos: 3246
+                    length: 418
+                  pos: 2998
+                  length: 676
+                pos: 2974
+                length: 700
+              - type: expression_statement
+                fields:
+                  text: insertNode(insert);
+                children: []
+                pos: 3683
+                length: 19
+              pos: 2870
+              length: 838
+          children: []
+          pos: 2830
+          length: 878
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 3719
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.Character token
+                children: []
+                pos: 3726
+                length: 21
+              pos: 3714
+              length: 167
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final String data = token.getData();
+                children: []
+                pos: 3759
+                length: 36
+              - type: expression_statement
+                fields:
+                  text: 'insertNode(token.isCData() ? new CDataNode(data) : new TextNode(data));'
+                children: []
+                pos: 3804
+                length: 71
+              pos: 3749
+              length: 132
+          children: []
+          pos: 3714
+          length: 167
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: insert
+              children: []
+              pos: 3892
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.Doctype d
+                children: []
+                pos: 3899
+                length: 15
+              pos: 3887
+              length: 260
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: DocumentType doctypeNode = new DocumentType(settings.normalizeTag(d.getName()),
+                    d.getPublicIdentifier(), d.getSystemIdentifier());
+                children: []
+                pos: 3926
+                length: 130
+              - type: expression_statement
+                fields:
+                  text: doctypeNode.setPubSysKey(d.getPubSysKey());
+                children: []
+                pos: 4065
+                length: 43
+              - type: expression_statement
+                fields:
+                  text: insertNode(doctypeNode);
+                children: []
+                pos: 4117
+                length: 24
+              pos: 3916
+              length: 231
+          children: []
+          pos: 3887
+          length: 260
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: popStackToClose
+              children: []
+              pos: 4362
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token.EndTag endTag
+                children: []
+                pos: 4378
+                length: 19
+              pos: 4349
+              length: 640
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: String elName = endTag.name();
+                children: []
+                pos: 4409
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: Element firstFound = null;
+                children: []
+                pos: 4448
+                length: 26
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int pos = stack.size() -1; pos >= 0; pos--) {
+                                Element next = stack.get(pos);
+                                if (next.nodeName().equals(elName)) {
+                                    firstFound = next;
+                                    break;
+                                }
+                            }
+                children: []
+                pos: 4484
+                length: 225
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: firstFound
+                            children: []
+                            pos: 4722
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 4736
+                            length: 4
+                        children: []
+                        pos: 4722
+                        length: 18
+                    children: []
+                    pos: 4721
+                    length: 20
+                children:
+                - type: return_statement
+                  fields:
+                    text: return;
+                  children: []
+                  pos: 4754
+                  length: 7
+                pos: 4718
+                length: 43
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int pos = stack.size() -1; pos >= 0; pos--) {
+                                Element next = stack.get(pos);
+                                stack.remove(pos);
+                                if (next == firstFound)
+                                    break;
+                            }
+                children: []
+                pos: 4790
+                length: 193
+              pos: 4399
+              length: 590
+          children: []
+          pos: 4349
+          length: 640
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseFragment
+              children: []
+              pos: 5006
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String inputFragment
+                children: []
+                pos: 5020
+                length: 20
+              pos: 4995
+              length: 256
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: initialiseParse(new StringReader(inputFragment), baseUri,
+                    errors, settings);
+                children: []
+                pos: 5115
+                length: 76
+              - type: expression_statement
+                fields:
+                  text: runParser();
+                children: []
+                pos: 5200
+                length: 12
+              - type: return_statement
+                fields:
+                  text: return doc.childNodes();
+                children: []
+                pos: 5221
+                length: 24
+              pos: 5105
+              length: 146
+          children: []
+          pos: 4995
+          length: 256
+        pos: 454
+        length: 4799
+    children: []
+    pos: 454
+    length: 4799
+  pos: 0
+  length: 5254
 text_diff: "--- before\n+++ after\n@@ -114,7 +114,7 @@\n      * @param endTag tag
   to close\n      */\n     private void popStackToClose(Token.EndTag endTag) {\n-
   \       String elName = endTag.normalName();\n+        String elName = endTag.name();\n

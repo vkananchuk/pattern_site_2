@@ -1,5 +1,728 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: DiscreteDistribution
+        children: []
+        pos: 1911
+        length: 20
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected final RandomGenerator random;
+          children: []
+          pos: 2026
+          length: 39
+        - type: field_declaration
+          fields:
+            text: private final List<T> singletons;
+          children: []
+          pos: 2125
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final double[] probabilities;
+          children: []
+          pos: 2258
+          length: 37
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public DiscreteDistribution(final List<Pair<T, Double>> samples)
+                      throws NotPositiveException, MathArithmeticException, MathIllegalArgumentException {
+                      this(new Well19937c(), samples);
+                  }
+          children: []
+          pos: 2791
+          length: 204
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public DiscreteDistribution(final RandomGenerator rng, final List<Pair<T, Double>> samples)
+                      throws NotPositiveException, MathArithmeticException, MathIllegalArgumentException {
+                      random = rng;
+
+                      singletons = new ArrayList<T>(samples.size());
+                      final double[] probs = new double[samples.size()];
+
+                      for (int i = 0; i < samples.size(); i++) {
+                          final Pair<T, Double> sample = samples.get(i);
+                          singletons.add(sample.getKey());
+                          if (sample.getValue() < 0) {
+                              throw new NotPositiveException(sample.getValue());
+                          }
+                          probs[i] = sample.getValue();
+                      }
+
+                      probabilities = MathArrays.normalizeArray(probs, 1.0);
+                  }
+          children: []
+          pos: 3562
+          length: 721
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reseedRandomGenerator
+              children: []
+              pos: 4417
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long seed
+                children: []
+                pos: 4439
+                length: 9
+              pos: 4405
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: random.setSeed(seed);
+                children: []
+                pos: 4460
+                length: 21
+              pos: 4450
+              length: 37
+          children: []
+          pos: 4405
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: probability
+              children: []
+              pos: 4906
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final T x
+                children: []
+                pos: 4918
+                length: 9
+              pos: 4899
+              length: 351
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double probability = 0;
+                children: []
+                pos: 4939
+                length: 23
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < probabilities.length; i++) {
+                                if ((x == null && singletons.get(i) == null) ||
+                                    (x != null && x.equals(singletons.get(i)))) {
+                                    probability += probabilities[i];
+                                }
+                            }
+                children: []
+                pos: 4972
+                length: 243
+              - type: return_statement
+                fields:
+                  text: return probability;
+                children: []
+                pos: 5225
+                length: 19
+              pos: 4929
+              length: 321
+          children: []
+          pos: 4899
+          length: 351
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSamples
+              children: []
+              pos: 5461
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5432
+              length: 325
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final List<Pair<T, Double>> samples = new ArrayList<Pair<T,
+                    Double>>(probabilities.length);
+                children: []
+                pos: 5484
+                length: 91
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < probabilities.length; i++) {
+                                samples.add(new Pair<T, Double>(singletons.get(i), probabilities[i]));
+                            }
+                children: []
+                pos: 5585
+                length: 141
+              - type: return_statement
+                fields:
+                  text: return samples;
+                children: []
+                pos: 5736
+                length: 15
+              pos: 5474
+              length: 283
+          children: []
+          pos: 5432
+          length: 325
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sample
+              children: []
+              pos: 5889
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5880
+              length: 557
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double randomValue = random.nextDouble();
+                children: []
+                pos: 5908
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: double sum = 0;
+                children: []
+                pos: 5964
+                length: 15
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < probabilities.length; i++) {
+                                sum += probabilities[i];
+                                if (randomValue < sum) {
+                                    return singletons.get(i);
+                                }
+                            }
+                children: []
+                pos: 5989
+                length: 188
+              - type: return_statement
+                fields:
+                  text: return singletons.get(singletons.size() - 1);
+                children: []
+                pos: 6386
+                length: 45
+              pos: 5898
+              length: 539
+          children: []
+          pos: 5880
+          length: 557
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sample
+              children: []
+              pos: 6749
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int sampleSize
+                children: []
+                pos: 6756
+                length: 14
+              pos: 6733
+              length: 408
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: sampleSize
+                            children: []
+                            pos: 6822
+                            length: 10
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 6836
+                            length: 1
+                        children: []
+                        pos: 6822
+                        length: 15
+                    children: []
+                    pos: 6821
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new NotStrictlyPositiveException(LocalizedFormats.NUMBER_OF_SAMPLES,
+                                            sampleSize);
+                    children: []
+                    pos: 6853
+                    length: 107
+                  pos: 6839
+                  length: 131
+                pos: 6818
+                length: 152
+              - type: local_variable_declaration
+                fields:
+                  text: final Object[] out = new Object[sampleSize];
+                children: []
+                pos: 6980
+                length: 44
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < sampleSize; i++) {
+                                out[i] = sample();
+                            }
+                children: []
+                pos: 7034
+                length: 79
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 7123
+                length: 11
+              pos: 6808
+              length: 333
+          children: []
+          pos: 6733
+          length: 408
+        pos: 1898
+        length: 5246
+    children: []
+    pos: 1898
+    length: 5246
+  pos: 0
+  length: 7145
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: DiscreteDistribution
+        children: []
+        pos: 1911
+        length: 20
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected final RandomGenerator random;
+          children: []
+          pos: 2026
+          length: 39
+        - type: field_declaration
+          fields:
+            text: private final List<T> singletons;
+          children: []
+          pos: 2125
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private final double[] probabilities;
+          children: []
+          pos: 2258
+          length: 37
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public DiscreteDistribution(final List<Pair<T, Double>> samples)
+                      throws NotPositiveException, MathArithmeticException, MathIllegalArgumentException {
+                      this(new Well19937c(), samples);
+                  }
+          children: []
+          pos: 2791
+          length: 204
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public DiscreteDistribution(final RandomGenerator rng, final List<Pair<T, Double>> samples)
+                      throws NotPositiveException, MathArithmeticException, MathIllegalArgumentException {
+                      random = rng;
+
+                      singletons = new ArrayList<T>(samples.size());
+                      final double[] probs = new double[samples.size()];
+
+                      for (int i = 0; i < samples.size(); i++) {
+                          final Pair<T, Double> sample = samples.get(i);
+                          singletons.add(sample.getKey());
+                          if (sample.getValue() < 0) {
+                              throw new NotPositiveException(sample.getValue());
+                          }
+                          probs[i] = sample.getValue();
+                      }
+
+                      probabilities = MathArrays.normalizeArray(probs, 1.0);
+                  }
+          children: []
+          pos: 3562
+          length: 721
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: reseedRandomGenerator
+              children: []
+              pos: 4417
+              length: 21
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: long seed
+                children: []
+                pos: 4439
+                length: 9
+              pos: 4405
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: random.setSeed(seed);
+                children: []
+                pos: 4460
+                length: 21
+              pos: 4450
+              length: 37
+          children: []
+          pos: 4405
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: probability
+              children: []
+              pos: 4906
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final T x
+                children: []
+                pos: 4918
+                length: 9
+              pos: 4899
+              length: 351
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: double probability = 0;
+                children: []
+                pos: 4939
+                length: 23
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < probabilities.length; i++) {
+                                if ((x == null && singletons.get(i) == null) ||
+                                    (x != null && x.equals(singletons.get(i)))) {
+                                    probability += probabilities[i];
+                                }
+                            }
+                children: []
+                pos: 4972
+                length: 243
+              - type: return_statement
+                fields:
+                  text: return probability;
+                children: []
+                pos: 5225
+                length: 19
+              pos: 4929
+              length: 321
+          children: []
+          pos: 4899
+          length: 351
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSamples
+              children: []
+              pos: 5461
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5432
+              length: 325
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final List<Pair<T, Double>> samples = new ArrayList<Pair<T,
+                    Double>>(probabilities.length);
+                children: []
+                pos: 5484
+                length: 91
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < probabilities.length; i++) {
+                                samples.add(new Pair<T, Double>(singletons.get(i), probabilities[i]));
+                            }
+                children: []
+                pos: 5585
+                length: 141
+              - type: return_statement
+                fields:
+                  text: return samples;
+                children: []
+                pos: 5736
+                length: 15
+              pos: 5474
+              length: 283
+          children: []
+          pos: 5432
+          length: 325
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sample
+              children: []
+              pos: 5889
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5880
+              length: 557
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double randomValue = random.nextDouble();
+                children: []
+                pos: 5908
+                length: 47
+              - type: local_variable_declaration
+                fields:
+                  text: double sum = 0;
+                children: []
+                pos: 5964
+                length: 15
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < probabilities.length; i++) {
+                                sum += probabilities[i];
+                                if (randomValue < sum) {
+                                    return singletons.get(i);
+                                }
+                            }
+                children: []
+                pos: 5989
+                length: 188
+              - type: return_statement
+                fields:
+                  text: return singletons.get(singletons.size() - 1);
+                children: []
+                pos: 6386
+                length: 45
+              pos: 5898
+              length: 539
+          children: []
+          pos: 5880
+          length: 557
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: sample
+              children: []
+              pos: 6744
+              length: 6
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int sampleSize
+                children: []
+                pos: 6751
+                length: 14
+              pos: 6733
+              length: 458
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: less_or_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: sampleSize
+                            children: []
+                            pos: 6817
+                            length: 10
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 6831
+                            length: 1
+                        children: []
+                        pos: 6817
+                        length: 15
+                    children: []
+                    pos: 6816
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw new NotStrictlyPositiveException(LocalizedFormats.NUMBER_OF_SAMPLES,
+                                            sampleSize);
+                    children: []
+                    pos: 6848
+                    length: 107
+                  pos: 6834
+                  length: 131
+                pos: 6813
+                length: 152
+              - type: local_variable_declaration
+                fields:
+                  text: final T[]out = (T[]) java.lang.reflect.Array.newInstance(singletons.get(0).getClass(),
+                    sampleSize);
+                children: []
+                pos: 6975
+                length: 99
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0; i < sampleSize; i++) {
+                                out[i] = sample();
+                            }
+                children: []
+                pos: 7084
+                length: 79
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 7173
+                length: 11
+              pos: 6803
+              length: 388
+          children: []
+          pos: 6733
+          length: 458
+        pos: 1898
+        length: 5296
+    children: []
+    pos: 1898
+    length: 5296
+  pos: 0
+  length: 7195
 text_diff: "--- before\n+++ after\n@@ -178,13 +178,13 @@\n      * @throws NotStrictlyPositiveException
   if {@code sampleSize} is not\n      * positive.\n      */\n-    public Object[]
   sample(int sampleSize) throws NotStrictlyPositiveException {\n+    public T[] sample(int

@@ -1,5 +1,3245 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Parser
+        children: []
+        pos: 316
+        length: 6
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final String SQ = "'";
+          children: []
+          pos: 329
+          length: 37
+        - type: field_declaration
+          fields:
+            text: private static final String DQ = "\"";
+          children: []
+          pos: 371
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private static final Tag htmlTag = Tag.valueOf("html");
+          children: []
+          pos: 415
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private static final Tag headTag = Tag.valueOf("head");
+          children: []
+          pos: 475
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private static final Tag bodyTag = Tag.valueOf("body");
+          children: []
+          pos: 535
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private static final Tag titleTag = Tag.valueOf("title");
+          children: []
+          pos: 595
+          length: 57
+        - type: field_declaration
+          fields:
+            text: private static final Tag textareaTag = Tag.valueOf("textarea");
+          children: []
+          pos: 657
+          length: 63
+        - type: field_declaration
+          fields:
+            text: private final LinkedList<Element> stack;
+          children: []
+          pos: 726
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final TokenQueue tq;
+          children: []
+          pos: 771
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private final Document doc;
+          children: []
+          pos: 804
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private String baseUri;
+          children: []
+          pos: 836
+          length: 23
+        - type: field_declaration
+          fields:
+            text: private boolean relaxed = false;
+          children: []
+          pos: 864
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              private Parser(String html, String baseUri, boolean isBodyFragment) {
+                      Validate.notNull(html);
+                      Validate.notNull(baseUri);
+
+                      stack = new LinkedList<Element>();
+                      tq = new TokenQueue(html);
+                      this.baseUri = baseUri;
+
+                      if (isBodyFragment) {
+                          doc = Document.createShell(baseUri);
+                          stack.add(doc.body());
+                      } else {
+                          doc = new Document(baseUri);
+                          stack.add(doc);
+                      }
+                  }
+          children: []
+          pos: 902
+          length: 464
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 1606
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String html
+                children: []
+                pos: 1612
+                length: 11
+              pos: 1583
+              length: 154
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Parser parser = new Parser(html, baseUri, false);
+                children: []
+                pos: 1651
+                length: 49
+              - type: return_statement
+                fields:
+                  text: return parser.parse();
+                children: []
+                pos: 1709
+                length: 22
+              pos: 1641
+              length: 96
+          children: []
+          pos: 1583
+          length: 154
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseBodyFragment
+              children: []
+              pos: 2055
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String bodyHtml
+                children: []
+                pos: 2073
+                length: 15
+              pos: 2032
+              length: 173
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Parser parser = new Parser(bodyHtml, baseUri, true);
+                children: []
+                pos: 2116
+                length: 52
+              - type: return_statement
+                fields:
+                  text: return parser.parse();
+                children: []
+                pos: 2177
+                length: 22
+              pos: 2106
+              length: 99
+          children: []
+          pos: 2032
+          length: 173
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseBodyFragmentRelaxed
+              children: []
+              pos: 2653
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String bodyHtml
+                children: []
+                pos: 2678
+                length: 15
+              pos: 2630
+              length: 211
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Parser parser = new Parser(bodyHtml, baseUri, true);
+                children: []
+                pos: 2721
+                length: 52
+              - type: expression_statement
+                fields:
+                  text: parser.relaxed = true;
+                children: []
+                pos: 2782
+                length: 22
+              - type: return_statement
+                fields:
+                  text: return parser.parse();
+                children: []
+                pos: 2813
+                length: 22
+              pos: 2711
+              length: 130
+          children: []
+          pos: 2630
+          length: 211
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 2864
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2847
+              length: 581
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tq.isEmpty()) {
+                                if (tq.matchesStartTag()) {
+                                    parseStartTag();
+                                } else if (tq.matchesCS("</")) {
+                                    parseEndTag();
+                                } else if (tq.matchesCS("<!--")) {
+                                    parseComment();
+                                } else if (tq.matches("<![CDATA[")) {
+                                    parseCdata();
+                                } else if (tq.matchesCS("<?") || tq.matchesCS("<!")) {
+                                    parseXmlDecl();
+                                } else {
+                                    parseTextNode();
+                                }
+                            }
+                children: []
+                pos: 2882
+                length: 508
+              - type: return_statement
+                fields:
+                  text: return doc.normalise();
+                children: []
+                pos: 3399
+                length: 23
+              pos: 2872
+              length: 556
+          children: []
+          pos: 2847
+          length: 581
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseComment
+              children: []
+              pos: 3447
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3434
+              length: 298
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<!--");
+                children: []
+                pos: 3472
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: String data = tq.chompTo("->");
+                children: []
+                pos: 3500
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: data.endsWith("-")
+                        children: []
+                        pos: 3545
+                        length: 18
+                    children: []
+                    pos: 3544
+                    length: 20
+                children:
+                - type: expression_statement
+                  fields:
+                    text: data = data.substring(0, data.length()-1);
+                  children: []
+                  pos: 3593
+                  length: 42
+                pos: 3541
+                length: 94
+              - type: local_variable_declaration
+                fields:
+                  text: Comment comment = new Comment(data, baseUri);
+                children: []
+                pos: 3644
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(comment);
+                children: []
+                pos: 3698
+                length: 28
+              pos: 3462
+              length: 270
+          children: []
+          pos: 3434
+          length: 298
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseXmlDecl
+              children: []
+              pos: 3751
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3738
+              length: 349
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<");
+                children: []
+                pos: 3776
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Character firstChar = tq.consume();
+                children: []
+                pos: 3801
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: boolean procInstr = firstChar.toString().equals("!");
+                children: []
+                pos: 3878
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: String data = tq.chompTo(">");
+                children: []
+                pos: 3940
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: XmlDeclaration decl = new XmlDeclaration(data, baseUri, procInstr);
+                children: []
+                pos: 3980
+                length: 67
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(decl);
+                children: []
+                pos: 4056
+                length: 25
+              pos: 3766
+              length: 321
+          children: []
+          pos: 3738
+          length: 349
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseEndTag
+              children: []
+              pos: 4106
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4093
+              length: 257
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("</");
+                children: []
+                pos: 4130
+                length: 17
+              - type: local_variable_declaration
+                fields:
+                  text: String tagName = tq.consumeTagName();
+                children: []
+                pos: 4156
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: tq.chompTo(">");
+                children: []
+                pos: 4202
+                length: 16
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: tagName.length()
+                            children: []
+                            pos: 4232
+                            length: 16
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4252
+                            length: 1
+                        children: []
+                        pos: 4232
+                        length: 21
+                    children: []
+                    pos: 4231
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Tag tag = Tag.valueOf(tagName);
+                    children: []
+                    pos: 4269
+                    length: 31
+                  - type: expression_statement
+                    fields:
+                      text: popStackToClose(tag);
+                    children: []
+                    pos: 4313
+                    length: 21
+                  pos: 4255
+                  length: 89
+                pos: 4228
+                length: 116
+              pos: 4120
+              length: 230
+          children: []
+          pos: 4093
+          length: 257
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseStartTag
+              children: []
+              pos: 4369
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4356
+              length: 2163
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<");
+                children: []
+                pos: 4395
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: String tagName = tq.consumeTagName();
+                children: []
+                pos: 4420
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: Validate.notEmpty(tagName, "Unexpectedly empty tagname. (This
+                    should not occur, please report!)");
+                children: []
+                pos: 4466
+                length: 98
+              - type: expression_statement
+                fields:
+                  text: tq.consumeWhitespace();
+                children: []
+                pos: 4582
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: Attributes attributes = new Attributes();
+                children: []
+                pos: 4614
+                length: 41
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tq.matchesAny("<", "/>", ">") && !tq.isEmpty()) {
+                                Attribute attribute = parseAttribute();
+                                if (attribute != null)
+                                    attributes.put(attribute);
+                            }
+                children: []
+                pos: 4664
+                length: 197
+              - type: local_variable_declaration
+                fields:
+                  text: Tag tag = Tag.valueOf(tagName);
+                children: []
+                pos: 4871
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: Element child = new Element(tag, baseUri, attributes);
+                children: []
+                pos: 4911
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: boolean isEmptyElement = tag.isEmpty();
+                children: []
+                pos: 4975
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tq.matchChomp("/>")
+                        children: []
+                        pos: 5094
+                        length: 19
+                    children: []
+                    pos: 5093
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: isEmptyElement = true;
+                    children: []
+                    pos: 5159
+                    length: 22
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!tag.isKnownTag()"
+                            children: []
+                            pos: 5198
+                            length: 17
+                        children: []
+                        pos: 5197
+                        length: 19
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: tag.setSelfClosing();
+                      children: []
+                      pos: 5349
+                      length: 21
+                    pos: 5194
+                    length: 176
+                  pos: 5115
+                  length: 265
+                pos: 5090
+                length: 339
+              - type: expression_statement
+                fields:
+                  text: addChildToParent(child, isEmptyElement);
+                children: []
+                pos: 5438
+                length: 40
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tag.isData()
+                        children: []
+                        pos: 5584
+                        length: 12
+                    children: []
+                    pos: 5583
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String data = tq.chompToIgnoreCase("</" + tagName);
+                    children: []
+                    pos: 5612
+                    length: 51
+                  - type: expression_statement
+                    fields:
+                      text: tq.chompTo(">");
+                    children: []
+                    pos: 5676
+                    length: 16
+                  - type: expression_statement
+                    fields:
+                      text: popStackToClose(tag);
+                    children: []
+                    pos: 5705
+                    length: 21
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node dataNode;
+                    children: []
+                    pos: 5752
+                    length: 14
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: tag.equals(titleTag)
+                                children: []
+                                pos: 5783
+                                length: 20
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: tag.equals(textareaTag)
+                                children: []
+                                pos: 5807
+                                length: 23
+                            children: []
+                            pos: 5783
+                            length: 47
+                        children: []
+                        pos: 5782
+                        length: 49
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: dataNode = TextNode.createFromEncoded(data, baseUri);
+                      children: []
+                      pos: 5922
+                      length: 53
+                    pos: 5779
+                    length: 269
+                  - type: expression_statement
+                    fields:
+                      text: child.appendChild(dataNode);
+                    children: []
+                    pos: 6107
+                    length: 28
+                  pos: 5598
+                  length: 550
+                pos: 5580
+                length: 568
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: child.tagName().equals("base")
+                        children: []
+                        pos: 6206
+                        length: 30
+                    children: []
+                    pos: 6205
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String href = child.absUrl("href");
+                    children: []
+                    pos: 6252
+                    length: 35
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: href.length()
+                                children: []
+                                pos: 6304
+                                length: 13
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 6321
+                                length: 1
+                            children: []
+                            pos: 6304
+                            length: 18
+                        children: []
+                        pos: 6303
+                        length: 20
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: baseUri = href;
+                        children: []
+                        pos: 6370
+                        length: 15
+                      - type: expression_statement
+                        fields:
+                          text: doc.setBaseUri(href);
+                        children: []
+                        pos: 6402
+                        length: 21
+                      pos: 6324
+                      length: 179
+                    pos: 6300
+                    length: 203
+                  pos: 6238
+                  length: 275
+                pos: 6202
+                length: 311
+              pos: 4385
+              length: 2134
+          children: []
+          pos: 4356
+          length: 2163
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseAttribute
+              children: []
+              pos: 6543
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6525
+              length: 1153
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consumeWhitespace();
+                children: []
+                pos: 6570
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: String key = tq.consumeAttributeKey();
+                children: []
+                pos: 6602
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: String value = "";
+                children: []
+                pos: 6649
+                length: 18
+              - type: expression_statement
+                fields:
+                  text: tq.consumeWhitespace();
+                children: []
+                pos: 6676
+                length: 23
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tq.matchChomp("=")
+                        children: []
+                        pos: 6712
+                        length: 18
+                    children: []
+                    pos: 6711
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: tq.consumeWhitespace();
+                    children: []
+                    pos: 6746
+                    length: 23
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: tq.matchChomp(SQ)
+                            children: []
+                            pos: 6787
+                            length: 17
+                        children: []
+                        pos: 6786
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: value = tq.chompTo(SQ);
+                        children: []
+                        pos: 6824
+                        length: 23
+                      pos: 6806
+                      length: 55
+                    pos: 6783
+                    length: 555
+                  - type: expression_statement
+                    fields:
+                      text: tq.consumeWhitespace();
+                    children: []
+                    pos: 7351
+                    length: 23
+                  pos: 6732
+                  length: 652
+                pos: 6708
+                length: 676
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: key.length()
+                            children: []
+                            pos: 7397
+                            length: 12
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 7413
+                            length: 1
+                        children: []
+                        pos: 7397
+                        length: 17
+                    children: []
+                    pos: 7396
+                    length: 19
+                children:
+                - type: return_statement
+                  fields:
+                    text: return Attribute.createFromEncoded(key, value);
+                  children: []
+                  pos: 7428
+                  length: 47
+                pos: 7393
+                length: 279
+              pos: 6560
+              length: 1118
+          children: []
+          pos: 6525
+          length: 1153
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseTextNode
+              children: []
+              pos: 7697
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7684
+              length: 463
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: TextNode textNode;
+                children: []
+                pos: 7723
+                length: 18
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tq.peek().equals('<')
+                        children: []
+                        pos: 7864
+                        length: 21
+                    children: []
+                    pos: 7863
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: tq.advance();
+                    children: []
+                    pos: 7901
+                    length: 13
+                  - type: expression_statement
+                    fields:
+                      text: textNode = new TextNode("<", baseUri);
+                    children: []
+                    pos: 7927
+                    length: 38
+                  pos: 7887
+                  length: 88
+                pos: 7860
+                length: 243
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(textNode);
+                children: []
+                pos: 8112
+                length: 29
+              pos: 7713
+              length: 434
+          children: []
+          pos: 7684
+          length: 463
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseCdata
+              children: []
+              pos: 8166
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8153
+              length: 239
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<![CDATA[");
+                children: []
+                pos: 8189
+                length: 24
+              - type: local_variable_declaration
+                fields:
+                  text: String rawText = tq.chompTo("]]>");
+                children: []
+                pos: 8222
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: TextNode textNode = new TextNode(rawText, baseUri);
+                children: []
+                pos: 8266
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(textNode);
+                children: []
+                pos: 8357
+                length: 29
+              pos: 8179
+              length: 213
+          children: []
+          pos: 8153
+          length: 239
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addChildToParent
+              children: []
+              pos: 8414
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Element child
+                children: []
+                pos: 8431
+                length: 13
+              pos: 8398
+              length: 1100
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Element parent = popStackToSuitableContainer(child.tag());
+                children: []
+                pos: 8480
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: Tag childTag = child.tag();
+                children: []
+                pos: 8547
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: boolean validAncestor = stackHasValidParent(childTag);
+                children: []
+                pos: 8583
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: unary_expression
+                            fields:
+                              text: "!validAncestor"
+                            children: []
+                            pos: 8651
+                            length: 14
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!relaxed"
+                            children: []
+                            pos: 8669
+                            length: 8
+                        children: []
+                        pos: 8651
+                        length: 26
+                    children: []
+                    pos: 8650
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Tag parentTag = childTag.getImplicitParent();
+                    children: []
+                    pos: 8749
+                    length: 45
+                  - type: local_variable_declaration
+                    fields:
+                      text: Element implicit = new Element(parentTag, baseUri);
+                    children: []
+                    pos: 8807
+                    length: 51
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: child.tag().equals(bodyTag)
+                            children: []
+                            pos: 8952
+                            length: 27
+                        children: []
+                        pos: 8951
+                        length: 29
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: Element head = new Element(headTag, baseUri);
+                        children: []
+                        pos: 8999
+                        length: 45
+                      - type: expression_statement
+                        fields:
+                          text: implicit.appendChild(head);
+                        children: []
+                        pos: 9061
+                        length: 27
+                      pos: 8981
+                      length: 121
+                    pos: 8948
+                    length: 154
+                  - type: expression_statement
+                    fields:
+                      text: implicit.appendChild(child);
+                    children: []
+                    pos: 9115
+                    length: 28
+                  - type: local_variable_declaration
+                    fields:
+                      text: Element root = addChildToParent(implicit, false);
+                    children: []
+                    pos: 9214
+                    length: 49
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!isEmptyElement"
+                            children: []
+                            pos: 9280
+                            length: 15
+                        children: []
+                        pos: 9279
+                        length: 17
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: stack.addLast(child);
+                      children: []
+                      pos: 9313
+                      length: 21
+                    pos: 9276
+                    length: 58
+                  - type: return_statement
+                    fields:
+                      text: return root;
+                    children: []
+                    pos: 9347
+                    length: 12
+                  pos: 8679
+                  length: 690
+                pos: 8647
+                length: 722
+              - type: expression_statement
+                fields:
+                  text: parent.appendChild(child);
+                children: []
+                pos: 9379
+                length: 26
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!isEmptyElement"
+                        children: []
+                        pos: 9419
+                        length: 15
+                    children: []
+                    pos: 9418
+                    length: 17
+                children:
+                - type: expression_statement
+                  fields:
+                    text: stack.addLast(child);
+                  children: []
+                  pos: 9448
+                  length: 21
+                pos: 9415
+                length: 54
+              - type: return_statement
+                fields:
+                  text: return parent;
+                children: []
+                pos: 9478
+                length: 14
+              pos: 8470
+              length: 1028
+          children: []
+          pos: 8398
+          length: 1100
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stackHasValidParent
+              children: []
+              pos: 9520
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Tag childTag
+                children: []
+                pos: 9540
+                length: 12
+              pos: 9504
+              length: 603
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: stack.size()
+                                children: []
+                                pos: 9568
+                                length: 12
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '1'
+                                children: []
+                                pos: 9584
+                                length: 1
+                            children: []
+                            pos: 9568
+                            length: 17
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: childTag.equals(htmlTag)
+                            children: []
+                            pos: 9589
+                            length: 24
+                        children: []
+                        pos: 9568
+                        length: 45
+                    children: []
+                    pos: 9567
+                    length: 47
+                children:
+                - type: return_statement
+                  fields:
+                    text: return true;
+                  children: []
+                  pos: 9627
+                  length: 12
+                pos: 9564
+                length: 75
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: childTag.requiresSpecificParent()
+                        children: []
+                        pos: 9684
+                        length: 33
+                    children: []
+                    pos: 9683
+                    length: 35
+                children:
+                - type: return_statement
+                  fields:
+                    text: return stack.getLast().tag().isValidParent(childTag);
+                  children: []
+                  pos: 9731
+                  length: 53
+                pos: 9680
+                length: 104
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = stack.size() -1; i >= 0; i--) {
+                                Element el = stack.get(i);
+                                Tag parent2 = el.tag();
+                                if (parent2.isValidAncestor(childTag)) {
+                                    return true;
+                                }
+                            }
+                children: []
+                pos: 9854
+                length: 225
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 10088
+                length: 13
+              pos: 9554
+              length: 553
+          children: []
+          pos: 9504
+          length: 603
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: popStackToSuitableContainer
+              children: []
+              pos: 10129
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Tag tag
+                children: []
+                pos: 10157
+                length: 7
+              pos: 10113
+              length: 256
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!stack.isEmpty()) {
+                                if (last().tag().canContain(tag))
+                                    return last();
+                                else
+                                    stack.removeLast();
+                            }
+                children: []
+                pos: 10176
+                length: 166
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 10351
+                length: 12
+              pos: 10166
+              length: 203
+          children: []
+          pos: 10113
+          length: 256
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: popStackToClose
+              children: []
+              pos: 10391
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Tag tag
+                children: []
+                pos: 10407
+                length: 7
+              pos: 10375
+              length: 768
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int counter = 0;
+                children: []
+                pos: 10521
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Element elToClose = null;
+                children: []
+                pos: 10546
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = stack.size() -1; i > 0; i--) {
+                                counter++;
+                                Element el = stack.get(i);
+                                Tag elTag = el.tag();
+                                if (elTag.equals(bodyTag) || elTag.equals(htmlTag)) { // once in body, don't close past body
+                                    break;
+                                } else if (elTag.equals(tag)) {
+                                    elToClose = el;
+                                    break;
+                                }
+                            }
+                children: []
+                pos: 10580
+                length: 390
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: elToClose
+                            children: []
+                            pos: 10983
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10996
+                            length: 4
+                        children: []
+                        pos: 10983
+                        length: 17
+                    children: []
+                    pos: 10982
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (int i = 0; i < counter; i++) {
+                                        stack.removeLast();
+                                    }
+                    children: []
+                    pos: 11016
+                    length: 85
+                  pos: 11002
+                  length: 109
+                pos: 10979
+                length: 132
+              - type: return_statement
+                fields:
+                  text: return elToClose;
+                children: []
+                pos: 11120
+                length: 17
+              pos: 10416
+              length: 727
+          children: []
+          pos: 10375
+          length: 768
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: last
+              children: []
+              pos: 11165
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11149
+              length: 62
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return stack.getLast();
+                children: []
+                pos: 11182
+                length: 23
+              pos: 11172
+              length: 39
+          children: []
+          pos: 11149
+          length: 62
+        pos: 303
+        length: 10910
+    children: []
+    pos: 303
+    length: 10910
+  pos: 0
+  length: 11214
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Parser
+        children: []
+        pos: 316
+        length: 6
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final String SQ = "'";
+          children: []
+          pos: 329
+          length: 37
+        - type: field_declaration
+          fields:
+            text: private static final String DQ = "\"";
+          children: []
+          pos: 371
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private static final Tag htmlTag = Tag.valueOf("html");
+          children: []
+          pos: 415
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private static final Tag headTag = Tag.valueOf("head");
+          children: []
+          pos: 475
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private static final Tag bodyTag = Tag.valueOf("body");
+          children: []
+          pos: 535
+          length: 55
+        - type: field_declaration
+          fields:
+            text: private static final Tag titleTag = Tag.valueOf("title");
+          children: []
+          pos: 595
+          length: 57
+        - type: field_declaration
+          fields:
+            text: private static final Tag textareaTag = Tag.valueOf("textarea");
+          children: []
+          pos: 657
+          length: 63
+        - type: field_declaration
+          fields:
+            text: private final LinkedList<Element> stack;
+          children: []
+          pos: 726
+          length: 40
+        - type: field_declaration
+          fields:
+            text: private final TokenQueue tq;
+          children: []
+          pos: 771
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private final Document doc;
+          children: []
+          pos: 804
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private String baseUri;
+          children: []
+          pos: 836
+          length: 23
+        - type: field_declaration
+          fields:
+            text: private boolean relaxed = false;
+          children: []
+          pos: 864
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              private Parser(String html, String baseUri, boolean isBodyFragment) {
+                      Validate.notNull(html);
+                      Validate.notNull(baseUri);
+
+                      stack = new LinkedList<Element>();
+                      tq = new TokenQueue(html);
+                      this.baseUri = baseUri;
+
+                      if (isBodyFragment) {
+                          doc = Document.createShell(baseUri);
+                          stack.add(doc.body());
+                      } else {
+                          doc = new Document(baseUri);
+                          stack.add(doc);
+                      }
+                  }
+          children: []
+          pos: 902
+          length: 464
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 1606
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String html
+                children: []
+                pos: 1612
+                length: 11
+              pos: 1583
+              length: 154
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Parser parser = new Parser(html, baseUri, false);
+                children: []
+                pos: 1651
+                length: 49
+              - type: return_statement
+                fields:
+                  text: return parser.parse();
+                children: []
+                pos: 1709
+                length: 22
+              pos: 1641
+              length: 96
+          children: []
+          pos: 1583
+          length: 154
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseBodyFragment
+              children: []
+              pos: 2055
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String bodyHtml
+                children: []
+                pos: 2073
+                length: 15
+              pos: 2032
+              length: 173
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Parser parser = new Parser(bodyHtml, baseUri, true);
+                children: []
+                pos: 2116
+                length: 52
+              - type: return_statement
+                fields:
+                  text: return parser.parse();
+                children: []
+                pos: 2177
+                length: 22
+              pos: 2106
+              length: 99
+          children: []
+          pos: 2032
+          length: 173
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseBodyFragmentRelaxed
+              children: []
+              pos: 2653
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String bodyHtml
+                children: []
+                pos: 2678
+                length: 15
+              pos: 2630
+              length: 211
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Parser parser = new Parser(bodyHtml, baseUri, true);
+                children: []
+                pos: 2721
+                length: 52
+              - type: expression_statement
+                fields:
+                  text: parser.relaxed = true;
+                children: []
+                pos: 2782
+                length: 22
+              - type: return_statement
+                fields:
+                  text: return parser.parse();
+                children: []
+                pos: 2813
+                length: 22
+              pos: 2711
+              length: 130
+          children: []
+          pos: 2630
+          length: 211
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parse
+              children: []
+              pos: 2864
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2847
+              length: 581
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tq.isEmpty()) {
+                                if (tq.matchesStartTag()) {
+                                    parseStartTag();
+                                } else if (tq.matchesCS("</")) {
+                                    parseEndTag();
+                                } else if (tq.matchesCS("<!--")) {
+                                    parseComment();
+                                } else if (tq.matches("<![CDATA[")) {
+                                    parseCdata();
+                                } else if (tq.matchesCS("<?") || tq.matchesCS("<!")) {
+                                    parseXmlDecl();
+                                } else {
+                                    parseTextNode();
+                                }
+                            }
+                children: []
+                pos: 2882
+                length: 508
+              - type: return_statement
+                fields:
+                  text: return doc.normalise();
+                children: []
+                pos: 3399
+                length: 23
+              pos: 2872
+              length: 556
+          children: []
+          pos: 2847
+          length: 581
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseComment
+              children: []
+              pos: 3447
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3434
+              length: 298
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<!--");
+                children: []
+                pos: 3472
+                length: 19
+              - type: local_variable_declaration
+                fields:
+                  text: String data = tq.chompTo("->");
+                children: []
+                pos: 3500
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: data.endsWith("-")
+                        children: []
+                        pos: 3545
+                        length: 18
+                    children: []
+                    pos: 3544
+                    length: 20
+                children:
+                - type: expression_statement
+                  fields:
+                    text: data = data.substring(0, data.length()-1);
+                  children: []
+                  pos: 3593
+                  length: 42
+                pos: 3541
+                length: 94
+              - type: local_variable_declaration
+                fields:
+                  text: Comment comment = new Comment(data, baseUri);
+                children: []
+                pos: 3644
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(comment);
+                children: []
+                pos: 3698
+                length: 28
+              pos: 3462
+              length: 270
+          children: []
+          pos: 3434
+          length: 298
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseXmlDecl
+              children: []
+              pos: 3751
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3738
+              length: 349
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<");
+                children: []
+                pos: 3776
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Character firstChar = tq.consume();
+                children: []
+                pos: 3801
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: boolean procInstr = firstChar.toString().equals("!");
+                children: []
+                pos: 3878
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: String data = tq.chompTo(">");
+                children: []
+                pos: 3940
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: XmlDeclaration decl = new XmlDeclaration(data, baseUri, procInstr);
+                children: []
+                pos: 3980
+                length: 67
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(decl);
+                children: []
+                pos: 4056
+                length: 25
+              pos: 3766
+              length: 321
+          children: []
+          pos: 3738
+          length: 349
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseEndTag
+              children: []
+              pos: 4106
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4093
+              length: 257
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("</");
+                children: []
+                pos: 4130
+                length: 17
+              - type: local_variable_declaration
+                fields:
+                  text: String tagName = tq.consumeTagName();
+                children: []
+                pos: 4156
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: tq.chompTo(">");
+                children: []
+                pos: 4202
+                length: 16
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: tagName.length()
+                            children: []
+                            pos: 4232
+                            length: 16
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 4252
+                            length: 1
+                        children: []
+                        pos: 4232
+                        length: 21
+                    children: []
+                    pos: 4231
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Tag tag = Tag.valueOf(tagName);
+                    children: []
+                    pos: 4269
+                    length: 31
+                  - type: expression_statement
+                    fields:
+                      text: popStackToClose(tag);
+                    children: []
+                    pos: 4313
+                    length: 21
+                  pos: 4255
+                  length: 89
+                pos: 4228
+                length: 116
+              pos: 4120
+              length: 230
+          children: []
+          pos: 4093
+          length: 257
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseStartTag
+              children: []
+              pos: 4369
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4356
+              length: 2163
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<");
+                children: []
+                pos: 4395
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: String tagName = tq.consumeTagName();
+                children: []
+                pos: 4420
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: Validate.notEmpty(tagName, "Unexpectedly empty tagname. (This
+                    should not occur, please report!)");
+                children: []
+                pos: 4466
+                length: 98
+              - type: expression_statement
+                fields:
+                  text: tq.consumeWhitespace();
+                children: []
+                pos: 4582
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: Attributes attributes = new Attributes();
+                children: []
+                pos: 4614
+                length: 41
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!tq.matchesAny("<", "/>", ">") && !tq.isEmpty()) {
+                                Attribute attribute = parseAttribute();
+                                if (attribute != null)
+                                    attributes.put(attribute);
+                            }
+                children: []
+                pos: 4664
+                length: 197
+              - type: local_variable_declaration
+                fields:
+                  text: Tag tag = Tag.valueOf(tagName);
+                children: []
+                pos: 4871
+                length: 31
+              - type: local_variable_declaration
+                fields:
+                  text: Element child = new Element(tag, baseUri, attributes);
+                children: []
+                pos: 4911
+                length: 54
+              - type: local_variable_declaration
+                fields:
+                  text: boolean isEmptyElement = tag.isEmpty();
+                children: []
+                pos: 4975
+                length: 39
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tq.matchChomp("/>")
+                        children: []
+                        pos: 5094
+                        length: 19
+                    children: []
+                    pos: 5093
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: isEmptyElement = true;
+                    children: []
+                    pos: 5159
+                    length: 22
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!tag.isKnownTag()"
+                            children: []
+                            pos: 5198
+                            length: 17
+                        children: []
+                        pos: 5197
+                        length: 19
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: tag.setSelfClosing();
+                      children: []
+                      pos: 5349
+                      length: 21
+                    pos: 5194
+                    length: 176
+                  pos: 5115
+                  length: 265
+                pos: 5090
+                length: 339
+              - type: expression_statement
+                fields:
+                  text: addChildToParent(child, isEmptyElement);
+                children: []
+                pos: 5438
+                length: 40
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tag.isData()
+                        children: []
+                        pos: 5584
+                        length: 12
+                    children: []
+                    pos: 5583
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String data = tq.chompToIgnoreCase("</" + tagName);
+                    children: []
+                    pos: 5612
+                    length: 51
+                  - type: expression_statement
+                    fields:
+                      text: tq.chompTo(">");
+                    children: []
+                    pos: 5676
+                    length: 16
+                  - type: expression_statement
+                    fields:
+                      text: popStackToClose(tag);
+                    children: []
+                    pos: 5705
+                    length: 21
+                  - type: local_variable_declaration
+                    fields:
+                      text: Node dataNode;
+                    children: []
+                    pos: 5752
+                    length: 14
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: tag.equals(titleTag)
+                                children: []
+                                pos: 5783
+                                length: 20
+                              right:
+                                type: method_invocation
+                                fields:
+                                  text: tag.equals(textareaTag)
+                                children: []
+                                pos: 5807
+                                length: 23
+                            children: []
+                            pos: 5783
+                            length: 47
+                        children: []
+                        pos: 5782
+                        length: 49
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: dataNode = TextNode.createFromEncoded(data, baseUri);
+                      children: []
+                      pos: 5922
+                      length: 53
+                    pos: 5779
+                    length: 269
+                  - type: expression_statement
+                    fields:
+                      text: child.appendChild(dataNode);
+                    children: []
+                    pos: 6107
+                    length: 28
+                  pos: 5598
+                  length: 550
+                pos: 5580
+                length: 568
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: child.tagName().equals("base")
+                        children: []
+                        pos: 6206
+                        length: 30
+                    children: []
+                    pos: 6205
+                    length: 32
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: String href = child.absUrl("href");
+                    children: []
+                    pos: 6252
+                    length: 35
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: href.length()
+                                children: []
+                                pos: 6304
+                                length: 13
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 6321
+                                length: 1
+                            children: []
+                            pos: 6304
+                            length: 18
+                        children: []
+                        pos: 6303
+                        length: 20
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: baseUri = href;
+                        children: []
+                        pos: 6370
+                        length: 15
+                      - type: expression_statement
+                        fields:
+                          text: doc.setBaseUri(href);
+                        children: []
+                        pos: 6402
+                        length: 21
+                      pos: 6324
+                      length: 179
+                    pos: 6300
+                    length: 203
+                  pos: 6238
+                  length: 275
+                pos: 6202
+                length: 311
+              pos: 4385
+              length: 2134
+          children: []
+          pos: 4356
+          length: 2163
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseAttribute
+              children: []
+              pos: 6543
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6525
+              length: 1049
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consumeWhitespace();
+                children: []
+                pos: 6570
+                length: 23
+              - type: local_variable_declaration
+                fields:
+                  text: String key = tq.consumeAttributeKey();
+                children: []
+                pos: 6602
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: String value = "";
+                children: []
+                pos: 6649
+                length: 18
+              - type: expression_statement
+                fields:
+                  text: tq.consumeWhitespace();
+                children: []
+                pos: 6676
+                length: 23
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tq.matchChomp("=")
+                        children: []
+                        pos: 6712
+                        length: 18
+                    children: []
+                    pos: 6711
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: tq.consumeWhitespace();
+                    children: []
+                    pos: 6746
+                    length: 23
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: tq.matchChomp(SQ)
+                            children: []
+                            pos: 6787
+                            length: 17
+                        children: []
+                        pos: 6786
+                        length: 19
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: value = tq.chompTo(SQ);
+                        children: []
+                        pos: 6824
+                        length: 23
+                      pos: 6806
+                      length: 55
+                    pos: 6783
+                    length: 555
+                  - type: expression_statement
+                    fields:
+                      text: tq.consumeWhitespace();
+                    children: []
+                    pos: 7351
+                    length: 23
+                  pos: 6732
+                  length: 652
+                pos: 6708
+                length: 676
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: method_invocation
+                            fields:
+                              text: key.length()
+                            children: []
+                            pos: 7397
+                            length: 12
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 7413
+                            length: 1
+                        children: []
+                        pos: 7397
+                        length: 17
+                    children: []
+                    pos: 7396
+                    length: 19
+                children:
+                - type: return_statement
+                  fields:
+                    text: return Attribute.createFromEncoded(key, value);
+                  children: []
+                  pos: 7428
+                  length: 47
+                pos: 7393
+                length: 175
+              pos: 6560
+              length: 1014
+          children: []
+          pos: 6525
+          length: 1049
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseTextNode
+              children: []
+              pos: 7593
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7580
+              length: 463
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: TextNode textNode;
+                children: []
+                pos: 7619
+                length: 18
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: tq.peek().equals('<')
+                        children: []
+                        pos: 7760
+                        length: 21
+                    children: []
+                    pos: 7759
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: tq.advance();
+                    children: []
+                    pos: 7797
+                    length: 13
+                  - type: expression_statement
+                    fields:
+                      text: textNode = new TextNode("<", baseUri);
+                    children: []
+                    pos: 7823
+                    length: 38
+                  pos: 7783
+                  length: 88
+                pos: 7756
+                length: 243
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(textNode);
+                children: []
+                pos: 8008
+                length: 29
+              pos: 7609
+              length: 434
+          children: []
+          pos: 7580
+          length: 463
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: parseCdata
+              children: []
+              pos: 8062
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8049
+              length: 239
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: tq.consume("<![CDATA[");
+                children: []
+                pos: 8085
+                length: 24
+              - type: local_variable_declaration
+                fields:
+                  text: String rawText = tq.chompTo("]]>");
+                children: []
+                pos: 8118
+                length: 35
+              - type: local_variable_declaration
+                fields:
+                  text: TextNode textNode = new TextNode(rawText, baseUri);
+                children: []
+                pos: 8162
+                length: 51
+              - type: expression_statement
+                fields:
+                  text: last().appendChild(textNode);
+                children: []
+                pos: 8253
+                length: 29
+              pos: 8075
+              length: 213
+          children: []
+          pos: 8049
+          length: 239
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addChildToParent
+              children: []
+              pos: 8310
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Element child
+                children: []
+                pos: 8327
+                length: 13
+              pos: 8294
+              length: 1100
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Element parent = popStackToSuitableContainer(child.tag());
+                children: []
+                pos: 8376
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: Tag childTag = child.tag();
+                children: []
+                pos: 8443
+                length: 27
+              - type: local_variable_declaration
+                fields:
+                  text: boolean validAncestor = stackHasValidParent(childTag);
+                children: []
+                pos: 8479
+                length: 54
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: unary_expression
+                            fields:
+                              text: "!validAncestor"
+                            children: []
+                            pos: 8547
+                            length: 14
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!relaxed"
+                            children: []
+                            pos: 8565
+                            length: 8
+                        children: []
+                        pos: 8547
+                        length: 26
+                    children: []
+                    pos: 8546
+                    length: 28
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: Tag parentTag = childTag.getImplicitParent();
+                    children: []
+                    pos: 8645
+                    length: 45
+                  - type: local_variable_declaration
+                    fields:
+                      text: Element implicit = new Element(parentTag, baseUri);
+                    children: []
+                    pos: 8703
+                    length: 51
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: child.tag().equals(bodyTag)
+                            children: []
+                            pos: 8848
+                            length: 27
+                        children: []
+                        pos: 8847
+                        length: 29
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: Element head = new Element(headTag, baseUri);
+                        children: []
+                        pos: 8895
+                        length: 45
+                      - type: expression_statement
+                        fields:
+                          text: implicit.appendChild(head);
+                        children: []
+                        pos: 8957
+                        length: 27
+                      pos: 8877
+                      length: 121
+                    pos: 8844
+                    length: 154
+                  - type: expression_statement
+                    fields:
+                      text: implicit.appendChild(child);
+                    children: []
+                    pos: 9011
+                    length: 28
+                  - type: local_variable_declaration
+                    fields:
+                      text: Element root = addChildToParent(implicit, false);
+                    children: []
+                    pos: 9110
+                    length: 49
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: unary_expression
+                            fields:
+                              text: "!isEmptyElement"
+                            children: []
+                            pos: 9176
+                            length: 15
+                        children: []
+                        pos: 9175
+                        length: 17
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: stack.addLast(child);
+                      children: []
+                      pos: 9209
+                      length: 21
+                    pos: 9172
+                    length: 58
+                  - type: return_statement
+                    fields:
+                      text: return root;
+                    children: []
+                    pos: 9243
+                    length: 12
+                  pos: 8575
+                  length: 690
+                pos: 8543
+                length: 722
+              - type: expression_statement
+                fields:
+                  text: parent.appendChild(child);
+                children: []
+                pos: 9275
+                length: 26
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!isEmptyElement"
+                        children: []
+                        pos: 9315
+                        length: 15
+                    children: []
+                    pos: 9314
+                    length: 17
+                children:
+                - type: expression_statement
+                  fields:
+                    text: stack.addLast(child);
+                  children: []
+                  pos: 9344
+                  length: 21
+                pos: 9311
+                length: 54
+              - type: return_statement
+                fields:
+                  text: return parent;
+                children: []
+                pos: 9374
+                length: 14
+              pos: 8366
+              length: 1028
+          children: []
+          pos: 8294
+          length: 1100
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: stackHasValidParent
+              children: []
+              pos: 9416
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Tag childTag
+                children: []
+                pos: 9436
+                length: 12
+              pos: 9400
+              length: 603
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: stack.size()
+                                children: []
+                                pos: 9464
+                                length: 12
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '1'
+                                children: []
+                                pos: 9480
+                                length: 1
+                            children: []
+                            pos: 9464
+                            length: 17
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: childTag.equals(htmlTag)
+                            children: []
+                            pos: 9485
+                            length: 24
+                        children: []
+                        pos: 9464
+                        length: 45
+                    children: []
+                    pos: 9463
+                    length: 47
+                children:
+                - type: return_statement
+                  fields:
+                    text: return true;
+                  children: []
+                  pos: 9523
+                  length: 12
+                pos: 9460
+                length: 75
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: childTag.requiresSpecificParent()
+                        children: []
+                        pos: 9580
+                        length: 33
+                    children: []
+                    pos: 9579
+                    length: 35
+                children:
+                - type: return_statement
+                  fields:
+                    text: return stack.getLast().tag().isValidParent(childTag);
+                  children: []
+                  pos: 9627
+                  length: 53
+                pos: 9576
+                length: 104
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = stack.size() -1; i >= 0; i--) {
+                                Element el = stack.get(i);
+                                Tag parent2 = el.tag();
+                                if (parent2.isValidAncestor(childTag)) {
+                                    return true;
+                                }
+                            }
+                children: []
+                pos: 9750
+                length: 225
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 9984
+                length: 13
+              pos: 9450
+              length: 553
+          children: []
+          pos: 9400
+          length: 603
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: popStackToSuitableContainer
+              children: []
+              pos: 10025
+              length: 27
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Tag tag
+                children: []
+                pos: 10053
+                length: 7
+              pos: 10009
+              length: 256
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (!stack.isEmpty()) {
+                                if (last().tag().canContain(tag))
+                                    return last();
+                                else
+                                    stack.removeLast();
+                            }
+                children: []
+                pos: 10072
+                length: 166
+              - type: return_statement
+                fields:
+                  text: return null;
+                children: []
+                pos: 10247
+                length: 12
+              pos: 10062
+              length: 203
+          children: []
+          pos: 10009
+          length: 256
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: popStackToClose
+              children: []
+              pos: 10287
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Tag tag
+                children: []
+                pos: 10303
+                length: 7
+              pos: 10271
+              length: 768
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int counter = 0;
+                children: []
+                pos: 10417
+                length: 16
+              - type: local_variable_declaration
+                fields:
+                  text: Element elToClose = null;
+                children: []
+                pos: 10442
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = stack.size() -1; i > 0; i--) {
+                                counter++;
+                                Element el = stack.get(i);
+                                Tag elTag = el.tag();
+                                if (elTag.equals(bodyTag) || elTag.equals(htmlTag)) { // once in body, don't close past body
+                                    break;
+                                } else if (elTag.equals(tag)) {
+                                    elToClose = el;
+                                    break;
+                                }
+                            }
+                children: []
+                pos: 10476
+                length: 390
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: elToClose
+                            children: []
+                            pos: 10879
+                            length: 9
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10892
+                            length: 4
+                        children: []
+                        pos: 10879
+                        length: 17
+                    children: []
+                    pos: 10878
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: for_statement
+                    fields:
+                      text: |-
+                        for (int i = 0; i < counter; i++) {
+                                        stack.removeLast();
+                                    }
+                    children: []
+                    pos: 10912
+                    length: 85
+                  pos: 10898
+                  length: 109
+                pos: 10875
+                length: 132
+              - type: return_statement
+                fields:
+                  text: return elToClose;
+                children: []
+                pos: 11016
+                length: 17
+              pos: 10312
+              length: 727
+          children: []
+          pos: 10271
+          length: 768
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: last
+              children: []
+              pos: 11061
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11045
+              length: 62
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return stack.getLast();
+                children: []
+                pos: 11078
+                length: 23
+              pos: 11068
+              length: 39
+          children: []
+          pos: 11045
+          length: 62
+        pos: 303
+        length: 10806
+    children: []
+    pos: 303
+    length: 10806
+  pos: 0
+  length: 11110
 text_diff: "--- before\n+++ after\n@@ -203,8 +203,7 @@\n         if (key.length()
   != 0)\n             return Attribute.createFromEncoded(key, value);\n         else
   {\n-            if (value.length() == 0) // no key, no val; unknown char, keep popping

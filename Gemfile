@@ -31,6 +31,9 @@ gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 
 gem 'webrick', '~> 1.8', '>= 1.8.1'
 gem 'minitest', '~> 5.25', '>= 5.25.1'
+
 # gem 'ruby_tree_sitter', '~> 2.0'
 gem 'ruby_tree_sitter', '~> 1.12'
+# gem 'ruby_tree_sitter', path: '~/ruby-tree-sitter/'
+
 gem 'nokogiri', '~> 1.18', '>= 1.18.8'

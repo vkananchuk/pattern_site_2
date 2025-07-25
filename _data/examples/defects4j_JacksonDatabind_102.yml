@@ -1,5 +1,2150 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: DateTimeSerializerBase
+        children: []
+        pos: 723
+        length: 22
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected final Boolean _useTimestamp;
+          children: []
+          pos: 961
+          length: 38
+        - type: field_declaration
+          fields:
+            text: protected final DateFormat _customFormat;
+          children: []
+          pos: 1230
+          length: 41
+        - type: field_declaration
+          fields:
+            text: protected final AtomicReference<DateFormat> _reusedCustomFormat;
+          children: []
+          pos: 1631
+          length: 64
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected DateTimeSerializerBase(Class<T> type,
+                          Boolean useTimestamp, DateFormat customFormat)
+                  {
+                      super(type);
+                      _useTimestamp = useTimestamp;
+                      _customFormat = customFormat;
+                      _reusedCustomFormat = (customFormat == null) ? null : new AtomicReference<DateFormat>();
+                  }
+          children: []
+          pos: 1701
+          length: 312
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withFormat
+              children: []
+              pos: 2061
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Boolean timestamp
+                children: []
+                pos: 2072
+                length: 17
+              pos: 2019
+              length: 97
+          children: []
+          pos: 2019
+          length: 97
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createContextual
+              children: []
+              pos: 2161
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 2178
+                length: 30
+              pos: 2122
+              length: 3150
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: JsonFormat.Value format = findFormatOverrides(serializers,
+                    property, handledType());
+                children: []
+                pos: 2418
+                length: 84
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: format
+                            children: []
+                            pos: 2515
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2525
+                            length: 4
+                        children: []
+                        pos: 2515
+                        length: 14
+                    children: []
+                    pos: 2514
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 2545
+                    length: 12
+                  pos: 2531
+                  length: 36
+                pos: 2511
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: JsonFormat.Shape shape = format.getShape();
+                children: []
+                pos: 2638
+                length: 43
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: shape.isNumeric()
+                        children: []
+                        pos: 2694
+                        length: 17
+                    children: []
+                    pos: 2693
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return withFormat(Boolean.TRUE, null);
+                    children: []
+                    pos: 2727
+                    length: 38
+                  pos: 2713
+                  length: 62
+                pos: 2690
+                length: 85
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: format.hasPattern()
+                        children: []
+                        pos: 2918
+                        length: 19
+                    children: []
+                    pos: 2917
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: |-
+                        final Locale loc = format.hasLocale()
+                                                    ? format.getLocale()
+                                                    : serializers.getLocale();
+                    children: []
+                    pos: 2953
+                    length: 141
+                  - type: local_variable_declaration
+                    fields:
+                      text: SimpleDateFormat df = new SimpleDateFormat(format.getPattern(),
+                        loc);
+                    children: []
+                    pos: 3107
+                    length: 69
+                  - type: local_variable_declaration
+                    fields:
+                      text: |-
+                        TimeZone tz = format.hasTimeZone() ? format.getTimeZone()
+                                            : serializers.getTimeZone();
+                    children: []
+                    pos: 3189
+                    length: 106
+                  - type: expression_statement
+                    fields:
+                      text: df.setTimeZone(tz);
+                    children: []
+                    pos: 3308
+                    length: 19
+                  - type: return_statement
+                    fields:
+                      text: return withFormat(Boolean.FALSE, df);
+                    children: []
+                    pos: 3340
+                    length: 37
+                  pos: 2939
+                  length: 448
+                pos: 2914
+                length: 473
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean hasLocale = format.hasLocale();
+                children: []
+                pos: 3446
+                length: 45
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean hasTZ = format.hasTimeZone();
+                children: []
+                pos: 3500
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean asString = (shape == JsonFormat.Shape.STRING);
+                children: []
+                pos: 3552
+                length: 60
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: and
+                            fields:
+                              left:
+                                type: unary_expression
+                                fields:
+                                  text: "!hasLocale"
+                                children: []
+                                pos: 3626
+                                length: 10
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!hasTZ"
+                                children: []
+                                pos: 3640
+                                length: 6
+                            children: []
+                            pos: 3626
+                            length: 20
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!asString"
+                            children: []
+                            pos: 3650
+                            length: 9
+                        children: []
+                        pos: 3626
+                        length: 33
+                    children: []
+                    pos: 3625
+                    length: 35
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 3675
+                    length: 12
+                  pos: 3661
+                  length: 36
+                pos: 3622
+                length: 75
+              - type: local_variable_declaration
+                fields:
+                  text: DateFormat df0 = serializers.getConfig().getDateFormat();
+                children: []
+                pos: 3707
+                length: 57
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: df0 instanceof StdDateFormat
+                        children: []
+                        pos: 3848
+                        length: 28
+                    children: []
+                    pos: 3847
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: StdDateFormat std = (StdDateFormat) df0;
+                    children: []
+                    pos: 3892
+                    length: 40
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: format.hasLocale()
+                            children: []
+                            pos: 3949
+                            length: 18
+                        children: []
+                        pos: 3948
+                        length: 20
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: std = std.withLocale(format.getLocale());
+                        children: []
+                        pos: 3987
+                        length: 41
+                      pos: 3969
+                      length: 73
+                    pos: 3945
+                    length: 97
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: format.hasTimeZone()
+                            children: []
+                            pos: 4059
+                            length: 20
+                        children: []
+                        pos: 4058
+                        length: 22
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: std = std.withTimeZone(format.getTimeZone());
+                        children: []
+                        pos: 4099
+                        length: 45
+                      pos: 4081
+                      length: 77
+                    pos: 4055
+                    length: 103
+                  - type: return_statement
+                    fields:
+                      text: return withFormat(Boolean.FALSE, std);
+                    children: []
+                    pos: 4171
+                    length: 38
+                  pos: 3878
+                  length: 341
+                pos: 3844
+                length: 375
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(df0 instanceof SimpleDateFormat)"
+                        children: []
+                        pos: 4463
+                        length: 34
+                    children: []
+                    pos: 4462
+                    length: 36
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        serializers.reportBadDefinition(handledType(), String.format(
+                        "Configured `DateFormat` (%s) not a `SimpleDateFormat`; cannot configure `Locale` or `TimeZone`",
+                        df0.getClass().getName()));
+                    children: []
+                    pos: 4513
+                    length: 187
+                  pos: 4499
+                  length: 211
+                pos: 4459
+                length: 251
+              - type: local_variable_declaration
+                fields:
+                  text: SimpleDateFormat df = (SimpleDateFormat) df0;
+                children: []
+                pos: 4719
+                length: 45
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: hasLocale
+                        children: []
+                        pos: 4777
+                        length: 9
+                    children: []
+                    pos: 4776
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: df = new SimpleDateFormat(df.toPattern(), format.getLocale());
+                    children: []
+                    pos: 4888
+                    length: 62
+                  pos: 4788
+                  length: 172
+                pos: 4773
+                length: 252
+              - type: local_variable_declaration
+                fields:
+                  text: TimeZone newTz = format.getTimeZone();
+                children: []
+                pos: 5034
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: boolean changeTZ = (newTz != null) && !newTz.equals(df.getTimeZone());
+                children: []
+                pos: 5081
+                length: 70
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: changeTZ
+                        children: []
+                        pos: 5164
+                        length: 8
+                    children: []
+                    pos: 5163
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: df.setTimeZone(newTz);
+                    children: []
+                    pos: 5188
+                    length: 22
+                  pos: 5174
+                  length: 46
+                pos: 5160
+                length: 60
+              - type: return_statement
+                fields:
+                  text: return withFormat(Boolean.FALSE, df);
+                children: []
+                pos: 5229
+                length: 37
+              pos: 2277
+              length: 2995
+          children: []
+          pos: 2122
+          length: 3150
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isEmpty
+              children: []
+              pos: 5468
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 5476
+                length: 30
+              pos: 5439
+              length: 307
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 5727
+                length: 13
+              pos: 5517
+              length: 229
+          children: []
+          pos: 5439
+          length: 307
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _timestamp
+              children: []
+              pos: 5776
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T value
+                children: []
+                pos: 5787
+                length: 7
+              pos: 5752
+              length: 44
+          children: []
+          pos: 5752
+          length: 44
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSchema
+              children: []
+              pos: 5832
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 5842
+                length: 30
+              pos: 5802
+              length: 246
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return createSchemaNode(_asTimestamp(serializers) ? "number"
+                    : "string", true);'
+                children: []
+                pos: 5963
+                length: 79
+              pos: 5889
+              length: 159
+          children: []
+          pos: 5802
+          length: 246
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: acceptJsonFormatVisitor
+              children: []
+              pos: 6080
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonFormatVisitorWrapper visitor
+                children: []
+                pos: 6104
+                length: 32
+              pos: 6054
+              length: 232
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: _acceptJsonFormatVisitor(visitor, typeHint, _asTimestamp(visitor.getProvider()));
+                children: []
+                pos: 6199
+                length: 81
+              pos: 6189
+              length: 97
+          children: []
+          pos: 6054
+          length: 232
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serialize
+              children: []
+              pos: 6499
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T value
+                children: []
+                pos: 6509
+                length: 7
+              pos: 6464
+              length: 132
+          children: []
+          pos: 6464
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _asTimestamp
+              children: []
+              pos: 6790
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 6803
+                length: 30
+              pos: 6772
+              length: 602
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _useTimestamp
+                            children: []
+                            pos: 6853
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6870
+                            length: 4
+                        children: []
+                        pos: 6853
+                        length: 21
+                    children: []
+                    pos: 6852
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return _useTimestamp.booleanValue();
+                    children: []
+                    pos: 6890
+                    length: 36
+                  pos: 6876
+                  length: 60
+                pos: 6849
+                length: 87
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _customFormat
+                            children: []
+                            pos: 6949
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6966
+                            length: 4
+                        children: []
+                        pos: 6949
+                        length: 21
+                    children: []
+                    pos: 6948
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: serializers
+                                children: []
+                                pos: 6990
+                                length: 11
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7005
+                                length: 4
+                            children: []
+                            pos: 6990
+                            length: 19
+                        children: []
+                        pos: 6989
+                        length: 21
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return serializers.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                        children: []
+                        pos: 7029
+                        length: 77
+                      pos: 7011
+                      length: 109
+                    pos: 6986
+                    length: 134
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("Null SerializerProvider
+                        passed for "+handledType().getName());
+                    children: []
+                    pos: 7238
+                    length: 98
+                  pos: 6972
+                  length: 374
+                pos: 6945
+                length: 401
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7355
+                length: 13
+              pos: 6839
+              length: 535
+          children: []
+          pos: 6772
+          length: 602
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _acceptJsonFormatVisitor
+              children: []
+              pos: 7395
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonFormatVisitorWrapper visitor
+                children: []
+                pos: 7420
+                length: 32
+              pos: 7380
+              length: 405
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: asNumber
+                        children: []
+                        pos: 7539
+                        length: 8
+                    children: []
+                    pos: 7538
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        visitIntFormat(visitor, typeHint,
+                                            JsonParser.NumberType.LONG, JsonValueFormat.UTC_MILLISEC);
+                    children: []
+                    pos: 7563
+                    length: 112
+                  pos: 7549
+                  length: 136
+                pos: 7535
+                length: 244
+              pos: 7525
+              length: 260
+          children: []
+          pos: 7380
+          length: 405
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _serializeAsString
+              children: []
+              pos: 7840
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Date value
+                children: []
+                pos: 7859
+                length: 10
+              pos: 7825
+              length: 1055
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _customFormat
+                            children: []
+                            pos: 7954
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7971
+                            length: 4
+                        children: []
+                        pos: 7954
+                        length: 21
+                    children: []
+                    pos: 7953
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: provider.defaultSerializeDateValue(value, g);
+                    children: []
+                    pos: 7991
+                    length: 45
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8049
+                    length: 7
+                  pos: 7977
+                  length: 89
+                pos: 7950
+                length: 116
+              - type: local_variable_declaration
+                fields:
+                  text: DateFormat f = _reusedCustomFormat.getAndSet(null);
+                children: []
+                pos: 8644
+                length: 51
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: f
+                            children: []
+                            pos: 8708
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8713
+                            length: 4
+                        children: []
+                        pos: 8708
+                        length: 9
+                    children: []
+                    pos: 8707
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: f = (DateFormat) _customFormat.clone();
+                    children: []
+                    pos: 8733
+                    length: 39
+                  pos: 8719
+                  length: 63
+                pos: 8704
+                length: 78
+              - type: expression_statement
+                fields:
+                  text: g.writeString(f.format(value));
+                children: []
+                pos: 8791
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: _reusedCustomFormat.compareAndSet(null, f);
+                children: []
+                pos: 8831
+                length: 43
+              pos: 7940
+              length: 940
+          children: []
+          pos: 7825
+          length: 1055
+        pos: 673
+        length: 8209
+    children: []
+    pos: 673
+    length: 8209
+  pos: 0
+  length: 8883
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: DateTimeSerializerBase
+        children: []
+        pos: 723
+        length: 22
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: protected final Boolean _useTimestamp;
+          children: []
+          pos: 961
+          length: 38
+        - type: field_declaration
+          fields:
+            text: protected final DateFormat _customFormat;
+          children: []
+          pos: 1230
+          length: 41
+        - type: field_declaration
+          fields:
+            text: protected final AtomicReference<DateFormat> _reusedCustomFormat;
+          children: []
+          pos: 1631
+          length: 64
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected DateTimeSerializerBase(Class<T> type,
+                          Boolean useTimestamp, DateFormat customFormat)
+                  {
+                      super(type);
+                      _useTimestamp = useTimestamp;
+                      _customFormat = customFormat;
+                      _reusedCustomFormat = (customFormat == null) ? null : new AtomicReference<DateFormat>();
+                  }
+          children: []
+          pos: 1701
+          length: 312
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: withFormat
+              children: []
+              pos: 2061
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Boolean timestamp
+                children: []
+                pos: 2072
+                length: 17
+              pos: 2019
+              length: 97
+          children: []
+          pos: 2019
+          length: 97
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createContextual
+              children: []
+              pos: 2161
+              length: 16
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 2178
+                length: 30
+              pos: 2122
+              length: 3217
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: property
+                            children: []
+                            pos: 2422
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2434
+                            length: 4
+                        children: []
+                        pos: 2422
+                        length: 16
+                    children: []
+                    pos: 2421
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 2454
+                    length: 12
+                  pos: 2440
+                  length: 36
+                pos: 2418
+                length: 58
+              - type: local_variable_declaration
+                fields:
+                  text: JsonFormat.Value format = findFormatOverrides(serializers,
+                    property, handledType());
+                children: []
+                pos: 2485
+                length: 84
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: format
+                            children: []
+                            pos: 2582
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2592
+                            length: 4
+                        children: []
+                        pos: 2582
+                        length: 14
+                    children: []
+                    pos: 2581
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 2612
+                    length: 12
+                  pos: 2598
+                  length: 36
+                pos: 2578
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: JsonFormat.Shape shape = format.getShape();
+                children: []
+                pos: 2705
+                length: 43
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: shape.isNumeric()
+                        children: []
+                        pos: 2761
+                        length: 17
+                    children: []
+                    pos: 2760
+                    length: 19
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return withFormat(Boolean.TRUE, null);
+                    children: []
+                    pos: 2794
+                    length: 38
+                  pos: 2780
+                  length: 62
+                pos: 2757
+                length: 85
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: format.hasPattern()
+                        children: []
+                        pos: 2985
+                        length: 19
+                    children: []
+                    pos: 2984
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: |-
+                        final Locale loc = format.hasLocale()
+                                                    ? format.getLocale()
+                                                    : serializers.getLocale();
+                    children: []
+                    pos: 3020
+                    length: 141
+                  - type: local_variable_declaration
+                    fields:
+                      text: SimpleDateFormat df = new SimpleDateFormat(format.getPattern(),
+                        loc);
+                    children: []
+                    pos: 3174
+                    length: 69
+                  - type: local_variable_declaration
+                    fields:
+                      text: |-
+                        TimeZone tz = format.hasTimeZone() ? format.getTimeZone()
+                                            : serializers.getTimeZone();
+                    children: []
+                    pos: 3256
+                    length: 106
+                  - type: expression_statement
+                    fields:
+                      text: df.setTimeZone(tz);
+                    children: []
+                    pos: 3375
+                    length: 19
+                  - type: return_statement
+                    fields:
+                      text: return withFormat(Boolean.FALSE, df);
+                    children: []
+                    pos: 3407
+                    length: 37
+                  pos: 3006
+                  length: 448
+                pos: 2981
+                length: 473
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean hasLocale = format.hasLocale();
+                children: []
+                pos: 3513
+                length: 45
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean hasTZ = format.hasTimeZone();
+                children: []
+                pos: 3567
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final boolean asString = (shape == JsonFormat.Shape.STRING);
+                children: []
+                pos: 3619
+                length: 60
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: and
+                            fields:
+                              left:
+                                type: unary_expression
+                                fields:
+                                  text: "!hasLocale"
+                                children: []
+                                pos: 3693
+                                length: 10
+                              right:
+                                type: unary_expression
+                                fields:
+                                  text: "!hasTZ"
+                                children: []
+                                pos: 3707
+                                length: 6
+                            children: []
+                            pos: 3693
+                            length: 20
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "!asString"
+                            children: []
+                            pos: 3717
+                            length: 9
+                        children: []
+                        pos: 3693
+                        length: 33
+                    children: []
+                    pos: 3692
+                    length: 35
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return this;
+                    children: []
+                    pos: 3742
+                    length: 12
+                  pos: 3728
+                  length: 36
+                pos: 3689
+                length: 75
+              - type: local_variable_declaration
+                fields:
+                  text: DateFormat df0 = serializers.getConfig().getDateFormat();
+                children: []
+                pos: 3774
+                length: 57
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: instanceof_expression
+                        fields:
+                          text: df0 instanceof StdDateFormat
+                        children: []
+                        pos: 3915
+                        length: 28
+                    children: []
+                    pos: 3914
+                    length: 30
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: StdDateFormat std = (StdDateFormat) df0;
+                    children: []
+                    pos: 3959
+                    length: 40
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: format.hasLocale()
+                            children: []
+                            pos: 4016
+                            length: 18
+                        children: []
+                        pos: 4015
+                        length: 20
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: std = std.withLocale(format.getLocale());
+                        children: []
+                        pos: 4054
+                        length: 41
+                      pos: 4036
+                      length: 73
+                    pos: 4012
+                    length: 97
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: method_invocation
+                            fields:
+                              text: format.hasTimeZone()
+                            children: []
+                            pos: 4126
+                            length: 20
+                        children: []
+                        pos: 4125
+                        length: 22
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: expression_statement
+                        fields:
+                          text: std = std.withTimeZone(format.getTimeZone());
+                        children: []
+                        pos: 4166
+                        length: 45
+                      pos: 4148
+                      length: 77
+                    pos: 4122
+                    length: 103
+                  - type: return_statement
+                    fields:
+                      text: return withFormat(Boolean.FALSE, std);
+                    children: []
+                    pos: 4238
+                    length: 38
+                  pos: 3945
+                  length: 341
+                pos: 3911
+                length: 375
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!(df0 instanceof SimpleDateFormat)"
+                        children: []
+                        pos: 4530
+                        length: 34
+                    children: []
+                    pos: 4529
+                    length: 36
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        serializers.reportBadDefinition(handledType(), String.format(
+                        "Configured `DateFormat` (%s) not a `SimpleDateFormat`; cannot configure `Locale` or `TimeZone`",
+                        df0.getClass().getName()));
+                    children: []
+                    pos: 4580
+                    length: 187
+                  pos: 4566
+                  length: 211
+                pos: 4526
+                length: 251
+              - type: local_variable_declaration
+                fields:
+                  text: SimpleDateFormat df = (SimpleDateFormat) df0;
+                children: []
+                pos: 4786
+                length: 45
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: hasLocale
+                        children: []
+                        pos: 4844
+                        length: 9
+                    children: []
+                    pos: 4843
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: df = new SimpleDateFormat(df.toPattern(), format.getLocale());
+                    children: []
+                    pos: 4955
+                    length: 62
+                  pos: 4855
+                  length: 172
+                pos: 4840
+                length: 252
+              - type: local_variable_declaration
+                fields:
+                  text: TimeZone newTz = format.getTimeZone();
+                children: []
+                pos: 5101
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: boolean changeTZ = (newTz != null) && !newTz.equals(df.getTimeZone());
+                children: []
+                pos: 5148
+                length: 70
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: changeTZ
+                        children: []
+                        pos: 5231
+                        length: 8
+                    children: []
+                    pos: 5230
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: df.setTimeZone(newTz);
+                    children: []
+                    pos: 5255
+                    length: 22
+                  pos: 5241
+                  length: 46
+                pos: 5227
+                length: 60
+              - type: return_statement
+                fields:
+                  text: return withFormat(Boolean.FALSE, df);
+                children: []
+                pos: 5296
+                length: 37
+              pos: 2277
+              length: 3062
+          children: []
+          pos: 2122
+          length: 3217
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isEmpty
+              children: []
+              pos: 5535
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 5543
+                length: 30
+              pos: 5506
+              length: 307
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 5794
+                length: 13
+              pos: 5584
+              length: 229
+          children: []
+          pos: 5506
+          length: 307
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _timestamp
+              children: []
+              pos: 5843
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T value
+                children: []
+                pos: 5854
+                length: 7
+              pos: 5819
+              length: 44
+          children: []
+          pos: 5819
+          length: 44
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSchema
+              children: []
+              pos: 5899
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 5909
+                length: 30
+              pos: 5869
+              length: 246
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return createSchemaNode(_asTimestamp(serializers) ? "number"
+                    : "string", true);'
+                children: []
+                pos: 6030
+                length: 79
+              pos: 5956
+              length: 159
+          children: []
+          pos: 5869
+          length: 246
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: acceptJsonFormatVisitor
+              children: []
+              pos: 6147
+              length: 23
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonFormatVisitorWrapper visitor
+                children: []
+                pos: 6171
+                length: 32
+              pos: 6121
+              length: 232
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: _acceptJsonFormatVisitor(visitor, typeHint, _asTimestamp(visitor.getProvider()));
+                children: []
+                pos: 6266
+                length: 81
+              pos: 6256
+              length: 97
+          children: []
+          pos: 6121
+          length: 232
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serialize
+              children: []
+              pos: 6566
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T value
+                children: []
+                pos: 6576
+                length: 7
+              pos: 6531
+              length: 132
+          children: []
+          pos: 6531
+          length: 132
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _asTimestamp
+              children: []
+              pos: 6857
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: SerializerProvider serializers
+                children: []
+                pos: 6870
+                length: 30
+              pos: 6839
+              length: 602
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _useTimestamp
+                            children: []
+                            pos: 6920
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 6937
+                            length: 4
+                        children: []
+                        pos: 6920
+                        length: 21
+                    children: []
+                    pos: 6919
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return _useTimestamp.booleanValue();
+                    children: []
+                    pos: 6957
+                    length: 36
+                  pos: 6943
+                  length: 60
+                pos: 6916
+                length: 87
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _customFormat
+                            children: []
+                            pos: 7016
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7033
+                            length: 4
+                        children: []
+                        pos: 7016
+                        length: 21
+                    children: []
+                    pos: 7015
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: serializers
+                                children: []
+                                pos: 7057
+                                length: 11
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 7072
+                                length: 4
+                            children: []
+                            pos: 7057
+                            length: 19
+                        children: []
+                        pos: 7056
+                        length: 21
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: return_statement
+                        fields:
+                          text: return serializers.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                        children: []
+                        pos: 7096
+                        length: 77
+                      pos: 7078
+                      length: 109
+                    pos: 7053
+                    length: 134
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("Null SerializerProvider
+                        passed for "+handledType().getName());
+                    children: []
+                    pos: 7305
+                    length: 98
+                  pos: 7039
+                  length: 374
+                pos: 7012
+                length: 401
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 7422
+                length: 13
+              pos: 6906
+              length: 535
+          children: []
+          pos: 6839
+          length: 602
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _acceptJsonFormatVisitor
+              children: []
+              pos: 7462
+              length: 24
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: JsonFormatVisitorWrapper visitor
+                children: []
+                pos: 7487
+                length: 32
+              pos: 7447
+              length: 405
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: asNumber
+                        children: []
+                        pos: 7606
+                        length: 8
+                    children: []
+                    pos: 7605
+                    length: 10
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: |-
+                        visitIntFormat(visitor, typeHint,
+                                            JsonParser.NumberType.LONG, JsonValueFormat.UTC_MILLISEC);
+                    children: []
+                    pos: 7630
+                    length: 112
+                  pos: 7616
+                  length: 136
+                pos: 7602
+                length: 244
+              pos: 7592
+              length: 260
+          children: []
+          pos: 7447
+          length: 405
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: _serializeAsString
+              children: []
+              pos: 7907
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Date value
+                children: []
+                pos: 7926
+                length: 10
+              pos: 7892
+              length: 1055
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: _customFormat
+                            children: []
+                            pos: 8021
+                            length: 13
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8038
+                            length: 4
+                        children: []
+                        pos: 8021
+                        length: 21
+                    children: []
+                    pos: 8020
+                    length: 23
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: provider.defaultSerializeDateValue(value, g);
+                    children: []
+                    pos: 8058
+                    length: 45
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8116
+                    length: 7
+                  pos: 8044
+                  length: 89
+                pos: 8017
+                length: 116
+              - type: local_variable_declaration
+                fields:
+                  text: DateFormat f = _reusedCustomFormat.getAndSet(null);
+                children: []
+                pos: 8711
+                length: 51
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: f
+                            children: []
+                            pos: 8775
+                            length: 1
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8780
+                            length: 4
+                        children: []
+                        pos: 8775
+                        length: 9
+                    children: []
+                    pos: 8774
+                    length: 11
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: f = (DateFormat) _customFormat.clone();
+                    children: []
+                    pos: 8800
+                    length: 39
+                  pos: 8786
+                  length: 63
+                pos: 8771
+                length: 78
+              - type: expression_statement
+                fields:
+                  text: g.writeString(f.format(value));
+                children: []
+                pos: 8858
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: _reusedCustomFormat.compareAndSet(null, f);
+                children: []
+                pos: 8898
+                length: 43
+              pos: 8007
+              length: 940
+          children: []
+          pos: 7892
+          length: 1055
+        pos: 673
+        length: 8276
+    children: []
+    pos: 673
+    length: 8276
+  pos: 0
+  length: 8950
 text_diff: |
   --- before
   +++ after

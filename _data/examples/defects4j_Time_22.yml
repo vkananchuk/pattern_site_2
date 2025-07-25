@@ -1,5 +1,3060 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: BasePeriod
+        children: []
+        pos: 1757
+        length: 10
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -2110953284060001145L;
+          children: []
+          pos: 1887
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private PeriodType iType;
+          children: []
+          pos: 1990
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private int[] iValues;
+          children: []
+          pos: 2042
+          length: 22
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(int years, int months, int weeks, int days,
+                                       int hours, int minutes, int seconds, int millis,
+                                       PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      iType = type;
+                      setPeriodInternal(years, months, weeks, days, hours, minutes, seconds, millis); // internal method
+                  }
+          children: []
+          pos: 3146
+          length: 372
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(long startInstant, long endInstant, PeriodType type, Chronology chrono) {
+                      super();
+                      type = checkPeriodType(type);
+                      chrono = DateTimeUtils.getChronology(chrono);
+                      iType = type;
+                      iValues = chrono.get(this, startInstant, endInstant);
+                  }
+          children: []
+          pos: 3938
+          length: 293
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadableInstant startInstant, ReadableInstant endInstant, PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      if (startInstant == null && endInstant == null) {
+                          iType = type;
+                          iValues = new int[size()];
+                      } else {
+                          long startMillis = DateTimeUtils.getInstantMillis(startInstant);
+                          long endMillis = DateTimeUtils.getInstantMillis(endInstant);
+                          Chronology chrono = DateTimeUtils.getIntervalChronology(startInstant, endInstant);
+                          iType = type;
+                          iValues = chrono.get(this, startMillis, endMillis);
+                      }
+                  }
+          children: []
+          pos: 4581
+          length: 643
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadablePartial start, ReadablePartial end, PeriodType type) {
+                      super();
+                      if (start == null || end == null) {
+                          throw new IllegalArgumentException("ReadablePartial objects must not be null");
+                      }
+                      if (start instanceof BaseLocal && end instanceof BaseLocal && start.getClass() == end.getClass()) {
+                          // for performance
+                          type = checkPeriodType(type);
+                          long startMillis = ((BaseLocal) start).getLocalMillis();
+                          long endMillis = ((BaseLocal) end).getLocalMillis();
+                          Chronology chrono = start.getChronology();
+                          chrono = DateTimeUtils.getChronology(chrono);
+                          iType = type;
+                          iValues = chrono.get(this, startMillis, endMillis);
+                      } else {
+                          if (start.size() != end.size()) {
+                              throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields");
+                          }
+                          for (int i = 0, isize = start.size(); i < isize; i++) {
+                              if (start.getFieldType(i) != end.getFieldType(i)) {
+                                  throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields");
+                              }
+                          }
+                          if (DateTimeUtils.isContiguous(start) == false) {
+                              throw new IllegalArgumentException("ReadablePartial objects must be contiguous");
+                          }
+                          iType = checkPeriodType(type);
+                          Chronology chrono = DateTimeUtils.getChronology(start.getChronology()).withUTC();
+                          iValues = chrono.get(this, chrono.set(start, 0L), chrono.set(end, 0L));
+                      }
+                  }
+          children: []
+          pos: 6113
+          length: 1648
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadableInstant startInstant, ReadableDuration duration, PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      long startMillis = DateTimeUtils.getInstantMillis(startInstant);
+                      long durationMillis = DateTimeUtils.getDurationMillis(duration);
+                      long endMillis = FieldUtils.safeAdd(startMillis, durationMillis);
+                      Chronology chrono = DateTimeUtils.getInstantChronology(startInstant);
+                      iType = type;
+                      iValues = chrono.get(this, startMillis, endMillis);
+                  }
+          children: []
+          pos: 8077
+          length: 537
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadableDuration duration, ReadableInstant endInstant, PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      long durationMillis = DateTimeUtils.getDurationMillis(duration);
+                      long endMillis = DateTimeUtils.getInstantMillis(endInstant);
+                      long startMillis = FieldUtils.safeSubtract(endMillis, durationMillis);
+                      Chronology chrono = DateTimeUtils.getInstantChronology(endInstant);
+                      iType = type;
+                      iValues = chrono.get(this, startMillis, endMillis);
+                  }
+          children: []
+          pos: 8924
+          length: 534
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(long duration) {
+                      super();
+                      // bug [3264409]
+                      iType = PeriodType.time();
+                      int[] values = ISOChronology.getInstanceUTC().get(this, duration);
+                      iType = PeriodType.standard();
+                      iValues = new int[8];
+                      System.arraycopy(values, 0, iValues, 4, 4);
+                  }
+          children: []
+          pos: 9816
+          length: 316
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(long duration, PeriodType type, Chronology chrono) {
+                      super();
+                      type = checkPeriodType(type);
+                      chrono = DateTimeUtils.getChronology(chrono);
+                      iType = type;
+                      iValues = chrono.get(this, duration);
+                  }
+          children: []
+          pos: 10685
+          length: 256
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(Object period, PeriodType type, Chronology chrono) {
+                      super();
+                      PeriodConverter converter = ConverterManager.getInstance().getPeriodConverter(period);
+                      type = (type == null ? converter.getPeriodType(period) : type);
+                      type = checkPeriodType(type);
+                      iType = type;
+                      if (this instanceof ReadWritablePeriod) {
+                          iValues = new int[size()];
+                          chrono = DateTimeUtils.getChronology(chrono);
+                          converter.setInto((ReadWritablePeriod) this, period, chrono);
+                      } else {
+                          iValues = new MutablePeriod(period, type, chrono).getValues();
+                      }
+                  }
+          children: []
+          pos: 11402
+          length: 646
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(int[] values, PeriodType type) {
+                      super();
+                      iType = type;
+                      iValues = values;
+                  }
+          children: []
+          pos: 12292
+          length: 124
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkPeriodType
+              children: []
+              pos: 12845
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: PeriodType type
+                children: []
+                pos: 12861
+                length: 15
+              pos: 12824
+              length: 111
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return DateTimeUtils.getPeriodType(type);
+                children: []
+                pos: 12888
+                length: 41
+              pos: 12878
+              length: 57
+          children: []
+          pos: 12824
+          length: 111
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPeriodType
+              children: []
+              pos: 13120
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13102
+              length: 63
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iType;
+                children: []
+                pos: 13146
+                length: 13
+              pos: 13136
+              length: 29
+          children: []
+          pos: 13102
+          length: 63
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: size
+              children: []
+              pos: 13389
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13378
+              length: 54
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iType.size();
+                children: []
+                pos: 13406
+                length: 20
+              pos: 13396
+              length: 36
+          children: []
+          pos: 13378
+          length: 54
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFieldType
+              children: []
+              pos: 13693
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 13706
+                length: 9
+              pos: 13668
+              length: 98
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iType.getFieldType(index);
+                children: []
+                pos: 13727
+                length: 33
+              pos: 13717
+              length: 49
+          children: []
+          pos: 13668
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getValue
+              children: []
+              pos: 14021
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 14030
+                length: 9
+              pos: 14010
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iValues[index];
+                children: []
+                pos: 14051
+                length: 22
+              pos: 14041
+              length: 38
+          children: []
+          pos: 14010
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toDurationFrom
+              children: []
+              pos: 15002
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadableInstant startInstant
+                children: []
+                pos: 15017
+                length: 28
+              pos: 14986
+              length: 331
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long startMillis = DateTimeUtils.getInstantMillis(startInstant);
+                children: []
+                pos: 15057
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: Chronology chrono = DateTimeUtils.getInstantChronology(startInstant);
+                children: []
+                pos: 15130
+                length: 69
+              - type: local_variable_declaration
+                fields:
+                  text: long endMillis = chrono.add(this, startMillis, 1);
+                children: []
+                pos: 15208
+                length: 50
+              - type: return_statement
+                fields:
+                  text: return new Duration(startMillis, endMillis);
+                children: []
+                pos: 15267
+                length: 44
+              pos: 15047
+              length: 270
+          children: []
+          pos: 14986
+          length: 331
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toDurationTo
+              children: []
+              pos: 16178
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadableInstant endInstant
+                children: []
+                pos: 16191
+                length: 26
+              pos: 16162
+              length: 322
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long endMillis = DateTimeUtils.getInstantMillis(endInstant);
+                children: []
+                pos: 16229
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: Chronology chrono = DateTimeUtils.getInstantChronology(endInstant);
+                children: []
+                pos: 16298
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: long startMillis = chrono.add(this, endMillis, -1);
+                children: []
+                pos: 16374
+                length: 51
+              - type: return_statement
+                fields:
+                  text: return new Duration(startMillis, endMillis);
+                children: []
+                pos: 16434
+                length: 44
+              pos: 16219
+              length: 265
+          children: []
+          pos: 16162
+          length: 322
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkAndUpdate
+              children: []
+              pos: 16874
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DurationFieldType type
+                children: []
+                pos: 16889
+                length: 22
+              pos: 16861
+              length: 392
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = indexOf(type);
+                children: []
+                pos: 16951
+                length: 26
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: index
+                            children: []
+                            pos: 16990
+                            length: 5
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 16999
+                            length: 2
+                        children: []
+                        pos: 16990
+                        length: 11
+                    children: []
+                    pos: 16989
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: newValue
+                                children: []
+                                pos: 17021
+                                length: 8
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 17033
+                                length: 1
+                            children: []
+                            pos: 17021
+                            length: 13
+                        children: []
+                        pos: 17020
+                        length: 15
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw new IllegalArgumentException(
+                                                "Period does not support field '" + type.getName() + "'");
+                        children: []
+                        pos: 17054
+                        length: 114
+                      pos: 17036
+                      length: 146
+                    pos: 17017
+                    length: 165
+                  pos: 17003
+                  length: 189
+                pos: 16986
+                length: 261
+              pos: 16941
+              length: 312
+          children: []
+          pos: 16861
+          length: 392
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriod
+              children: []
+              pos: 17572
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 17582
+                length: 21
+              pos: 17557
+              length: 191
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: period
+                            children: []
+                            pos: 17619
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 17629
+                            length: 4
+                        children: []
+                        pos: 17619
+                        length: 14
+                    children: []
+                    pos: 17618
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: setValues(new int[size()]);
+                    children: []
+                    pos: 17649
+                    length: 27
+                  pos: 17635
+                  length: 51
+                pos: 17615
+                length: 127
+              pos: 17605
+              length: 143
+          children: []
+          pos: 17557
+          length: 191
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriodInternal
+              children: []
+              pos: 17830
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 17848
+                length: 21
+              pos: 17817
+              length: 365
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int[] newValues = new int[size()];
+                children: []
+                pos: 17881
+                length: 34
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, isize = period.size(); i < isize; i++) {
+                                DurationFieldType type = period.getFieldType(i);
+                                int value = period.getValue(i);
+                                checkAndUpdate(type, newValues, value);
+                            }
+                children: []
+                pos: 17924
+                length: 223
+              - type: expression_statement
+                fields:
+                  text: iValues = newValues;
+                children: []
+                pos: 18156
+                length: 20
+              pos: 17871
+              length: 311
+          children: []
+          pos: 17817
+          length: 365
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriod
+              children: []
+              pos: 19076
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int years
+                children: []
+                pos: 19086
+                length: 9
+              pos: 19061
+              length: 242
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setPeriodInternal(years, months, weeks, days, hours, minutes,
+                    seconds, millis);
+                children: []
+                pos: 19218
+                length: 79
+              pos: 19208
+              length: 95
+          children: []
+          pos: 19061
+          length: 242
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriodInternal
+              children: []
+              pos: 19385
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int years
+                children: []
+                pos: 19403
+                length: 9
+              pos: 19372
+              length: 800
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int[] newValues = new int[size()];
+                children: []
+                pos: 19541
+                length: 34
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.years(), newValues, years);
+                children: []
+                pos: 19584
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.months(), newValues, months);
+                children: []
+                pos: 19653
+                length: 62
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.weeks(), newValues, weeks);
+                children: []
+                pos: 19724
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.days(), newValues, days);
+                children: []
+                pos: 19793
+                length: 58
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.hours(), newValues, hours);
+                children: []
+                pos: 19860
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.minutes(), newValues, minutes);
+                children: []
+                pos: 19929
+                length: 64
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.seconds(), newValues, seconds);
+                children: []
+                pos: 20002
+                length: 64
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.millis(), newValues, millis);
+                children: []
+                pos: 20075
+                length: 62
+              - type: expression_statement
+                fields:
+                  text: iValues = newValues;
+                children: []
+                pos: 20146
+                length: 20
+              pos: 19531
+              length: 641
+          children: []
+          pos: 19372
+          length: 800
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setField
+              children: []
+              pos: 20498
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DurationFieldType field
+                children: []
+                pos: 20507
+                length: 23
+              pos: 20483
+              length: 112
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setFieldInto(iValues, field, value);
+                children: []
+                pos: 20553
+                length: 36
+              pos: 20543
+              length: 52
+          children: []
+          pos: 20483
+          length: 112
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setFieldInto
+              children: []
+              pos: 20892
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 20905
+                length: 12
+              pos: 20877
+              length: 393
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = indexOf(field);
+                children: []
+                pos: 20965
+                length: 27
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: index
+                            children: []
+                            pos: 21005
+                            length: 5
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 21014
+                            length: 2
+                        children: []
+                        pos: 21005
+                        length: 11
+                    children: []
+                    pos: 21004
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: not_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: value
+                                    children: []
+                                    pos: 21036
+                                    length: 5
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 21045
+                                    length: 1
+                                children: []
+                                pos: 21036
+                                length: 10
+                              right:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: field
+                                    children: []
+                                    pos: 21050
+                                    length: 5
+                                  right:
+                                    type: null_literal
+                                    fields: {}
+                                    children: []
+                                    pos: 21059
+                                    length: 4
+                                children: []
+                                pos: 21050
+                                length: 13
+                            children: []
+                            pos: 21036
+                            length: 27
+                        children: []
+                        pos: 21035
+                        length: 29
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw new IllegalArgumentException(
+                                                "Period does not support field '" + field + "'");
+                        children: []
+                        pos: 21083
+                        length: 105
+                      pos: 21065
+                      length: 137
+                    pos: 21032
+                    length: 170
+                  pos: 21018
+                  length: 194
+                pos: 21001
+                length: 263
+              pos: 20955
+              length: 315
+          children: []
+          pos: 20877
+          length: 393
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addField
+              children: []
+              pos: 21518
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DurationFieldType field
+                children: []
+                pos: 21527
+                length: 23
+              pos: 21503
+              length: 112
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addFieldInto(iValues, field, value);
+                children: []
+                pos: 21573
+                length: 36
+              pos: 21563
+              length: 52
+          children: []
+          pos: 21503
+          length: 112
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addFieldInto
+              children: []
+              pos: 21915
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 21928
+                length: 12
+              pos: 21900
+              length: 428
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = indexOf(field);
+                children: []
+                pos: 21988
+                length: 27
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: index
+                            children: []
+                            pos: 22028
+                            length: 5
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 22037
+                            length: 2
+                        children: []
+                        pos: 22028
+                        length: 11
+                    children: []
+                    pos: 22027
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: not_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: value
+                                    children: []
+                                    pos: 22059
+                                    length: 5
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 22068
+                                    length: 1
+                                children: []
+                                pos: 22059
+                                length: 10
+                              right:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: field
+                                    children: []
+                                    pos: 22073
+                                    length: 5
+                                  right:
+                                    type: null_literal
+                                    fields: {}
+                                    children: []
+                                    pos: 22082
+                                    length: 4
+                                children: []
+                                pos: 22073
+                                length: 13
+                            children: []
+                            pos: 22059
+                            length: 27
+                        children: []
+                        pos: 22058
+                        length: 29
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw new IllegalArgumentException(
+                                                "Period does not support field '" + field + "'");
+                        children: []
+                        pos: 22106
+                        length: 105
+                      pos: 22088
+                      length: 137
+                    pos: 22055
+                    length: 170
+                  pos: 22041
+                  length: 194
+                pos: 22024
+                length: 298
+              pos: 21978
+              length: 350
+          children: []
+          pos: 21900
+          length: 428
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mergePeriod
+              children: []
+              pos: 22558
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 22570
+                length: 21
+              pos: 22543
+              length: 157
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: period
+                            children: []
+                            pos: 22607
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 22617
+                            length: 4
+                        children: []
+                        pos: 22607
+                        length: 14
+                    children: []
+                    pos: 22606
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: iValues = mergePeriodInto(getValues(), period);
+                    children: []
+                    pos: 22637
+                    length: 47
+                  pos: 22623
+                  length: 71
+                pos: 22603
+                length: 91
+              pos: 22593
+              length: 107
+          children: []
+          pos: 22543
+          length: 157
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mergePeriodInto
+              children: []
+              pos: 23017
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 23033
+                length: 12
+              pos: 23001
+              length: 334
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, isize = period.size(); i < isize; i++) {
+                                 DurationFieldType type = period.getFieldType(i);
+                                 int value = period.getValue(i);
+                                 checkAndUpdate(type, values, value);
+                             }
+                children: []
+                pos: 23081
+                length: 224
+              - type: return_statement
+                fields:
+                  text: return values;
+                children: []
+                pos: 23315
+                length: 14
+              pos: 23070
+              length: 265
+          children: []
+          pos: 23001
+          length: 334
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addPeriod
+              children: []
+              pos: 23563
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 23573
+                length: 21
+              pos: 23548
+              length: 153
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: period
+                            children: []
+                            pos: 23610
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 23620
+                            length: 4
+                        children: []
+                        pos: 23610
+                        length: 14
+                    children: []
+                    pos: 23609
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: iValues = addPeriodInto(getValues(), period);
+                    children: []
+                    pos: 23640
+                    length: 45
+                  pos: 23626
+                  length: 69
+                pos: 23606
+                length: 89
+              pos: 23596
+              length: 105
+          children: []
+          pos: 23548
+          length: 153
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addPeriodInto
+              children: []
+              pos: 24016
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 24030
+                length: 12
+              pos: 24000
+              length: 675
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, isize = period.size(); i < isize; i++) {
+                                 DurationFieldType type = period.getFieldType(i);
+                                 int value = period.getValue(i);
+                                 if (value != 0) {
+                                     int index = indexOf(type);
+                                     if (index == -1) {
+                                         throw new IllegalArgumentException(
+                                             "Period does not support field '" + type.getName() + "'");
+                                     } else {
+                                         values[index] = FieldUtils.safeAdd(getValue(index), value);
+                                     }
+                                 }
+                             }
+                children: []
+                pos: 24078
+                length: 567
+              - type: return_statement
+                fields:
+                  text: return values;
+                children: []
+                pos: 24655
+                length: 14
+              pos: 24067
+              length: 608
+          children: []
+          pos: 24000
+          length: 675
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setValue
+              children: []
+              pos: 24990
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 24999
+                length: 9
+              pos: 24975
+              length: 85
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: iValues[index] = value;
+                children: []
+                pos: 25031
+                length: 23
+              pos: 25021
+              length: 39
+          children: []
+          pos: 24975
+          length: 85
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setValues
+              children: []
+              pos: 25185
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 25195
+                length: 12
+              pos: 25170
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: iValues = values;
+                children: []
+                pos: 25219
+                length: 17
+              pos: 25209
+              length: 33
+          children: []
+          pos: 25170
+          length: 72
+        pos: 1735
+        length: 23510
+    children: []
+    pos: 1735
+    length: 23510
+  pos: 0
+  length: 25246
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: BasePeriod
+        children: []
+        pos: 1757
+        length: 10
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -2110953284060001145L;
+          children: []
+          pos: 1887
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private PeriodType iType;
+          children: []
+          pos: 1990
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private int[] iValues;
+          children: []
+          pos: 2042
+          length: 22
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(int years, int months, int weeks, int days,
+                                       int hours, int minutes, int seconds, int millis,
+                                       PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      iType = type;
+                      setPeriodInternal(years, months, weeks, days, hours, minutes, seconds, millis); // internal method
+                  }
+          children: []
+          pos: 3146
+          length: 372
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(long startInstant, long endInstant, PeriodType type, Chronology chrono) {
+                      super();
+                      type = checkPeriodType(type);
+                      chrono = DateTimeUtils.getChronology(chrono);
+                      iType = type;
+                      iValues = chrono.get(this, startInstant, endInstant);
+                  }
+          children: []
+          pos: 3938
+          length: 293
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadableInstant startInstant, ReadableInstant endInstant, PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      if (startInstant == null && endInstant == null) {
+                          iType = type;
+                          iValues = new int[size()];
+                      } else {
+                          long startMillis = DateTimeUtils.getInstantMillis(startInstant);
+                          long endMillis = DateTimeUtils.getInstantMillis(endInstant);
+                          Chronology chrono = DateTimeUtils.getIntervalChronology(startInstant, endInstant);
+                          iType = type;
+                          iValues = chrono.get(this, startMillis, endMillis);
+                      }
+                  }
+          children: []
+          pos: 4581
+          length: 643
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadablePartial start, ReadablePartial end, PeriodType type) {
+                      super();
+                      if (start == null || end == null) {
+                          throw new IllegalArgumentException("ReadablePartial objects must not be null");
+                      }
+                      if (start instanceof BaseLocal && end instanceof BaseLocal && start.getClass() == end.getClass()) {
+                          // for performance
+                          type = checkPeriodType(type);
+                          long startMillis = ((BaseLocal) start).getLocalMillis();
+                          long endMillis = ((BaseLocal) end).getLocalMillis();
+                          Chronology chrono = start.getChronology();
+                          chrono = DateTimeUtils.getChronology(chrono);
+                          iType = type;
+                          iValues = chrono.get(this, startMillis, endMillis);
+                      } else {
+                          if (start.size() != end.size()) {
+                              throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields");
+                          }
+                          for (int i = 0, isize = start.size(); i < isize; i++) {
+                              if (start.getFieldType(i) != end.getFieldType(i)) {
+                                  throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields");
+                              }
+                          }
+                          if (DateTimeUtils.isContiguous(start) == false) {
+                              throw new IllegalArgumentException("ReadablePartial objects must be contiguous");
+                          }
+                          iType = checkPeriodType(type);
+                          Chronology chrono = DateTimeUtils.getChronology(start.getChronology()).withUTC();
+                          iValues = chrono.get(this, chrono.set(start, 0L), chrono.set(end, 0L));
+                      }
+                  }
+          children: []
+          pos: 6113
+          length: 1648
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadableInstant startInstant, ReadableDuration duration, PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      long startMillis = DateTimeUtils.getInstantMillis(startInstant);
+                      long durationMillis = DateTimeUtils.getDurationMillis(duration);
+                      long endMillis = FieldUtils.safeAdd(startMillis, durationMillis);
+                      Chronology chrono = DateTimeUtils.getInstantChronology(startInstant);
+                      iType = type;
+                      iValues = chrono.get(this, startMillis, endMillis);
+                  }
+          children: []
+          pos: 8077
+          length: 537
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(ReadableDuration duration, ReadableInstant endInstant, PeriodType type) {
+                      super();
+                      type = checkPeriodType(type);
+                      long durationMillis = DateTimeUtils.getDurationMillis(duration);
+                      long endMillis = DateTimeUtils.getInstantMillis(endInstant);
+                      long startMillis = FieldUtils.safeSubtract(endMillis, durationMillis);
+                      Chronology chrono = DateTimeUtils.getInstantChronology(endInstant);
+                      iType = type;
+                      iValues = chrono.get(this, startMillis, endMillis);
+                  }
+          children: []
+          pos: 8924
+          length: 534
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(long duration) {
+                      this(duration, null, null);
+                      // bug [3264409]
+                  }
+          children: []
+          pos: 9816
+          length: 104
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(long duration, PeriodType type, Chronology chrono) {
+                      super();
+                      type = checkPeriodType(type);
+                      chrono = DateTimeUtils.getChronology(chrono);
+                      iType = type;
+                      iValues = chrono.get(this, duration);
+                  }
+          children: []
+          pos: 10473
+          length: 256
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(Object period, PeriodType type, Chronology chrono) {
+                      super();
+                      PeriodConverter converter = ConverterManager.getInstance().getPeriodConverter(period);
+                      type = (type == null ? converter.getPeriodType(period) : type);
+                      type = checkPeriodType(type);
+                      iType = type;
+                      if (this instanceof ReadWritablePeriod) {
+                          iValues = new int[size()];
+                          chrono = DateTimeUtils.getChronology(chrono);
+                          converter.setInto((ReadWritablePeriod) this, period, chrono);
+                      } else {
+                          iValues = new MutablePeriod(period, type, chrono).getValues();
+                      }
+                  }
+          children: []
+          pos: 11190
+          length: 646
+        - type: constructor_declaration
+          fields:
+            text: |-
+              protected BasePeriod(int[] values, PeriodType type) {
+                      super();
+                      iType = type;
+                      iValues = values;
+                  }
+          children: []
+          pos: 12080
+          length: 124
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkPeriodType
+              children: []
+              pos: 12633
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: PeriodType type
+                children: []
+                pos: 12649
+                length: 15
+              pos: 12612
+              length: 111
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return DateTimeUtils.getPeriodType(type);
+                children: []
+                pos: 12676
+                length: 41
+              pos: 12666
+              length: 57
+          children: []
+          pos: 12612
+          length: 111
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getPeriodType
+              children: []
+              pos: 12908
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12890
+              length: 63
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iType;
+                children: []
+                pos: 12934
+                length: 13
+              pos: 12924
+              length: 29
+          children: []
+          pos: 12890
+          length: 63
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: size
+              children: []
+              pos: 13177
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 13166
+              length: 54
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iType.size();
+                children: []
+                pos: 13194
+                length: 20
+              pos: 13184
+              length: 36
+          children: []
+          pos: 13166
+          length: 54
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getFieldType
+              children: []
+              pos: 13481
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 13494
+                length: 9
+              pos: 13456
+              length: 98
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iType.getFieldType(index);
+                children: []
+                pos: 13515
+                length: 33
+              pos: 13505
+              length: 49
+          children: []
+          pos: 13456
+          length: 98
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getValue
+              children: []
+              pos: 13809
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 13818
+                length: 9
+              pos: 13798
+              length: 69
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return iValues[index];
+                children: []
+                pos: 13839
+                length: 22
+              pos: 13829
+              length: 38
+          children: []
+          pos: 13798
+          length: 69
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toDurationFrom
+              children: []
+              pos: 14790
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadableInstant startInstant
+                children: []
+                pos: 14805
+                length: 28
+              pos: 14774
+              length: 331
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long startMillis = DateTimeUtils.getInstantMillis(startInstant);
+                children: []
+                pos: 14845
+                length: 64
+              - type: local_variable_declaration
+                fields:
+                  text: Chronology chrono = DateTimeUtils.getInstantChronology(startInstant);
+                children: []
+                pos: 14918
+                length: 69
+              - type: local_variable_declaration
+                fields:
+                  text: long endMillis = chrono.add(this, startMillis, 1);
+                children: []
+                pos: 14996
+                length: 50
+              - type: return_statement
+                fields:
+                  text: return new Duration(startMillis, endMillis);
+                children: []
+                pos: 15055
+                length: 44
+              pos: 14835
+              length: 270
+          children: []
+          pos: 14774
+          length: 331
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: toDurationTo
+              children: []
+              pos: 15966
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadableInstant endInstant
+                children: []
+                pos: 15979
+                length: 26
+              pos: 15950
+              length: 322
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: long endMillis = DateTimeUtils.getInstantMillis(endInstant);
+                children: []
+                pos: 16017
+                length: 60
+              - type: local_variable_declaration
+                fields:
+                  text: Chronology chrono = DateTimeUtils.getInstantChronology(endInstant);
+                children: []
+                pos: 16086
+                length: 67
+              - type: local_variable_declaration
+                fields:
+                  text: long startMillis = chrono.add(this, endMillis, -1);
+                children: []
+                pos: 16162
+                length: 51
+              - type: return_statement
+                fields:
+                  text: return new Duration(startMillis, endMillis);
+                children: []
+                pos: 16222
+                length: 44
+              pos: 16007
+              length: 265
+          children: []
+          pos: 15950
+          length: 322
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: checkAndUpdate
+              children: []
+              pos: 16662
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DurationFieldType type
+                children: []
+                pos: 16677
+                length: 22
+              pos: 16649
+              length: 392
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = indexOf(type);
+                children: []
+                pos: 16739
+                length: 26
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: index
+                            children: []
+                            pos: 16778
+                            length: 5
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 16787
+                            length: 2
+                        children: []
+                        pos: 16778
+                        length: 11
+                    children: []
+                    pos: 16777
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: newValue
+                                children: []
+                                pos: 16809
+                                length: 8
+                              right:
+                                type: decimal_integer_literal
+                                fields:
+                                  text: '0'
+                                children: []
+                                pos: 16821
+                                length: 1
+                            children: []
+                            pos: 16809
+                            length: 13
+                        children: []
+                        pos: 16808
+                        length: 15
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw new IllegalArgumentException(
+                                                "Period does not support field '" + type.getName() + "'");
+                        children: []
+                        pos: 16842
+                        length: 114
+                      pos: 16824
+                      length: 146
+                    pos: 16805
+                    length: 165
+                  pos: 16791
+                  length: 189
+                pos: 16774
+                length: 261
+              pos: 16729
+              length: 312
+          children: []
+          pos: 16649
+          length: 392
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriod
+              children: []
+              pos: 17360
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 17370
+                length: 21
+              pos: 17345
+              length: 191
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: period
+                            children: []
+                            pos: 17407
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 17417
+                            length: 4
+                        children: []
+                        pos: 17407
+                        length: 14
+                    children: []
+                    pos: 17406
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: setValues(new int[size()]);
+                    children: []
+                    pos: 17437
+                    length: 27
+                  pos: 17423
+                  length: 51
+                pos: 17403
+                length: 127
+              pos: 17393
+              length: 143
+          children: []
+          pos: 17345
+          length: 191
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriodInternal
+              children: []
+              pos: 17618
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 17636
+                length: 21
+              pos: 17605
+              length: 365
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int[] newValues = new int[size()];
+                children: []
+                pos: 17669
+                length: 34
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, isize = period.size(); i < isize; i++) {
+                                DurationFieldType type = period.getFieldType(i);
+                                int value = period.getValue(i);
+                                checkAndUpdate(type, newValues, value);
+                            }
+                children: []
+                pos: 17712
+                length: 223
+              - type: expression_statement
+                fields:
+                  text: iValues = newValues;
+                children: []
+                pos: 17944
+                length: 20
+              pos: 17659
+              length: 311
+          children: []
+          pos: 17605
+          length: 365
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriod
+              children: []
+              pos: 18864
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int years
+                children: []
+                pos: 18874
+                length: 9
+              pos: 18849
+              length: 242
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setPeriodInternal(years, months, weeks, days, hours, minutes,
+                    seconds, millis);
+                children: []
+                pos: 19006
+                length: 79
+              pos: 18996
+              length: 95
+          children: []
+          pos: 18849
+          length: 242
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setPeriodInternal
+              children: []
+              pos: 19173
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int years
+                children: []
+                pos: 19191
+                length: 9
+              pos: 19160
+              length: 800
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int[] newValues = new int[size()];
+                children: []
+                pos: 19329
+                length: 34
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.years(), newValues, years);
+                children: []
+                pos: 19372
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.months(), newValues, months);
+                children: []
+                pos: 19441
+                length: 62
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.weeks(), newValues, weeks);
+                children: []
+                pos: 19512
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.days(), newValues, days);
+                children: []
+                pos: 19581
+                length: 58
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.hours(), newValues, hours);
+                children: []
+                pos: 19648
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.minutes(), newValues, minutes);
+                children: []
+                pos: 19717
+                length: 64
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.seconds(), newValues, seconds);
+                children: []
+                pos: 19790
+                length: 64
+              - type: expression_statement
+                fields:
+                  text: checkAndUpdate(DurationFieldType.millis(), newValues, millis);
+                children: []
+                pos: 19863
+                length: 62
+              - type: expression_statement
+                fields:
+                  text: iValues = newValues;
+                children: []
+                pos: 19934
+                length: 20
+              pos: 19319
+              length: 641
+          children: []
+          pos: 19160
+          length: 800
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setField
+              children: []
+              pos: 20286
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DurationFieldType field
+                children: []
+                pos: 20295
+                length: 23
+              pos: 20271
+              length: 112
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: setFieldInto(iValues, field, value);
+                children: []
+                pos: 20341
+                length: 36
+              pos: 20331
+              length: 52
+          children: []
+          pos: 20271
+          length: 112
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setFieldInto
+              children: []
+              pos: 20680
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 20693
+                length: 12
+              pos: 20665
+              length: 393
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = indexOf(field);
+                children: []
+                pos: 20753
+                length: 27
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: index
+                            children: []
+                            pos: 20793
+                            length: 5
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 20802
+                            length: 2
+                        children: []
+                        pos: 20793
+                        length: 11
+                    children: []
+                    pos: 20792
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: not_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: value
+                                    children: []
+                                    pos: 20824
+                                    length: 5
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 20833
+                                    length: 1
+                                children: []
+                                pos: 20824
+                                length: 10
+                              right:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: field
+                                    children: []
+                                    pos: 20838
+                                    length: 5
+                                  right:
+                                    type: null_literal
+                                    fields: {}
+                                    children: []
+                                    pos: 20847
+                                    length: 4
+                                children: []
+                                pos: 20838
+                                length: 13
+                            children: []
+                            pos: 20824
+                            length: 27
+                        children: []
+                        pos: 20823
+                        length: 29
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw new IllegalArgumentException(
+                                                "Period does not support field '" + field + "'");
+                        children: []
+                        pos: 20871
+                        length: 105
+                      pos: 20853
+                      length: 137
+                    pos: 20820
+                    length: 170
+                  pos: 20806
+                  length: 194
+                pos: 20789
+                length: 263
+              pos: 20743
+              length: 315
+          children: []
+          pos: 20665
+          length: 393
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addField
+              children: []
+              pos: 21306
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: DurationFieldType field
+                children: []
+                pos: 21315
+                length: 23
+              pos: 21291
+              length: 112
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: addFieldInto(iValues, field, value);
+                children: []
+                pos: 21361
+                length: 36
+              pos: 21351
+              length: 52
+          children: []
+          pos: 21291
+          length: 112
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addFieldInto
+              children: []
+              pos: 21703
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 21716
+                length: 12
+              pos: 21688
+              length: 428
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int index = indexOf(field);
+                children: []
+                pos: 21776
+                length: 27
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: index
+                            children: []
+                            pos: 21816
+                            length: 5
+                          right:
+                            type: unary_expression
+                            fields:
+                              text: "-1"
+                            children: []
+                            pos: 21825
+                            length: 2
+                        children: []
+                        pos: 21816
+                        length: 11
+                    children: []
+                    pos: 21815
+                    length: 13
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: or
+                            fields:
+                              left:
+                                type: not_equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: value
+                                    children: []
+                                    pos: 21847
+                                    length: 5
+                                  right:
+                                    type: decimal_integer_literal
+                                    fields:
+                                      text: '0'
+                                    children: []
+                                    pos: 21856
+                                    length: 1
+                                children: []
+                                pos: 21847
+                                length: 10
+                              right:
+                                type: equals
+                                fields:
+                                  left:
+                                    type: identifier
+                                    fields:
+                                      text: field
+                                    children: []
+                                    pos: 21861
+                                    length: 5
+                                  right:
+                                    type: null_literal
+                                    fields: {}
+                                    children: []
+                                    pos: 21870
+                                    length: 4
+                                children: []
+                                pos: 21861
+                                length: 13
+                            children: []
+                            pos: 21847
+                            length: 27
+                        children: []
+                        pos: 21846
+                        length: 29
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: throw_statement
+                        fields:
+                          text: |-
+                            throw new IllegalArgumentException(
+                                                "Period does not support field '" + field + "'");
+                        children: []
+                        pos: 21894
+                        length: 105
+                      pos: 21876
+                      length: 137
+                    pos: 21843
+                    length: 170
+                  pos: 21829
+                  length: 194
+                pos: 21812
+                length: 298
+              pos: 21766
+              length: 350
+          children: []
+          pos: 21688
+          length: 428
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mergePeriod
+              children: []
+              pos: 22346
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 22358
+                length: 21
+              pos: 22331
+              length: 157
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: period
+                            children: []
+                            pos: 22395
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 22405
+                            length: 4
+                        children: []
+                        pos: 22395
+                        length: 14
+                    children: []
+                    pos: 22394
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: iValues = mergePeriodInto(getValues(), period);
+                    children: []
+                    pos: 22425
+                    length: 47
+                  pos: 22411
+                  length: 71
+                pos: 22391
+                length: 91
+              pos: 22381
+              length: 107
+          children: []
+          pos: 22331
+          length: 157
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mergePeriodInto
+              children: []
+              pos: 22805
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 22821
+                length: 12
+              pos: 22789
+              length: 334
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, isize = period.size(); i < isize; i++) {
+                                 DurationFieldType type = period.getFieldType(i);
+                                 int value = period.getValue(i);
+                                 checkAndUpdate(type, values, value);
+                             }
+                children: []
+                pos: 22869
+                length: 224
+              - type: return_statement
+                fields:
+                  text: return values;
+                children: []
+                pos: 23103
+                length: 14
+              pos: 22858
+              length: 265
+          children: []
+          pos: 22789
+          length: 334
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addPeriod
+              children: []
+              pos: 23351
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: ReadablePeriod period
+                children: []
+                pos: 23361
+                length: 21
+              pos: 23336
+              length: 153
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: period
+                            children: []
+                            pos: 23398
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 23408
+                            length: 4
+                        children: []
+                        pos: 23398
+                        length: 14
+                    children: []
+                    pos: 23397
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: iValues = addPeriodInto(getValues(), period);
+                    children: []
+                    pos: 23428
+                    length: 45
+                  pos: 23414
+                  length: 69
+                pos: 23394
+                length: 89
+              pos: 23384
+              length: 105
+          children: []
+          pos: 23336
+          length: 153
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addPeriodInto
+              children: []
+              pos: 23804
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 23818
+                length: 12
+              pos: 23788
+              length: 675
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 0, isize = period.size(); i < isize; i++) {
+                                 DurationFieldType type = period.getFieldType(i);
+                                 int value = period.getValue(i);
+                                 if (value != 0) {
+                                     int index = indexOf(type);
+                                     if (index == -1) {
+                                         throw new IllegalArgumentException(
+                                             "Period does not support field '" + type.getName() + "'");
+                                     } else {
+                                         values[index] = FieldUtils.safeAdd(getValue(index), value);
+                                     }
+                                 }
+                             }
+                children: []
+                pos: 23866
+                length: 567
+              - type: return_statement
+                fields:
+                  text: return values;
+                children: []
+                pos: 24443
+                length: 14
+              pos: 23855
+              length: 608
+          children: []
+          pos: 23788
+          length: 675
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setValue
+              children: []
+              pos: 24778
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int index
+                children: []
+                pos: 24787
+                length: 9
+              pos: 24763
+              length: 85
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: iValues[index] = value;
+                children: []
+                pos: 24819
+                length: 23
+              pos: 24809
+              length: 39
+          children: []
+          pos: 24763
+          length: 85
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setValues
+              children: []
+              pos: 24973
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int[] values
+                children: []
+                pos: 24983
+                length: 12
+              pos: 24958
+              length: 72
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: iValues = values;
+                children: []
+                pos: 25007
+                length: 17
+              pos: 24997
+              length: 33
+          children: []
+          pos: 24958
+          length: 72
+        pos: 1735
+        length: 23298
+    children: []
+    pos: 1735
+    length: 23298
+  pos: 0
+  length: 25034
 text_diff: "--- before\n+++ after\n@@ -219,13 +219,8 @@\n      * @param duration  the
   duration, in milliseconds\n      */\n     protected BasePeriod(long duration) {\n-
   \       super();\n+        this(duration, null, null);\n         // bug [3264409]\n-

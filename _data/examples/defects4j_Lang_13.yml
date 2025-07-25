@@ -1,5 +1,1335 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SerializationUtils
+        children: []
+        pos: 1665
+        length: 18
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SerializationUtils() {
+                      super();
+                  }
+          children: []
+          pos: 2021
+          length: 52
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clone
+              children: []
+              pos: 2852
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T object
+                children: []
+                pos: 2858
+                length: 8
+              pos: 2811
+              length: 1407
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: object
+                            children: []
+                            pos: 2882
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2892
+                            length: 4
+                        children: []
+                        pos: 2882
+                        length: 14
+                    children: []
+                    pos: 2881
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 2912
+                    length: 12
+                  pos: 2898
+                  length: 36
+                pos: 2878
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] objectData = serialize(object);
+                children: []
+                pos: 2943
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
+                children: []
+                pos: 2990
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: ClassLoaderAwareObjectInputStream in = null;
+                children: []
+                pos: 3065
+                length: 44
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: in = new ClassLoaderAwareObjectInputStream(bais, object.getClass().getClassLoader());
+                      children: []
+                      pos: 3180
+                      length: 85
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          @SuppressWarnings("unchecked") // see above
+                                      T readObject = (T) in.readObject();
+                      children: []
+                      pos: 3504
+                      length: 91
+                    - type: return_statement
+                      fields:
+                        text: return readObject;
+                      children: []
+                      pos: 3608
+                      length: 18
+                    pos: 3122
+                    length: 515
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassNotFoundException ex) {
+                                      throw new SerializationException("ClassNotFoundException while reading cloned object data", ex);
+                                  }
+                      children: []
+                      pos: 3638
+                      length: 154
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (IOException ex) {
+                                      throw new SerializationException("IOException while reading cloned object data", ex);
+                                  }
+                      children: []
+                      pos: 3793
+                      length: 132
+                    pos: 3118
+                    length: 1094
+                children: []
+                pos: 3118
+                length: 1094
+              pos: 2868
+              length: 1350
+          children: []
+          pos: 2811
+          length: 1407
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serialize
+              children: []
+              pos: 5065
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Serializable obj
+                children: []
+                pos: 5075
+                length: 16
+              pos: 5046
+              length: 723
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: outputStream
+                            children: []
+                            pos: 5134
+                            length: 12
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5150
+                            length: 4
+                        children: []
+                        pos: 5134
+                        length: 20
+                    children: []
+                    pos: 5133
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("The OutputStream must
+                        not be null");
+                    children: []
+                    pos: 5170
+                    length: 72
+                  pos: 5156
+                  length: 96
+                pos: 5130
+                length: 122
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectOutputStream out = null;
+                children: []
+                pos: 5261
+                length: 30
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: out = new ObjectOutputStream(outputStream);
+                      children: []
+                      pos: 5362
+                      length: 43
+                    - type: expression_statement
+                      fields:
+                        text: out.writeObject(obj);
+                      children: []
+                      pos: 5418
+                      length: 21
+                    pos: 5304
+                    length: 146
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (IOException ex) {
+                                      throw new SerializationException(ex);
+                                  }
+                      children: []
+                      pos: 5451
+                      length: 84
+                    pos: 5300
+                    length: 463
+                children: []
+                pos: 5300
+                length: 463
+              pos: 5120
+              length: 649
+          children: []
+          pos: 5046
+          length: 723
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serialize
+              children: []
+              pos: 6095
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Serializable obj
+                children: []
+                pos: 6105
+                length: 16
+              pos: 6074
+              length: 190
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+                children: []
+                pos: 6133
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: serialize(obj, baos);
+                children: []
+                pos: 6202
+                length: 21
+              - type: return_statement
+                fields:
+                  text: return baos.toByteArray();
+                children: []
+                pos: 6232
+                length: 26
+              pos: 6123
+              length: 141
+          children: []
+          pos: 6074
+          length: 190
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserialize
+              children: []
+              pos: 7103
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: InputStream inputStream
+                children: []
+                pos: 7115
+                length: 23
+              pos: 7082
+              length: 796
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: inputStream
+                            children: []
+                            pos: 7154
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7169
+                            length: 4
+                        children: []
+                        pos: 7154
+                        length: 19
+                    children: []
+                    pos: 7153
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("The InputStream must
+                        not be null");
+                    children: []
+                    pos: 7189
+                    length: 71
+                  pos: 7175
+                  length: 95
+                pos: 7150
+                length: 120
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectInputStream in = null;
+                children: []
+                pos: 7279
+                length: 28
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: in = new ObjectInputStream(inputStream);
+                      children: []
+                      pos: 7378
+                      length: 40
+                    - type: return_statement
+                      fields:
+                        text: return in.readObject();
+                      children: []
+                      pos: 7431
+                      length: 23
+                    pos: 7320
+                    length: 145
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassNotFoundException ex) {
+                                      throw new SerializationException(ex);
+                                  }
+                      children: []
+                      pos: 7466
+                      length: 95
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (IOException ex) {
+                                      throw new SerializationException(ex);
+                                  }
+                      children: []
+                      pos: 7562
+                      length: 84
+                    pos: 7316
+                    length: 556
+                children: []
+                pos: 7316
+                length: 556
+              pos: 7140
+              length: 738
+          children: []
+          pos: 7082
+          length: 796
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserialize
+              children: []
+              pos: 8261
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] objectData
+                children: []
+                pos: 8273
+                length: 17
+              pos: 8240
+              length: 290
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: objectData
+                            children: []
+                            pos: 8306
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8320
+                            length: 4
+                        children: []
+                        pos: 8306
+                        length: 18
+                    children: []
+                    pos: 8305
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("The byte[] must not
+                        be null");
+                    children: []
+                    pos: 8340
+                    length: 66
+                  pos: 8326
+                  length: 90
+                pos: 8302
+                length: 114
+              - type: local_variable_declaration
+                fields:
+                  text: ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
+                children: []
+                pos: 8425
+                length: 65
+              - type: return_statement
+                fields:
+                  text: return deserialize(bais);
+                children: []
+                pos: 8499
+                length: 25
+              pos: 8292
+              length: 238
+          children: []
+          pos: 8240
+          length: 290
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ClassLoaderAwareObjectInputStream
+              children: []
+              pos: 9288
+              length: 33
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: "private static final Map<String, Class<?>> primitiveTypes
+                    = \n                new HashMap<String, Class<?>>();"
+                children: []
+                pos: 9358
+                length: 109
+              - type: field_declaration
+                fields:
+                  text: private ClassLoader classLoader;
+                children: []
+                pos: 9476
+                length: 32
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public ClassLoaderAwareObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
+                                super(in);
+                                this.classLoader = classLoader;
+
+                                primitiveTypes.put("byte", byte.class);
+                                primitiveTypes.put("short", short.class);
+                                primitiveTypes.put("int", int.class);
+                                primitiveTypes.put("long", long.class);
+                                primitiveTypes.put("float", float.class);
+                                primitiveTypes.put("double", double.class);
+                                primitiveTypes.put("boolean", boolean.class);
+                                primitiveTypes.put("char", char.class);
+                                primitiveTypes.put("void", void.class);
+                            }
+                children: []
+                pos: 9799
+                length: 660
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: resolveClass
+                    children: []
+                    pos: 11034
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectStreamClass desc
+                      children: []
+                      pos: 11047
+                      length: 22
+                    pos: 10997
+                    length: 710
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: String name = desc.getName();
+                      children: []
+                      pos: 11128
+                      length: 29
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return Class.forName(name, false, classLoader);
+                            children: []
+                            pos: 11192
+                            length: 47
+                          pos: 11174
+                          length: 79
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (ClassNotFoundException ex) {
+                                                try {
+                                                    return Class.forName(name, false, Thread.currentThread().getContextClassLoader());
+                                                } catch (ClassNotFoundException cnfe) {
+                                                    Class<?> cls = primitiveTypes.get(name);
+                                                    if (cls != null)
+                                                        return cls;
+                                                    else
+                                                        throw cnfe;
+                                                }
+                                            }
+                            children: []
+                            pos: 11254
+                            length: 443
+                          pos: 11170
+                          length: 527
+                      children: []
+                      pos: 11170
+                      length: 527
+                    pos: 11114
+                    length: 593
+                children: []
+                pos: 10997
+                length: 710
+              pos: 9275
+              length: 2439
+          children: []
+          pos: 9275
+          length: 2439
+        pos: 1652
+        length: 10065
+    children: []
+    pos: 1652
+    length: 10065
+  pos: 0
+  length: 11718
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SerializationUtils
+        children: []
+        pos: 1665
+        length: 18
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SerializationUtils() {
+                      super();
+                  }
+          children: []
+          pos: 2021
+          length: 52
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: clone
+              children: []
+              pos: 2852
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: T object
+                children: []
+                pos: 2858
+                length: 8
+              pos: 2811
+              length: 1407
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: object
+                            children: []
+                            pos: 2882
+                            length: 6
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 2892
+                            length: 4
+                        children: []
+                        pos: 2882
+                        length: 14
+                    children: []
+                    pos: 2881
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return null;
+                    children: []
+                    pos: 2912
+                    length: 12
+                  pos: 2898
+                  length: 36
+                pos: 2878
+                length: 56
+              - type: local_variable_declaration
+                fields:
+                  text: byte[] objectData = serialize(object);
+                children: []
+                pos: 2943
+                length: 38
+              - type: local_variable_declaration
+                fields:
+                  text: ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
+                children: []
+                pos: 2990
+                length: 65
+              - type: local_variable_declaration
+                fields:
+                  text: ClassLoaderAwareObjectInputStream in = null;
+                children: []
+                pos: 3065
+                length: 44
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: in = new ClassLoaderAwareObjectInputStream(bais, object.getClass().getClassLoader());
+                      children: []
+                      pos: 3180
+                      length: 85
+                    - type: local_variable_declaration
+                      fields:
+                        text: |-
+                          @SuppressWarnings("unchecked") // see above
+                                      T readObject = (T) in.readObject();
+                      children: []
+                      pos: 3504
+                      length: 91
+                    - type: return_statement
+                      fields:
+                        text: return readObject;
+                      children: []
+                      pos: 3608
+                      length: 18
+                    pos: 3122
+                    length: 515
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassNotFoundException ex) {
+                                      throw new SerializationException("ClassNotFoundException while reading cloned object data", ex);
+                                  }
+                      children: []
+                      pos: 3638
+                      length: 154
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (IOException ex) {
+                                      throw new SerializationException("IOException while reading cloned object data", ex);
+                                  }
+                      children: []
+                      pos: 3793
+                      length: 132
+                    pos: 3118
+                    length: 1094
+                children: []
+                pos: 3118
+                length: 1094
+              pos: 2868
+              length: 1350
+          children: []
+          pos: 2811
+          length: 1407
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serialize
+              children: []
+              pos: 5065
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Serializable obj
+                children: []
+                pos: 5075
+                length: 16
+              pos: 5046
+              length: 723
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: outputStream
+                            children: []
+                            pos: 5134
+                            length: 12
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5150
+                            length: 4
+                        children: []
+                        pos: 5134
+                        length: 20
+                    children: []
+                    pos: 5133
+                    length: 22
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("The OutputStream must
+                        not be null");
+                    children: []
+                    pos: 5170
+                    length: 72
+                  pos: 5156
+                  length: 96
+                pos: 5130
+                length: 122
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectOutputStream out = null;
+                children: []
+                pos: 5261
+                length: 30
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: out = new ObjectOutputStream(outputStream);
+                      children: []
+                      pos: 5362
+                      length: 43
+                    - type: expression_statement
+                      fields:
+                        text: out.writeObject(obj);
+                      children: []
+                      pos: 5418
+                      length: 21
+                    pos: 5304
+                    length: 146
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (IOException ex) {
+                                      throw new SerializationException(ex);
+                                  }
+                      children: []
+                      pos: 5451
+                      length: 84
+                    pos: 5300
+                    length: 463
+                children: []
+                pos: 5300
+                length: 463
+              pos: 5120
+              length: 649
+          children: []
+          pos: 5046
+          length: 723
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: serialize
+              children: []
+              pos: 6095
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Serializable obj
+                children: []
+                pos: 6105
+                length: 16
+              pos: 6074
+              length: 190
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+                children: []
+                pos: 6133
+                length: 60
+              - type: expression_statement
+                fields:
+                  text: serialize(obj, baos);
+                children: []
+                pos: 6202
+                length: 21
+              - type: return_statement
+                fields:
+                  text: return baos.toByteArray();
+                children: []
+                pos: 6232
+                length: 26
+              pos: 6123
+              length: 141
+          children: []
+          pos: 6074
+          length: 190
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserialize
+              children: []
+              pos: 7103
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: InputStream inputStream
+                children: []
+                pos: 7115
+                length: 23
+              pos: 7082
+              length: 796
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: inputStream
+                            children: []
+                            pos: 7154
+                            length: 11
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7169
+                            length: 4
+                        children: []
+                        pos: 7154
+                        length: 19
+                    children: []
+                    pos: 7153
+                    length: 21
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("The InputStream must
+                        not be null");
+                    children: []
+                    pos: 7189
+                    length: 71
+                  pos: 7175
+                  length: 95
+                pos: 7150
+                length: 120
+              - type: local_variable_declaration
+                fields:
+                  text: ObjectInputStream in = null;
+                children: []
+                pos: 7279
+                length: 28
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: expression_statement
+                      fields:
+                        text: in = new ObjectInputStream(inputStream);
+                      children: []
+                      pos: 7378
+                      length: 40
+                    - type: return_statement
+                      fields:
+                        text: return in.readObject();
+                      children: []
+                      pos: 7431
+                      length: 23
+                    pos: 7320
+                    length: 145
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassNotFoundException ex) {
+                                      throw new SerializationException(ex);
+                                  }
+                      children: []
+                      pos: 7466
+                      length: 95
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (IOException ex) {
+                                      throw new SerializationException(ex);
+                                  }
+                      children: []
+                      pos: 7562
+                      length: 84
+                    pos: 7316
+                    length: 556
+                children: []
+                pos: 7316
+                length: 556
+              pos: 7140
+              length: 738
+          children: []
+          pos: 7082
+          length: 796
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: deserialize
+              children: []
+              pos: 8261
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: byte[] objectData
+                children: []
+                pos: 8273
+                length: 17
+              pos: 8240
+              length: 290
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: objectData
+                            children: []
+                            pos: 8306
+                            length: 10
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8320
+                            length: 4
+                        children: []
+                        pos: 8306
+                        length: 18
+                    children: []
+                    pos: 8305
+                    length: 20
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: throw new IllegalArgumentException("The byte[] must not
+                        be null");
+                    children: []
+                    pos: 8340
+                    length: 66
+                  pos: 8326
+                  length: 90
+                pos: 8302
+                length: 114
+              - type: local_variable_declaration
+                fields:
+                  text: ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
+                children: []
+                pos: 8425
+                length: 65
+              - type: return_statement
+                fields:
+                  text: return deserialize(bais);
+                children: []
+                pos: 8499
+                length: 25
+              pos: 8292
+              length: 238
+          children: []
+          pos: 8240
+          length: 290
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ClassLoaderAwareObjectInputStream
+              children: []
+              pos: 9288
+              length: 33
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private ClassLoader classLoader;
+                children: []
+                pos: 9358
+                length: 32
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public ClassLoaderAwareObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
+                                super(in);
+                                this.classLoader = classLoader;
+
+                            }
+                children: []
+                pos: 9681
+                length: 180
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: resolveClass
+                    children: []
+                    pos: 10436
+                    length: 12
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: ObjectStreamClass desc
+                      children: []
+                      pos: 10449
+                      length: 22
+                    pos: 10399
+                    length: 419
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: String name = desc.getName();
+                      children: []
+                      pos: 10530
+                      length: 29
+                    - type: try_statement
+                      fields:
+                        body:
+                          type: block
+                          fields: {}
+                          children:
+                          - type: return_statement
+                            fields:
+                              text: return Class.forName(name, false, classLoader);
+                            children: []
+                            pos: 10594
+                            length: 47
+                          pos: 10576
+                          length: 79
+                        excepts:
+                          type: excepts
+                          fields: {}
+                          children:
+                          - type: catch_clause
+                            fields:
+                              text: |-
+                                catch (ClassNotFoundException ex) {
+                                                    return Class.forName(name, false, Thread.currentThread().getContextClassLoader());
+                                            }
+                            children: []
+                            pos: 10656
+                            length: 152
+                          pos: 10572
+                          length: 236
+                      children: []
+                      pos: 10572
+                      length: 236
+                    pos: 10516
+                    length: 302
+                children: []
+                pos: 10399
+                length: 419
+              pos: 9275
+              length: 1550
+          children: []
+          pos: 9275
+          length: 1550
+        pos: 1652
+        length: 9176
+    children: []
+    pos: 1652
+    length: 9176
+  pos: 0
+  length: 10829
 text_diff: "--- before\n+++ after\n@@ -236,8 +236,6 @@\n      * class here is a workaround,
   see the JIRA issue LANG-626. </p>\n      */\n      static class ClassLoaderAwareObjectInputStream
   extends ObjectInputStream {\n-        private static final Map<String, Class<?>>

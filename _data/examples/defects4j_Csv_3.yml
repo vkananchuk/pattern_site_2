@@ -1,5 +1,1422 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Lexer
+        children: []
+        pos: 1368
+        length: 5
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final char DISABLED = '\ufffe';
+          children: []
+          pos: 1723
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private final char delimiter;
+          children: []
+          pos: 1775
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final char escape;
+          children: []
+          pos: 1809
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final char quoteChar;
+          children: []
+          pos: 1840
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final char commmentStart;
+          children: []
+          pos: 1874
+          length: 33
+        - type: field_declaration
+          fields:
+            text: final boolean ignoreSurroundingSpaces;
+          children: []
+          pos: 1913
+          length: 38
+        - type: field_declaration
+          fields:
+            text: final boolean ignoreEmptyLines;
+          children: []
+          pos: 1956
+          length: 31
+        - type: field_declaration
+          fields:
+            text: final CSVFormat format;
+          children: []
+          pos: 1993
+          length: 23
+        - type: field_declaration
+          fields:
+            text: final ExtendedBufferedReader in;
+          children: []
+          pos: 2050
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              Lexer(final CSVFormat format, final ExtendedBufferedReader in) {
+                      this.format = format;
+                      this.in = in;
+                      this.delimiter = format.getDelimiter();
+                      this.escape = mapNullToDisabled(format.getEscape());
+                      this.quoteChar = mapNullToDisabled(format.getQuoteChar());
+                      this.commmentStart = mapNullToDisabled(format.getCommentStart());
+                      this.ignoreSurroundingSpaces = format.getIgnoreSurroundingSpaces();
+                      this.ignoreEmptyLines = format.getIgnoreEmptyLines();
+                  }
+          children: []
+          pos: 2088
+          length: 510
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mapNullToDisabled
+              children: []
+              pos: 2623
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Character c
+                children: []
+                pos: 2641
+                length: 17
+              pos: 2604
+              length: 116
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return c == null ? DISABLED : c.charValue();'
+                children: []
+                pos: 2670
+                length: 44
+              pos: 2660
+              length: 60
+          children: []
+          pos: 2604
+          length: 116
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLineNumber
+              children: []
+              pos: 2731
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2726
+              length: 63
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return in.getLineNumber();
+                children: []
+                pos: 2757
+                length: 26
+              pos: 2747
+              length: 42
+          children: []
+          pos: 2726
+          length: 63
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readEscape
+              children: []
+              pos: 3374
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3370
+              length: 1009
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int c = in.read();
+                children: []
+                pos: 3485
+                length: 24
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: c
+                        children: []
+                        pos: 3526
+                        length: 1
+                    children: []
+                    pos: 3525
+                    length: 3
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                                case 'r':
+                                    return CR;
+                                case 'n':
+                                    return LF;
+                                case 't':
+                                    return TAB;
+                                case 'b':
+                                    return BACKSPACE;
+                                case 'f':
+                                    return FF;
+                                case CR:
+                                case LF:
+                                case FF: // TODO is this correct?
+                                case TAB: // TODO is this correct? Do tabs need to be escaped?
+                                case BACKSPACE: // TODO is this correct?
+                                    return c;
+                                case END_OF_STREAM:
+                                    throw new IOException("EOF whilst processing escape sequence");
+                                default:
+                                    // Now check for meta-characters
+                                    if (isDelimiter(c) || isEscape(c) || isQuoteChar(c) || isCommentStart(c)) {
+                                        return c;
+                                    }
+                                    // indicate unexpected char - available from in.getLastChar()
+                                    return END_OF_STREAM;
+                                }
+                    children: []
+                    pos: 3529
+                    length: 844
+                children: []
+                pos: 3518
+                length: 855
+              pos: 3406
+              length: 973
+          children: []
+          pos: 3370
+          length: 1009
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: trimTrailingSpaces
+              children: []
+              pos: 4390
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StringBuilder buffer
+                children: []
+                pos: 4409
+                length: 26
+              pos: 4385
+              length: 311
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int length = buffer.length();
+                children: []
+                pos: 4447
+                length: 29
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (length > 0 && Character.isWhitespace(buffer.charAt(length - 1))) {
+                                length = length - 1;
+                            }
+                children: []
+                pos: 4485
+                length: 116
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: length
+                            children: []
+                            pos: 4614
+                            length: 6
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: buffer.length()
+                            children: []
+                            pos: 4624
+                            length: 15
+                        children: []
+                        pos: 4614
+                        length: 25
+                    children: []
+                    pos: 4613
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.setLength(length);
+                    children: []
+                    pos: 4655
+                    length: 25
+                  pos: 4641
+                  length: 49
+                pos: 4610
+                length: 80
+              pos: 4437
+              length: 259
+          children: []
+          pos: 4385
+          length: 311
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readEndOfLine
+              children: []
+              pos: 4908
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int c
+                children: []
+                pos: 4922
+                length: 5
+              pos: 4900
+              length: 273
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: c
+                                children: []
+                                pos: 4998
+                                length: 1
+                              right:
+                                type: identifier
+                                fields:
+                                  text: CR
+                                children: []
+                                pos: 5003
+                                length: 2
+                            children: []
+                            pos: 4998
+                            length: 7
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: in.lookAhead()
+                                children: []
+                                pos: 5009
+                                length: 14
+                              right:
+                                type: identifier
+                                fields:
+                                  text: LF
+                                children: []
+                                pos: 5027
+                                length: 2
+                            children: []
+                            pos: 5009
+                            length: 20
+                        children: []
+                        pos: 4998
+                        length: 31
+                    children: []
+                    pos: 4997
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: c = in.read();
+                    children: []
+                    pos: 5108
+                    length: 14
+                  pos: 5031
+                  length: 101
+                pos: 4994
+                length: 138
+              - type: return_statement
+                fields:
+                  text: return c == LF || c == CR;
+                children: []
+                pos: 5141
+                length: 26
+              pos: 4948
+              length: 225
+          children: []
+          pos: 4900
+          length: 273
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: nextToken
+              children: []
+              pos: 5194
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token reusableToken
+                children: []
+                pos: 5204
+                length: 19
+              pos: 5179
+              length: 65
+          children: []
+          pos: 5179
+          length: 65
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isWhitespace
+              children: []
+              pos: 5338
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5351
+                length: 11
+              pos: 5330
+              length: 120
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c != format.getDelimiter() && Character.isWhitespace((char)
+                    c);
+                children: []
+                pos: 5374
+                length: 70
+              pos: 5364
+              length: 86
+          children: []
+          pos: 5330
+          length: 120
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isStartOfLine
+              children: []
+              pos: 5702
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5716
+                length: 11
+              pos: 5694
+              length: 95
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == LF || c == CR || c == UNDEFINED;
+                children: []
+                pos: 5739
+                length: 44
+              pos: 5729
+              length: 60
+          children: []
+          pos: 5694
+          length: 95
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isEndOfFile
+              children: []
+              pos: 5884
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5896
+                length: 11
+              pos: 5876
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == END_OF_STREAM;
+                children: []
+                pos: 5919
+                length: 26
+              pos: 5909
+              length: 42
+          children: []
+          pos: 5876
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isDelimiter
+              children: []
+              pos: 5965
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5977
+                length: 11
+              pos: 5957
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == delimiter;
+                children: []
+                pos: 6000
+                length: 22
+              pos: 5990
+              length: 38
+          children: []
+          pos: 5957
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isEscape
+              children: []
+              pos: 6042
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 6051
+                length: 11
+              pos: 6034
+              length: 65
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == escape;
+                children: []
+                pos: 6074
+                length: 19
+              pos: 6064
+              length: 35
+          children: []
+          pos: 6034
+          length: 65
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isQuoteChar
+              children: []
+              pos: 6113
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 6125
+                length: 11
+              pos: 6105
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == quoteChar;
+                children: []
+                pos: 6148
+                length: 22
+              pos: 6138
+              length: 38
+          children: []
+          pos: 6105
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isCommentStart
+              children: []
+              pos: 6190
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 6205
+                length: 11
+              pos: 6182
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == commmentStart;
+                children: []
+                pos: 6228
+                length: 26
+              pos: 6218
+              length: 42
+          children: []
+          pos: 6182
+          length: 78
+        pos: 1353
+        length: 4909
+    children: []
+    pos: 1353
+    length: 4909
+  pos: 0
+  length: 6263
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Lexer
+        children: []
+        pos: 1368
+        length: 5
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final char DISABLED = '\ufffe';
+          children: []
+          pos: 1723
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private final char delimiter;
+          children: []
+          pos: 1775
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final char escape;
+          children: []
+          pos: 1809
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final char quoteChar;
+          children: []
+          pos: 1840
+          length: 29
+        - type: field_declaration
+          fields:
+            text: private final char commmentStart;
+          children: []
+          pos: 1874
+          length: 33
+        - type: field_declaration
+          fields:
+            text: final boolean ignoreSurroundingSpaces;
+          children: []
+          pos: 1913
+          length: 38
+        - type: field_declaration
+          fields:
+            text: final boolean ignoreEmptyLines;
+          children: []
+          pos: 1956
+          length: 31
+        - type: field_declaration
+          fields:
+            text: final CSVFormat format;
+          children: []
+          pos: 1993
+          length: 23
+        - type: field_declaration
+          fields:
+            text: final ExtendedBufferedReader in;
+          children: []
+          pos: 2050
+          length: 32
+        - type: constructor_declaration
+          fields:
+            text: |-
+              Lexer(final CSVFormat format, final ExtendedBufferedReader in) {
+                      this.format = format;
+                      this.in = in;
+                      this.delimiter = format.getDelimiter();
+                      this.escape = mapNullToDisabled(format.getEscape());
+                      this.quoteChar = mapNullToDisabled(format.getQuoteChar());
+                      this.commmentStart = mapNullToDisabled(format.getCommentStart());
+                      this.ignoreSurroundingSpaces = format.getIgnoreSurroundingSpaces();
+                      this.ignoreEmptyLines = format.getIgnoreEmptyLines();
+                  }
+          children: []
+          pos: 2088
+          length: 510
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: mapNullToDisabled
+              children: []
+              pos: 2623
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Character c
+                children: []
+                pos: 2641
+                length: 17
+              pos: 2604
+              length: 116
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: 'return c == null ? DISABLED : c.charValue();'
+                children: []
+                pos: 2670
+                length: 44
+              pos: 2660
+              length: 60
+          children: []
+          pos: 2604
+          length: 116
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getLineNumber
+              children: []
+              pos: 2731
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2726
+              length: 63
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return in.getLineNumber();
+                children: []
+                pos: 2757
+                length: 26
+              pos: 2747
+              length: 42
+          children: []
+          pos: 2726
+          length: 63
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readEscape
+              children: []
+              pos: 3374
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 3370
+              length: 873
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int c = in.read();
+                children: []
+                pos: 3485
+                length: 24
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: identifier
+                        fields:
+                          text: c
+                        children: []
+                        pos: 3526
+                        length: 1
+                    children: []
+                    pos: 3525
+                    length: 3
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+                                case 'r':
+                                    return CR;
+                                case 'n':
+                                    return LF;
+                                case 't':
+                                    return TAB;
+                                case 'b':
+                                    return BACKSPACE;
+                                case 'f':
+                                    return FF;
+                                case CR:
+                                case LF:
+                                case FF: // TODO is this correct?
+                                case TAB: // TODO is this correct? Do tabs need to be escaped?
+                                case BACKSPACE: // TODO is this correct?
+                                    return c;
+                                case END_OF_STREAM:
+                                    throw new IOException("EOF whilst processing escape sequence");
+                                default:
+                                    // Now check for meta-characters
+                                        return c;
+                                    // indicate unexpected char - available from in.getLastChar()
+                                }
+                    children: []
+                    pos: 3529
+                    length: 708
+                children: []
+                pos: 3518
+                length: 719
+              pos: 3406
+              length: 837
+          children: []
+          pos: 3370
+          length: 873
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: trimTrailingSpaces
+              children: []
+              pos: 4254
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final StringBuilder buffer
+                children: []
+                pos: 4273
+                length: 26
+              pos: 4249
+              length: 311
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: int length = buffer.length();
+                children: []
+                pos: 4311
+                length: 29
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (length > 0 && Character.isWhitespace(buffer.charAt(length - 1))) {
+                                length = length - 1;
+                            }
+                children: []
+                pos: 4349
+                length: 116
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: not_equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: length
+                            children: []
+                            pos: 4478
+                            length: 6
+                          right:
+                            type: method_invocation
+                            fields:
+                              text: buffer.length()
+                            children: []
+                            pos: 4488
+                            length: 15
+                        children: []
+                        pos: 4478
+                        length: 25
+                    children: []
+                    pos: 4477
+                    length: 27
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: buffer.setLength(length);
+                    children: []
+                    pos: 4519
+                    length: 25
+                  pos: 4505
+                  length: 49
+                pos: 4474
+                length: 80
+              pos: 4301
+              length: 259
+          children: []
+          pos: 4249
+          length: 311
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: readEndOfLine
+              children: []
+              pos: 4772
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int c
+                children: []
+                pos: 4786
+                length: 5
+              pos: 4764
+              length: 273
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: and
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: c
+                                children: []
+                                pos: 4862
+                                length: 1
+                              right:
+                                type: identifier
+                                fields:
+                                  text: CR
+                                children: []
+                                pos: 4867
+                                length: 2
+                            children: []
+                            pos: 4862
+                            length: 7
+                          right:
+                            type: equals
+                            fields:
+                              left:
+                                type: method_invocation
+                                fields:
+                                  text: in.lookAhead()
+                                children: []
+                                pos: 4873
+                                length: 14
+                              right:
+                                type: identifier
+                                fields:
+                                  text: LF
+                                children: []
+                                pos: 4891
+                                length: 2
+                            children: []
+                            pos: 4873
+                            length: 20
+                        children: []
+                        pos: 4862
+                        length: 31
+                    children: []
+                    pos: 4861
+                    length: 33
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: c = in.read();
+                    children: []
+                    pos: 4972
+                    length: 14
+                  pos: 4895
+                  length: 101
+                pos: 4858
+                length: 138
+              - type: return_statement
+                fields:
+                  text: return c == LF || c == CR;
+                children: []
+                pos: 5005
+                length: 26
+              pos: 4812
+              length: 225
+          children: []
+          pos: 4764
+          length: 273
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: nextToken
+              children: []
+              pos: 5058
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Token reusableToken
+                children: []
+                pos: 5068
+                length: 19
+              pos: 5043
+              length: 65
+          children: []
+          pos: 5043
+          length: 65
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isWhitespace
+              children: []
+              pos: 5202
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5215
+                length: 11
+              pos: 5194
+              length: 120
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c != format.getDelimiter() && Character.isWhitespace((char)
+                    c);
+                children: []
+                pos: 5238
+                length: 70
+              pos: 5228
+              length: 86
+          children: []
+          pos: 5194
+          length: 120
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isStartOfLine
+              children: []
+              pos: 5566
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5580
+                length: 11
+              pos: 5558
+              length: 95
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == LF || c == CR || c == UNDEFINED;
+                children: []
+                pos: 5603
+                length: 44
+              pos: 5593
+              length: 60
+          children: []
+          pos: 5558
+          length: 95
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isEndOfFile
+              children: []
+              pos: 5748
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5760
+                length: 11
+              pos: 5740
+              length: 75
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == END_OF_STREAM;
+                children: []
+                pos: 5783
+                length: 26
+              pos: 5773
+              length: 42
+          children: []
+          pos: 5740
+          length: 75
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isDelimiter
+              children: []
+              pos: 5829
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5841
+                length: 11
+              pos: 5821
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == delimiter;
+                children: []
+                pos: 5864
+                length: 22
+              pos: 5854
+              length: 38
+          children: []
+          pos: 5821
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isEscape
+              children: []
+              pos: 5906
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5915
+                length: 11
+              pos: 5898
+              length: 65
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == escape;
+                children: []
+                pos: 5938
+                length: 19
+              pos: 5928
+              length: 35
+          children: []
+          pos: 5898
+          length: 65
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isQuoteChar
+              children: []
+              pos: 5977
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 5989
+                length: 11
+              pos: 5969
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == quoteChar;
+                children: []
+                pos: 6012
+                length: 22
+              pos: 6002
+              length: 38
+          children: []
+          pos: 5969
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isCommentStart
+              children: []
+              pos: 6054
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final int c
+                children: []
+                pos: 6069
+                length: 11
+              pos: 6046
+              length: 78
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return c == commmentStart;
+                children: []
+                pos: 6092
+                length: 26
+              pos: 6082
+              length: 42
+          children: []
+          pos: 6046
+          length: 78
+        pos: 1353
+        length: 4773
+    children: []
+    pos: 1353
+    length: 4773
+  pos: 0
+  length: 6127
 text_diff: "--- before\n+++ after\n@@ -108,11 +108,8 @@\n             throw new IOException(\"EOF
   whilst processing escape sequence\");\n         default:\n             // Now check
   for meta-characters\n-            if (isDelimiter(c) || isEscape(c) || isQuoteChar(c)

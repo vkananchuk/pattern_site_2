@@ -1,5 +1,2029 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Coders
+        children: []
+        pos: 1684
+        length: 6
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addDecoder
+              children: []
+              pos: 1716
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final InputStream is
+                children: []
+                pos: 1727
+                length: 20
+              pos: 1697
+              length: 488
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final CoderId coderId : coderTable) {
+                                if (Arrays.equals(coderId.method.getId(), coder.decompressionMethodId)) {
+                                    return coderId.coder.decode(is, coder, password);
+                                }
+                            }
+                children: []
+                pos: 1832
+                length: 218
+              - type: throw_statement
+                fields:
+                  text: |-
+                    throw new IOException("Unsupported compression method " +
+                                    Arrays.toString(coder.decompressionMethodId));
+                children: []
+                pos: 2059
+                length: 120
+              pos: 1822
+              length: 363
+          children: []
+          pos: 1697
+          length: 488
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addEncoder
+              children: []
+              pos: 2215
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final OutputStream out
+                children: []
+                pos: 2226
+                length: 22
+              pos: 2195
+              length: 425
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final CoderId coderId : coderTable) {
+                                if (coderId.method.equals(method)) {
+                                    return coderId.coder.encode(out, password);
+                                }
+                            }
+                children: []
+                pos: 2364
+                length: 175
+              - type: throw_statement
+                fields:
+                  text: throw new IOException("Unsupported compression method " +
+                    method);
+                children: []
+                pos: 2548
+                length: 66
+              pos: 2354
+              length: 266
+          children: []
+          pos: 2195
+          length: 425
+        - type: field_declaration
+          fields:
+            text: |-
+              static CoderId[] coderTable = new CoderId[] {
+                      new CoderId(SevenZMethod.COPY, new CopyDecoder()),
+                      new CoderId(SevenZMethod.LZMA, new LZMADecoder()),
+                      new CoderId(SevenZMethod.LZMA2, new LZMA2Decoder()),
+                      new CoderId(SevenZMethod.DEFLATE, new DeflateDecoder()),
+                      new CoderId(SevenZMethod.BZIP2, new BZIP2Decoder()),
+                      new CoderId(SevenZMethod.AES256SHA256, new AES256SHA256Decoder())
+                  };
+          children: []
+          pos: 2626
+          length: 431
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: CoderId
+              children: []
+              pos: 3080
+              length: 7
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    CoderId(SevenZMethod method, final CoderBase coder) {
+                                this.method = method;
+                                this.coder = coder;
+                            }
+                children: []
+                pos: 3098
+                length: 129
+              - type: field_declaration
+                fields:
+                  text: final SevenZMethod method;
+                children: []
+                pos: 3237
+                length: 26
+              - type: field_declaration
+                fields:
+                  text: final CoderBase coder;
+                children: []
+                pos: 3272
+                length: 22
+              pos: 3067
+              length: 233
+          children: []
+          pos: 3067
+          length: 233
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: CoderBase
+              children: []
+              pos: 3332
+              length: 9
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 3373
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 3380
+                      length: 20
+                    pos: 3352
+                    length: 121
+                children: []
+                pos: 3352
+                length: 121
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 3495
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 3502
+                      length: 22
+                    pos: 3482
+                    length: 196
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: throw_statement
+                      fields:
+                        text: throw new UnsupportedOperationException("method doesn't
+                          support writing");
+                      children: []
+                      pos: 3594
+                      length: 74
+                    pos: 3580
+                    length: 98
+                children: []
+                pos: 3482
+                length: 196
+              pos: 3310
+              length: 374
+          children: []
+          pos: 3310
+          length: 374
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: CopyDecoder
+              children: []
+              pos: 3707
+              length: 11
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 3777
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 3784
+                      length: 20
+                    pos: 3747
+                    length: 165
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return in;
+                      children: []
+                      pos: 3891
+                      length: 10
+                    pos: 3877
+                    length: 35
+                children: []
+                pos: 3747
+                length: 165
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 3952
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 3959
+                      length: 22
+                    pos: 3921
+                    length: 120
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return out;
+                      children: []
+                      pos: 4020
+                      length: 11
+                    pos: 4006
+                    length: 35
+                children: []
+                pos: 3921
+                length: 120
+              pos: 3694
+              length: 353
+          children: []
+          pos: 3694
+          length: 353
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: LZMADecoder
+              children: []
+              pos: 4066
+              length: 11
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 4136
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 4143
+                      length: 20
+                    pos: 4106
+                    length: 602
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: byte propsByte = coder.properties[0];
+                      children: []
+                      pos: 4250
+                      length: 37
+                    - type: local_variable_declaration
+                      fields:
+                        text: long dictSize = coder.properties[1];
+                      children: []
+                      pos: 4300
+                      length: 36
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int i = 1; i < 4; i++) {
+                                          dictSize |= (coder.properties[i + 1] & 0xffl) << (8 * i);
+                                      }
+                      children: []
+                      pos: 4349
+                      length: 117
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: greater_than
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: dictSize
+                                  children: []
+                                  pos: 4483
+                                  length: 8
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: LZMAInputStream.DICT_SIZE_MAX
+                                  children: []
+                                  pos: 4494
+                                  length: 29
+                              children: []
+                              pos: 4483
+                              length: 40
+                          children: []
+                          pos: 4482
+                          length: 42
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: throw_statement
+                          fields:
+                            text: throw new IOException("Dictionary larger than 4GiB
+                              maximum size");
+                          children: []
+                          pos: 4543
+                          length: 66
+                        pos: 4525
+                        length: 98
+                      pos: 4479
+                      length: 144
+                    - type: return_statement
+                      fields:
+                        text: return new LZMAInputStream(in, -1, propsByte, (int)
+                          dictSize);
+                      children: []
+                      pos: 4636
+                      length: 62
+                    pos: 4236
+                    length: 472
+                children: []
+                pos: 4106
+                length: 602
+              pos: 4053
+              length: 661
+          children: []
+          pos: 4053
+          length: 661
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: DeflateDecoder
+              children: []
+              pos: 4737
+              length: 14
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 4810
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 4817
+                      length: 20
+                    pos: 4780
+                    length: 286
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return new InflaterInputStream(new DummyByteAddingInputStream(in),
+                                                                     new Inflater(true));
+                      children: []
+                      pos: 4926
+                      length: 130
+                    pos: 4912
+                    length: 154
+                children: []
+                pos: 4780
+                length: 286
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 5106
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 5113
+                      length: 22
+                    pos: 5075
+                    length: 169
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new DeflaterOutputStream(out, new Deflater(9,
+                          true));
+                      children: []
+                      pos: 5174
+                      length: 60
+                    pos: 5160
+                    length: 84
+                children: []
+                pos: 5075
+                length: 169
+              pos: 4724
+              length: 526
+          children: []
+          pos: 4724
+          length: 526
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: BZIP2Decoder
+              children: []
+              pos: 5269
+              length: 12
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 5340
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 5347
+                      length: 20
+                    pos: 5310
+                    length: 202
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new BZip2CompressorInputStream(in);
+                      children: []
+                      pos: 5460
+                      length: 42
+                    pos: 5446
+                    length: 66
+                children: []
+                pos: 5310
+                length: 202
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 5552
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 5559
+                      length: 22
+                    pos: 5521
+                    length: 188
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new BZip2CompressorOutputStream(out);
+                      children: []
+                      pos: 5655
+                      length: 44
+                    pos: 5641
+                    length: 68
+                children: []
+                pos: 5521
+                length: 188
+              pos: 5256
+              length: 459
+          children: []
+          pos: 5256
+          length: 459
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: AES256SHA256Decoder
+              children: []
+              pos: 5734
+              length: 19
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 5812
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 5819
+                      length: 20
+                    pos: 5782
+                    length: 5024
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: "return new InputStream() {\n                private
+                          boolean isInitialized = false;\n                private
+                          CipherInputStream cipherInputStream = null;\n                \n
+                          \               private CipherInputStream init() throws
+                          IOException {\n                    if (isInitialized) {\n
+                          \                       return cipherInputStream;\n                    }\n
+                          \                   final int byte0 = 0xff & coder.properties[0];\n
+                          \                   final int numCyclesPower = byte0 & 0x3f;\n
+                          \                   final int byte1 = 0xff & coder.properties[1];\n
+                          \                   final int ivSize = ((byte0 >> 6) & 1)
+                          + (byte1 & 0x0f);\n                    final int saltSize
+                          = ((byte0 >> 7) & 1) + (byte1 >> 4);\n                    if
+                          (2 + saltSize + ivSize > coder.properties.length) {\n                        throw
+                          new IOException(\"Salt size + IV size too long\");\n                    }\n
+                          \                   final byte[] salt = new byte[saltSize];\n
+                          \                   System.arraycopy(coder.properties, 2,
+                          salt, 0, saltSize);\n                    final byte[] iv
+                          = new byte[16];\n                    System.arraycopy(coder.properties,
+                          2 + saltSize, iv, 0, ivSize);\n                    \n                    if
+                          (passwordBytes == null) {\n                        throw
+                          new IOException(\"Cannot read encrypted files without a
+                          password\");\n                    }\n                    final
+                          byte[] aesKeyBytes;\n                    if (numCyclesPower
+                          == 0x3f) {\n                        aesKeyBytes = new byte[32];\n
+                          \                       System.arraycopy(salt, 0, aesKeyBytes,
+                          0, saltSize);\n                        System.arraycopy(passwordBytes,
+                          0, aesKeyBytes, saltSize,\n                                Math.min(passwordBytes.length,
+                          aesKeyBytes.length - saltSize));\n                    }
+                          else {\n                        final MessageDigest digest;\n
+                          \                       try {\n                            digest
+                          = MessageDigest.getInstance(\"SHA-256\");\n                        }
+                          catch (NoSuchAlgorithmException noSuchAlgorithmException)
+                          {\n                            IOException ioe = new IOException(\"SHA-256
+                          is unsupported by your Java implementation\");\n                            ioe.initCause(noSuchAlgorithmException);\n
+                          \                           throw ioe;\n        // TODO:
+                          simplify when Compress requires Java 1.6                \n//
+                          \                           throw new IOException(\"SHA-256
+                          is unsupported by your Java implementation\",\n//                                    noSuchAlgorithmException);\n
+                          \                       }\n                        final
+                          byte[] extra = new byte[8];\n                        for
+                          (long j = 0; j < (1L << numCyclesPower); j++) {\n                            digest.update(salt);\n
+                          \                           digest.update(passwordBytes);\n
+                          \                           digest.update(extra);\n                            for
+                          (int k = 0; k < extra.length; k++) {\n                                ++extra[k];\n
+                          \                               if (extra[k] != 0) {\n                                    break;\n
+                          \                               }\n                            }\n
+                          \                       }\n                        aesKeyBytes
+                          = digest.digest();\n                    }\n                    \n
+                          \                   final SecretKey aesKey = new SecretKeySpec(aesKeyBytes,
+                          \"AES\");\n                    try {\n                        final
+                          Cipher cipher = Cipher.getInstance(\"AES/CBC/NoPadding\");\n
+                          \                       cipher.init(Cipher.DECRYPT_MODE,
+                          aesKey, new IvParameterSpec(iv));\n                        cipherInputStream
+                          = new CipherInputStream(in, cipher);\n                        isInitialized
+                          = true;\n                        return cipherInputStream;\n
+                          \                   } catch (GeneralSecurityException generalSecurityException)
+                          {\n                        IOException ioe = new IOException(\"Decryption
+                          error \" +\n                                \"(do you have
+                          the JCE Unlimited Strength Jurisdiction Policy Files installed?)\");\n
+                          \                       ioe.initCause(generalSecurityException);\n
+                          \                       throw ioe;\n        // TODO: simplify
+                          when Compress requires Java 1.6                \n//                        throw
+                          new IOException(\"Decryption error \" +\n//                                \"(do
+                          you have the JCE Unlimited Strength Jurisdiction Policy
+                          Files installed?)\",\n//                                generalSecurityException);\n
+                          \                   }\n                }\n                \n
+                          \               @Override\n                public int read()
+                          throws IOException {\n                    return init().read();\n
+                          \               }\n                \n                @Override\n
+                          \               public int read(byte[] b, int off, int len)
+                          throws IOException {\n                    return init().read(b,
+                          off, len);\n                }\n                \n                @Override\n
+                          \               public void close() {\n                }\n
+                          \           };"
+                      children: []
+                      pos: 5937
+                      length: 4859
+                    pos: 5923
+                    length: 4883
+                children: []
+                pos: 5782
+                length: 5024
+              pos: 5721
+              length: 5091
+          children: []
+          pos: 5721
+          length: 5091
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: DummyByteAddingInputStream
+              children: []
+              pos: 11038
+              length: 26
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private boolean addDummyByte = true;
+                children: []
+                pos: 11101
+                length: 36
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private DummyByteAddingInputStream(InputStream in) {
+                                super(in);
+                            }
+                children: []
+                pos: 11147
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 11271
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 11242
+                    length: 260
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: int result = super.read();
+                      children: []
+                      pos: 11311
+                      length: 26
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: result
+                                      children: []
+                                      pos: 11354
+                                      length: 6
+                                    right:
+                                      type: unary_expression
+                                      fields:
+                                        text: "-1"
+                                      children: []
+                                      pos: 11364
+                                      length: 2
+                                  children: []
+                                  pos: 11354
+                                  length: 12
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: addDummyByte
+                                  children: []
+                                  pos: 11370
+                                  length: 12
+                              children: []
+                              pos: 11354
+                              length: 28
+                          children: []
+                          pos: 11353
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: addDummyByte = false;
+                          children: []
+                          pos: 11402
+                          length: 21
+                        - type: expression_statement
+                          fields:
+                            text: result = 0;
+                          children: []
+                          pos: 11440
+                          length: 11
+                        pos: 11384
+                        length: 81
+                      pos: 11350
+                      length: 115
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 11478
+                      length: 14
+                    pos: 11297
+                    length: 205
+                children: []
+                pos: 11242
+                length: 260
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 11541
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: byte[] b
+                      children: []
+                      pos: 11546
+                      length: 8
+                    pos: 11512
+                    length: 323
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: int result = super.read(b, off, len);
+                      children: []
+                      pos: 11607
+                      length: 37
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: result
+                                      children: []
+                                      pos: 11661
+                                      length: 6
+                                    right:
+                                      type: unary_expression
+                                      fields:
+                                        text: "-1"
+                                      children: []
+                                      pos: 11671
+                                      length: 2
+                                  children: []
+                                  pos: 11661
+                                  length: 12
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: addDummyByte
+                                  children: []
+                                  pos: 11677
+                                  length: 12
+                              children: []
+                              pos: 11661
+                              length: 28
+                          children: []
+                          pos: 11660
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: addDummyByte = false;
+                          children: []
+                          pos: 11709
+                          length: 21
+                        - type: expression_statement
+                          fields:
+                            text: b[off] = 0;
+                          children: []
+                          pos: 11747
+                          length: 11
+                        - type: return_statement
+                          fields:
+                            text: return 1;
+                          children: []
+                          pos: 11775
+                          length: 9
+                        pos: 11691
+                        length: 107
+                      pos: 11657
+                      length: 141
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 11811
+                      length: 14
+                    pos: 11593
+                    length: 242
+                children: []
+                pos: 11512
+                length: 323
+              pos: 11017
+              length: 824
+          children: []
+          pos: 11017
+          length: 824
+        pos: 1678
+        length: 10165
+    children: []
+    pos: 1678
+    length: 10165
+  pos: 0
+  length: 11844
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: Coders
+        children: []
+        pos: 1684
+        length: 6
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addDecoder
+              children: []
+              pos: 1716
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final InputStream is
+                children: []
+                pos: 1727
+                length: 20
+              pos: 1697
+              length: 488
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final CoderId coderId : coderTable) {
+                                if (Arrays.equals(coderId.method.getId(), coder.decompressionMethodId)) {
+                                    return coderId.coder.decode(is, coder, password);
+                                }
+                            }
+                children: []
+                pos: 1832
+                length: 218
+              - type: throw_statement
+                fields:
+                  text: |-
+                    throw new IOException("Unsupported compression method " +
+                                    Arrays.toString(coder.decompressionMethodId));
+                children: []
+                pos: 2059
+                length: 120
+              pos: 1822
+              length: 363
+          children: []
+          pos: 1697
+          length: 488
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addEncoder
+              children: []
+              pos: 2215
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final OutputStream out
+                children: []
+                pos: 2226
+                length: 22
+              pos: 2195
+              length: 425
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (final CoderId coderId : coderTable) {
+                                if (coderId.method.equals(method)) {
+                                    return coderId.coder.encode(out, password);
+                                }
+                            }
+                children: []
+                pos: 2364
+                length: 175
+              - type: throw_statement
+                fields:
+                  text: throw new IOException("Unsupported compression method " +
+                    method);
+                children: []
+                pos: 2548
+                length: 66
+              pos: 2354
+              length: 266
+          children: []
+          pos: 2195
+          length: 425
+        - type: field_declaration
+          fields:
+            text: |-
+              static CoderId[] coderTable = new CoderId[] {
+                      new CoderId(SevenZMethod.COPY, new CopyDecoder()),
+                      new CoderId(SevenZMethod.LZMA, new LZMADecoder()),
+                      new CoderId(SevenZMethod.LZMA2, new LZMA2Decoder()),
+                      new CoderId(SevenZMethod.DEFLATE, new DeflateDecoder()),
+                      new CoderId(SevenZMethod.BZIP2, new BZIP2Decoder()),
+                      new CoderId(SevenZMethod.AES256SHA256, new AES256SHA256Decoder())
+                  };
+          children: []
+          pos: 2626
+          length: 431
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: CoderId
+              children: []
+              pos: 3080
+              length: 7
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    CoderId(SevenZMethod method, final CoderBase coder) {
+                                this.method = method;
+                                this.coder = coder;
+                            }
+                children: []
+                pos: 3098
+                length: 129
+              - type: field_declaration
+                fields:
+                  text: final SevenZMethod method;
+                children: []
+                pos: 3237
+                length: 26
+              - type: field_declaration
+                fields:
+                  text: final CoderBase coder;
+                children: []
+                pos: 3272
+                length: 22
+              pos: 3067
+              length: 233
+          children: []
+          pos: 3067
+          length: 233
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: CoderBase
+              children: []
+              pos: 3332
+              length: 9
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 3373
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 3380
+                      length: 20
+                    pos: 3352
+                    length: 121
+                children: []
+                pos: 3352
+                length: 121
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 3495
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 3502
+                      length: 22
+                    pos: 3482
+                    length: 196
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: throw_statement
+                      fields:
+                        text: throw new UnsupportedOperationException("method doesn't
+                          support writing");
+                      children: []
+                      pos: 3594
+                      length: 74
+                    pos: 3580
+                    length: 98
+                children: []
+                pos: 3482
+                length: 196
+              pos: 3310
+              length: 374
+          children: []
+          pos: 3310
+          length: 374
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: CopyDecoder
+              children: []
+              pos: 3707
+              length: 11
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 3777
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 3784
+                      length: 20
+                    pos: 3747
+                    length: 165
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return in;
+                      children: []
+                      pos: 3891
+                      length: 10
+                    pos: 3877
+                    length: 35
+                children: []
+                pos: 3747
+                length: 165
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 3952
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 3959
+                      length: 22
+                    pos: 3921
+                    length: 120
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return out;
+                      children: []
+                      pos: 4020
+                      length: 11
+                    pos: 4006
+                    length: 35
+                children: []
+                pos: 3921
+                length: 120
+              pos: 3694
+              length: 353
+          children: []
+          pos: 3694
+          length: 353
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: LZMADecoder
+              children: []
+              pos: 4066
+              length: 11
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 4136
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 4143
+                      length: 20
+                    pos: 4106
+                    length: 594
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: byte propsByte = coder.properties[0];
+                      children: []
+                      pos: 4250
+                      length: 37
+                    - type: local_variable_declaration
+                      fields:
+                        text: long dictSize = coder.properties[1];
+                      children: []
+                      pos: 4300
+                      length: 36
+                    - type: for_statement
+                      fields:
+                        text: |-
+                          for (int i = 1; i < 4; i++) {
+                                          dictSize |= (coder.properties[i + 1] << (8 * i));
+                                      }
+                      children: []
+                      pos: 4349
+                      length: 109
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: greater_than
+                              fields:
+                                left:
+                                  type: identifier
+                                  fields:
+                                    text: dictSize
+                                  children: []
+                                  pos: 4475
+                                  length: 8
+                                right:
+                                  type: field_access
+                                  fields:
+                                    text: LZMAInputStream.DICT_SIZE_MAX
+                                  children: []
+                                  pos: 4486
+                                  length: 29
+                              children: []
+                              pos: 4475
+                              length: 40
+                          children: []
+                          pos: 4474
+                          length: 42
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: throw_statement
+                          fields:
+                            text: throw new IOException("Dictionary larger than 4GiB
+                              maximum size");
+                          children: []
+                          pos: 4535
+                          length: 66
+                        pos: 4517
+                        length: 98
+                      pos: 4471
+                      length: 144
+                    - type: return_statement
+                      fields:
+                        text: return new LZMAInputStream(in, -1, propsByte, (int)
+                          dictSize);
+                      children: []
+                      pos: 4628
+                      length: 62
+                    pos: 4236
+                    length: 464
+                children: []
+                pos: 4106
+                length: 594
+              pos: 4053
+              length: 653
+          children: []
+          pos: 4053
+          length: 653
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: DeflateDecoder
+              children: []
+              pos: 4729
+              length: 14
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 4802
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 4809
+                      length: 20
+                    pos: 4772
+                    length: 286
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return new InflaterInputStream(new DummyByteAddingInputStream(in),
+                                                                     new Inflater(true));
+                      children: []
+                      pos: 4918
+                      length: 130
+                    pos: 4904
+                    length: 154
+                children: []
+                pos: 4772
+                length: 286
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 5098
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 5105
+                      length: 22
+                    pos: 5067
+                    length: 169
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new DeflaterOutputStream(out, new Deflater(9,
+                          true));
+                      children: []
+                      pos: 5166
+                      length: 60
+                    pos: 5152
+                    length: 84
+                children: []
+                pos: 5067
+                length: 169
+              pos: 4716
+              length: 526
+          children: []
+          pos: 4716
+          length: 526
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: BZIP2Decoder
+              children: []
+              pos: 5261
+              length: 12
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 5332
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 5339
+                      length: 20
+                    pos: 5302
+                    length: 202
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new BZip2CompressorInputStream(in);
+                      children: []
+                      pos: 5452
+                      length: 42
+                    pos: 5438
+                    length: 66
+                children: []
+                pos: 5302
+                length: 202
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: encode
+                    children: []
+                    pos: 5544
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final OutputStream out
+                      children: []
+                      pos: 5551
+                      length: 22
+                    pos: 5513
+                    length: 188
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return new BZip2CompressorOutputStream(out);
+                      children: []
+                      pos: 5647
+                      length: 44
+                    pos: 5633
+                    length: 68
+                children: []
+                pos: 5513
+                length: 188
+              pos: 5248
+              length: 459
+          children: []
+          pos: 5248
+          length: 459
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: AES256SHA256Decoder
+              children: []
+              pos: 5726
+              length: 19
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: decode
+                    children: []
+                    pos: 5804
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final InputStream in
+                      children: []
+                      pos: 5811
+                      length: 20
+                    pos: 5774
+                    length: 5024
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: "return new InputStream() {\n                private
+                          boolean isInitialized = false;\n                private
+                          CipherInputStream cipherInputStream = null;\n                \n
+                          \               private CipherInputStream init() throws
+                          IOException {\n                    if (isInitialized) {\n
+                          \                       return cipherInputStream;\n                    }\n
+                          \                   final int byte0 = 0xff & coder.properties[0];\n
+                          \                   final int numCyclesPower = byte0 & 0x3f;\n
+                          \                   final int byte1 = 0xff & coder.properties[1];\n
+                          \                   final int ivSize = ((byte0 >> 6) & 1)
+                          + (byte1 & 0x0f);\n                    final int saltSize
+                          = ((byte0 >> 7) & 1) + (byte1 >> 4);\n                    if
+                          (2 + saltSize + ivSize > coder.properties.length) {\n                        throw
+                          new IOException(\"Salt size + IV size too long\");\n                    }\n
+                          \                   final byte[] salt = new byte[saltSize];\n
+                          \                   System.arraycopy(coder.properties, 2,
+                          salt, 0, saltSize);\n                    final byte[] iv
+                          = new byte[16];\n                    System.arraycopy(coder.properties,
+                          2 + saltSize, iv, 0, ivSize);\n                    \n                    if
+                          (passwordBytes == null) {\n                        throw
+                          new IOException(\"Cannot read encrypted files without a
+                          password\");\n                    }\n                    final
+                          byte[] aesKeyBytes;\n                    if (numCyclesPower
+                          == 0x3f) {\n                        aesKeyBytes = new byte[32];\n
+                          \                       System.arraycopy(salt, 0, aesKeyBytes,
+                          0, saltSize);\n                        System.arraycopy(passwordBytes,
+                          0, aesKeyBytes, saltSize,\n                                Math.min(passwordBytes.length,
+                          aesKeyBytes.length - saltSize));\n                    }
+                          else {\n                        final MessageDigest digest;\n
+                          \                       try {\n                            digest
+                          = MessageDigest.getInstance(\"SHA-256\");\n                        }
+                          catch (NoSuchAlgorithmException noSuchAlgorithmException)
+                          {\n                            IOException ioe = new IOException(\"SHA-256
+                          is unsupported by your Java implementation\");\n                            ioe.initCause(noSuchAlgorithmException);\n
+                          \                           throw ioe;\n        // TODO:
+                          simplify when Compress requires Java 1.6                \n//
+                          \                           throw new IOException(\"SHA-256
+                          is unsupported by your Java implementation\",\n//                                    noSuchAlgorithmException);\n
+                          \                       }\n                        final
+                          byte[] extra = new byte[8];\n                        for
+                          (long j = 0; j < (1L << numCyclesPower); j++) {\n                            digest.update(salt);\n
+                          \                           digest.update(passwordBytes);\n
+                          \                           digest.update(extra);\n                            for
+                          (int k = 0; k < extra.length; k++) {\n                                ++extra[k];\n
+                          \                               if (extra[k] != 0) {\n                                    break;\n
+                          \                               }\n                            }\n
+                          \                       }\n                        aesKeyBytes
+                          = digest.digest();\n                    }\n                    \n
+                          \                   final SecretKey aesKey = new SecretKeySpec(aesKeyBytes,
+                          \"AES\");\n                    try {\n                        final
+                          Cipher cipher = Cipher.getInstance(\"AES/CBC/NoPadding\");\n
+                          \                       cipher.init(Cipher.DECRYPT_MODE,
+                          aesKey, new IvParameterSpec(iv));\n                        cipherInputStream
+                          = new CipherInputStream(in, cipher);\n                        isInitialized
+                          = true;\n                        return cipherInputStream;\n
+                          \                   } catch (GeneralSecurityException generalSecurityException)
+                          {\n                        IOException ioe = new IOException(\"Decryption
+                          error \" +\n                                \"(do you have
+                          the JCE Unlimited Strength Jurisdiction Policy Files installed?)\");\n
+                          \                       ioe.initCause(generalSecurityException);\n
+                          \                       throw ioe;\n        // TODO: simplify
+                          when Compress requires Java 1.6                \n//                        throw
+                          new IOException(\"Decryption error \" +\n//                                \"(do
+                          you have the JCE Unlimited Strength Jurisdiction Policy
+                          Files installed?)\",\n//                                generalSecurityException);\n
+                          \                   }\n                }\n                \n
+                          \               @Override\n                public int read()
+                          throws IOException {\n                    return init().read();\n
+                          \               }\n                \n                @Override\n
+                          \               public int read(byte[] b, int off, int len)
+                          throws IOException {\n                    return init().read(b,
+                          off, len);\n                }\n                \n                @Override\n
+                          \               public void close() {\n                }\n
+                          \           };"
+                      children: []
+                      pos: 5929
+                      length: 4859
+                    pos: 5915
+                    length: 4883
+                children: []
+                pos: 5774
+                length: 5024
+              pos: 5713
+              length: 5091
+          children: []
+          pos: 5713
+          length: 5091
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: DummyByteAddingInputStream
+              children: []
+              pos: 11030
+              length: 26
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private boolean addDummyByte = true;
+                children: []
+                pos: 11093
+                length: 36
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private DummyByteAddingInputStream(InputStream in) {
+                                super(in);
+                            }
+                children: []
+                pos: 11139
+                length: 85
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 11263
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 11234
+                    length: 260
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: int result = super.read();
+                      children: []
+                      pos: 11303
+                      length: 26
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: result
+                                      children: []
+                                      pos: 11346
+                                      length: 6
+                                    right:
+                                      type: unary_expression
+                                      fields:
+                                        text: "-1"
+                                      children: []
+                                      pos: 11356
+                                      length: 2
+                                  children: []
+                                  pos: 11346
+                                  length: 12
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: addDummyByte
+                                  children: []
+                                  pos: 11362
+                                  length: 12
+                              children: []
+                              pos: 11346
+                              length: 28
+                          children: []
+                          pos: 11345
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: addDummyByte = false;
+                          children: []
+                          pos: 11394
+                          length: 21
+                        - type: expression_statement
+                          fields:
+                            text: result = 0;
+                          children: []
+                          pos: 11432
+                          length: 11
+                        pos: 11376
+                        length: 81
+                      pos: 11342
+                      length: 115
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 11470
+                      length: 14
+                    pos: 11289
+                    length: 205
+                children: []
+                pos: 11234
+                length: 260
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: read
+                    children: []
+                    pos: 11533
+                    length: 4
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: byte[] b
+                      children: []
+                      pos: 11538
+                      length: 8
+                    pos: 11504
+                    length: 323
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: int result = super.read(b, off, len);
+                      children: []
+                      pos: 11599
+                      length: 37
+                    - type: if_statement
+                      fields:
+                        condition:
+                          type: parenthesized_expression
+                          fields:
+                            expression:
+                              type: and
+                              fields:
+                                left:
+                                  type: equals
+                                  fields:
+                                    left:
+                                      type: identifier
+                                      fields:
+                                        text: result
+                                      children: []
+                                      pos: 11653
+                                      length: 6
+                                    right:
+                                      type: unary_expression
+                                      fields:
+                                        text: "-1"
+                                      children: []
+                                      pos: 11663
+                                      length: 2
+                                  children: []
+                                  pos: 11653
+                                  length: 12
+                                right:
+                                  type: identifier
+                                  fields:
+                                    text: addDummyByte
+                                  children: []
+                                  pos: 11669
+                                  length: 12
+                              children: []
+                              pos: 11653
+                              length: 28
+                          children: []
+                          pos: 11652
+                          length: 30
+                      children:
+                      - type: block
+                        fields: {}
+                        children:
+                        - type: expression_statement
+                          fields:
+                            text: addDummyByte = false;
+                          children: []
+                          pos: 11701
+                          length: 21
+                        - type: expression_statement
+                          fields:
+                            text: b[off] = 0;
+                          children: []
+                          pos: 11739
+                          length: 11
+                        - type: return_statement
+                          fields:
+                            text: return 1;
+                          children: []
+                          pos: 11767
+                          length: 9
+                        pos: 11683
+                        length: 107
+                      pos: 11649
+                      length: 141
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 11803
+                      length: 14
+                    pos: 11585
+                    length: 242
+                children: []
+                pos: 11504
+                length: 323
+              pos: 11009
+              length: 824
+          children: []
+          pos: 11009
+          length: 824
+        pos: 1678
+        length: 10157
+    children: []
+    pos: 1678
+    length: 10157
+  pos: 0
+  length: 11836
 text_diff: |
   --- before
   +++ after

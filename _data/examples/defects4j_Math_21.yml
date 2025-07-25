@@ -1,5 +1,392 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: RectangularCholeskyDecomposition
+        children: []
+        pos: 2301
+        length: 32
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix root;
+          children: []
+          pos: 2424
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private int rank;
+          children: []
+          pos: 2523
+          length: 17
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public RectangularCholeskyDecomposition(RealMatrix matrix, double small)
+                      throws NonPositiveDefiniteMatrixException {
+
+                      final int order = matrix.getRowDimension();
+                      final double[][] c = matrix.getData();
+                      final double[][] b = new double[order][order];
+
+                      int[] index = new int[order];
+                      for (int i = 0; i < order; ++i) {
+                          index[i] = i;
+                      }
+
+                      int r = 0;
+                      for (boolean loop = true; loop;) {
+
+                          // find maximal diagonal element
+                          int swapR = r;
+                          for (int i = r + 1; i < order; ++i) {
+                              int ii  = index[i];
+                              int isr = index[swapR];
+                              if (c[ii][ii] > c[isr][isr]) {
+                                  swapR = i;
+                              }
+                          }
+
+
+                          // swap elements
+                          if (swapR != r) {
+                              final int tmpIndex    = index[r];
+                              index[r]              = index[swapR];
+                              index[swapR]          = tmpIndex;
+                              final double[] tmpRow = b[r];
+                              b[r]                  = b[swapR];
+                              b[swapR]              = tmpRow;
+                          }
+
+                          // check diagonal element
+                          int ir = index[r];
+                          if (c[ir][ir] < small) {
+
+                              if (r == 0) {
+                                  throw new NonPositiveDefiniteMatrixException(c[ir][ir], ir, small);
+                              }
+
+                              // check remaining diagonal elements
+                              for (int i = r; i < order; ++i) {
+                                  if (c[index[i]][index[i]] < -small) {
+                                      // there is at least one sufficiently negative diagonal element,
+                                      // the symmetric positive semidefinite matrix is wrong
+                                      throw new NonPositiveDefiniteMatrixException(c[index[i]][index[i]], i, small);
+                                  }
+                              }
+
+                              // all remaining diagonal elements are close to zero, we consider we have
+                              // found the rank of the symmetric positive semidefinite matrix
+                              ++r;
+                              loop = false;
+
+                          } else {
+
+                              // transform the matrix
+                              final double sqrt = FastMath.sqrt(c[ir][ir]);
+                              b[r][r] = sqrt;
+                              final double inverse  = 1 / sqrt;
+                              final double inverse2 = 1 / c[ir][ir];
+                              for (int i = r + 1; i < order; ++i) {
+                                  final int ii = index[i];
+                                  final double e = inverse * c[ii][ir];
+                                  b[i][r] = e;
+                                  c[ii][ii] -= c[ii][ir] * c[ii][ir] * inverse2;
+                                  for (int j = r + 1; j < i; ++j) {
+                                      final int ij = index[j];
+                                      final double f = c[ii][ij] - e * b[j][r];
+                                      c[ii][ij] = f;
+                                      c[ij][ii] = f;
+                                  }
+                              }
+
+                              // prepare next iteration
+                              loop = ++r < order;
+                          }
+                      }
+
+                      // build the root matrix
+                      rank = r;
+                      root = MatrixUtils.createRealMatrix(order, r);
+                      for (int i = 0; i < order; ++i) {
+                          for (int j = 0; j < r; ++j) {
+                              root.setEntry(index[i], j, b[i][j]);
+                          }
+                      }
+
+                  }
+          children: []
+          pos: 2935
+          length: 3264
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRootMatrix
+              children: []
+              pos: 6479
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6461
+              length: 62
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return root;
+                children: []
+                pos: 6505
+                length: 12
+              pos: 6495
+              length: 28
+          children: []
+          pos: 6461
+          length: 62
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRank
+              children: []
+              pos: 6873
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6862
+              length: 49
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return rank;
+                children: []
+                pos: 6893
+                length: 12
+              pos: 6883
+              length: 28
+          children: []
+          pos: 6862
+          length: 49
+        pos: 2288
+        length: 4626
+    children: []
+    pos: 2288
+    length: 4626
+  pos: 0
+  length: 6915
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: RectangularCholeskyDecomposition
+        children: []
+        pos: 2301
+        length: 32
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final RealMatrix root;
+          children: []
+          pos: 2424
+          length: 30
+        - type: field_declaration
+          fields:
+            text: private int rank;
+          children: []
+          pos: 2523
+          length: 17
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public RectangularCholeskyDecomposition(RealMatrix matrix, double small)
+                      throws NonPositiveDefiniteMatrixException {
+
+                      final int order = matrix.getRowDimension();
+                      final double[][] c = matrix.getData();
+                      final double[][] b = new double[order][order];
+
+                      int[] swap  = new int[order];
+                      int[] index = new int[order];
+                      for (int i = 0; i < order; ++i) {
+                          index[i] = i;
+                      }
+
+                      int r = 0;
+                      for (boolean loop = true; loop;) {
+
+                          // find maximal diagonal element
+                          swap[r] = r;
+                          for (int i = r + 1; i < order; ++i) {
+                              int ii  = index[i];
+                              int isi = index[swap[i]];
+                              if (c[ii][ii] > c[isi][isi]) {
+                                  swap[r] = i;
+                              }
+                          }
+
+
+                          // swap elements
+                          if (swap[r] != r) {
+                              int tmp = index[r];
+                              index[r] = index[swap[r]];
+                              index[swap[r]] = tmp;
+                          }
+
+                          // check diagonal element
+                          int ir = index[r];
+                          if (c[ir][ir] < small) {
+
+                              if (r == 0) {
+                                  throw new NonPositiveDefiniteMatrixException(c[ir][ir], ir, small);
+                              }
+
+                              // check remaining diagonal elements
+                              for (int i = r; i < order; ++i) {
+                                  if (c[index[i]][index[i]] < -small) {
+                                      // there is at least one sufficiently negative diagonal element,
+                                      // the symmetric positive semidefinite matrix is wrong
+                                      throw new NonPositiveDefiniteMatrixException(c[index[i]][index[i]], i, small);
+                                  }
+                              }
+
+                              // all remaining diagonal elements are close to zero, we consider we have
+                              // found the rank of the symmetric positive semidefinite matrix
+                              ++r;
+                              loop = false;
+
+                          } else {
+
+                              // transform the matrix
+                              final double sqrt = FastMath.sqrt(c[ir][ir]);
+                              b[r][r] = sqrt;
+                              final double inverse  = 1 / sqrt;
+                              for (int i = r + 1; i < order; ++i) {
+                                  final int ii = index[i];
+                                  final double e = inverse * c[ii][ir];
+                                  b[i][r] = e;
+                                  c[ii][ii] -= e * e;
+                                  for (int j = r + 1; j < i; ++j) {
+                                      final int ij = index[j];
+                                      final double f = c[ii][ij] - e * b[j][r];
+                                      c[ii][ij] = f;
+                                      c[ij][ii] = f;
+                                  }
+                              }
+
+                              // prepare next iteration
+                              loop = ++r < order;
+                          }
+                      }
+
+                      // build the root matrix
+                      rank = r;
+                      root = MatrixUtils.createRealMatrix(order, r);
+                      for (int i = 0; i < order; ++i) {
+                          for (int j = 0; j < r; ++j) {
+                              root.setEntry(index[i], j, b[i][j]);
+                          }
+                      }
+
+                  }
+          children: []
+          pos: 2935
+          length: 3043
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRootMatrix
+              children: []
+              pos: 6258
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6240
+              length: 62
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return root;
+                children: []
+                pos: 6284
+                length: 12
+              pos: 6274
+              length: 28
+          children: []
+          pos: 6240
+          length: 62
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRank
+              children: []
+              pos: 6652
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 6641
+              length: 49
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return rank;
+                children: []
+                pos: 6672
+                length: 12
+              pos: 6662
+              length: 28
+          children: []
+          pos: 6641
+          length: 49
+        pos: 2288
+        length: 4405
+    children: []
+    pos: 2288
+    length: 4405
+  pos: 0
+  length: 6694
 text_diff: "--- before\n+++ after\n@@ -66,6 +66,7 @@\n         final double[][] c
   = matrix.getData();\n         final double[][] b = new double[order][order];\n \n+
   \       int[] swap  = new int[order];\n         int[] index = new int[order];\n

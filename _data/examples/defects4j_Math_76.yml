@@ -1,5 +1,2384 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SingularValueDecompositionImpl
+        children: []
+        pos: 2020
+        length: 30
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private int m;
+          children: []
+          pos: 2145
+          length: 14
+        - type: field_declaration
+          fields:
+            text: private int n;
+          children: []
+          pos: 2217
+          length: 14
+        - type: field_declaration
+          fields:
+            text: private BiDiagonalTransformer transformer;
+          children: []
+          pos: 2275
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private double[] mainBidiagonal;
+          children: []
+          pos: 2374
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private double[] secondaryBidiagonal;
+          children: []
+          pos: 2468
+          length: 37
+        - type: field_declaration
+          fields:
+            text: private double[] mainTridiagonal;
+          children: []
+          pos: 2563
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private double[] secondaryTridiagonal;
+          children: []
+          pos: 2659
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private EigenDecomposition eigenDecomposition;
+          children: []
+          pos: 2761
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private double[] singularValues;
+          children: []
+          pos: 2841
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedU;
+          children: []
+          pos: 2909
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedUt;
+          children: []
+          pos: 2984
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedS;
+          children: []
+          pos: 3048
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedV;
+          children: []
+          pos: 3111
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedVt;
+          children: []
+          pos: 3186
+          length: 28
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SingularValueDecompositionImpl(final RealMatrix matrix)
+                      throws InvalidMatrixException {
+                      this(matrix, Math.min(matrix.getRowDimension(), matrix.getColumnDimension()));
+                  }
+          children: []
+          pos: 3506
+          length: 195
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SingularValueDecompositionImpl(final RealMatrix matrix, final int max)
+                      throws InvalidMatrixException {
+
+                      m = matrix.getRowDimension();
+                      n = matrix.getColumnDimension();
+
+                      cachedU  = null;
+                      cachedS  = null;
+                      cachedV  = null;
+                      cachedVt = null;
+
+                      // transform the matrix to bidiagonal
+                      transformer         = new BiDiagonalTransformer(matrix);
+                      mainBidiagonal      = transformer.getMainDiagonalRef();
+                      secondaryBidiagonal = transformer.getSecondaryDiagonalRef();
+
+                      // compute Bt.B (if upper diagonal) or B.Bt (if lower diagonal)
+                      mainTridiagonal      = new double[mainBidiagonal.length];
+                      secondaryTridiagonal = new double[mainBidiagonal.length - 1];
+                      double a = mainBidiagonal[0];
+                      mainTridiagonal[0] = a * a;
+                      for (int i = 1; i < mainBidiagonal.length; ++i) {
+                          final double b  = secondaryBidiagonal[i - 1];
+                          secondaryTridiagonal[i - 1] = a * b;
+                          a = mainBidiagonal[i];
+                          mainTridiagonal[i] = a * a + b * b;
+                      }
+
+                      // compute singular values
+                      eigenDecomposition =
+                          new EigenDecompositionImpl(mainTridiagonal, secondaryTridiagonal,
+                                                     MathUtils.SAFE_MIN);
+                      final double[] eigenValues = eigenDecomposition.getRealEigenvalues();
+                      int p = Math.min(max, eigenValues.length);
+                      while ((p > 0) && (eigenValues[p - 1] <= 0)) {
+                          --p;
+                      }
+                      singularValues = new double[p];
+                      for (int i = 0; i < p; ++i) {
+                          singularValues[i] = Math.sqrt(eigenValues[i]);
+                      }
+
+                  }
+          children: []
+          pos: 4048
+          length: 1652
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getU
+              children: []
+              pos: 5749
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5731
+              length: 1924
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedU
+                            children: []
+                            pos: 5809
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5820
+                            length: 4
+                        children: []
+                        pos: 5809
+                        length: 15
+                    children: []
+                    pos: 5808
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final int p = singularValues.length;
+                    children: []
+                    pos: 5841
+                    length: 36
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: greater_or_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: m
+                                children: []
+                                pos: 5894
+                                length: 1
+                              right:
+                                type: identifier
+                                fields:
+                                  text: "n"
+                                children: []
+                                pos: 5899
+                                length: 1
+                            children: []
+                            pos: 5894
+                            length: 6
+                        children: []
+                        pos: 5893
+                        length: 8
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: |-
+                            final RealMatrix e =
+                                                eigenDecomposition.getV().getSubMatrix(0, n - 1, 0, p - 1);
+                        children: []
+                        pos: 5999
+                        length: 100
+                      - type: local_variable_declaration
+                        fields:
+                          text: final double[][] eData = e.getData();
+                        children: []
+                        pos: 6116
+                        length: 37
+                      - type: local_variable_declaration
+                        fields:
+                          text: final double[][] wData = new double[m][p];
+                        children: []
+                        pos: 6170
+                        length: 42
+                      - type: local_variable_declaration
+                        fields:
+                          text: double[] ei1 = eData[0];
+                        children: []
+                        pos: 6229
+                        length: 24
+                      - type: for_statement
+                        fields:
+                          text: |-
+                            for (int i = 0; i < p; ++i) {
+                                                // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                                                final double mi = mainBidiagonal[i];
+                                                final double[] ei0 = ei1;
+                                                final double[] wi  = wData[i];
+                                                if (i < n - 1) {
+                                                    ei1 = eData[i + 1];
+                                                    final double si = secondaryBidiagonal[i];
+                                                    for (int j = 0; j < p; ++j) {
+                                                        wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                                                    }
+                                                } else {
+                                                    for (int j = 0; j < p; ++j) {
+                                                        wi[j] = mi * ei0[j] / singularValues[j];
+                                                    }
+                                                }
+                                            }
+                        children: []
+                        pos: 6270
+                        length: 794
+                      - type: for_statement
+                        fields:
+                          text: |-
+                            for (int i = p; i < m; ++i) {
+                                                wData[i] = new double[p];
+                                            }
+                        children: []
+                        pos: 7082
+                        length: 93
+                      - type: expression_statement
+                        fields:
+                          text: |-
+                            cachedU =
+                                                transformer.getU().multiply(MatrixUtils.createRealMatrix(wData));
+                        children: []
+                        pos: 7192
+                        length: 95
+                      pos: 5902
+                      length: 1399
+                    pos: 5890
+                    length: 1686
+                  pos: 5826
+                  length: 1761
+                pos: 5805
+                length: 1782
+              - type: return_statement
+                fields:
+                  text: return cachedU;
+                children: []
+                pos: 7633
+                length: 15
+              pos: 5794
+              length: 1861
+          children: []
+          pos: 5731
+          length: 1924
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUT
+              children: []
+              pos: 7704
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7686
+              length: 220
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedUt
+                            children: []
+                            pos: 7765
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7777
+                            length: 4
+                        children: []
+                        pos: 7765
+                        length: 16
+                    children: []
+                    pos: 7764
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedUt = getU().transpose();
+                    children: []
+                    pos: 7797
+                    length: 30
+                  pos: 7783
+                  length: 54
+                pos: 7761
+                length: 76
+              - type: return_statement
+                fields:
+                  text: return cachedUt;
+                children: []
+                pos: 7883
+                length: 16
+              pos: 7750
+              length: 156
+          children: []
+          pos: 7686
+          length: 220
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getS
+              children: []
+              pos: 7955
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7937
+              length: 267
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedS
+                            children: []
+                            pos: 8015
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8026
+                            length: 4
+                        children: []
+                        pos: 8015
+                        length: 15
+                    children: []
+                    pos: 8014
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedS = MatrixUtils.createRealDiagonalMatrix(singularValues);
+                    children: []
+                    pos: 8100
+                    length: 63
+                  pos: 8032
+                  length: 142
+                pos: 8011
+                length: 163
+              - type: return_statement
+                fields:
+                  text: return cachedS;
+                children: []
+                pos: 8183
+                length: 15
+              pos: 8000
+              length: 204
+          children: []
+          pos: 7937
+          length: 267
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSingularValues
+              children: []
+              pos: 8251
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8235
+              length: 120
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return singularValues.clone();
+                children: []
+                pos: 8319
+                length: 30
+              pos: 8309
+              length: 46
+          children: []
+          pos: 8235
+          length: 120
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getV
+              children: []
+              pos: 8404
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8386
+              length: 1920
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedV
+                            children: []
+                            pos: 8464
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8475
+                            length: 4
+                        children: []
+                        pos: 8464
+                        length: 15
+                    children: []
+                    pos: 8463
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final int p = singularValues.length;
+                    children: []
+                    pos: 8496
+                    length: 36
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: greater_or_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: m
+                                children: []
+                                pos: 8549
+                                length: 1
+                              right:
+                                type: identifier
+                                fields:
+                                  text: "n"
+                                children: []
+                                pos: 8554
+                                length: 1
+                            children: []
+                            pos: 8549
+                            length: 6
+                        children: []
+                        pos: 8548
+                        length: 8
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: |-
+                            final RealMatrix e =
+                                                eigenDecomposition.getV().getSubMatrix(0, n - 1, 0, p - 1);
+                        children: []
+                        pos: 8654
+                        length: 100
+                      - type: expression_statement
+                        fields:
+                          text: cachedV = transformer.getV().multiply(e);
+                        children: []
+                        pos: 8771
+                        length: 41
+                      pos: 8557
+                      length: 269
+                    pos: 8545
+                    length: 1682
+                  pos: 8481
+                  length: 1757
+                pos: 8460
+                length: 1778
+              - type: return_statement
+                fields:
+                  text: return cachedV;
+                children: []
+                pos: 10284
+                length: 15
+              pos: 8449
+              length: 1857
+          children: []
+          pos: 8386
+          length: 1920
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getVT
+              children: []
+              pos: 10355
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10337
+              length: 220
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedVt
+                            children: []
+                            pos: 10416
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10428
+                            length: 4
+                        children: []
+                        pos: 10416
+                        length: 16
+                    children: []
+                    pos: 10415
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedVt = getV().transpose();
+                    children: []
+                    pos: 10448
+                    length: 30
+                  pos: 10434
+                  length: 54
+                pos: 10412
+                length: 76
+              - type: return_statement
+                fields:
+                  text: return cachedVt;
+                children: []
+                pos: 10534
+                length: 16
+              pos: 10401
+              length: 156
+          children: []
+          pos: 10337
+          length: 220
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCovariance
+              children: []
+              pos: 10606
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double minSingularValue
+                children: []
+                pos: 10620
+                length: 29
+              pos: 10588
+              length: 1068
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int p = singularValues.length;
+                children: []
+                pos: 10719
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: int dimension = 0;
+                children: []
+                pos: 10764
+                length: 18
+              - type: while_statement
+                fields:
+                  text: |-
+                    while ((dimension < p) && (singularValues[dimension] >= minSingularValue)) {
+                                ++dimension;
+                            }
+                children: []
+                pos: 10791
+                length: 111
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: dimension
+                            children: []
+                            pos: 10916
+                            length: 9
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 10929
+                            length: 1
+                        children: []
+                        pos: 10916
+                        length: 14
+                    children: []
+                    pos: 10915
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw MathRuntimeException.createIllegalArgumentException(
+                                          "cutoff singular value is {0}, should be at most {1}",
+                                          minSingularValue, singularValues[0]);
+                    children: []
+                    pos: 10946
+                    length: 187
+                  pos: 10932
+                  length: 211
+                pos: 10912
+                length: 231
+              - type: local_variable_declaration
+                fields:
+                  text: final double[][] data = new double[dimension][p];
+                children: []
+                pos: 11153
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: |-
+                    getVT().walkInOptimizedOrder(new DefaultRealMatrixPreservingVisitor() {
+                                /** {@inheritDoc} */
+                                @Override
+                                public void visit(final int row, final int column, final double value) {
+                                    data[row][column] = value / singularValues[row];
+                                }
+                            }, 0, dimension - 1, 0, p - 1);
+                children: []
+                pos: 11211
+                length: 330
+              - type: local_variable_declaration
+                fields:
+                  text: RealMatrix jv = new Array2DRowRealMatrix(data, false);
+                children: []
+                pos: 11551
+                length: 54
+              - type: return_statement
+                fields:
+                  text: return jv.transpose().multiply(jv);
+                children: []
+                pos: 11614
+                length: 35
+              pos: 10651
+              length: 1005
+          children: []
+          pos: 10588
+          length: 1068
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNorm
+              children: []
+              pos: 11701
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11687
+              length: 103
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return singularValues[0];
+                children: []
+                pos: 11759
+                length: 25
+              pos: 11749
+              length: 41
+          children: []
+          pos: 11687
+          length: 103
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConditionNumber
+              children: []
+              pos: 11835
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11821
+              length: 158
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return singularValues[0] / singularValues[singularValues.length
+                    - 1];
+                children: []
+                pos: 11904
+                length: 69
+              pos: 11894
+              length: 85
+          children: []
+          pos: 11821
+          length: 158
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRank
+              children: []
+              pos: 12021
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12010
+              length: 327
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double threshold = Math.max(m, n) * Math.ulp(singularValues[0]);
+                children: []
+                pos: 12079
+                length: 70
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = singularValues.length - 1; i >= 0; --i) {
+                               if (singularValues[i] > threshold) {
+                                  return i + 1;
+                               }
+                            }
+                children: []
+                pos: 12159
+                length: 153
+              - type: return_statement
+                fields:
+                  text: return 0;
+                children: []
+                pos: 12321
+                length: 9
+              pos: 12068
+              length: 269
+          children: []
+          pos: 12010
+          length: 327
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSolver
+              children: []
+              pos: 12395
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12368
+              length: 161
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new Solver(singularValues, getUT(), getV(),
+                                              getRank() == Math.max(m, n));
+                children: []
+                pos: 12417
+                length: 106
+              pos: 12407
+              length: 122
+          children: []
+          pos: 12368
+          length: 161
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Solver
+              children: []
+              pos: 12587
+              length: 6
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final RealMatrix pseudoInverse;
+                children: []
+                pos: 12689
+                length: 39
+              - type: field_declaration
+                fields:
+                  text: private boolean nonSingular;
+                children: []
+                pos: 12776
+                length: 28
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private Solver(final double[] singularValues, final RealMatrix uT, final RealMatrix v,
+                                           final boolean nonSingular) {
+                                double[][] suT      = uT.getData();
+                                for (int i = 0; i < singularValues.length; ++i) {
+                                    final double a      = 1.0 / singularValues[i];
+                                    final double[] suTi = suT[i];
+                                    for (int j = 0; j < suTi.length; ++j) {
+                                        suTi[j] *= a;
+                                    }
+                                }
+                                pseudoInverse    = v.multiply(new Array2DRowRealMatrix(suT, false));
+                                this.nonSingular = nonSingular;
+                            }
+                children: []
+                pos: 13101
+                length: 614
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 14188
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final double[] b
+                      children: []
+                      pos: 14194
+                      length: 16
+                    pos: 14172
+                    length: 140
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse.operate(b);
+                      children: []
+                      pos: 14270
+                      length: 32
+                    pos: 14256
+                    length: 56
+                children: []
+                pos: 14172
+                length: 140
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 14787
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final RealVector b
+                      children: []
+                      pos: 14793
+                      length: 18
+                    pos: 14769
+                    length: 144
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse.operate(b);
+                      children: []
+                      pos: 14871
+                      length: 32
+                    pos: 14857
+                    length: 56
+                children: []
+                pos: 14769
+                length: 144
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 15388
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final RealMatrix b
+                      children: []
+                      pos: 15394
+                      length: 18
+                    pos: 15370
+                    length: 145
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse.multiply(b);
+                      children: []
+                      pos: 15472
+                      length: 33
+                    pos: 15458
+                    length: 57
+                children: []
+                pos: 15370
+                length: 145
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isNonSingular
+                    children: []
+                    pos: 15688
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15673
+                    length: 74
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return nonSingular;
+                      children: []
+                      pos: 15718
+                      length: 19
+                    pos: 15704
+                    length: 43
+                children: []
+                pos: 15673
+                length: 74
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getInverse
+                    children: []
+                    pos: 15882
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15864
+                    length: 76
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse;
+                      children: []
+                      pos: 15909
+                      length: 21
+                    pos: 15895
+                    length: 45
+                children: []
+                pos: 15864
+                length: 76
+              pos: 12566
+              length: 3381
+          children: []
+          pos: 12566
+          length: 3381
+        pos: 2007
+        length: 13943
+    children: []
+    pos: 2007
+    length: 13943
+  pos: 0
+  length: 15951
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: SingularValueDecompositionImpl
+        children: []
+        pos: 2020
+        length: 30
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private int m;
+          children: []
+          pos: 2145
+          length: 14
+        - type: field_declaration
+          fields:
+            text: private int n;
+          children: []
+          pos: 2217
+          length: 14
+        - type: field_declaration
+          fields:
+            text: private BiDiagonalTransformer transformer;
+          children: []
+          pos: 2275
+          length: 42
+        - type: field_declaration
+          fields:
+            text: private double[] mainBidiagonal;
+          children: []
+          pos: 2374
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private double[] secondaryBidiagonal;
+          children: []
+          pos: 2468
+          length: 37
+        - type: field_declaration
+          fields:
+            text: private double[] mainTridiagonal;
+          children: []
+          pos: 2563
+          length: 33
+        - type: field_declaration
+          fields:
+            text: private double[] secondaryTridiagonal;
+          children: []
+          pos: 2659
+          length: 38
+        - type: field_declaration
+          fields:
+            text: private EigenDecomposition eigenDecomposition;
+          children: []
+          pos: 2761
+          length: 46
+        - type: field_declaration
+          fields:
+            text: private double[] singularValues;
+          children: []
+          pos: 2841
+          length: 32
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedU;
+          children: []
+          pos: 2909
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedUt;
+          children: []
+          pos: 2984
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedS;
+          children: []
+          pos: 3048
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedV;
+          children: []
+          pos: 3111
+          length: 27
+        - type: field_declaration
+          fields:
+            text: private RealMatrix cachedVt;
+          children: []
+          pos: 3186
+          length: 28
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SingularValueDecompositionImpl(final RealMatrix matrix)
+                      throws InvalidMatrixException {
+                      this(matrix, Math.min(matrix.getRowDimension(), matrix.getColumnDimension()));
+                  }
+          children: []
+          pos: 3506
+          length: 195
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public SingularValueDecompositionImpl(final RealMatrix matrix, final int max)
+                      throws InvalidMatrixException {
+
+                      m = matrix.getRowDimension();
+                      n = matrix.getColumnDimension();
+
+                      cachedU  = null;
+                      cachedS  = null;
+                      cachedV  = null;
+                      cachedVt = null;
+
+                      // transform the matrix to bidiagonal
+                      transformer         = new BiDiagonalTransformer(matrix);
+                      mainBidiagonal      = transformer.getMainDiagonalRef();
+                      secondaryBidiagonal = transformer.getSecondaryDiagonalRef();
+
+                      // compute Bt.B (if upper diagonal) or B.Bt (if lower diagonal)
+                      mainTridiagonal      = new double[mainBidiagonal.length];
+                      secondaryTridiagonal = new double[mainBidiagonal.length - 1];
+                      double a = mainBidiagonal[0];
+                      mainTridiagonal[0] = a * a;
+                      for (int i = 1; i < mainBidiagonal.length; ++i) {
+                          final double b  = secondaryBidiagonal[i - 1];
+                          secondaryTridiagonal[i - 1] = a * b;
+                          a = mainBidiagonal[i];
+                          mainTridiagonal[i] = a * a + b * b;
+                      }
+
+                      // compute singular values
+                      eigenDecomposition =
+                          new EigenDecompositionImpl(mainTridiagonal, secondaryTridiagonal,
+                                                     MathUtils.SAFE_MIN);
+                      final double[] eigenValues = eigenDecomposition.getRealEigenvalues();
+                      int p = Math.min(max, eigenValues.length);
+                      while ((p > 0) && (eigenValues[p - 1] <= 0)) {
+                          --p;
+                      }
+                      singularValues = new double[p];
+                      for (int i = 0; i < p; ++i) {
+                          singularValues[i] = Math.sqrt(eigenValues[i]);
+                      }
+
+                  }
+          children: []
+          pos: 4048
+          length: 1652
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getU
+              children: []
+              pos: 5749
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 5731
+              length: 1869
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedU
+                            children: []
+                            pos: 5809
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 5820
+                            length: 4
+                        children: []
+                        pos: 5809
+                        length: 15
+                    children: []
+                    pos: 5808
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final int p = singularValues.length;
+                    children: []
+                    pos: 5841
+                    length: 36
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: greater_or_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: m
+                                children: []
+                                pos: 5894
+                                length: 1
+                              right:
+                                type: identifier
+                                fields:
+                                  text: "n"
+                                children: []
+                                pos: 5899
+                                length: 1
+                            children: []
+                            pos: 5894
+                            length: 6
+                        children: []
+                        pos: 5893
+                        length: 8
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: |-
+                            final RealMatrix e =
+                                                eigenDecomposition.getV().getSubMatrix(0, p - 1, 0, p - 1);
+                        children: []
+                        pos: 5999
+                        length: 100
+                      - type: local_variable_declaration
+                        fields:
+                          text: final double[][] eData = e.getData();
+                        children: []
+                        pos: 6116
+                        length: 37
+                      - type: local_variable_declaration
+                        fields:
+                          text: final double[][] wData = new double[m][p];
+                        children: []
+                        pos: 6170
+                        length: 42
+                      - type: local_variable_declaration
+                        fields:
+                          text: double[] ei1 = eData[0];
+                        children: []
+                        pos: 6229
+                        length: 24
+                      - type: for_statement
+                        fields:
+                          text: |-
+                            for (int i = 0; i < p - 1; ++i) {
+                                                // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                                                final double mi = mainBidiagonal[i];
+                                                final double[] ei0 = ei1;
+                                                final double[] wi  = wData[i];
+                                                    ei1 = eData[i + 1];
+                                                    final double si = secondaryBidiagonal[i];
+                                                    for (int j = 0; j < p; ++j) {
+                                                        wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                                                    }
+                                            }
+                        children: []
+                        pos: 6270
+                        length: 561
+                      - type: for_statement
+                        fields:
+                          text: |-
+                            for (int j = 0; j < p; ++j) {
+                                                        wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
+                                                    }
+                        children: []
+                        pos: 6856
+                        length: 153
+                      - type: for_statement
+                        fields:
+                          text: |-
+                            for (int i = p; i < m; ++i) {
+                                                wData[i] = new double[p];
+                                            }
+                        children: []
+                        pos: 7027
+                        length: 93
+                      - type: expression_statement
+                        fields:
+                          text: |-
+                            cachedU =
+                                                transformer.getU().multiply(MatrixUtils.createRealMatrix(wData));
+                        children: []
+                        pos: 7137
+                        length: 95
+                      pos: 5902
+                      length: 1344
+                    pos: 5890
+                    length: 1631
+                  pos: 5826
+                  length: 1706
+                pos: 5805
+                length: 1727
+              - type: return_statement
+                fields:
+                  text: return cachedU;
+                children: []
+                pos: 7578
+                length: 15
+              pos: 5794
+              length: 1806
+          children: []
+          pos: 5731
+          length: 1869
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUT
+              children: []
+              pos: 7649
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7631
+              length: 220
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedUt
+                            children: []
+                            pos: 7710
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7722
+                            length: 4
+                        children: []
+                        pos: 7710
+                        length: 16
+                    children: []
+                    pos: 7709
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedUt = getU().transpose();
+                    children: []
+                    pos: 7742
+                    length: 30
+                  pos: 7728
+                  length: 54
+                pos: 7706
+                length: 76
+              - type: return_statement
+                fields:
+                  text: return cachedUt;
+                children: []
+                pos: 7828
+                length: 16
+              pos: 7695
+              length: 156
+          children: []
+          pos: 7631
+          length: 220
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getS
+              children: []
+              pos: 7900
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7882
+              length: 267
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedS
+                            children: []
+                            pos: 7960
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 7971
+                            length: 4
+                        children: []
+                        pos: 7960
+                        length: 15
+                    children: []
+                    pos: 7959
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedS = MatrixUtils.createRealDiagonalMatrix(singularValues);
+                    children: []
+                    pos: 8045
+                    length: 63
+                  pos: 7977
+                  length: 142
+                pos: 7956
+                length: 163
+              - type: return_statement
+                fields:
+                  text: return cachedS;
+                children: []
+                pos: 8128
+                length: 15
+              pos: 7945
+              length: 204
+          children: []
+          pos: 7882
+          length: 267
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSingularValues
+              children: []
+              pos: 8196
+              length: 17
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8180
+              length: 120
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return singularValues.clone();
+                children: []
+                pos: 8264
+                length: 30
+              pos: 8254
+              length: 46
+          children: []
+          pos: 8180
+          length: 120
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getV
+              children: []
+              pos: 8349
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 8331
+              length: 1865
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedV
+                            children: []
+                            pos: 8409
+                            length: 7
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 8420
+                            length: 4
+                        children: []
+                        pos: 8409
+                        length: 15
+                    children: []
+                    pos: 8408
+                    length: 17
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: local_variable_declaration
+                    fields:
+                      text: final int p = singularValues.length;
+                    children: []
+                    pos: 8441
+                    length: 36
+                  - type: if_statement
+                    fields:
+                      condition:
+                        type: parenthesized_expression
+                        fields:
+                          expression:
+                            type: greater_or_equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: m
+                                children: []
+                                pos: 8494
+                                length: 1
+                              right:
+                                type: identifier
+                                fields:
+                                  text: "n"
+                                children: []
+                                pos: 8499
+                                length: 1
+                            children: []
+                            pos: 8494
+                            length: 6
+                        children: []
+                        pos: 8493
+                        length: 8
+                    children:
+                    - type: block
+                      fields: {}
+                      children:
+                      - type: local_variable_declaration
+                        fields:
+                          text: |-
+                            final RealMatrix e =
+                                                eigenDecomposition.getV().getSubMatrix(0, n - 1, 0, p - 1);
+                        children: []
+                        pos: 8599
+                        length: 100
+                      - type: expression_statement
+                        fields:
+                          text: cachedV = transformer.getV().multiply(e);
+                        children: []
+                        pos: 8716
+                        length: 41
+                      pos: 8502
+                      length: 269
+                    pos: 8490
+                    length: 1627
+                  pos: 8426
+                  length: 1702
+                pos: 8405
+                length: 1723
+              - type: return_statement
+                fields:
+                  text: return cachedV;
+                children: []
+                pos: 10174
+                length: 15
+              pos: 8394
+              length: 1802
+          children: []
+          pos: 8331
+          length: 1865
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getVT
+              children: []
+              pos: 10245
+              length: 5
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 10227
+              length: 220
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: cachedVt
+                            children: []
+                            pos: 10306
+                            length: 8
+                          right:
+                            type: null_literal
+                            fields: {}
+                            children: []
+                            pos: 10318
+                            length: 4
+                        children: []
+                        pos: 10306
+                        length: 16
+                    children: []
+                    pos: 10305
+                    length: 18
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: cachedVt = getV().transpose();
+                    children: []
+                    pos: 10338
+                    length: 30
+                  pos: 10324
+                  length: 54
+                pos: 10302
+                length: 76
+              - type: return_statement
+                fields:
+                  text: return cachedVt;
+                children: []
+                pos: 10424
+                length: 16
+              pos: 10291
+              length: 156
+          children: []
+          pos: 10227
+          length: 220
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getCovariance
+              children: []
+              pos: 10496
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final double minSingularValue
+                children: []
+                pos: 10510
+                length: 29
+              pos: 10478
+              length: 1068
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final int p = singularValues.length;
+                children: []
+                pos: 10609
+                length: 36
+              - type: local_variable_declaration
+                fields:
+                  text: int dimension = 0;
+                children: []
+                pos: 10654
+                length: 18
+              - type: while_statement
+                fields:
+                  text: |-
+                    while ((dimension < p) && (singularValues[dimension] >= minSingularValue)) {
+                                ++dimension;
+                            }
+                children: []
+                pos: 10681
+                length: 111
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: dimension
+                            children: []
+                            pos: 10806
+                            length: 9
+                          right:
+                            type: decimal_integer_literal
+                            fields:
+                              text: '0'
+                            children: []
+                            pos: 10819
+                            length: 1
+                        children: []
+                        pos: 10806
+                        length: 14
+                    children: []
+                    pos: 10805
+                    length: 16
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: throw_statement
+                    fields:
+                      text: |-
+                        throw MathRuntimeException.createIllegalArgumentException(
+                                          "cutoff singular value is {0}, should be at most {1}",
+                                          minSingularValue, singularValues[0]);
+                    children: []
+                    pos: 10836
+                    length: 187
+                  pos: 10822
+                  length: 211
+                pos: 10802
+                length: 231
+              - type: local_variable_declaration
+                fields:
+                  text: final double[][] data = new double[dimension][p];
+                children: []
+                pos: 11043
+                length: 49
+              - type: expression_statement
+                fields:
+                  text: |-
+                    getVT().walkInOptimizedOrder(new DefaultRealMatrixPreservingVisitor() {
+                                /** {@inheritDoc} */
+                                @Override
+                                public void visit(final int row, final int column, final double value) {
+                                    data[row][column] = value / singularValues[row];
+                                }
+                            }, 0, dimension - 1, 0, p - 1);
+                children: []
+                pos: 11101
+                length: 330
+              - type: local_variable_declaration
+                fields:
+                  text: RealMatrix jv = new Array2DRowRealMatrix(data, false);
+                children: []
+                pos: 11441
+                length: 54
+              - type: return_statement
+                fields:
+                  text: return jv.transpose().multiply(jv);
+                children: []
+                pos: 11504
+                length: 35
+              pos: 10541
+              length: 1005
+          children: []
+          pos: 10478
+          length: 1068
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getNorm
+              children: []
+              pos: 11591
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11577
+              length: 103
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return singularValues[0];
+                children: []
+                pos: 11649
+                length: 25
+              pos: 11639
+              length: 41
+          children: []
+          pos: 11577
+          length: 103
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getConditionNumber
+              children: []
+              pos: 11725
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11711
+              length: 158
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return singularValues[0] / singularValues[singularValues.length
+                    - 1];
+                children: []
+                pos: 11794
+                length: 69
+              pos: 11784
+              length: 85
+          children: []
+          pos: 11711
+          length: 158
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRank
+              children: []
+              pos: 11911
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 11900
+              length: 327
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double threshold = Math.max(m, n) * Math.ulp(singularValues[0]);
+                children: []
+                pos: 11969
+                length: 70
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = singularValues.length - 1; i >= 0; --i) {
+                               if (singularValues[i] > threshold) {
+                                  return i + 1;
+                               }
+                            }
+                children: []
+                pos: 12049
+                length: 153
+              - type: return_statement
+                fields:
+                  text: return 0;
+                children: []
+                pos: 12211
+                length: 9
+              pos: 11958
+              length: 269
+          children: []
+          pos: 11900
+          length: 327
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getSolver
+              children: []
+              pos: 12285
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 12258
+              length: 161
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: |-
+                    return new Solver(singularValues, getUT(), getV(),
+                                              getRank() == Math.max(m, n));
+                children: []
+                pos: 12307
+                length: 106
+              pos: 12297
+              length: 122
+          children: []
+          pos: 12258
+          length: 161
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: Solver
+              children: []
+              pos: 12477
+              length: 6
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: private final RealMatrix pseudoInverse;
+                children: []
+                pos: 12579
+                length: 39
+              - type: field_declaration
+                fields:
+                  text: private boolean nonSingular;
+                children: []
+                pos: 12666
+                length: 28
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    private Solver(final double[] singularValues, final RealMatrix uT, final RealMatrix v,
+                                           final boolean nonSingular) {
+                                double[][] suT      = uT.getData();
+                                for (int i = 0; i < singularValues.length; ++i) {
+                                    final double a      = 1.0 / singularValues[i];
+                                    final double[] suTi = suT[i];
+                                    for (int j = 0; j < suTi.length; ++j) {
+                                        suTi[j] *= a;
+                                    }
+                                }
+                                pseudoInverse    = v.multiply(new Array2DRowRealMatrix(suT, false));
+                                this.nonSingular = nonSingular;
+                            }
+                children: []
+                pos: 12991
+                length: 614
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 14078
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final double[] b
+                      children: []
+                      pos: 14084
+                      length: 16
+                    pos: 14062
+                    length: 140
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse.operate(b);
+                      children: []
+                      pos: 14160
+                      length: 32
+                    pos: 14146
+                    length: 56
+                children: []
+                pos: 14062
+                length: 140
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 14677
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final RealVector b
+                      children: []
+                      pos: 14683
+                      length: 18
+                    pos: 14659
+                    length: 144
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse.operate(b);
+                      children: []
+                      pos: 14761
+                      length: 32
+                    pos: 14747
+                    length: 56
+                children: []
+                pos: 14659
+                length: 144
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: solve
+                    children: []
+                    pos: 15278
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: final RealMatrix b
+                      children: []
+                      pos: 15284
+                      length: 18
+                    pos: 15260
+                    length: 145
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse.multiply(b);
+                      children: []
+                      pos: 15362
+                      length: 33
+                    pos: 15348
+                    length: 57
+                children: []
+                pos: 15260
+                length: 145
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: isNonSingular
+                    children: []
+                    pos: 15578
+                    length: 13
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15563
+                    length: 74
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return nonSingular;
+                      children: []
+                      pos: 15608
+                      length: 19
+                    pos: 15594
+                    length: 43
+                children: []
+                pos: 15563
+                length: 74
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: getInverse
+                    children: []
+                    pos: 15772
+                    length: 10
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 15754
+                    length: 76
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return pseudoInverse;
+                      children: []
+                      pos: 15799
+                      length: 21
+                    pos: 15785
+                    length: 45
+                children: []
+                pos: 15754
+                length: 76
+              pos: 12456
+              length: 3381
+          children: []
+          pos: 12456
+          length: 3381
+        pos: 2007
+        length: 13833
+    children: []
+    pos: 2007
+    length: 13833
+  pos: 0
+  length: 15841
 text_diff: "--- before\n+++ after\n@@ -159,27 +159,24 @@\n             if (m >= n)
   {\n                 // the tridiagonal matrix is Bt.B, where B is upper bidiagonal\n
   \                final RealMatrix e =\n-                    eigenDecomposition.getV().getSubMatrix(0,

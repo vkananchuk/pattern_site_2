@@ -1,5 +1,1756 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MaybeReachingVariableUse
+        children: []
+        pos: 1613
+        length: 24
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final Scope jsScope;
+          children: []
+          pos: 1771
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private final Set<Var> escaped;
+          children: []
+          pos: 1802
+          length: 31
+        - type: constructor_declaration
+          fields:
+            text: |-
+              MaybeReachingVariableUse(
+                    ControlFlowGraph<Node> cfg, Scope jsScope, AbstractCompiler compiler) {
+                  super(cfg, new ReachingUsesJoinOp());
+                  this.jsScope = jsScope;
+                  this.escaped = Sets.newHashSet();
+
+                  // TODO(user): Maybe compute it somewhere else and re-use the escape
+                  // local set here.
+                  computeEscaped(jsScope, escaped, compiler);
+                }
+          children: []
+          pos: 1837
+          length: 360
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ReachingUses
+              children: []
+              pos: 2973
+              length: 12
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final Multimap<Var, Node> mayUseMap;
+                children: []
+                pos: 3018
+                length: 36
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public ReachingUses() {
+                          mayUseMap = HashMultimap.create();
+                        }
+                children: []
+                pos: 3060
+                length: 70
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public ReachingUses(ReachingUses other) {
+                          mayUseMap = HashMultimap.create(other.mayUseMap);
+                        }
+                children: []
+                pos: 3265
+                length: 103
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: equals
+                    children: []
+                    pos: 3403
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Object other
+                      children: []
+                      pos: 3410
+                      length: 12
+                    pos: 3374
+                    length: 172
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return (other instanceof ReachingUses) &&
+                                    ((ReachingUses) other).mayUseMap.equals(this.mayUseMap);
+                      children: []
+                      pos: 3432
+                      length: 108
+                    pos: 3424
+                    length: 122
+                children: []
+                pos: 3374
+                length: 172
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: hashCode
+                    children: []
+                    pos: 3577
+                    length: 8
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 3552
+                    length: 78
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return mayUseMap.hashCode();
+                      children: []
+                      pos: 3596
+                      length: 28
+                    pos: 3588
+                    length: 42
+                children: []
+                pos: 3552
+                length: 78
+              pos: 2954
+              length: 680
+          children: []
+          pos: 2954
+          length: 680
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ReachingUsesJoinOp
+              children: []
+              pos: 3874
+              length: 18
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: apply
+                    children: []
+                    pos: 3965
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: List<ReachingUses> from
+                      children: []
+                      pos: 3971
+                      length: 23
+                    pos: 3931
+                    length: 237
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: ReachingUses result = new ReachingUses();
+                      children: []
+                      pos: 4004
+                      length: 41
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (ReachingUses uses : from) {
+                                  result.mayUseMap.putAll(uses.mayUseMap);
+                                }
+                      children: []
+                      pos: 4052
+                      length: 89
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 4148
+                      length: 14
+                    pos: 3996
+                    length: 172
+                children: []
+                pos: 3931
+                length: 237
+              pos: 3853
+              length: 319
+          children: []
+          pos: 3853
+          length: 319
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isForward
+              children: []
+              pos: 4196
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4176
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 4214
+                length: 13
+              pos: 4208
+              length: 23
+          children: []
+          pos: 4176
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createEntryLattice
+              children: []
+              pos: 4260
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4235
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new ReachingUses();
+                children: []
+                pos: 4287
+                length: 26
+              pos: 4281
+              length: 36
+          children: []
+          pos: 4235
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createInitialEstimateLattice
+              children: []
+              pos: 4346
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4321
+              length: 92
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new ReachingUses();
+                children: []
+                pos: 4383
+                length: 26
+              pos: 4377
+              length: 36
+          children: []
+          pos: 4321
+          length: 92
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: flowThrough
+              children: []
+              pos: 4442
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 4454
+                length: 6
+              pos: 4417
+              length: 407
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ReachingUses output = new ReachingUses(input);
+                children: []
+                pos: 4488
+                length: 46
+              - type: local_variable_declaration
+                fields:
+                  text: boolean conditional = hasExceptionHandler(n);
+                children: []
+                pos: 4709
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: computeMayUse(n, n, output, conditional);
+                children: []
+                pos: 4759
+                length: 41
+              - type: return_statement
+                fields:
+                  text: return output;
+                children: []
+                pos: 4806
+                length: 14
+              pos: 4482
+              length: 342
+          children: []
+          pos: 4417
+          length: 407
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasExceptionHandler
+              children: []
+              pos: 4844
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node cfgNode
+                children: []
+                pos: 4864
+                length: 12
+              pos: 4828
+              length: 291
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: List<DiGraphEdge<Node, Branch>> branchEdges = getCfg().getOutEdges(cfgNode);
+                children: []
+                pos: 4884
+                length: 76
+              - type: enhanced_for_statement
+                fields:
+                  text: |-
+                    for (DiGraphEdge<Node, Branch> edge : branchEdges) {
+                          if (edge.getValue() == Branch.ON_EX) {
+                            return true;
+                          }
+                        }
+                children: []
+                pos: 4965
+                length: 132
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 5102
+                length: 13
+              pos: 4878
+              length: 241
+          children: []
+          pos: 4828
+          length: 291
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeMayUse
+              children: []
+              pos: 5136
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 5157
+                length: 6
+              pos: 5123
+              length: 2790
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.getType()
+                        children: []
+                        pos: 5235
+                        length: 11
+                    children: []
+                    pos: 5234
+                    length: 13
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+
+                              case Token.BLOCK:
+                              case Token.FUNCTION:
+                                return;
+
+                              case Token.NAME:
+                                addToUseIfLocal(n.getString(), cfgNode, output);
+                                return;
+
+                              case Token.WHILE:
+                              case Token.DO:
+                              case Token.IF:
+                                computeMayUse(
+                                    NodeUtil.getConditionExpression(n), cfgNode, output, conditional);
+                                return;
+
+                              case Token.FOR:
+                                if (!NodeUtil.isForIn(n)) {
+                                  computeMayUse(
+                                      NodeUtil.getConditionExpression(n), cfgNode, output, conditional);
+                                } else {
+                                  // for(x in y) {...}
+                                  Node lhs = n.getFirstChild();
+                                  Node rhs = lhs.getNext();
+                                  if (lhs.isVar()) {
+                                    lhs = lhs.getLastChild(); // for(var x in y) {...}
+                                  }
+                                  if (lhs.isName() && !conditional) {
+                                    removeFromUseIfLocal(lhs.getString(), output);
+                                  }
+                                  computeMayUse(rhs, cfgNode, output, conditional);
+                                }
+                                return;
+
+                              case Token.AND:
+                              case Token.OR:
+                                computeMayUse(n.getLastChild(), cfgNode, output, true);
+                                computeMayUse(n.getFirstChild(), cfgNode, output, conditional);
+                                return;
+
+                              case Token.HOOK:
+                                computeMayUse(n.getLastChild(), cfgNode, output, true);
+                                computeMayUse(n.getFirstChild().getNext(), cfgNode, output, true);
+                                computeMayUse(n.getFirstChild(), cfgNode, output, conditional);
+                                return;
+
+                              case Token.VAR:
+                                Node varName = n.getFirstChild();
+                                Preconditions.checkState(n.hasChildren(), "AST should be normalized");
+
+                                if (varName.hasChildren()) {
+                                  computeMayUse(varName.getFirstChild(), cfgNode, output, conditional);
+                                  if (!conditional) {
+                                    removeFromUseIfLocal(varName.getString(), output);
+                                  }
+                                }
+                                return;
+
+                              default:
+                                if (NodeUtil.isAssignmentOp(n) && n.getFirstChild().isName()) {
+                                  Node name = n.getFirstChild();
+                                  if (!conditional) {
+                                    removeFromUseIfLocal(name.getString(), output);
+                                  }
+
+                                  // In case of a += "Hello". There is a read of a.
+                                  if (!n.isAssign()) {
+                                    addToUseIfLocal(name.getString(), cfgNode, output);
+                                  }
+
+                                  computeMayUse(name.getNext(), cfgNode, output, conditional);
+                                } else {
+                                  /*
+                                   * We want to traverse in reverse order because we want the LAST
+                                   * definition in the sub-tree....
+                                   * But we have no better way to traverse in reverse other :'(
+                                   */
+                                  for (Node c = n.getLastChild(); c != null; c = n.getChildBefore(c)) {
+                                    computeMayUse(c, cfgNode, output, conditional);
+                                  }
+                                }
+                            }
+                    children: []
+                    pos: 5248
+                    length: 2661
+                children: []
+                pos: 5227
+                length: 2682
+              pos: 5221
+              length: 2692
+          children: []
+          pos: 5123
+          length: 2790
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addToUseIfLocal
+              children: []
+              pos: 8107
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 8123
+                length: 11
+              pos: 8094
+              length: 255
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Var var = jsScope.getVar(name);
+                children: []
+                pos: 8171
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: var
+                                children: []
+                                pos: 8211
+                                length: 3
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 8218
+                                length: 4
+                            children: []
+                            pos: 8211
+                            length: 11
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: field_access
+                                fields:
+                                  text: var.scope
+                                children: []
+                                pos: 8226
+                                length: 9
+                              right:
+                                type: identifier
+                                fields:
+                                  text: jsScope
+                                children: []
+                                pos: 8239
+                                length: 7
+                            children: []
+                            pos: 8226
+                            length: 20
+                        children: []
+                        pos: 8211
+                        length: 35
+                    children: []
+                    pos: 8210
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8256
+                    length: 7
+                  pos: 8248
+                  length: 21
+                pos: 8207
+                length: 62
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!escaped.contains(var)"
+                        children: []
+                        pos: 8278
+                        length: 22
+                    children: []
+                    pos: 8277
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: use.mayUseMap.put(var, node);
+                    children: []
+                    pos: 8310
+                    length: 29
+                  pos: 8302
+                  length: 43
+                pos: 8274
+                length: 71
+              pos: 8165
+              length: 184
+          children: []
+          pos: 8094
+          length: 255
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeFromUseIfLocal
+              children: []
+              pos: 8548
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 8569
+                length: 11
+              pos: 8535
+              length: 249
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Var var = jsScope.getVar(name);
+                children: []
+                pos: 8606
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: var
+                                children: []
+                                pos: 8646
+                                length: 3
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 8653
+                                length: 4
+                            children: []
+                            pos: 8646
+                            length: 11
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: field_access
+                                fields:
+                                  text: var.scope
+                                children: []
+                                pos: 8661
+                                length: 9
+                              right:
+                                type: identifier
+                                fields:
+                                  text: jsScope
+                                children: []
+                                pos: 8674
+                                length: 7
+                            children: []
+                            pos: 8661
+                            length: 20
+                        children: []
+                        pos: 8646
+                        length: 35
+                    children: []
+                    pos: 8645
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8691
+                    length: 7
+                  pos: 8683
+                  length: 21
+                pos: 8642
+                length: 62
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!escaped.contains(var)"
+                        children: []
+                        pos: 8713
+                        length: 22
+                    children: []
+                    pos: 8712
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: use.mayUseMap.removeAll(var);
+                    children: []
+                    pos: 8745
+                    length: 29
+                  pos: 8737
+                  length: 43
+                pos: 8709
+                length: 71
+              pos: 8600
+              length: 184
+          children: []
+          pos: 8535
+          length: 249
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUses
+              children: []
+              pos: 9241
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 9249
+                length: 11
+              pos: 9224
+              length: 269
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: GraphNode<Node, Branch> n = getCfg().getNode(defNode);
+                children: []
+                pos: 9282
+                length: 54
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkNotNull(n);
+                children: []
+                pos: 9341
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: FlowState<ReachingUses> state = n.getAnnotation();
+                children: []
+                pos: 9376
+                length: 50
+              - type: return_statement
+                fields:
+                  text: return state.getOut().mayUseMap.get(jsScope.getVar(name));
+                children: []
+                pos: 9431
+                length: 58
+              pos: 9276
+              length: 217
+          children: []
+          pos: 9224
+          length: 269
+        pos: 1607
+        length: 7888
+    children: []
+    pos: 1607
+    length: 7888
+  pos: 0
+  length: 9496
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MaybeReachingVariableUse
+        children: []
+        pos: 1613
+        length: 24
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final Scope jsScope;
+          children: []
+          pos: 1771
+          length: 28
+        - type: field_declaration
+          fields:
+            text: private final Set<Var> escaped;
+          children: []
+          pos: 1802
+          length: 31
+        - type: constructor_declaration
+          fields:
+            text: |-
+              MaybeReachingVariableUse(
+                    ControlFlowGraph<Node> cfg, Scope jsScope, AbstractCompiler compiler) {
+                  super(cfg, new ReachingUsesJoinOp());
+                  this.jsScope = jsScope;
+                  this.escaped = Sets.newHashSet();
+
+                  // TODO(user): Maybe compute it somewhere else and re-use the escape
+                  // local set here.
+                  computeEscaped(jsScope, escaped, compiler);
+                }
+          children: []
+          pos: 1837
+          length: 360
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ReachingUses
+              children: []
+              pos: 2973
+              length: 12
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: field_declaration
+                fields:
+                  text: final Multimap<Var, Node> mayUseMap;
+                children: []
+                pos: 3018
+                length: 36
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public ReachingUses() {
+                          mayUseMap = HashMultimap.create();
+                        }
+                children: []
+                pos: 3060
+                length: 70
+              - type: constructor_declaration
+                fields:
+                  text: |-
+                    public ReachingUses(ReachingUses other) {
+                          mayUseMap = HashMultimap.create(other.mayUseMap);
+                        }
+                children: []
+                pos: 3265
+                length: 103
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: equals
+                    children: []
+                    pos: 3403
+                    length: 6
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: Object other
+                      children: []
+                      pos: 3410
+                      length: 12
+                    pos: 3374
+                    length: 172
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: |-
+                          return (other instanceof ReachingUses) &&
+                                    ((ReachingUses) other).mayUseMap.equals(this.mayUseMap);
+                      children: []
+                      pos: 3432
+                      length: 108
+                    pos: 3424
+                    length: 122
+                children: []
+                pos: 3374
+                length: 172
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: hashCode
+                    children: []
+                    pos: 3577
+                    length: 8
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children: []
+                    pos: 3552
+                    length: 78
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return mayUseMap.hashCode();
+                      children: []
+                      pos: 3596
+                      length: 28
+                    pos: 3588
+                    length: 42
+                children: []
+                pos: 3552
+                length: 78
+              pos: 2954
+              length: 680
+          children: []
+          pos: 2954
+          length: 680
+        - type: class_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: ReachingUsesJoinOp
+              children: []
+              pos: 3874
+              length: 18
+            body:
+              type: class_body
+              fields: {}
+              children:
+              - type: method_declaration
+                fields:
+                  name:
+                    type: identifier
+                    fields:
+                      text: apply
+                    children: []
+                    pos: 3965
+                    length: 5
+                  parameters:
+                    type: method_parameters
+                    fields: {}
+                    children:
+                    - type: formal_parameter
+                      fields:
+                        text: List<ReachingUses> from
+                      children: []
+                      pos: 3971
+                      length: 23
+                    pos: 3931
+                    length: 237
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: local_variable_declaration
+                      fields:
+                        text: ReachingUses result = new ReachingUses();
+                      children: []
+                      pos: 4004
+                      length: 41
+                    - type: enhanced_for_statement
+                      fields:
+                        text: |-
+                          for (ReachingUses uses : from) {
+                                  result.mayUseMap.putAll(uses.mayUseMap);
+                                }
+                      children: []
+                      pos: 4052
+                      length: 89
+                    - type: return_statement
+                      fields:
+                        text: return result;
+                      children: []
+                      pos: 4148
+                      length: 14
+                    pos: 3996
+                    length: 172
+                children: []
+                pos: 3931
+                length: 237
+              pos: 3853
+              length: 319
+          children: []
+          pos: 3853
+          length: 319
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: isForward
+              children: []
+              pos: 4196
+              length: 9
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4176
+              length: 55
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 4214
+                length: 13
+              pos: 4208
+              length: 23
+          children: []
+          pos: 4176
+          length: 55
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createEntryLattice
+              children: []
+              pos: 4260
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4235
+              length: 82
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new ReachingUses();
+                children: []
+                pos: 4287
+                length: 26
+              pos: 4281
+              length: 36
+          children: []
+          pos: 4235
+          length: 82
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createInitialEstimateLattice
+              children: []
+              pos: 4346
+              length: 28
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 4321
+              length: 92
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new ReachingUses();
+                children: []
+                pos: 4383
+                length: 26
+              pos: 4377
+              length: 36
+          children: []
+          pos: 4321
+          length: 92
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: flowThrough
+              children: []
+              pos: 4442
+              length: 11
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 4454
+                length: 6
+              pos: 4417
+              length: 407
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: ReachingUses output = new ReachingUses(input);
+                children: []
+                pos: 4488
+                length: 46
+              - type: local_variable_declaration
+                fields:
+                  text: boolean conditional = hasExceptionHandler(n);
+                children: []
+                pos: 4709
+                length: 45
+              - type: expression_statement
+                fields:
+                  text: computeMayUse(n, n, output, conditional);
+                children: []
+                pos: 4759
+                length: 41
+              - type: return_statement
+                fields:
+                  text: return output;
+                children: []
+                pos: 4806
+                length: 14
+              pos: 4482
+              length: 342
+          children: []
+          pos: 4417
+          length: 407
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: hasExceptionHandler
+              children: []
+              pos: 4844
+              length: 19
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node cfgNode
+                children: []
+                pos: 4864
+                length: 12
+              pos: 4828
+              length: 73
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return false;
+                children: []
+                pos: 4884
+                length: 13
+              pos: 4878
+              length: 23
+          children: []
+          pos: 4828
+          length: 73
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeMayUse
+              children: []
+              pos: 4918
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: Node n
+                children: []
+                pos: 4939
+                length: 6
+              pos: 4905
+              length: 2790
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: switch_expression
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: method_invocation
+                        fields:
+                          text: n.getType()
+                        children: []
+                        pos: 5017
+                        length: 11
+                    children: []
+                    pos: 5016
+                    length: 13
+                  body:
+                    type: switch_block
+                    fields:
+                      text: |-
+                        {
+
+                              case Token.BLOCK:
+                              case Token.FUNCTION:
+                                return;
+
+                              case Token.NAME:
+                                addToUseIfLocal(n.getString(), cfgNode, output);
+                                return;
+
+                              case Token.WHILE:
+                              case Token.DO:
+                              case Token.IF:
+                                computeMayUse(
+                                    NodeUtil.getConditionExpression(n), cfgNode, output, conditional);
+                                return;
+
+                              case Token.FOR:
+                                if (!NodeUtil.isForIn(n)) {
+                                  computeMayUse(
+                                      NodeUtil.getConditionExpression(n), cfgNode, output, conditional);
+                                } else {
+                                  // for(x in y) {...}
+                                  Node lhs = n.getFirstChild();
+                                  Node rhs = lhs.getNext();
+                                  if (lhs.isVar()) {
+                                    lhs = lhs.getLastChild(); // for(var x in y) {...}
+                                  }
+                                  if (lhs.isName() && !conditional) {
+                                    removeFromUseIfLocal(lhs.getString(), output);
+                                  }
+                                  computeMayUse(rhs, cfgNode, output, conditional);
+                                }
+                                return;
+
+                              case Token.AND:
+                              case Token.OR:
+                                computeMayUse(n.getLastChild(), cfgNode, output, true);
+                                computeMayUse(n.getFirstChild(), cfgNode, output, conditional);
+                                return;
+
+                              case Token.HOOK:
+                                computeMayUse(n.getLastChild(), cfgNode, output, true);
+                                computeMayUse(n.getFirstChild().getNext(), cfgNode, output, true);
+                                computeMayUse(n.getFirstChild(), cfgNode, output, conditional);
+                                return;
+
+                              case Token.VAR:
+                                Node varName = n.getFirstChild();
+                                Preconditions.checkState(n.hasChildren(), "AST should be normalized");
+
+                                if (varName.hasChildren()) {
+                                  computeMayUse(varName.getFirstChild(), cfgNode, output, conditional);
+                                  if (!conditional) {
+                                    removeFromUseIfLocal(varName.getString(), output);
+                                  }
+                                }
+                                return;
+
+                              default:
+                                if (NodeUtil.isAssignmentOp(n) && n.getFirstChild().isName()) {
+                                  Node name = n.getFirstChild();
+                                  if (!conditional) {
+                                    removeFromUseIfLocal(name.getString(), output);
+                                  }
+
+                                  // In case of a += "Hello". There is a read of a.
+                                  if (!n.isAssign()) {
+                                    addToUseIfLocal(name.getString(), cfgNode, output);
+                                  }
+
+                                  computeMayUse(name.getNext(), cfgNode, output, conditional);
+                                } else {
+                                  /*
+                                   * We want to traverse in reverse order because we want the LAST
+                                   * definition in the sub-tree....
+                                   * But we have no better way to traverse in reverse other :'(
+                                   */
+                                  for (Node c = n.getLastChild(); c != null; c = n.getChildBefore(c)) {
+                                    computeMayUse(c, cfgNode, output, conditional);
+                                  }
+                                }
+                            }
+                    children: []
+                    pos: 5030
+                    length: 2661
+                children: []
+                pos: 5009
+                length: 2682
+              pos: 5003
+              length: 2692
+          children: []
+          pos: 4905
+          length: 2790
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addToUseIfLocal
+              children: []
+              pos: 7889
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 7905
+                length: 11
+              pos: 7876
+              length: 255
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Var var = jsScope.getVar(name);
+                children: []
+                pos: 7953
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: var
+                                children: []
+                                pos: 7993
+                                length: 3
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 8000
+                                length: 4
+                            children: []
+                            pos: 7993
+                            length: 11
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: field_access
+                                fields:
+                                  text: var.scope
+                                children: []
+                                pos: 8008
+                                length: 9
+                              right:
+                                type: identifier
+                                fields:
+                                  text: jsScope
+                                children: []
+                                pos: 8021
+                                length: 7
+                            children: []
+                            pos: 8008
+                            length: 20
+                        children: []
+                        pos: 7993
+                        length: 35
+                    children: []
+                    pos: 7992
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8038
+                    length: 7
+                  pos: 8030
+                  length: 21
+                pos: 7989
+                length: 62
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!escaped.contains(var)"
+                        children: []
+                        pos: 8060
+                        length: 22
+                    children: []
+                    pos: 8059
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: use.mayUseMap.put(var, node);
+                    children: []
+                    pos: 8092
+                    length: 29
+                  pos: 8084
+                  length: 43
+                pos: 8056
+                length: 71
+              pos: 7947
+              length: 184
+          children: []
+          pos: 7876
+          length: 255
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: removeFromUseIfLocal
+              children: []
+              pos: 8330
+              length: 20
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 8351
+                length: 11
+              pos: 8317
+              length: 249
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: Var var = jsScope.getVar(name);
+                children: []
+                pos: 8388
+                length: 31
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: or
+                        fields:
+                          left:
+                            type: equals
+                            fields:
+                              left:
+                                type: identifier
+                                fields:
+                                  text: var
+                                children: []
+                                pos: 8428
+                                length: 3
+                              right:
+                                type: null_literal
+                                fields: {}
+                                children: []
+                                pos: 8435
+                                length: 4
+                            children: []
+                            pos: 8428
+                            length: 11
+                          right:
+                            type: not_equals
+                            fields:
+                              left:
+                                type: field_access
+                                fields:
+                                  text: var.scope
+                                children: []
+                                pos: 8443
+                                length: 9
+                              right:
+                                type: identifier
+                                fields:
+                                  text: jsScope
+                                children: []
+                                pos: 8456
+                                length: 7
+                            children: []
+                            pos: 8443
+                            length: 20
+                        children: []
+                        pos: 8428
+                        length: 35
+                    children: []
+                    pos: 8427
+                    length: 37
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: return_statement
+                    fields:
+                      text: return;
+                    children: []
+                    pos: 8473
+                    length: 7
+                  pos: 8465
+                  length: 21
+                pos: 8424
+                length: 62
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: unary_expression
+                        fields:
+                          text: "!escaped.contains(var)"
+                        children: []
+                        pos: 8495
+                        length: 22
+                    children: []
+                    pos: 8494
+                    length: 24
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: use.mayUseMap.removeAll(var);
+                    children: []
+                    pos: 8527
+                    length: 29
+                  pos: 8519
+                  length: 43
+                pos: 8491
+                length: 71
+              pos: 8382
+              length: 184
+          children: []
+          pos: 8317
+          length: 249
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getUses
+              children: []
+              pos: 9023
+              length: 7
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: String name
+                children: []
+                pos: 9031
+                length: 11
+              pos: 9006
+              length: 269
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: GraphNode<Node, Branch> n = getCfg().getNode(defNode);
+                children: []
+                pos: 9064
+                length: 54
+              - type: expression_statement
+                fields:
+                  text: Preconditions.checkNotNull(n);
+                children: []
+                pos: 9123
+                length: 30
+              - type: local_variable_declaration
+                fields:
+                  text: FlowState<ReachingUses> state = n.getAnnotation();
+                children: []
+                pos: 9158
+                length: 50
+              - type: return_statement
+                fields:
+                  text: return state.getOut().mayUseMap.get(jsScope.getVar(name));
+                children: []
+                pos: 9213
+                length: 58
+              pos: 9058
+              length: 217
+          children: []
+          pos: 9006
+          length: 269
+        pos: 1607
+        length: 7670
+    children: []
+    pos: 1607
+    length: 7670
+  pos: 0
+  length: 9278
 text_diff: "--- before\n+++ after\n@@ -157,12 +157,6 @@\n   }\n \n   private boolean
   hasExceptionHandler(Node cfgNode) {\n-    List<DiGraphEdge<Node, Branch>> branchEdges
   = getCfg().getOutEdges(cfgNode);\n-    for (DiGraphEdge<Node, Branch> edge : branchEdges)

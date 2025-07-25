@@ -1,5 +1,431 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MultiDirectional
+        children: []
+        pos: 1305
+        length: 16
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final double khi;
+          children: []
+          pos: 1393
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private final double gamma;
+          children: []
+          pos: 1460
+          length: 27
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultiDirectional() {
+                      this.khi   = 2.0;
+                      this.gamma = 0.5;
+                  }
+          children: []
+          pos: 1640
+          length: 85
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultiDirectional(final double khi, final double gamma) {
+                      this.khi   = khi;
+                      this.gamma = gamma;
+                  }
+          children: []
+          pos: 1896
+          length: 123
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: iterateSimplex
+              children: []
+              pos: 2079
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Comparator<RealPointValuePair> comparator
+                children: []
+                pos: 2094
+                length: 47
+              pos: 2050
+              length: 1768
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final RealConvergenceChecker checker = getConvergenceChecker();
+                children: []
+                pos: 2246
+                length: 63
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (true) {
+
+                                incrementIterationsCounter();
+
+                                // save the original vertex
+                                final RealPointValuePair[] original = simplex;
+                                final RealPointValuePair best = original[0];
+
+                                // perform a reflection step
+                                final RealPointValuePair reflected = evaluateNewSimplex(original, 1.0, comparator);
+                                if (comparator.compare(reflected, best) < 0) {
+
+                                    // compute the expanded simplex
+                                    final RealPointValuePair[] reflectedSimplex = simplex;
+                                    final RealPointValuePair expanded = evaluateNewSimplex(original, khi, comparator);
+                                    if (comparator.compare(reflected, expanded) <= 0) {
+                                        // accept the reflected simplex
+                                        simplex = reflectedSimplex;
+                                    }
+
+                                    return;
+
+                                }
+
+                                // compute the contracted simplex
+                                final RealPointValuePair contracted = evaluateNewSimplex(original, gamma, comparator);
+                                if (comparator.compare(contracted, best) < 0) {
+                                    // accept the contracted simplex
+                                    return;
+                                }
+
+                                // check convergence
+                                final int iter = getIterations();
+                                boolean converged = true;
+                                for (int i = 0; i < simplex.length; ++i) {
+                                    converged &= checker.converged(iter, original[i], simplex[i]);
+                                }
+                                if (converged) {
+                                    return;
+                                }
+
+                            }
+                children: []
+                pos: 2318
+                length: 1493
+              pos: 2235
+              length: 1583
+          children: []
+          pos: 2050
+          length: 1768
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: evaluateNewSimplex
+              children: []
+              pos: 4334
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealPointValuePair[] original
+                children: []
+                pos: 4353
+                length: 35
+              pos: 4307
+              length: 1045
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] xSmallest = original[0].getPointRef();
+                children: []
+                pos: 4628
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: final int n = xSmallest.length;
+                children: []
+                pos: 4690
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: simplex = new RealPointValuePair[n + 1];
+                children: []
+                pos: 4782
+                length: 40
+              - type: expression_statement
+                fields:
+                  text: simplex[0] = original[0];
+                children: []
+                pos: 4831
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1; i <= n; ++i) {
+                                final double[] xOriginal    = original[i].getPointRef();
+                                final double[] xTransformed = new double[n];
+                                for (int j = 0; j < n; ++j) {
+                                    xTransformed[j] = xSmallest[j] + coeff * (xSmallest[j] - xOriginal[j]);
+                                }
+                                simplex[i] = new RealPointValuePair(xTransformed, Double.NaN, false);
+                            }
+                children: []
+                pos: 4865
+                length: 392
+              - type: expression_statement
+                fields:
+                  text: evaluateSimplex(comparator);
+                children: []
+                pos: 5290
+                length: 28
+              - type: return_statement
+                fields:
+                  text: return simplex[0];
+                children: []
+                pos: 5327
+                length: 18
+              pos: 4617
+              length: 735
+          children: []
+          pos: 4307
+          length: 1045
+        pos: 1292
+        length: 4063
+    children: []
+    pos: 1292
+    length: 4063
+  pos: 0
+  length: 5356
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: MultiDirectional
+        children: []
+        pos: 1305
+        length: 16
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private final double khi;
+          children: []
+          pos: 1393
+          length: 25
+        - type: field_declaration
+          fields:
+            text: private final double gamma;
+          children: []
+          pos: 1460
+          length: 27
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultiDirectional() {
+                      this.khi   = 2.0;
+                      this.gamma = 0.5;
+                  }
+          children: []
+          pos: 1640
+          length: 85
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public MultiDirectional(final double khi, final double gamma) {
+                      this.khi   = khi;
+                      this.gamma = gamma;
+                  }
+          children: []
+          pos: 1896
+          length: 123
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: iterateSimplex
+              children: []
+              pos: 2079
+              length: 14
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final Comparator<RealPointValuePair> comparator
+                children: []
+                pos: 2094
+                length: 47
+              pos: 2050
+              length: 1397
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: while_statement
+                fields:
+                  text: |-
+                    while (true) {
+
+                                incrementIterationsCounter();
+
+                                // save the original vertex
+                                final RealPointValuePair[] original = simplex;
+                                final RealPointValuePair best = original[0];
+
+                                // perform a reflection step
+                                final RealPointValuePair reflected = evaluateNewSimplex(original, 1.0, comparator);
+                                if (comparator.compare(reflected, best) < 0) {
+
+                                    // compute the expanded simplex
+                                    final RealPointValuePair[] reflectedSimplex = simplex;
+                                    final RealPointValuePair expanded = evaluateNewSimplex(original, khi, comparator);
+                                    if (comparator.compare(reflected, expanded) <= 0) {
+                                        // accept the reflected simplex
+                                        simplex = reflectedSimplex;
+                                    }
+
+                                    return;
+
+                                }
+
+                                // compute the contracted simplex
+                                final RealPointValuePair contracted = evaluateNewSimplex(original, gamma, comparator);
+                                if (comparator.compare(contracted, best) < 0) {
+                                    // accept the contracted simplex
+
+                                // check convergence
+                                    return;
+                                }
+
+                            }
+                children: []
+                pos: 2246
+                length: 1194
+              pos: 2235
+              length: 1212
+          children: []
+          pos: 2050
+          length: 1397
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: evaluateNewSimplex
+              children: []
+              pos: 3963
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealPointValuePair[] original
+                children: []
+                pos: 3982
+                length: 35
+              pos: 3936
+              length: 1045
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: local_variable_declaration
+                fields:
+                  text: final double[] xSmallest = original[0].getPointRef();
+                children: []
+                pos: 4257
+                length: 53
+              - type: local_variable_declaration
+                fields:
+                  text: final int n = xSmallest.length;
+                children: []
+                pos: 4319
+                length: 31
+              - type: expression_statement
+                fields:
+                  text: simplex = new RealPointValuePair[n + 1];
+                children: []
+                pos: 4411
+                length: 40
+              - type: expression_statement
+                fields:
+                  text: simplex[0] = original[0];
+                children: []
+                pos: 4460
+                length: 25
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (int i = 1; i <= n; ++i) {
+                                final double[] xOriginal    = original[i].getPointRef();
+                                final double[] xTransformed = new double[n];
+                                for (int j = 0; j < n; ++j) {
+                                    xTransformed[j] = xSmallest[j] + coeff * (xSmallest[j] - xOriginal[j]);
+                                }
+                                simplex[i] = new RealPointValuePair(xTransformed, Double.NaN, false);
+                            }
+                children: []
+                pos: 4494
+                length: 392
+              - type: expression_statement
+                fields:
+                  text: evaluateSimplex(comparator);
+                children: []
+                pos: 4919
+                length: 28
+              - type: return_statement
+                fields:
+                  text: return simplex[0];
+                children: []
+                pos: 4956
+                length: 18
+              pos: 4246
+              length: 735
+          children: []
+          pos: 3936
+          length: 1045
+        pos: 1292
+        length: 3692
+    children: []
+    pos: 1292
+    length: 3692
+  pos: 0
+  length: 4985
 text_diff: "--- before\n+++ after\n@@ -61,7 +61,6 @@\n     protected void iterateSimplex(final
   Comparator<RealPointValuePair> comparator)\n         throws FunctionEvaluationException,
   OptimizationException, IllegalArgumentException {\n \n-        final RealConvergenceChecker

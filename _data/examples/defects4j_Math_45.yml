@@ -1,5 +1,1806 @@
 ---
 language: java
+before_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: OpenMapRealMatrix
+        children: []
+        pos: 1123
+        length: 17
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -5962461716457143437L;
+          children: []
+          pos: 1264
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final int rows;
+          children: []
+          pos: 1377
+          length: 23
+        - type: field_declaration
+          fields:
+            text: private final int columns;
+          children: []
+          pos: 1449
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final OpenIntToDoubleHashMap entries;
+          children: []
+          pos: 1529
+          length: 45
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public OpenMapRealMatrix(int rowDimension, int columnDimension) {
+                      super(rowDimension, columnDimension);
+                      long lRow = (long) rowDimension;
+                      long lCol = (long) columnDimension;
+                      if (lRow * lCol >= (long) Integer.MAX_VALUE) {
+                          throw new NumberIsTooLargeException(lRow * lCol, Integer.MAX_VALUE, false);
+                      }
+                      this.rows = rowDimension;
+                      this.columns = columnDimension;
+                      this.entries = new OpenIntToDoubleHashMap(0.0);
+                  }
+          children: []
+          pos: 1797
+          length: 485
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public OpenMapRealMatrix(OpenMapRealMatrix matrix) {
+                      this.rows = matrix.rows;
+                      this.columns = matrix.columns;
+                      this.entries = new OpenIntToDoubleHashMap(matrix.entries);
+                  }
+          children: []
+          pos: 2394
+          length: 197
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: copy
+              children: []
+              pos: 2661
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2622
+              length: 97
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new OpenMapRealMatrix(this);
+                children: []
+                pos: 2678
+                length: 35
+              pos: 2668
+              length: 51
+          children: []
+          pos: 2622
+          length: 97
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createMatrix
+              children: []
+              pos: 2789
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int rowDimension
+                children: []
+                pos: 2802
+                length: 16
+              pos: 2750
+              length: 167
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new OpenMapRealMatrix(rowDimension, columnDimension);
+                children: []
+                pos: 2851
+                length: 60
+              pos: 2841
+              length: 76
+          children: []
+          pos: 2750
+          length: 167
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getColumnDimension
+              children: []
+              pos: 2973
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2948
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return columns;
+                children: []
+                pos: 3004
+                length: 15
+              pos: 2994
+              length: 31
+          children: []
+          pos: 2948
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: add
+              children: []
+              pos: 3342
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: OpenMapRealMatrix m
+                children: []
+                pos: 3346
+                length: 19
+              pos: 3317
+              length: 558
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkAdditionCompatible(this, m);
+                children: []
+                pos: 3402
+                length: 45
+              - type: local_variable_declaration
+                fields:
+                  text: final OpenMapRealMatrix out = new OpenMapRealMatrix(this);
+                children: []
+                pos: 3457
+                length: 58
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (OpenIntToDoubleHashMap.Iterator iterator = m.entries.iterator(); iterator.hasNext();) {
+                                iterator.advance();
+                                final int row = iterator.key() / columns;
+                                final int col = iterator.key() - row * columns;
+                                out.setEntry(row, col, getEntry(row, col) + iterator.value());
+                            }
+                children: []
+                pos: 3524
+                length: 323
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 3857
+                length: 11
+              pos: 3367
+              length: 508
+          children: []
+          pos: 3317
+          length: 558
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: subtract
+              children: []
+              pos: 3945
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealMatrix m
+                children: []
+                pos: 3954
+                length: 18
+              pos: 3906
+              length: 252
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return subtract((OpenMapRealMatrix) m);
+                      children: []
+                      pos: 4002
+                      length: 39
+                    pos: 3988
+                    length: 63
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException cce) {
+                                      return (OpenMapRealMatrix) super.subtract(m);
+                                  }
+                      children: []
+                      pos: 4052
+                      length: 100
+                    pos: 3984
+                    length: 168
+                children: []
+                pos: 3984
+                length: 168
+              pos: 3974
+              length: 184
+          children: []
+          pos: 3906
+          length: 252
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: subtract
+              children: []
+              pos: 4471
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: OpenMapRealMatrix m
+                children: []
+                pos: 4480
+                length: 19
+              pos: 4446
+              length: 562
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkAdditionCompatible(this, m);
+                children: []
+                pos: 4536
+                length: 45
+              - type: local_variable_declaration
+                fields:
+                  text: final OpenMapRealMatrix out = new OpenMapRealMatrix(this);
+                children: []
+                pos: 4591
+                length: 58
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (OpenIntToDoubleHashMap.Iterator iterator = m.entries.iterator(); iterator.hasNext();) {
+                                iterator.advance();
+                                final int row = iterator.key() / columns;
+                                final int col = iterator.key() - row * columns;
+                                out.setEntry(row, col, getEntry(row, col) - iterator.value());
+                            }
+                children: []
+                pos: 4658
+                length: 323
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 4991
+                length: 11
+              pos: 4501
+              length: 507
+          children: []
+          pos: 4446
+          length: 562
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: multiply
+              children: []
+              pos: 5071
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealMatrix m
+                children: []
+                pos: 5080
+                length: 18
+              pos: 5039
+              length: 941
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return multiply((OpenMapRealMatrix) m);
+                      children: []
+                      pos: 5128
+                      length: 39
+                    pos: 5114
+                    length: 63
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException cce) {
+
+                                      // safety check
+                                      MatrixUtils.checkMultiplicationCompatible(this, m);
+
+                                      final int outCols = m.getColumnDimension();
+                                      final BlockRealMatrix out = new BlockRealMatrix(rows, outCols);
+                                      for (OpenIntToDoubleHashMap.Iterator iterator = entries.iterator(); iterator.hasNext();) {
+                                          iterator.advance();
+                                          final double value = iterator.value();
+                                          final int key      = iterator.key();
+                                          final int i        = key / columns;
+                                          final int k        = key % columns;
+                                          for (int j = 0; j < outCols; ++j) {
+                                              out.addToEntry(i, j, value * m.getEntry(k, j));
+                                          }
+                                      }
+
+                                      return out;
+                                  }
+                      children: []
+                      pos: 5178
+                      length: 796
+                    pos: 5110
+                    length: 864
+                children: []
+                pos: 5110
+                length: 864
+              pos: 5100
+              length: 880
+          children: []
+          pos: 5039
+          length: 941
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: multiply
+              children: []
+              pos: 6311
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: OpenMapRealMatrix m
+                children: []
+                pos: 6320
+                length: 19
+              pos: 6286
+              length: 1213
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkMultiplicationCompatible(this, m);
+                children: []
+                pos: 6376
+                length: 51
+              - type: local_variable_declaration
+                fields:
+                  text: final int outCols = m.getColumnDimension();
+                children: []
+                pos: 6437
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: OpenMapRealMatrix out = new OpenMapRealMatrix(rows, outCols);
+                children: []
+                pos: 6489
+                length: 61
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (OpenIntToDoubleHashMap.Iterator iterator = entries.iterator(); iterator.hasNext();) {
+                                iterator.advance();
+                                final double value = iterator.value();
+                                final int key      = iterator.key();
+                                final int i        = key / columns;
+                                final int k        = key % columns;
+                                for (int j = 0; j < outCols; ++j) {
+                                    final int rightKey = m.computeKey(k, j);
+                                    if (m.entries.containsKey(rightKey)) {
+                                        final int outKey = out.computeKey(i, j);
+                                        final double outValue =
+                                            out.entries.get(outKey) + value * m.entries.get(rightKey);
+                                        if (outValue == 0.0) {
+                                            out.entries.remove(outKey);
+                                        } else {
+                                            out.entries.put(outKey, outValue);
+                                        }
+                                    }
+                                }
+                            }
+                children: []
+                pos: 6559
+                length: 913
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 7482
+                length: 11
+              pos: 6341
+              length: 1158
+          children: []
+          pos: 6286
+          length: 1213
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEntry
+              children: []
+              pos: 7558
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 7567
+                length: 7
+              pos: 7530
+              length: 216
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 7598
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 7644
+                length: 43
+              - type: return_statement
+                fields:
+                  text: return entries.get(computeKey(row, column));
+                children: []
+                pos: 7696
+                length: 44
+              pos: 7588
+              length: 158
+          children: []
+          pos: 7530
+          length: 216
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRowDimension
+              children: []
+              pos: 7802
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7777
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return rows;
+                children: []
+                pos: 7830
+                length: 12
+              pos: 7820
+              length: 28
+          children: []
+          pos: 7777
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setEntry
+              children: []
+              pos: 7905
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 7914
+                length: 7
+              pos: 7879
+              length: 340
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 7959
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 8005
+                length: 43
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 8061
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 8070
+                            length: 3
+                        children: []
+                        pos: 8061
+                        length: 12
+                    children: []
+                    pos: 8060
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: entries.remove(computeKey(row, column));
+                    children: []
+                    pos: 8089
+                    length: 40
+                  pos: 8075
+                  length: 64
+                pos: 8057
+                length: 156
+              pos: 7949
+              length: 270
+          children: []
+          pos: 7879
+          length: 340
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addToEntry
+              children: []
+              pos: 8276
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 8287
+                length: 7
+              pos: 8250
+              length: 414
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 8336
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 8382
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final int key = computeKey(row, column);
+                children: []
+                pos: 8434
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final double value = entries.get(key) + increment;
+                children: []
+                pos: 8483
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 8546
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 8555
+                            length: 3
+                        children: []
+                        pos: 8546
+                        length: 12
+                    children: []
+                    pos: 8545
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: entries.remove(key);
+                    children: []
+                    pos: 8574
+                    length: 20
+                  pos: 8560
+                  length: 44
+                pos: 8542
+                length: 116
+              pos: 8326
+              length: 338
+          children: []
+          pos: 8250
+          length: 414
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: multiplyEntry
+              children: []
+              pos: 8721
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 8735
+                length: 7
+              pos: 8695
+              length: 411
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 8781
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 8827
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final int key = computeKey(row, column);
+                children: []
+                pos: 8879
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final double value = entries.get(key) * factor;
+                children: []
+                pos: 8928
+                length: 47
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 8988
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 8997
+                            length: 3
+                        children: []
+                        pos: 8988
+                        length: 12
+                    children: []
+                    pos: 8987
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: entries.remove(key);
+                    children: []
+                    pos: 9016
+                    length: 20
+                  pos: 9002
+                  length: 44
+                pos: 8984
+                length: 116
+              pos: 8771
+              length: 335
+          children: []
+          pos: 8695
+          length: 411
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeKey
+              children: []
+              pos: 9359
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 9370
+                length: 7
+              pos: 9347
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return row * columns + column;
+                children: []
+                pos: 9401
+                length: 30
+              pos: 9391
+              length: 46
+          children: []
+          pos: 9347
+          length: 90
+        pos: 1110
+        length: 8331
+    children: []
+    pos: 1110
+    length: 8331
+  pos: 0
+  length: 9442
+after_tree:
+  type: program
+  fields: {}
+  children:
+  - type: class_declaration
+    fields:
+      name:
+        type: identifier
+        fields:
+          text: OpenMapRealMatrix
+        children: []
+        pos: 1123
+        length: 17
+      body:
+        type: class_body
+        fields: {}
+        children:
+        - type: field_declaration
+          fields:
+            text: private static final long serialVersionUID = -5962461716457143437L;
+          children: []
+          pos: 1264
+          length: 67
+        - type: field_declaration
+          fields:
+            text: private final int rows;
+          children: []
+          pos: 1377
+          length: 23
+        - type: field_declaration
+          fields:
+            text: private final int columns;
+          children: []
+          pos: 1449
+          length: 26
+        - type: field_declaration
+          fields:
+            text: private final OpenIntToDoubleHashMap entries;
+          children: []
+          pos: 1529
+          length: 45
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public OpenMapRealMatrix(int rowDimension, int columnDimension) {
+                      super(rowDimension, columnDimension);
+                      this.rows = rowDimension;
+                      this.columns = columnDimension;
+                      this.entries = new OpenIntToDoubleHashMap(0.0);
+                  }
+          children: []
+          pos: 1797
+          length: 247
+        - type: constructor_declaration
+          fields:
+            text: |-
+              public OpenMapRealMatrix(OpenMapRealMatrix matrix) {
+                      this.rows = matrix.rows;
+                      this.columns = matrix.columns;
+                      this.entries = new OpenIntToDoubleHashMap(matrix.entries);
+                  }
+          children: []
+          pos: 2156
+          length: 197
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: copy
+              children: []
+              pos: 2423
+              length: 4
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2384
+              length: 97
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new OpenMapRealMatrix(this);
+                children: []
+                pos: 2440
+                length: 35
+              pos: 2430
+              length: 51
+          children: []
+          pos: 2384
+          length: 97
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: createMatrix
+              children: []
+              pos: 2551
+              length: 12
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int rowDimension
+                children: []
+                pos: 2564
+                length: 16
+              pos: 2512
+              length: 167
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return new OpenMapRealMatrix(rowDimension, columnDimension);
+                children: []
+                pos: 2613
+                length: 60
+              pos: 2603
+              length: 76
+          children: []
+          pos: 2512
+          length: 167
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getColumnDimension
+              children: []
+              pos: 2735
+              length: 18
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 2710
+              length: 77
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return columns;
+                children: []
+                pos: 2766
+                length: 15
+              pos: 2756
+              length: 31
+          children: []
+          pos: 2710
+          length: 77
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: add
+              children: []
+              pos: 3104
+              length: 3
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: OpenMapRealMatrix m
+                children: []
+                pos: 3108
+                length: 19
+              pos: 3079
+              length: 558
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkAdditionCompatible(this, m);
+                children: []
+                pos: 3164
+                length: 45
+              - type: local_variable_declaration
+                fields:
+                  text: final OpenMapRealMatrix out = new OpenMapRealMatrix(this);
+                children: []
+                pos: 3219
+                length: 58
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (OpenIntToDoubleHashMap.Iterator iterator = m.entries.iterator(); iterator.hasNext();) {
+                                iterator.advance();
+                                final int row = iterator.key() / columns;
+                                final int col = iterator.key() - row * columns;
+                                out.setEntry(row, col, getEntry(row, col) + iterator.value());
+                            }
+                children: []
+                pos: 3286
+                length: 323
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 3619
+                length: 11
+              pos: 3129
+              length: 508
+          children: []
+          pos: 3079
+          length: 558
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: subtract
+              children: []
+              pos: 3707
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealMatrix m
+                children: []
+                pos: 3716
+                length: 18
+              pos: 3668
+              length: 252
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return subtract((OpenMapRealMatrix) m);
+                      children: []
+                      pos: 3764
+                      length: 39
+                    pos: 3750
+                    length: 63
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException cce) {
+                                      return (OpenMapRealMatrix) super.subtract(m);
+                                  }
+                      children: []
+                      pos: 3814
+                      length: 100
+                    pos: 3746
+                    length: 168
+                children: []
+                pos: 3746
+                length: 168
+              pos: 3736
+              length: 184
+          children: []
+          pos: 3668
+          length: 252
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: subtract
+              children: []
+              pos: 4233
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: OpenMapRealMatrix m
+                children: []
+                pos: 4242
+                length: 19
+              pos: 4208
+              length: 562
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkAdditionCompatible(this, m);
+                children: []
+                pos: 4298
+                length: 45
+              - type: local_variable_declaration
+                fields:
+                  text: final OpenMapRealMatrix out = new OpenMapRealMatrix(this);
+                children: []
+                pos: 4353
+                length: 58
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (OpenIntToDoubleHashMap.Iterator iterator = m.entries.iterator(); iterator.hasNext();) {
+                                iterator.advance();
+                                final int row = iterator.key() / columns;
+                                final int col = iterator.key() - row * columns;
+                                out.setEntry(row, col, getEntry(row, col) - iterator.value());
+                            }
+                children: []
+                pos: 4420
+                length: 323
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 4753
+                length: 11
+              pos: 4263
+              length: 507
+          children: []
+          pos: 4208
+          length: 562
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: multiply
+              children: []
+              pos: 4833
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: final RealMatrix m
+                children: []
+                pos: 4842
+                length: 18
+              pos: 4801
+              length: 941
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: try_statement
+                fields:
+                  body:
+                    type: block
+                    fields: {}
+                    children:
+                    - type: return_statement
+                      fields:
+                        text: return multiply((OpenMapRealMatrix) m);
+                      children: []
+                      pos: 4890
+                      length: 39
+                    pos: 4876
+                    length: 63
+                  excepts:
+                    type: excepts
+                    fields: {}
+                    children:
+                    - type: catch_clause
+                      fields:
+                        text: |-
+                          catch (ClassCastException cce) {
+
+                                      // safety check
+                                      MatrixUtils.checkMultiplicationCompatible(this, m);
+
+                                      final int outCols = m.getColumnDimension();
+                                      final BlockRealMatrix out = new BlockRealMatrix(rows, outCols);
+                                      for (OpenIntToDoubleHashMap.Iterator iterator = entries.iterator(); iterator.hasNext();) {
+                                          iterator.advance();
+                                          final double value = iterator.value();
+                                          final int key      = iterator.key();
+                                          final int i        = key / columns;
+                                          final int k        = key % columns;
+                                          for (int j = 0; j < outCols; ++j) {
+                                              out.addToEntry(i, j, value * m.getEntry(k, j));
+                                          }
+                                      }
+
+                                      return out;
+                                  }
+                      children: []
+                      pos: 4940
+                      length: 796
+                    pos: 4872
+                    length: 864
+                children: []
+                pos: 4872
+                length: 864
+              pos: 4862
+              length: 880
+          children: []
+          pos: 4801
+          length: 941
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: multiply
+              children: []
+              pos: 6073
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: OpenMapRealMatrix m
+                children: []
+                pos: 6082
+                length: 19
+              pos: 6048
+              length: 1213
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkMultiplicationCompatible(this, m);
+                children: []
+                pos: 6138
+                length: 51
+              - type: local_variable_declaration
+                fields:
+                  text: final int outCols = m.getColumnDimension();
+                children: []
+                pos: 6199
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: OpenMapRealMatrix out = new OpenMapRealMatrix(rows, outCols);
+                children: []
+                pos: 6251
+                length: 61
+              - type: for_statement
+                fields:
+                  text: |-
+                    for (OpenIntToDoubleHashMap.Iterator iterator = entries.iterator(); iterator.hasNext();) {
+                                iterator.advance();
+                                final double value = iterator.value();
+                                final int key      = iterator.key();
+                                final int i        = key / columns;
+                                final int k        = key % columns;
+                                for (int j = 0; j < outCols; ++j) {
+                                    final int rightKey = m.computeKey(k, j);
+                                    if (m.entries.containsKey(rightKey)) {
+                                        final int outKey = out.computeKey(i, j);
+                                        final double outValue =
+                                            out.entries.get(outKey) + value * m.entries.get(rightKey);
+                                        if (outValue == 0.0) {
+                                            out.entries.remove(outKey);
+                                        } else {
+                                            out.entries.put(outKey, outValue);
+                                        }
+                                    }
+                                }
+                            }
+                children: []
+                pos: 6321
+                length: 913
+              - type: return_statement
+                fields:
+                  text: return out;
+                children: []
+                pos: 7244
+                length: 11
+              pos: 6103
+              length: 1158
+          children: []
+          pos: 6048
+          length: 1213
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getEntry
+              children: []
+              pos: 7320
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 7329
+                length: 7
+              pos: 7292
+              length: 216
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 7360
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 7406
+                length: 43
+              - type: return_statement
+                fields:
+                  text: return entries.get(computeKey(row, column));
+                children: []
+                pos: 7458
+                length: 44
+              pos: 7350
+              length: 158
+          children: []
+          pos: 7292
+          length: 216
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: getRowDimension
+              children: []
+              pos: 7564
+              length: 15
+            parameters:
+              type: method_parameters
+              fields: {}
+              children: []
+              pos: 7539
+              length: 71
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return rows;
+                children: []
+                pos: 7592
+                length: 12
+              pos: 7582
+              length: 28
+          children: []
+          pos: 7539
+          length: 71
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: setEntry
+              children: []
+              pos: 7667
+              length: 8
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 7676
+                length: 7
+              pos: 7641
+              length: 340
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 7721
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 7767
+                length: 43
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 7823
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 7832
+                            length: 3
+                        children: []
+                        pos: 7823
+                        length: 12
+                    children: []
+                    pos: 7822
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: entries.remove(computeKey(row, column));
+                    children: []
+                    pos: 7851
+                    length: 40
+                  pos: 7837
+                  length: 64
+                pos: 7819
+                length: 156
+              pos: 7711
+              length: 270
+          children: []
+          pos: 7641
+          length: 340
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: addToEntry
+              children: []
+              pos: 8038
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 8049
+                length: 7
+              pos: 8012
+              length: 414
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 8098
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 8144
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final int key = computeKey(row, column);
+                children: []
+                pos: 8196
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final double value = entries.get(key) + increment;
+                children: []
+                pos: 8245
+                length: 50
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 8308
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 8317
+                            length: 3
+                        children: []
+                        pos: 8308
+                        length: 12
+                    children: []
+                    pos: 8307
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: entries.remove(key);
+                    children: []
+                    pos: 8336
+                    length: 20
+                  pos: 8322
+                  length: 44
+                pos: 8304
+                length: 116
+              pos: 8088
+              length: 338
+          children: []
+          pos: 8012
+          length: 414
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: multiplyEntry
+              children: []
+              pos: 8483
+              length: 13
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 8497
+                length: 7
+              pos: 8457
+              length: 411
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkRowIndex(this, row);
+                children: []
+                pos: 8543
+                length: 37
+              - type: expression_statement
+                fields:
+                  text: MatrixUtils.checkColumnIndex(this, column);
+                children: []
+                pos: 8589
+                length: 43
+              - type: local_variable_declaration
+                fields:
+                  text: final int key = computeKey(row, column);
+                children: []
+                pos: 8641
+                length: 40
+              - type: local_variable_declaration
+                fields:
+                  text: final double value = entries.get(key) * factor;
+                children: []
+                pos: 8690
+                length: 47
+              - type: if_statement
+                fields:
+                  condition:
+                    type: parenthesized_expression
+                    fields:
+                      expression:
+                        type: equals
+                        fields:
+                          left:
+                            type: identifier
+                            fields:
+                              text: value
+                            children: []
+                            pos: 8750
+                            length: 5
+                          right:
+                            type: decimal_floating_point_literal
+                            fields:
+                              text: '0.0'
+                            children: []
+                            pos: 8759
+                            length: 3
+                        children: []
+                        pos: 8750
+                        length: 12
+                    children: []
+                    pos: 8749
+                    length: 14
+                children:
+                - type: block
+                  fields: {}
+                  children:
+                  - type: expression_statement
+                    fields:
+                      text: entries.remove(key);
+                    children: []
+                    pos: 8778
+                    length: 20
+                  pos: 8764
+                  length: 44
+                pos: 8746
+                length: 116
+              pos: 8533
+              length: 335
+          children: []
+          pos: 8457
+          length: 411
+        - type: method_declaration
+          fields:
+            name:
+              type: identifier
+              fields:
+                text: computeKey
+              children: []
+              pos: 9121
+              length: 10
+            parameters:
+              type: method_parameters
+              fields: {}
+              children:
+              - type: formal_parameter
+                fields:
+                  text: int row
+                children: []
+                pos: 9132
+                length: 7
+              pos: 9109
+              length: 90
+            body:
+              type: block
+              fields: {}
+              children:
+              - type: return_statement
+                fields:
+                  text: return row * columns + column;
+                children: []
+                pos: 9163
+                length: 30
+              pos: 9153
+              length: 46
+          children: []
+          pos: 9109
+          length: 90
+        pos: 1110
+        length: 8093
+    children: []
+    pos: 1110
+    length: 8093
+  pos: 0
+  length: 9204
 text_diff: |
   --- before
   +++ after
