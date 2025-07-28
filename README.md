@@ -7,6 +7,12 @@ Clone this repository
 git clone # <REPO>
 ```
 
+Install ruby dependencies
+
+``` sh
+bundle install
+```
+
 Install `tree-sitter` program.
 
 Install Gumtree https://github.com/GumTreeDiff/gumtree for tree-based diffing.
@@ -39,9 +45,8 @@ Generate the construct usages data using
 bundle exec rake construct_usages:generate
 ```
 
-To start, run in docker console:
+To start the website run:
 ```sh
-bundle instal
 bundle exec jekyll serve
 ```
 
