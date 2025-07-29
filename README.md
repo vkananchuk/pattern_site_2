@@ -33,10 +33,10 @@ bundle exec rake grammar:all
 
 ## Running
 
-Generate the *examples* data using
+Generate the *examples* data using (hint: `-m` makes it run in parallel)
 
 ``` sh
-bundle exec rake examples:all
+bundle exec rake -m examples:all
 ```
 
 Generate the construct usages data using
